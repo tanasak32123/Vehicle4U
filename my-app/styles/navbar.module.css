@@ -1,0 +1,10 @@
+.a_link {
+  text-decoration: none;
+  justify-content: center;
+  padding: 10px 20px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.signInBtn {
+  color: white !important;
+}

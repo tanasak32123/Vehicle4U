@@ -1,0 +1,9 @@
+.my-btn {
+  border-radius: 100px;
+  text-decoration: none;
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  color: white;
+  height: 40px;
+  min-width: 120px;
+}
