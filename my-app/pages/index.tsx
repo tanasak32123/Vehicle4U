@@ -14,7 +14,7 @@ export default function Home() {
   async function handleSubmit(event: Event) {
     event.preventDefault();
 
-    const res = await fetch("/api/validateLogin", {
+    const res = await fetch("/api/login", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -29,13 +29,8 @@ export default function Home() {
       setPw("");
       setInvalid(result.message);
     } else {
-      const res = await fetch("/api/login", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ username: username, password: pw }),
-      });
+      setInvalid("");
+      alert("logging in");
     }
   }
 
