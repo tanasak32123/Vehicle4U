@@ -1,1 +1,24 @@
+.form_container {
+  background-color: rgba(84, 90, 139, 0.85);
+  border-radius: 70px;
+  /* height: 80%; */
+  padding: 50px 15px;
+  width: 80%;
+}
 
+.input {
+  background-color: transparent;
+  border: 0px;
+  border-bottom: 1px solid white;
+  color: white;
+  width: 100%;
+  outline: none;
+}
+
+.login_btn {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 170px;
+  box-shadow: 5px 5px #dadada;
+  border: none;
+}

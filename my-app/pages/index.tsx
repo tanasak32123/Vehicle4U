@@ -1,9 +1,44 @@
 import Head from "next/head";
 import Layout from "../components/layout";
-// import Image from "next/image";
-import styles from "@/styles/Home.module.css";
+import styles from "@/styles/home.module.css";
+import bg from "../public/bgHome.png";
+import { Row, Col } from "react-bootstrap";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
+  let [username, setUsername] = useState("");
+  let [pw, setPw] = useState("");
+  let [invalid, setInvalid] = useState("");
+
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+
+    const res = await fetch("/api/validateLogin", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ username: username, password: pw }),
+    });
+
+    const result = await res.json();
+
+    if (res.status == 400) {
+      setUsername("");
+      setPw("");
+      setInvalid(result.message);
+    } else {
+      const res = await fetch("/api/login", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ username: username, password: pw }),
+      });
+    }
+  }
+
   return (
     <>
       <Head>
@@ -14,7 +49,99 @@ export default function Home() {
       </Head>
 
       <Layout>
-        <h1>Content</h1>
+        <div
+          style={{
+            backgroundImage: `url(${bg.src})`,
+            height: "100vh",
+            width: "100vw",
+            objectFit: "cover",
+          }}
+        >
+          {/* <div
+          style={{
+            backgroundColor: "black",
+          }}
+        > */}
+          <Row style={{ height: "100vh" }}>
+            <Col
+              sm={12}
+              lg={6}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div style={{ position: "absolute", top: "160px" }}>
+                <h3 style={{ color: "white", fontWeight: "1000" }}>
+                  คิดถึงเช่ารถ
+                </h3>
+                <h1 style={{ color: "white", fontWeight: "1000" }}>
+                  &nbsp;&nbsp;คิดถึง VEHICLE
+                  <span style={{ color: "#545A8B" }}>4U</span>
+                </h1>
+              </div>
+            </Col>
+            <Col
+              sm={12}
+              lg={6}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div
+                className={`${styles.form_container} justify-content-center d-flex align-items-center`}
+              >
+                <form style={{ width: "80%" }}>
+                  <label htmlFor="username" style={{ color: "white" }}>
+                    <b>Username</b>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    className={styles.input}
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                  />
+                  <br />
+                  <br />
+
+                  <label htmlFor="password" style={{ color: "white" }}>
+                    <b>Password</b>
+                  </label>
+                  <br />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className={styles.input}
+                    value={pw}
+                    onChange={(event) => setPw(event.target.value)}
+                  />
+                  <br />
+                  <br />
+                  <br />
+                  <div className="mb-2" style={{ color: "red" }}>
+                    <small>{invalid}</small>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(event: any) => handleSubmit(event)}
+                    className={`${styles.login_btn} py-2`}
+                  >
+                    <b>เข้าสู่ระบบ</b>
+                  </button>
+                  <br />
+                  <br />
+                  <small style={{ color: "white" }}>
+                    ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
+                    <b>
+                      <Link href="#signup" style={{ color: "white" }}>
+                        สมัครบัญชีผู้ใช้งานที่นี่
+                      </Link>
+                    </b>
+                  </small>
+                </form>
+              </div>
+            </Col>
+          </Row>
+        </div>
       </Layout>
     </>
   );

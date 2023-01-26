@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <Navbar collapseOnSelect expand="lg" className={styles.nav}>
       <Container>
-        <Navbar.Brand className={`px-3 ${styles.brand}`} href="#home">
+        <Navbar.Brand className={`px-3 ${styles.brand}`} href="/">
           VEHICLE4U
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
