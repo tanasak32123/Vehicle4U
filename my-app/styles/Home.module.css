@@ -22,3 +22,7 @@
   box-shadow: 5px 5px #dadada;
   border: none;
 }
+
+.borderFont {
+  text-shadow: 5px 5px black;
+}

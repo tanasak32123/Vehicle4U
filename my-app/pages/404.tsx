@@ -9,8 +9,8 @@ export default function FourOhFour() {
         className="d-flex align-items-center justify-content-center"
       >
         <div className="text-center">
-          <h1>404 - Page Not Found</h1>
-          <Link href="/">Go back home</Link>
+          <h1>ขออภัย เราไม่พบหน้าของคุณ</h1>
+          <Link href="/">กลับสู่หน้าหลัก</Link>
         </div>
       </div>
     </Layout>
