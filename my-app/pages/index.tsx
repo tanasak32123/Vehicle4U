@@ -2,7 +2,7 @@ import Head from "next/head";
 import Layout from "../components/layout";
 import styles from "@/styles/home.module.css";
 import bg from "../public/bgHome.png";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -11,8 +11,12 @@ export default function Home() {
   let [pw, setPw] = useState("");
   let [invalid, setInvalid] = useState("");
 
+  let [loading, setLoading] = useState(false);
+
   async function handleSubmit(event: Event) {
     event.preventDefault();
+
+    setLoading(true);
 
     const res = await fetch("/api/login", {
       headers: {
@@ -20,18 +24,20 @@ export default function Home() {
       },
       method: "POST",
       body: JSON.stringify({ username: username, password: pw }),
+    }).then(async (res) => {
+      const result = await res.json();
+
+      setLoading(false);
+
+      if (res.status == 400) {
+        setUsername("");
+        setPw("");
+        setInvalid(result.message);
+      } else {
+        setInvalid("");
+        alert("logging in");
+      }
     });
-
-    const result = await res.json();
-
-    if (res.status == 400) {
-      setUsername("");
-      setPw("");
-      setInvalid(result.message);
-    } else {
-      setInvalid("");
-      alert("logging in");
-    }
   }
 
   return (
@@ -115,6 +121,15 @@ export default function Home() {
                     onClick={(event: any) => handleSubmit(event)}
                     className={`${styles.login_btn} py-2`}
                   >
+                    {loading && (
+                      <>
+                        <Spinner
+                          className={`${styles.spinner}`}
+                          animation="border"
+                          variant="primary"
+                        />{" "}
+                      </>
+                    )}
                     <b>เข้าสู่ระบบ</b>
                   </button>
                   <br />
