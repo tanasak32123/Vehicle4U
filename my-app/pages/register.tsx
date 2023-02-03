@@ -3,7 +3,7 @@ import Layout from "../components/layout";
 import styles from "../styles/register.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 
-export default function Register() {
+export default function Register({ params: { r } }: { params: { r: string } }) {
   let [role, setRole] = useState("");
   let [fName, setFName] = useState("");
   let [lName, setLName] = useState("");
