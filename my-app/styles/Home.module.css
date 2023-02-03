@@ -26,3 +26,8 @@
 .borderFont {
   text-shadow: 5px 5px black;
 }
+
+.spinner {
+  height: 18px;
+  width: 18px;
+}
