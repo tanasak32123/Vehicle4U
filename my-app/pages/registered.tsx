@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Layout from "../components/layout";
-import styles from "@/styles/role_selection.module.css";
+import styles from "@/styles/registered.module.css";
 import bg from "../public/bgRegistered.png";
 import correct from "../public/correct.png"
 import Link from "next/link";
