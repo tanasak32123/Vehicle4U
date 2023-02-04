@@ -29,7 +29,7 @@ export default function RoleSelector() {
               กลับสู่หน้าหลัก
             </Link>
           </div>
-          <h3 className="mb-0">กรุณาเลือกประเภทผู้ใช้งานของท่าน</h3>
+          <h3 className="mb-0">กรุณาเลือกประเภทผู้ใช้งาน</h3>
           <br />
           <Link href="/register?role=renter" className={styles.btn}>
             <h6 className="mb-0">ผู้เช่า</h6>
