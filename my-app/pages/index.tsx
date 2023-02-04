@@ -138,7 +138,7 @@ export default function Home() {
                     ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                     <b>
                       <Link
-                        href="/register?role=provider"
+                        href="/role_selection"
                         style={{ color: "white" }}
                       >
                         สมัครบัญชีผู้ใช้งานที่นี่

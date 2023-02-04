@@ -4,14 +4,14 @@ import styles from "@/styles/role_selection.module.css";
 import bg from "../public/bgRoleSelection.png";
 import Link from "next/link";
 
-export default function Home() {
+export default function RoleSelection() {
 
   return (
     <Layout>
       <div style={{
           backgroundImage: `url(${bg.src})`,
           height: '100vh',
-          width: '100vh',
+          width: '100vw',
           objectFit: "cover",
         }}  className="d-flex justify-content-center align-items-center"
       >
