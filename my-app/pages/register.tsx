@@ -149,7 +149,7 @@ export default function Register() {
 
                 <div>
                   <label htmlFor="username">
-                    <h6>Username</h6>
+                    <h6>ชื่อผู้ใช้</h6>
                   </label>
                   <br />
                   <input
@@ -167,7 +167,7 @@ export default function Register() {
 
                 <div>
                   <label htmlFor="password">
-                    <h6>Password</h6>
+                    <h6>รหัสผ่าน</h6>
                   </label>
                   <br />
                   <input
