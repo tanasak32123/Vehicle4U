@@ -137,7 +137,10 @@ export default function Home() {
                   <small style={{ color: "white" }}>
                     ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                     <b>
-                      <Link href="#signup" style={{ color: "white" }}>
+                      <Link
+                        href="/register?role=provider"
+                        style={{ color: "white" }}
+                      >
                         สมัครบัญชีผู้ใช้งานที่นี่
                       </Link>
                     </b>

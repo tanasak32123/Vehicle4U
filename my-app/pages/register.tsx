@@ -85,10 +85,15 @@ export default function Register() {
   }
 
   useEffect(() => {
-    console.log(query.role);
-    // if (role != "provider" && role != "user" && role != "renter") {
-    //   router.push("/");
-    // }
+    if (
+      query.role != "provider" &&
+      query.role != "user" &&
+      query.role != "renter"
+    ) {
+      router.push("/");
+    } else {
+      setRole(query.role);
+    }
   }, [query.role]);
 
   return (
