@@ -7,12 +7,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     if (!body.username || !body.password) {
       return res
         .status(400)
-        .json({ message: "** username หรือ password ของคุณไม่ถูกต้อง" });
+        .json({ message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง" });
     }
 
-    return res
-      .status(200)
-      .json({ message: `username and password is validated.` });
+    return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }
