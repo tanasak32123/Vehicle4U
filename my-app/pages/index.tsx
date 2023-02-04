@@ -9,6 +9,8 @@ import Link from "next/link";
 export default function Home() {
   let [username, setUsername] = useState("");
   let [pw, setPw] = useState("");
+  let [role, setRole] = useState("");
+
   let [invalid, setInvalid] = useState("");
 
   let [loading, setLoading] = useState(false);
@@ -23,7 +25,7 @@ export default function Home() {
         "Content-Type": "application/json",
       },
       method: "POST",
-      body: JSON.stringify({ username: username, password: pw }),
+      body: JSON.stringify({ username: username, password: pw, role }),
     }).then(async (res) => {
       const result = await res.json();
 
@@ -32,6 +34,7 @@ export default function Home() {
       if (res.status == 400) {
         setUsername("");
         setPw("");
+        setRole("");
         setInvalid(result.message);
       } else {
         setInvalid("");
@@ -84,7 +87,7 @@ export default function Home() {
               >
                 <form style={{ width: "80%" }}>
                   <label htmlFor="username" style={{ color: "white" }}>
-                    <b>Username</b>
+                    <b>ชื่อผู้ใช้</b>
                   </label>
                   <br />
                   <input
@@ -95,11 +98,12 @@ export default function Home() {
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                   />
+
                   <br />
                   <br />
 
                   <label htmlFor="password" style={{ color: "white" }}>
-                    <b>Password</b>
+                    <b>รหัสผ่าน</b>
                   </label>
                   <br />
                   <input
@@ -110,10 +114,44 @@ export default function Home() {
                     value={pw}
                     onChange={(event) => setPw(event.target.value)}
                   />
+
                   <br />
                   <br />
+
+                  <label
+                    htmlFor="role"
+                    style={{ color: "white" }}
+                    className="mb-1"
+                  >
+                    <b>บทบาท</b>
+                  </label>
                   <br />
-                  <div className="mb-2" style={{ color: "red" }}>
+                  <select
+                    name="role"
+                    id="role"
+                    className={`${styles.select}`}
+                    onChange={(event) => setRole(event.target.value.trim())}
+                    value={role}
+                  >
+                    <option
+                      className={`${styles.select}`}
+                      value=""
+                      defaultChecked
+                    >
+                      เลือกบทบาทของคุณ
+                    </option>
+                    <option className={`${styles.option}`} value="renter">
+                      ผู้เช่า
+                    </option>
+                    <option className={`${styles.option}`} value="provider">
+                      ผู้ปล่อยเช่า
+                    </option>
+                  </select>
+
+                  <br />
+                  <br />
+
+                  <div className={`mb-2 ${styles.invalid}`}>
                     <small>{invalid}</small>
                   </div>
                   <button
