@@ -16,11 +16,19 @@
 }
 
 .login_btn {
-  background: #ffffff;
+  background: #48db79;
+  color: white;
   border-radius: 20px;
   width: 170px;
   box-shadow: 5px 5px #dadada;
-  border: none;
+  border: 1px solid #48db79;
+  transition: 0.3s;
+}
+
+.login_btn:hover {
+  background: white;
+  color: #48db79;
+  border-color: #48db79;
 }
 
 .borderFont {
@@ -50,4 +58,12 @@
   background-repeat: no-repeat;
   background-position: right 0.7rem top 50%;
   background-size: 0.65rem auto;
+}
+
+.signup {
+  color: white;
+}
+
+.signup:hover {
+  color: #cccfcd;
 }
