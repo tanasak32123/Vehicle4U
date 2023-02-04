@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import Layout from "../components/layout";
 import styles from "../styles/register.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
+import { useRouter } from "next/router";
 
-export default function Register({ params: { r } }: { params: { r: string } }) {
+export default function Register() {
+  const router = useRouter();
+
+  const query = router.query;
+
   let [role, setRole] = useState("");
   let [fName, setFName] = useState("");
   let [lName, setLName] = useState("");
@@ -48,10 +53,6 @@ export default function Register({ params: { r } }: { params: { r: string } }) {
     payment,
   };
 
-  useEffect(() => {
-    setRole("provider");
-  });
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
 
@@ -82,6 +83,13 @@ export default function Register({ params: { r } }: { params: { r: string } }) {
       }
     });
   }
+
+  useEffect(() => {
+    console.log(query.role);
+    // if (role != "provider" && role != "user" && role != "renter") {
+    //   router.push("/");
+    // }
+  }, [query.role]);
 
   return (
     <Layout>
