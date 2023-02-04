@@ -1,4 +1,5 @@
 .btn {
+  transition: 0.3s;
   text-decoration: none;
   display: inline-block;
   width: 250px;
@@ -9,10 +10,14 @@
   color: black;
   text-align: center;
   box-shadow: 5px 5px #dadada;
+  border: 1px solid black;
 }
 
 .btn:hover {
   color: inherit;
+  background-color: orange;
+  color: white;
+  border-color: white;
 }
 
 .container {
@@ -23,4 +28,16 @@
   margin: auto;
   text-align: center;
   position: relative;
+}
+
+.back {
+  padding-left: 30px;
+}
+
+.back_link {
+  text-decoration: none;
+}
+
+.back_link:hover {
+  text-decoration: underline;
 }
