@@ -7,3 +7,25 @@
   height: 40px;
   min-width: 120px;
 }
+
+.orange_btn {
+  transition: 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  width: 250px;
+  padding: 8px 0;
+  margin: 20px 100px;
+  background: orange;
+  border-radius: 40px;
+  color: white;
+  text-align: center;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid orange;
+}
+
+.orange_btn:hover {
+  color: inherit;
+  background-color: #e69809;
+  color: white;
+  border-color: white;
+}

@@ -1,0 +1,28 @@
+.container {
+  background-color: rgb(255, 254, 234, 0.85);
+  border-radius: 70px;
+  padding: 50px 15px;
+  width: 60%;
+  margin: auto;
+  text-align: center;
+  position: relative;
+}
+
+.back {
+  padding-left: 30px;
+}
+
+.back_btn {
+  color: black;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.back_btn:hover {
+  color: black;
+  text-decoration: underline;
+}

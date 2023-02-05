@@ -1,0 +1,21 @@
+.container {
+  background-color: rgb(255, 254, 234, 0.85);
+  border-radius: 70px;
+  padding: 50px 15px;
+  width: 60%;
+  margin: auto;
+  text-align: center;
+  position: relative;
+}
+
+.back {
+  padding-left: 30px;
+}
+
+.back_btn {
+  text-decoration: none;
+}
+
+.back_link:hover {
+  text-decoration: underline;
+}
