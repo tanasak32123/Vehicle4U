@@ -4,7 +4,7 @@ import Layout from "../components/layout";
 import styles from "../styles/register.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 
 export default function Register() {
   const router = useRouter();
@@ -312,7 +312,10 @@ export default function Register() {
                           />{" "}
                         </>
                       )}
-                      <b>เข้าสู่ระบบ</b>
+                      <b>
+                        สมัครสมาชิก&nbsp;&nbsp;
+                        <FaUserAlt />
+                      </b>
                     </button>
                   </div>
                 </Col>
