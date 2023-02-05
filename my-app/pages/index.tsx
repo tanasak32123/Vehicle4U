@@ -61,7 +61,7 @@ export default function Home() {
             objectFit: "cover",
           }}
         >
-          <Row style={{ height: "100vh" }}>
+          <Row style={{ height: "100vh", width: "100%" }}>
             <Col
               sm={12}
               lg={6}
