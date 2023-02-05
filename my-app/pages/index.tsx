@@ -180,6 +180,7 @@ export default function Home() {
                     <b>
                       <Link
                         href="/role_selection"
+                        as="/register"
                         className={`${styles.signup}`}
                       >
                         สมัครบัญชีผู้ใช้งานที่นี่

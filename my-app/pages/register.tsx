@@ -81,7 +81,8 @@ export default function Register() {
         setInvalid_drivenID(result.errors.drivenID);
         setInvalid_payment(result.errors.payment);
       } else {
-        alert("creating an account");
+        // alert("creating an account");
+        router.push("/registered", "/register");
       }
     });
   }
