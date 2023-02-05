@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { IsNotEmpty } from "class-validator";
 
-export class CreateUserDto {
+export class UserStatusDto {
     @IsNotEmpty()
-    username : string;
+    token : string;
     @IsNotEmpty()
-    password : string;
+    currentRole : string;
     
 }
