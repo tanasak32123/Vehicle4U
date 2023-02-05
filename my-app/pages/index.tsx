@@ -5,6 +5,7 @@ import bg from "../public/bgHome.png";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
+import { FaSignInAlt } from "react-icons/fa";
 
 export default function Home() {
   let [username, setUsername] = useState("");
@@ -168,7 +169,9 @@ export default function Home() {
                         />{" "}
                       </>
                     )}
-                    <b>เข้าสู่ระบบ</b>
+                    <b>
+                      <FaSignInAlt /> เข้าสู่ระบบ
+                    </b>
                   </button>
                   <br />
                   <br />
@@ -177,6 +180,7 @@ export default function Home() {
                     <b>
                       <Link
                         href="/role_selection"
+                        as="/register"
                         className={`${styles.signup}`}
                       >
                         สมัครบัญชีผู้ใช้งานที่นี่
