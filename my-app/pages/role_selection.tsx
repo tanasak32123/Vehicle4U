@@ -20,7 +20,7 @@ export default function RoleSelector() {
         className="d-flex justify-content-center align-items-center"
       >
         <div className={`py-4 ${styles.container}`}>
-          <div className={`text-start ${styles.back}`}>
+          <div className={`text-start ${styles.back} mb-1`}>
             <button
               onClick={() => router.back()}
               className={`${styles.back_btn} d-flex align-items-center`}
@@ -28,12 +28,17 @@ export default function RoleSelector() {
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
             </button>
           </div>
-          <h3 className="mb-0">กรุณาเลือกประเภทผู้ใช้งาน</h3>
-          <br />
-          <Link href="/register?role=renter" className={`orange_btn`}>
+          <h3 className="mb-2">กรุณาเลือกประเภทผู้ใช้งาน</h3>
+          <Link
+            href="/register?role=renter"
+            className={`orange_btn ${styles.role}`}
+          >
             <h6 className="mb-0">ผู้เช่า</h6>
           </Link>
-          <Link href="/register?role=provider" className={`orange_btn`}>
+          <Link
+            href="/register?role=provider"
+            className={`orange_btn ${styles.role}`}
+          >
             <h6 className="mb-0">ผู้ปล่อยเช่า</h6>
           </Link>
         </div>

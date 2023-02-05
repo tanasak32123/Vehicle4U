@@ -41,20 +41,20 @@ export default function Register() {
     invalid_payment,
   };
 
-  const data = {
-    role,
-    fName,
-    lName,
-    username,
-    pw,
-    tel,
-    citizenID,
-    drivenID,
-    payment,
-  };
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
+
+    const data = {
+      role,
+      fName,
+      lName,
+      username,
+      pw,
+      tel,
+      citizenID,
+      drivenID,
+      payment,
+    };
 
     setLoading(true);
 
@@ -85,11 +85,7 @@ export default function Register() {
   }
 
   useEffect(() => {
-    if (
-      query.role != "provider" &&
-      query.role != "user" &&
-      query.role != "renter"
-    ) {
+    if (query.role != "provider" && query.role != "renter") {
       router.push("/");
     } else {
       setRole(query.role);
@@ -106,12 +102,11 @@ export default function Register() {
           <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
             {role == "renter" && <b>ผู้เช่า</b>}
             {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
-            {role == "user" && <b>ผู้ใช้บริการ</b>}
           </h5>
           <form>
             <Row className="text-left">
               <Col sm={12} lg={6}>
-                <div>
+                <div className="mb-2">
                   <label htmlFor="fName">
                     <h6>ชื่อ</h6>
                   </label>
@@ -129,7 +124,7 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="lName">
                     <h6>นามสกุล</h6>
                   </label>
@@ -147,9 +142,9 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="username">
-                    <h6>Username</h6>
+                    <h6>ชื่อผู้ใช้</h6>
                   </label>
                   <br />
                   <input
@@ -165,9 +160,9 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="password">
-                    <h6>Password</h6>
+                    <h6>รหัสผ่าน</h6>
                   </label>
                   <br />
                   <input
@@ -185,7 +180,7 @@ export default function Register() {
               </Col>
 
               <Col sm={12} lg={6}>
-                <div>
+                <div className="mb-2">
                   <label htmlFor="tel">
                     <h6>เบอร์โทรศัพท์</h6>
                   </label>
@@ -205,7 +200,7 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="citizenID">
                     <h6>หมายเลขบัตรประชาชน</h6>
                   </label>
@@ -226,7 +221,7 @@ export default function Register() {
                 </div>
 
                 {role == "renter" && (
-                  <div>
+                  <div className="mb-2">
                     <label htmlFor="drivenID">
                       <h6>หมายเลขใบขับขี่</h6>
                     </label>
@@ -248,7 +243,7 @@ export default function Register() {
                 )}
 
                 {role == "provider" && (
-                  <div>
+                  <div className="mb-2">
                     <label htmlFor="payment">
                       <h6>ช่องทางการรับเงิน</h6>
                     </label>
@@ -284,11 +279,11 @@ export default function Register() {
                   </div>
                 )}
 
-                <div className="ps-2 pt-3 d-flex align-items-center">
+                <div className="mt-4 text-end">
                   <button
                     type="button"
                     onClick={(event: any) => handleSubmit(event)}
-                    className={`${styles.submit_btn} py-2 me-2`}
+                    className={`py-2 me-2 orange_btn`}
                   >
                     {loading && (
                       <>

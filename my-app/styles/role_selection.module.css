@@ -9,7 +9,7 @@
 }
 
 .back {
-  padding-left: 30px;
+  padding-left: 10px;
 }
 
 .back_btn {
@@ -25,4 +25,8 @@
 .back_btn:hover {
   color: black;
   text-decoration: underline;
+}
+
+.role {
+  min-width: 140px;
 }
