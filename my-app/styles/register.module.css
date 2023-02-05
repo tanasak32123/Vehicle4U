@@ -66,3 +66,8 @@
   font-size: 13px;
   height: 13px;
 }
+
+.spinner {
+  height: 18px;
+  width: 18px;
+}

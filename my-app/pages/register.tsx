@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/layout";
 import styles from "../styles/register.module.css";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Spinner } from "react-bootstrap";
+import { useRouter } from "next/router";
 
 export default function Register() {
+  const router = useRouter();
+
+  const query = router.query;
+
   let [role, setRole] = useState("");
   let [fName, setFName] = useState("");
   let [lName, setLName] = useState("");
@@ -22,6 +27,8 @@ export default function Register() {
   let [invalid_cizitenID, setInvalid_citizenID] = useState("");
   let [invalid_drivenID, setInvalid_drivenID] = useState("");
   let [invalid_payment, setInvalid_payment] = useState("");
+
+  let [loading, setLoading] = useState(false);
 
   let errors = {
     invalid_fName,
@@ -46,12 +53,10 @@ export default function Register() {
     payment,
   };
 
-  useEffect(() => {
-    setRole("provider");
-  });
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
+
+    setLoading(true);
 
     const res = await fetch("/api/register", {
       headers: {
@@ -59,23 +64,37 @@ export default function Register() {
       },
       method: "POST",
       body: JSON.stringify(data),
+    }).then(async (res) => {
+      setLoading(false);
+
+      const result = await res.json();
+
+      if (res.status == 400) {
+        setInvalid_fName(result.errors.fName);
+        setInvalid_lName(result.errors.lName);
+        setInvalid_username(result.errors.username);
+        setInvalid_pw(result.errors.pw);
+        setInvalid_tel(result.errors.tel);
+        setInvalid_citizenID(result.errors.citizenID);
+        setInvalid_drivenID(result.errors.drivenID);
+        setInvalid_payment(result.errors.payment);
+      } else {
+        alert("creating an account");
+      }
     });
-
-    const result = await res.json();
-
-    if (res.status == 400) {
-      setInvalid_fName(result.errors.fName);
-      setInvalid_lName(result.errors.lName);
-      setInvalid_username(result.errors.username);
-      setInvalid_pw(result.errors.pw);
-      setInvalid_tel(result.errors.tel);
-      setInvalid_citizenID(result.errors.citizenID);
-      setInvalid_drivenID(result.errors.drivenID);
-      setInvalid_payment(result.errors.payment);
-    } else {
-      alert("creating an account");
-    }
   }
+
+  useEffect(() => {
+    if (
+      query.role != "provider" &&
+      query.role != "user" &&
+      query.role != "renter"
+    ) {
+      router.push("/");
+    } else {
+      setRole(query.role);
+    }
+  }, [query.role]);
 
   return (
     <Layout>
@@ -265,12 +284,21 @@ export default function Register() {
                   </div>
                 )}
 
-                <div className="ps-2 pt-3">
+                <div className="ps-2 pt-3 d-flex align-items-center">
                   <button
                     type="button"
                     onClick={(event: any) => handleSubmit(event)}
-                    className={`${styles.submit_btn} py-2`}
+                    className={`${styles.submit_btn} py-2 me-2`}
                   >
+                    {loading && (
+                      <>
+                        <Spinner
+                          className={`${styles.spinner}`}
+                          animation="border"
+                          variant="primary"
+                        />{" "}
+                      </>
+                    )}
                     <b>เข้าสู่ระบบ</b>
                   </button>
                 </div>
