@@ -34,16 +34,16 @@ export default function RoleSelector() {
                 <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
               </button>
             </div>
-            <h3 className="mb-2">กรุณาเลือกประเภทผู้ใช้งาน</h3>
+            <h3 className="mb-4">กรุณาเลือกประเภทผู้ใช้งาน</h3>
             <Link
               href="/register?role=renter"
-              className={`orange_btn ${styles.role}`}
+              className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้เช่า</h6>
             </Link>
             <Link
               href="/register?role=provider"
-              className={`orange_btn ${styles.role}`}
+              className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้ปล่อยเช่า</h6>
             </Link>

@@ -157,7 +157,7 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={(event: any) => handleSubmit(event)}
-                    className={`${styles.login_btn} py-2`}
+                    className={`orange_btn py-2`}
                   >
                     {loading && (
                       <>
