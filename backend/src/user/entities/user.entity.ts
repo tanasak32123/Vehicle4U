@@ -12,10 +12,26 @@ import {
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({unique : true})
   username: string;
   @Column()
   password: string;
+  @Column()
+  first_name: string ;
+  @Column()
+  last_name: string ;
+  @Column({length : 9})
+  tel: string ;
+  @Column({length : 13 , unique : true})
+  citizen_id: string; 
+  @Column({nullable : true})
+  payment_channel: string; 
+  @Column({nullable : true})
+  driving_license_id : string ;
+  @Column()
+  is_renter: boolean;
+  @Column()
+  is_provider: boolean; 
 
   @DeleteDateColumn()
   deleted_at: string;

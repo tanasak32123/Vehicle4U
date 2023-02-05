@@ -61,7 +61,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     for (let e in errors) {
-      if (errors[`${e}`] == "") {
+      if (errors[`${e}`] != "") {
         return res.status(400).json({ message: "Invalidation", errors });
       }
     }
