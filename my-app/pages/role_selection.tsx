@@ -3,8 +3,7 @@ import styles from "@/styles/role_selection.module.css";
 import bg from "../public/bgRoleSelection.png";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FaBackward } from "react-icons/fa";
-
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 export default function RoleSelector() {
   const router = useRouter();
@@ -22,20 +21,19 @@ export default function RoleSelector() {
       >
         <div className={`py-4 ${styles.container}`}>
           <div className={`text-start ${styles.back}`}>
-            <span style={{ color: "#0d6efd" }}>
-              <FaBackward />
-            </span>
-            &nbsp;&nbsp;
-            <Link href="/" className={`${styles.back_link}`}>
-              กลับสู่หน้าหลัก
-            </Link>
+            <button
+              onClick={() => router.back()}
+              className={`${styles.back_btn} d-flex align-items-center`}
+            >
+              <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+            </button>
           </div>
           <h3 className="mb-0">กรุณาเลือกประเภทผู้ใช้งาน</h3>
           <br />
-          <Link href="/register?role=renter" className={styles.btn}>
+          <Link href="/register?role=renter" className={`orange_btn`}>
             <h6 className="mb-0">ผู้เช่า</h6>
           </Link>
-          <Link href="/register?role=provider" className={styles.btn}>
+          <Link href="/register?role=provider" className={`orange_btn`}>
             <h6 className="mb-0">ผู้ปล่อยเช่า</h6>
           </Link>
         </div>
