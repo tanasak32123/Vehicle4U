@@ -9,8 +9,6 @@ import { FaArrowAltCircleLeft } from "react-icons/fa";
 export default function Register() {
   const router = useRouter();
 
-  console.log(router.pathname);
-
   const query = router.query;
 
   let [role, setRole] = useState("");
