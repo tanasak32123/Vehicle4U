@@ -1,25 +1,3 @@
-.btn {
-  transition: 0.3s;
-  text-decoration: none;
-  display: inline-block;
-  width: 250px;
-  padding: 8px 0;
-  margin: 20px 100px;
-  background: white;
-  border-radius: 40px;
-  color: black;
-  text-align: center;
-  box-shadow: 5px 5px #dadada;
-  border: 1px solid orange;
-}
-
-.btn:hover {
-  color: inherit;
-  background-color: orange;
-  color: white;
-  border-color: white;
-}
-
 .container {
   background-color: rgb(255, 254, 234, 0.85);
   border-radius: 70px;
@@ -31,13 +9,24 @@
 }
 
 .back {
-  padding-left: 30px;
+  padding-left: 10px;
 }
 
-.back_link {
-  text-decoration: none;
+.back_btn {
+  color: black;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
 }
 
-.back_link:hover {
+.back_btn:hover {
+  color: black;
   text-decoration: underline;
+}
+
+.role {
+  min-width: 140px;
 }
