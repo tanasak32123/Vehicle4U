@@ -11,7 +11,8 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  
+    
+    
     async create(createUserDto: CreateUserDto): Promise<User> {
         const user = await this.userRepository.create(createUserDto)
         return await this.userRepository.save(user);
@@ -21,7 +22,7 @@ export class UserService {
     return await this.userRepository.findOneBy({ id: id });
   }
   async changeState(token: string, state: string): Promise<UserStatusDto> {
-    var Dto = new UserStatusDto();
+    const Dto = new UserStatusDto();
     if (state == 'renter') {
       Dto.token = token;
       Dto.currentRole = 'provider';
