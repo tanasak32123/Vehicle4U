@@ -36,13 +36,13 @@ export default function RoleSelector() {
             </div>
             <h3 className="mb-4">กรุณาเลือกประเภทผู้ใช้งาน</h3>
             <Link
-              href="/register/renter"
+              href="/signup/renter"
               className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้เช่า</h6>
             </Link>
             <Link
-              href="/register/provider"
+              href="/signup/provider"
               className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้ปล่อยเช่า</h6>

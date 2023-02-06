@@ -60,7 +60,7 @@ export default function Register() {
 
     setLoading(true);
 
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/signup", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -82,7 +82,7 @@ export default function Register() {
         setInvalid_payment(result.errors.payment);
       } else {
         // alert("creating an account");
-        router.push("/register/success", "/register");
+        router.push("/signup/success", "/signup");
       }
     });
   }
@@ -107,7 +107,7 @@ export default function Register() {
         >
           <div className={`p-4 ${styles.reg_container}`}>
             <button
-              onClick={() => router.push("/register")}
+              onClick={() => router.push("/signup")}
               className={`${styles.back_btn} d-flex align-items-center`}
             >
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ

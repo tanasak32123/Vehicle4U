@@ -178,11 +178,7 @@ export default function Home() {
                   <small style={{ color: "white" }}>
                     ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                     <b>
-                      <Link
-                        href="/register"
-                        as="/register"
-                        className={`${styles.signup}`}
-                      >
+                      <Link href="/signup" className={`${styles.signup}`}>
                         สมัครบัญชีผู้ใช้งานที่นี่
                       </Link>
                     </b>
