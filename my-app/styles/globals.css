@@ -1,6 +1,7 @@
-/* body {
-  background-color: #c7dde7 !important;
-} */
+main {
+  min-height: 100vh;
+  min-width: 100vw;
+}
 
 .my-btn {
   border-radius: 100px;

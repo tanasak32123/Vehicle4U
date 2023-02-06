@@ -54,14 +54,7 @@ export default function Home() {
       </Head>
 
       <Layout>
-        <div
-          style={{
-            backgroundImage: `url(${bg.src})`,
-            height: "100vh",
-            width: "100vw",
-            objectFit: "cover",
-          }}
-        >
+        <div className={`${styles.main}`}>
           <Row style={{ height: "100vh", width: "100%" }}>
             <Col
               sm={12}

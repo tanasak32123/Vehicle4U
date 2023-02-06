@@ -1,6 +1,5 @@
 import Layout from "../../components/layout";
-import styles from "@/styles/role_selection.module.css";
-import bg from "../../public/bgRoleSelection.png";
+import styles from "@/styles/signup/role.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
@@ -17,13 +16,7 @@ export default function RoleSelector() {
 
       <Layout>
         <div
-          style={{
-            backgroundImage: `url(${bg.src})`,
-            height: "100vh",
-            width: "100vw",
-            objectFit: "cover",
-          }}
-          className="d-flex justify-content-center align-items-center"
+          className={`d-flex justify-content-center align-items-center ${styles.main}`}
         >
           <div className={`py-4 ${styles.container}`}>
             <div className={`text-start ${styles.back} mb-1`}>
