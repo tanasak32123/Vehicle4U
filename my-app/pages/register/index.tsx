@@ -1,6 +1,6 @@
-import Layout from "../components/layout";
+import Layout from "../../components/layout";
 import styles from "@/styles/role_selection.module.css";
-import bg from "../public/bgRoleSelection.png";
+import bg from "../../public/bgRoleSelection.png";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
@@ -36,13 +36,13 @@ export default function RoleSelector() {
             </div>
             <h3 className="mb-4">กรุณาเลือกประเภทผู้ใช้งาน</h3>
             <Link
-              href="/register?role=renter"
+              href="/register/renter"
               className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้เช่า</h6>
             </Link>
             <Link
-              href="/register?role=provider"
+              href="/register/provider"
               className={`orange_btn ${styles.role} mx-3`}
             >
               <h6 className="mb-0">ผู้ปล่อยเช่า</h6>

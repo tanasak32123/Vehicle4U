@@ -21,7 +21,7 @@ export default function Home() {
 
     setLoading(true);
 
-    const res = await fetch("/api/login", {
+    const res = await fetch("/api/signin", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -179,7 +179,7 @@ export default function Home() {
                     ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                     <b>
                       <Link
-                        href="/role_selection"
+                        href="/register"
                         as="/register"
                         className={`${styles.signup}`}
                       >
