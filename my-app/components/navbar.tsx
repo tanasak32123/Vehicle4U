@@ -38,7 +38,7 @@ export default function Header() {
                   <NavDropdown.Item href="#action/3.1">
                     Setting
                   </NavDropdown.Item>
-                  <NavDropdown.Item href="#action/3.2">
+                  <NavDropdown.Item href="editProfile">
                     Edit Profile
                   </NavDropdown.Item>
                   <NavDropdown.Item href="#action/3.3">
