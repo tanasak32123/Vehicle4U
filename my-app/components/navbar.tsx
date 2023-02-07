@@ -20,7 +20,7 @@ export default function Header() {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
-            <Nav.Link href="#contact">เกี่ยวกับเรา</Nav.Link>
+            <Nav.Link href="/about">เกี่ยวกับเรา</Nav.Link>
           </Nav>
 
           <Nav>

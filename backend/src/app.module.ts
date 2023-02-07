@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UserModule} from './user/user.module'
+
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 @Module({
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
+
       username: 'postgres',
       password: 'boom25442544',
       database : 'vehicle4you',
@@ -21,7 +23,6 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
         };
       },
-      
     }),
     UserModule,
     AuthModule
