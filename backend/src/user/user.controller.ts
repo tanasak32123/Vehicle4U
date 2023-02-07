@@ -4,11 +4,10 @@ import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './entities/user.entity'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
+//import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 // /localhost/username/role?=provider 
-@UseGuards(JwtAuthGuard)
-@Controller('*')
+@Controller('user')
 
 export class UserController {
     constructor(private readonly userService: UserService) {}
@@ -22,14 +21,15 @@ export class UserController {
         });
     }
     
-   
+    @UseGuards(JwtAuthGuard)
     @Get(':id')
-    async findUser(@Param('id') id: number): Promise<User> {
+    async findUser(@Param('id') id: string): Promise<User> {
         return await this.userService.findOne(id);
     }
-    @Get(':id')
-    async getRoles(@Param("id") id: number ,@Response() res): Promise<UserStatusDto> {
-        const x = await this.userService.changeState(id);
+    @UseGuards(JwtAuthGuard)
+    @Get('/getroles/:id')
+    async getRoles(@Param("id") id: string ,@Response() res): Promise<UserStatusDto> {
+        const x = await this.userService.checkState(id);
         if (x == null){
             return res.status(404).send({
                 statusCode: 404,
