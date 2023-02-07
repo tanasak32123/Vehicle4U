@@ -24,6 +24,7 @@ export class UserService {
   async changeState(id: number): Promise<UserStatusDto> {
     const Dto = new UserStatusDto();
     const user = await this.userRepository.findOneBy({id:id});
+    if (user == null) return null;
     Dto.isProvider = user.is_provider
     Dto.isRenter = user.is_renter
    

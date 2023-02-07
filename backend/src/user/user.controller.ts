@@ -28,8 +28,20 @@ export class UserController {
         return await this.userService.findOne(id);
     }
     @Get(':id')
-    async getRoles(@Param("id") id: number): Promise<UserStatusDto> {
-        return await this.userService.changeState(id);
+    async getRoles(@Param("id") id: number ,@Response() res): Promise<UserStatusDto> {
+        const x = await this.userService.changeState(id);
+        if (x == null){
+            return res.status(404).send({
+                statusCode: 404,
+                message: "user not found"
+            })
+        }
+        return res.status(200).send({
+            statusCode : 200,
+            message: "success",
+            isProvider : x.isProvider,
+            isRenter : x.isRenter
+        })
     }
 
     
