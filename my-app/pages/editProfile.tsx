@@ -15,6 +15,7 @@ export default function EditProfile() {
 
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
+  const [passShow, setPassShow] = useState(false);
   const [telShow, setTelShow] = useState(false);
   const [ciShow, setCiShow] = useState(false);
 
@@ -26,7 +27,7 @@ export default function EditProfile() {
   return (
     <>
       <Head>
-        <title>แก้ไขข้อมูล - VEHICLE4U</title>
+        <title>การตั้งค่า-VEHICLE4U</title>
       </Head>
 
       <Layout>
@@ -35,7 +36,7 @@ export default function EditProfile() {
         >
           <div className={`p-4 ${styles.reg_container}`}>
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.back()}
               className={`${styles.back_btn} d-flex align-items-center`}
             >
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
@@ -48,18 +49,16 @@ export default function EditProfile() {
             <Container>
               <div className="mb-2">
                 <Row>
-                  <Col>
-                    <label htmlFor="fName">
-                      <h6 className={styles.text}>ชื่อ-นามสกุล</h6>
-                    </label>
-                  </Col>
+                  <label htmlFor="fName">
+                    <h6 className={styles.text}>ชื่อ-นามสกุล</h6>
+                  </label>
                 </Row>
                 <Row>
                   <Col>
                     {/* name and last name */}
-                    <h4>
+                    <p>
                       {data.user.fname} {data.user.lname}
-                    </h4>
+                    </p>
                   </Col>
                   <Col>
                     <button
@@ -86,7 +85,7 @@ export default function EditProfile() {
                                 <Form.Control
                                   className={`${styles.input} mb-3`}
                                   type="text"
-                                  placeholder="Phakin"
+                                  placeholder={data.user.fname}
                                   autoFocus
                                 />
                               </Col>
@@ -97,7 +96,7 @@ export default function EditProfile() {
                                 <Form.Control
                                   className={`${styles.input} mb-3`}
                                   type="text"
-                                  placeholder="Buddha"
+                                  placeholder={data.user.lname}
                                   autoFocus
                                 />
                               </Col>
@@ -139,7 +138,7 @@ export default function EditProfile() {
                 <Row>
                   <Col>
                     {/* username */}
-                    <h4>shutter</h4>
+                    <p>{data.user.username}</p>
                   </Col>
                   <Col>
                     <button
@@ -164,7 +163,7 @@ export default function EditProfile() {
                             <Form.Control
                               className={`${styles.input} mb-3`}
                               type="text"
-                              placeholder="shutter"
+                              placeholder={data.user.username}
                               autoFocus
                             />
                           </Form.Group>
@@ -192,6 +191,75 @@ export default function EditProfile() {
             </Container>
             <br />
 
+            {/* username */}
+            <Container>
+              <div className="mb-2">
+                <Row>
+                  <label htmlFor="password">
+                    <h6 className={styles.text}>รหัสผ่าน</h6>
+                  </label>
+                  <br />
+                </Row>
+                <Row>
+                  <Col>
+                    {/* username */}
+                    <input
+                      type="password"
+                      value="*******"
+                      className={`${styles.infor}`}
+                      disabled
+                    />
+                  </Col>
+                  <Col>
+                    <button
+                      className={styles.edit_button}
+                      onClick={() => setPassShow(true)}
+                    >
+                      <FiEdit2 /> &nbsp; แก้ไข
+                    </button>
+                    <Modal
+                      size="lg"
+                      show={passShow}
+                      onHide={() => setPassShow(false)}
+                      centered
+                    >
+                      <Modal.Header closeButton>
+                        <Modal.Title>รหัสผ่าน</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        <Form>
+                          <Form.Group>
+                            <Form.Label className="mb-3">รหัสผ่าน</Form.Label>
+                            <Form.Control
+                              className={`${styles.input} mb-3`}
+                              type="text"
+                              autoFocus
+                            />
+                          </Form.Group>
+                        </Form>
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button
+                          className={`${styles.close_btn} mx-2`}
+                          onClick={() => setPassShow(false)}
+                        >
+                          ปิด
+                        </Button>
+                        <Button
+                          className={`${styles.save_btn} mx-2`}
+                          onClick={() => setPassShow(false)}
+                        >
+                          แก้ไข
+                        </Button>
+                      </Modal.Footer>
+                    </Modal>
+                  </Col>
+                  <br />
+                </Row>
+              </div>
+            </Container>
+            <br />
+
             {/* Tel. */}
             <Container>
               <div className="mb-2">
@@ -204,7 +272,7 @@ export default function EditProfile() {
                 <Row>
                   <Col>
                     {/* telephone */}
-                    <h4>xxx-xxxx-xxxx</h4>
+                    <p>{data.user.tel}</p>
                   </Col>
                   <Col>
                     <button
@@ -231,7 +299,7 @@ export default function EditProfile() {
                             <Form.Control
                               className={`${styles.input} mb-3`}
                               type="text"
-                              placeholder="xxx-xxxx-xxxx"
+                              placeholder={data.user.tel}
                               autoFocus
                             />
                           </Form.Group>
@@ -271,7 +339,7 @@ export default function EditProfile() {
                 <Row>
                   <Col>
                     {/* citizen id */}
-                    <h4>x-xxxx-xxxxx-xx-x</h4>
+                    <p>{data.user.cid}</p>
                   </Col>
                   <Col>
                     <button
@@ -298,7 +366,7 @@ export default function EditProfile() {
                             <Form.Control
                               className={`${styles.input} mb-3`}
                               type="text"
-                              placeholder="x-xxxx-xxxxx-xx-x"
+                              placeholder={data.user.cid}
                               autoFocus
                             />
                           </Form.Group>
