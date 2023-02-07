@@ -1,10 +1,14 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post, Response } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Response, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './entities/user.entity'
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
 
-@Controller('auth')
+@UseGuards(JwtAuthGuard)
+@Controller('user')
+
 export class UserController {
     constructor(private readonly userService: UserService) {}
     
@@ -17,6 +21,7 @@ export class UserController {
         });
     }
     
+   
     @Get(':id')
     async findUser(@Param('id') id: number): Promise<User> {
         return await this.userService.findOne(id);
