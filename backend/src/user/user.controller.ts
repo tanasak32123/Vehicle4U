@@ -6,7 +6,10 @@ import { User } from './entities/user.entity'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 //import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
+import { ApiTags,ApiResponse } from '@nestjs/swagger';
+
 // /localhost/username/role?=provider 
+@ApiTags('Vehicle4U')
 @Controller('user')
 
 export class UserController {
@@ -23,10 +26,14 @@ export class UserController {
     
     @UseGuards(JwtAuthGuard)
     @Get(':id')
+    
     async findUser(@Param('id') id: string): Promise<User> {
         return await this.userService.findOne(id);
     }
     @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.'})
+    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    @ApiResponse({ status: 404, description: 'User not found.'})
     @Get('/getroles/:id')
     async getRoles(@Param("id") id: string ,@Response() res): Promise<UserStatusDto> {
         const x = await this.userService.checkState(id);
