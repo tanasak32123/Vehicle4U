@@ -7,5 +7,5 @@ export class LoginDto {
     @IsNotEmpty()
     password : string ; 
     @IsNotEmpty()
-    role : boolean ; 
+    role : boolean ;  // 0 -> renter , 1 -> provider 
 }

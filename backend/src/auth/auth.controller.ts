@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Response, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Response} from '@nestjs/common';
 // eslint-disable-next-line prettier/prettier
 import {LoginDto} from './dto/login.dto'
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { RegisterDto } from './dto/register.dto';
 
 
@@ -14,33 +13,19 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() loginDto : LoginDto , @Response() res ) {
+        const user = await this.authService.validateLogin(loginDto); 
         const token = await this.authService.login(loginDto);
-        if (!token){
-            return res.status(500).send({
-                statusCode : 500,
-                message : "wrong" 
-            });
-        }
-        //res.cookie("access_token", token, { httpOnly: true, secure: false });
         return res.status(200).send({
-            access_token : token.access_token,
-            statusCode : 200,
-            message : "login success" 
+            user : user , 
+            token : token 
         });
       }
 
-    @Post('register')
+    @Post(['/register/renter' , '/register/provider'])
     async register(@Body() registerDto : RegisterDto, @Response() res) {
-        const success = await this.authService.register(registerDto);
-        if(!success){
-            return res.status(500).send({
-                statusCode : 500,
-                message : "wrong" 
-            });
-        }
-        return res.status(200).send({
-            statusCode : 200,
-            message : "register success" 
-        });
+        await this.authService.validateRegister(registerDto);
+        const user = await this.authService.register(registerDto)
+        return res.status(200).send(user);
     }
+    
 }

@@ -28,9 +28,9 @@ export class User {
   payment_channel: string; 
   @Column({nullable : true})
   driving_license_id : string ;
-  @Column()
+  @Column({default : false})
   is_renter: boolean;
-  @Column()
+  @Column({default : false})
   is_provider: boolean; 
 
   @DeleteDateColumn()
