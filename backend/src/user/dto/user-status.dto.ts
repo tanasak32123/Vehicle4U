@@ -5,6 +5,8 @@ export class UserStatusDto {
     @IsNotEmpty()
     token : string;
     @IsNotEmpty()
-    currentRole : string;
+    isProvider : boolean;
+    @IsNotEmpty()
+    isRenter : boolean
     
 }

@@ -21,18 +21,12 @@ export class UserService {
   async findOne(id: number): Promise<User> {
     return await this.userRepository.findOneBy({ id: id });
   }
-  async changeState(token: string, state: string): Promise<UserStatusDto> {
+  async changeState(id: number): Promise<UserStatusDto> {
     const Dto = new UserStatusDto();
-    if (state == 'renter') {
-      Dto.token = token;
-      Dto.currentRole = 'provider';
-    } else if (state == 'provider') {
-      Dto.token = token;
-      Dto.currentRole = 'renter';
-    } else {
-      Dto.token = token;
-      Dto.currentRole = 'error';
-    }
-    return await Dto;
+    const user = await this.userRepository.findOneBy({id:id});
+    Dto.isProvider = user.is_provider
+    Dto.isRenter = user.is_renter
+   
+    return Dto;
   }
 }
