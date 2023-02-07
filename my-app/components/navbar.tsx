@@ -33,15 +33,15 @@ export default function Header() {
             <Nav.Link href="#register" className={`${styles.signup}`}>สมัครสมาชิก</Nav.Link>
           </>)}
           {login && (<>
-            <NavDropdown title="Profile" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Setting</NavDropdown.Item>
+            <NavDropdown title="โปรไฟล์" id="collasible-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">ตั้งค่า</NavDropdown.Item>
               <NavDropdown.Item href="#action/3.2">
-                Edit Profile
+                แก้ไขโปรไฟล์
               </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Change Password</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">เปลี่ยนรหัสผ่าน</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="#action/3.4">
-                Log Out
+                ลงชื่อออก
               </NavDropdown.Item>
             </NavDropdown>
           </>)}
