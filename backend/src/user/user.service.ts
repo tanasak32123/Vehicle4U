@@ -2,7 +2,8 @@
 import { Injectable, UseGuards } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import {User} from 'src/user/entities/user.entity'
-import { CreateUserDto } from './dto/create-user.dto'; 
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserStatusDto } from './dto/user-status.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -16,16 +17,17 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
     
-    
-    async create(createUserDto: CreateUserDto): Promise<User> {
-        const hashpassword = await bcrypt.hash(createUserDto.password, 10);
-        createUserDto.password = hashpassword;
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
+    const user = await this.userRepository.create(createUserDto)
+    return await this.userRepository.save(user);
+  }
 
-        const user = await this.userRepository.create(createUserDto)
-        return await this.userRepository.save(user);
-        
-      }
-
+  async update(updateUserDto: UpdateUserDto): Promise<User> {
+    await this.userRepository.update({username: updateUserDto.username},updateUserDto);
+    return await this.userRepository.findOneBy({username: updateUserDto.username});
+  }
+  
   async findOne(id: string): Promise<User> {
     return await this.userRepository.findOneBy({ id: parseInt(id) });
   }

@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { RegisterDto} from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions';
+import { UpdateDto } from './dto/update.dto';
 
 @Injectable()
 export class AuthService {
@@ -57,6 +58,16 @@ export class AuthService {
         const ent = await this.userRepository.create(registerDto);
         return await this.userRepository.save(ent);
       }
+
+      async update(updateDto: UpdateDto): Promise<User> {
+        await this.userRepository.update({username: updateDto.username},updateDto);
+        return await this.userRepository.findOneBy({username: updateDto.username});
+      }
+
+      async validateUpdate(updateDto: UpdateDto) {
+
+      }
+      
 
       
 }
