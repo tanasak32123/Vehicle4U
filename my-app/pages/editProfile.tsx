@@ -40,7 +40,7 @@ export default function EditProfile() {
             >
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
             </button>
-            <h1 className="text-center">แก้ไขข้อมูล</h1>
+            <h1 className="text-end">การตั้งค่า</h1>
             <hr />
             <br />
 
@@ -48,14 +48,18 @@ export default function EditProfile() {
             <Container>
               <div className="mb-2">
                 <Row>
-                  <label htmlFor="fName">
-                    <h6 className={styles.text}>ชื่อ-นามสกุล</h6>
-                  </label>
+                  <Col>
+                    <label htmlFor="fName">
+                      <h6 className={styles.text}>ชื่อ-นามสกุล</h6>
+                    </label>
+                  </Col>
                 </Row>
                 <Row>
                   <Col>
                     {/* name and last name */}
-                    <h4>{data.name}</h4>
+                    <h4>
+                      {data.user.fname} {data.user.lname}
+                    </h4>
                   </Col>
                   <Col>
                     <button

@@ -24,5 +24,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     payment: "",
   };
 
-  return res.status(200).json({ success: true, data: user });
+  return res.status(200).json({ success: true, user });
 }
