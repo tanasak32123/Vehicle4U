@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { IsNotEmpty } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-export class CreateUserDto {
+export class UpdateUserDto {
     @ApiProperty({
         type: String,
     })

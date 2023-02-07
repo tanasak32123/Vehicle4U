@@ -1,21 +1,20 @@
 /* eslint-disable prettier/prettier */
 import { IsNotEmpty } from "class-validator";
-import { ApiProperty} from '@nestjs/swagger';
-export class UserStatusDto {
+import { ApiProperty } from '@nestjs/swagger';
+export class LoginDto {
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    token : string;
+    username : string ; 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    isProvider : boolean;
+    password : string ; 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    isRenter : boolean
-    
+    role : boolean ;  // 0 -> renter , 1 -> provider 
 }
