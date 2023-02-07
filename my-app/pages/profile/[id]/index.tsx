@@ -558,7 +558,13 @@ export default function EditProfile() {
                     <Col>
                       {/* Payment */}
                       {!data.user.payment && <p>-</p>}
-                      {data.user.payment && <p>{data.user.payment}</p>}
+                      {data.user.payment && (
+                        <p>
+                          {data.user.payment == "cash" && "เงินสด"}
+                          {data.user.payment == "promptpay" && "พร้อมเพย์"}
+                          {data.user.payment == "credit" && "เครดิต"}
+                        </p>
+                      )}
                     </Col>
                     <Col>
                       <button
@@ -582,15 +588,18 @@ export default function EditProfile() {
                               <Form.Label className="mb-3">
                                 ช่องทางการรับเงิน
                               </Form.Label>
-                              <Form.Control
-                                className={`${styles.input} mb-3`}
-                                type="text"
-                                placeholder={data.user.payment}
-                                autoFocus
+                              <Form.Select
+                                aria-label="paymnet method"
                                 onChange={(event) => {
                                   setPayment(event.target.value);
                                 }}
-                              />
+                                className={`${styles.input} mb-3`}
+                                defaultValue={data.user.payment}
+                              >
+                                <option value="promptpay">พร้อมเพย์</option>
+                                <option value="credit">บัตรเครดิต</option>
+                                <option value="cash">เงินสด</option>
+                              </Form.Select>
                             </Form.Group>
                           </Form>
                         </Modal.Body>
@@ -604,7 +613,7 @@ export default function EditProfile() {
                           <Button
                             className={`${styles.save_btn} mx-2`}
                             onClick={() => {
-                              handleUpdateProfile("cid", cid);
+                              handleUpdateProfile("payment", payment);
                               setPaymentShow(false);
                             }}
                           >

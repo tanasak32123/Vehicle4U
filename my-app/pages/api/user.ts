@@ -22,8 +22,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     tel: "0818318928",
     cid: "1102200182381",
     dlicense: "1102200112345",
-    payment: "",
-    role: "renter",
+    payment: "cash",
+    role: "provider",
   };
 
   return res.status(200).json({ success: true, user });
