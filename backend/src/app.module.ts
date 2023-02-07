@@ -15,8 +15,8 @@ import { AuthModule } from './auth/auth.module';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'boom25442544',
-      database : 'vehicle4you',
+      password: 'postgres',
+      database : 'postgres',
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       synchronize: true,
         };
