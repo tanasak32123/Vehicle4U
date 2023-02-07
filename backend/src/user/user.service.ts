@@ -6,7 +6,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserStatusDto } from './dto/user-status.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import * as bcrypt from 'bcrypt';
 @UseGuards(JwtAuthGuard)
+
 @Injectable()
 export class UserService {
   constructor(
@@ -16,8 +18,12 @@ export class UserService {
     
     
     async create(createUserDto: CreateUserDto): Promise<User> {
+        const hashpassword = await bcrypt.hash(createUserDto.password, 10);
+        createUserDto.password = hashpassword;
+
         const user = await this.userRepository.create(createUserDto)
         return await this.userRepository.save(user);
+        
       }
 
   async findOne(id: string): Promise<User> {

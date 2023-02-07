@@ -4,6 +4,7 @@ import { Body, Controller, Post, Response, UseGuards } from '@nestjs/common';
 import {LoginDto} from './dto/login.dto'
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { RegisterDto } from './dto/register.dto';
 
 
 @Controller('auth')
@@ -27,4 +28,19 @@ export class AuthController {
             message : "login success" 
         });
       }
+
+    @Post('register')
+    async register(@Body() registerDto : RegisterDto, @Response() res) {
+        const success = await this.authService.register(registerDto);
+        if(!success){
+            return res.status(500).send({
+                statusCode : 500,
+                message : "wrong" 
+            });
+        }
+        return res.status(200).send({
+            statusCode : 200,
+            message : "register success" 
+        });
+    }
 }
