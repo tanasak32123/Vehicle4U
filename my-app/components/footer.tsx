@@ -46,78 +46,82 @@ export default function Footer() {
             </div>
           </Col>
           <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
-            <h4>
-              <b>เกี่ยวกับ </b>
-              <b>
-                <font color="545a8b">VEHICLE4U</font>
-              </b>
-            </h4>
-            <div className={styles.footer_info}>
-              <ul style={{ paddingLeft: "20px" }}>
-                <li>
-                  <Link href="/about" className={`${styles.link}`}>
-                    <small>เกี่ยวกับเรา</small>
-                  </Link>
-                </li>
-              </ul>
+            <div style={{ paddingLeft: "15px" }}>
+              <h4>
+                <b>เกี่ยวกับ </b>
+                <b>
+                  <font color="545a8b">VEHICLE4U</font>
+                </b>
+              </h4>
+              <div className={styles.footer_info}>
+                <ul style={{ paddingLeft: "20px" }}>
+                  <li>
+                    <Link href="/about" className={`${styles.link}`}>
+                      <small>เกี่ยวกับเรา</small>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             </div>
           </Col>
           <Col sm={12} lg={4}>
-            <h4>
-              <b>ติดต่อเรา</b>
-            </h4>
-            <div className={styles.footer_info}>
-              <ul style={{ listStyleType: "none" }} className="p-0">
-                <li>
-                  <small>
-                    <Image
-                      className="me-2"
-                      src={phonePic}
-                      alt="Picture of the author"
-                      width={30}
-                      height={30}
-                      priority
-                    />
-                    : 081-831-8928
-                  </small>
-
-                  <br />
-
-                  <div className="mt-3">
-                    <a href="/">
+            <div style={{ paddingLeft: "15px" }}>
+              <h4>
+                <b>ติดต่อเรา</b>
+              </h4>
+              <div className={styles.footer_info}>
+                <ul style={{ listStyleType: "none" }} className="p-0">
+                  <li>
+                    <small>
                       <Image
-                        className="me-3"
-                        src={facebookPic}
+                        className="me-2"
+                        src={phonePic}
                         alt="Picture of the author"
-                        width={42}
-                        height={42}
+                        width={30}
+                        height={30}
                         priority
                       />
-                    </a>
-                    <a href="/">
-                      <Image
-                        className="me-3"
-                        src={instragramPic}
-                        alt="Picture of the author"
-                        width={40}
-                        height={40}
-                        priority
-                      />
-                    </a>
+                      : 081-831-8928
+                    </small>
 
-                    <a href="/">
-                      <Image
-                        className="me-3"
-                        src={linePic}
-                        alt="Picture of the author"
-                        width={43}
-                        height={43}
-                        priority
-                      />
-                    </a>
-                  </div>
-                </li>
-              </ul>
+                    <br />
+
+                    <div className="mt-3">
+                      <a href="/">
+                        <Image
+                          className="me-3"
+                          src={facebookPic}
+                          alt="Picture of the author"
+                          width={42}
+                          height={42}
+                          priority
+                        />
+                      </a>
+                      <a href="/">
+                        <Image
+                          className="me-3"
+                          src={instragramPic}
+                          alt="Picture of the author"
+                          width={40}
+                          height={40}
+                          priority
+                        />
+                      </a>
+
+                      <a href="/">
+                        <Image
+                          className="me-3"
+                          src={linePic}
+                          alt="Picture of the author"
+                          width={43}
+                          height={43}
+                          priority
+                        />
+                      </a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </Col>
         </Row>
