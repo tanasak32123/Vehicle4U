@@ -1,11 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import {User} from 'src/user/entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserStatusDto } from './dto/user-status.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import * as bcrypt from 'bcrypt';
+@UseGuards(JwtAuthGuard)
 
 @Injectable()
 export class UserService {
@@ -24,12 +26,12 @@ export class UserService {
         
       }
 
-  async findOne(id: number): Promise<User> {
-    return await this.userRepository.findOneBy({ id: id });
+  async findOne(id: string): Promise<User> {
+    return await this.userRepository.findOneBy({ id: parseInt(id) });
   }
-  async changeState(id: number): Promise<UserStatusDto> {
+  async checkState(id: string): Promise<UserStatusDto> {
     const Dto = new UserStatusDto();
-    const user = await this.userRepository.findOneBy({id:id});
+    const user = await this.userRepository.findOneBy({ id : parseInt(id)});
     if (user == null) return null;
     Dto.isProvider = user.is_provider
     Dto.isRenter = user.is_renter
