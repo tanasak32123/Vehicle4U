@@ -31,8 +31,8 @@ export class AuthController {
 
     @Post('register')
     async register(@Body() registerDto : RegisterDto, @Response() res) {
-        const exist = await this.authService.register(registerDto);
-        if(exist){
+        const success = await this.authService.register(registerDto);
+        if(!success){
             return res.status(500).send({
                 statusCode : 500,
                 message : "wrong" 
