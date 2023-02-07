@@ -19,7 +19,42 @@ export default function EditProfile() {
   const [telShow, setTelShow] = useState(false);
   const [ciShow, setCiShow] = useState(false);
 
+  let [role, setRole] = useState("");
+  let [fName, setFName] = useState("");
+  let [lName, setLName] = useState("");
+  let [username, setUsername] = useState("");
+  let [password, setPassword] = useState("");
+  let [tel, setTel] = useState("");
+  let [cid, setCID] = useState("");
+  let [dlicense, setDrivenID] = useState("");
+  let [payment, setPayment] = useState("");
+
   const { data, error, isLoading } = useSWR("/api/user", fetcher);
+
+  async function handleUpdateProfile(type: String, ...values: String[]) {
+    const req = {
+      values,
+      type,
+    };
+
+    const res = await fetch("/api/updateProfile", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(req),
+    }).then(async (res) => {
+      const result = await res.json();
+
+      console.log(result);
+
+      // if (res.status == 400) {
+      // } else {
+      //   alert("Updating an account");
+      //   router.push("/signup/success", "/signup");
+      // }
+    });
+  }
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
@@ -83,10 +118,14 @@ export default function EditProfile() {
                               <Col>
                                 <Form.Label className="mb-3">ชื่อ</Form.Label>
                                 <Form.Control
+                                  name="fname"
                                   className={`${styles.input} mb-3`}
                                   type="text"
                                   placeholder={data.user.fname}
                                   autoFocus
+                                  onChange={(event) =>
+                                    setFName(event.target.value)
+                                  }
                                 />
                               </Col>
                               <Col>
@@ -94,10 +133,14 @@ export default function EditProfile() {
                                   นามสกุล
                                 </Form.Label>
                                 <Form.Control
+                                  name="lname"
                                   className={`${styles.input} mb-3`}
                                   type="text"
                                   placeholder={data.user.lname}
                                   autoFocus
+                                  onChange={(event) =>
+                                    setLName(event.target.value)
+                                  }
                                 />
                               </Col>
                             </Row>
@@ -113,7 +156,10 @@ export default function EditProfile() {
                         </Button>
                         <Button
                           className={`${styles.save_btn} mx-2`}
-                          onClick={() => setNmShow(false)}
+                          onClick={() => {
+                            handleUpdateProfile("name", fName, lName);
+                            setNmShow(false);
+                          }}
                         >
                           แก้ไข
                         </Button>
@@ -165,6 +211,9 @@ export default function EditProfile() {
                               type="text"
                               placeholder={data.user.username}
                               autoFocus
+                              onChange={(event) => {
+                                setUsername(event.target.value);
+                              }}
                             />
                           </Form.Group>
                         </Form>
@@ -178,7 +227,10 @@ export default function EditProfile() {
                         </Button>
                         <Button
                           className={`${styles.save_btn} mx-2`}
-                          onClick={() => setUnShow(false)}
+                          onClick={() => {
+                            handleUpdateProfile("username", username);
+                            setUnShow(false);
+                          }}
                         >
                           แก้ไข
                         </Button>
@@ -234,6 +286,9 @@ export default function EditProfile() {
                               className={`${styles.input} mb-3`}
                               type="text"
                               autoFocus
+                              onChange={(event) => {
+                                setPassword(event.target.value);
+                              }}
                             />
                           </Form.Group>
                         </Form>
@@ -247,7 +302,10 @@ export default function EditProfile() {
                         </Button>
                         <Button
                           className={`${styles.save_btn} mx-2`}
-                          onClick={() => setPassShow(false)}
+                          onClick={() => {
+                            handleUpdateProfile("password", password);
+                            setPassShow(false);
+                          }}
                         >
                           แก้ไข
                         </Button>
