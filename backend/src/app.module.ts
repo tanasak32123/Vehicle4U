@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule} from './user/user.module'
+import { UserModule } from './user/user.module';
 import { join } from 'path';
 @Module({
   imports: [
@@ -11,13 +11,13 @@ import { join } from 'path';
       type: 'postgres',
       host: 'localhost',
       port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database : 'postgres',
+      username: 'tanasakpusawatwong',
+      password: '32123',
+      database: 'postgres',
       entities: [join(__dirname, '**/*.entity.{ts,js}')],
       synchronize: true,
     }),
-    UserModule
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

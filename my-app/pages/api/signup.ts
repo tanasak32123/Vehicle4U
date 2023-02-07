@@ -62,11 +62,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     for (let e in errors) {
       if (errors[`${e}`] != "") {
-        return res.status(400).json({ message: "Invalidation", errors });
+        return res.status(400).json({ success: false, errors });
       }
     }
 
-    return res.status(200).json({ message: `validated form` });
+    return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }
