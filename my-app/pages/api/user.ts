@@ -10,6 +10,7 @@ type User = {
   cid: string;
   dlicense: string;
   payment: string;
+  role: string;
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,6 +23,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     cid: "1102200182381",
     dlicense: "1102200112345",
     payment: "",
+    role: "renter",
   };
 
   return res.status(200).json({ success: true, user });

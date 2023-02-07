@@ -18,6 +18,8 @@ export default function EditProfile() {
   const [passShow, setPassShow] = useState(false);
   const [telShow, setTelShow] = useState(false);
   const [ciShow, setCiShow] = useState(false);
+  const [DlicenseShow, setDlicenseShow] = useState(false);
+  const [paymentShow, setPaymentShow] = useState(false);
 
   let [role, setRole] = useState("");
   let [fName, setFName] = useState("");
@@ -25,8 +27,8 @@ export default function EditProfile() {
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
   let [tel, setTel] = useState("");
-  let [cid, setCID] = useState("");
-  let [dlicense, setDrivenID] = useState("");
+  let [cid, setCid] = useState("");
+  let [dlicense, setDlicense] = useState("");
   let [payment, setPayment] = useState("");
 
   const { data, error, isLoading } = useSWR("/api/user", fetcher);
@@ -359,6 +361,9 @@ export default function EditProfile() {
                               type="text"
                               placeholder={data.user.tel}
                               autoFocus
+                              onChange={(event) => {
+                                setTel(event.target.value);
+                              }}
                             />
                           </Form.Group>
                         </Form>
@@ -372,7 +377,10 @@ export default function EditProfile() {
                         </Button>
                         <Button
                           className={`${styles.save_btn} mx-2`}
-                          onClick={() => setTelShow(false)}
+                          onClick={() => {
+                            handleUpdateProfile("tel", tel);
+                            setTelShow(false);
+                          }}
                         >
                           แก้ไข
                         </Button>
@@ -426,6 +434,9 @@ export default function EditProfile() {
                               type="text"
                               placeholder={data.user.cid}
                               autoFocus
+                              onChange={(event) => {
+                                setCid(event.target.value);
+                              }}
                             />
                           </Form.Group>
                         </Form>
@@ -439,7 +450,10 @@ export default function EditProfile() {
                         </Button>
                         <Button
                           className={`${styles.save_btn} mx-2`}
-                          onClick={() => setCiShow(false)}
+                          onClick={() => {
+                            handleUpdateProfile("cid", cid);
+                            setCiShow(false);
+                          }}
                         >
                           แก้ไข
                         </Button>
@@ -450,6 +464,160 @@ export default function EditProfile() {
                 </Row>
               </div>
             </Container>
+            <br />
+
+            {/* Driven id */}
+            {data.user.role == "renter" && (
+              <>
+                <Container>
+                  <div className="mb-2">
+                    <Row>
+                      <label htmlFor="citizenID">
+                        <h6 className={styles.text}>หมายเลขใบขับขี่</h6>
+                      </label>
+                      <br />
+                    </Row>
+                    <Row>
+                      <Col>
+                        {/* Driven id */}
+                        {!data.user.dlicense && <p>-</p>}
+                        {data.user.dlicense && <p>{data.user.dlicense}</p>}
+                      </Col>
+                      <Col>
+                        <button
+                          className={styles.edit_button}
+                          onClick={() => setDlicenseShow(true)}
+                        >
+                          <FiEdit2 /> &nbsp; แก้ไข
+                        </button>
+                        <Modal
+                          size="lg"
+                          show={DlicenseShow}
+                          onHide={() => setDlicenseShow(false)}
+                          centered
+                        >
+                          <Modal.Header closeButton>
+                            <Modal.Title>หมายเลขใบขับขี่</Modal.Title>
+                          </Modal.Header>
+                          <Modal.Body>
+                            <Form>
+                              <Form.Group>
+                                <Form.Label className="mb-3">
+                                  หมายเลขใบขับขี่
+                                </Form.Label>
+                                <Form.Control
+                                  className={`${styles.input} mb-3`}
+                                  type="text"
+                                  placeholder={data.user.dlicense}
+                                  autoFocus
+                                  onChange={(event) => {
+                                    setDlicense(event.target.value);
+                                  }}
+                                />
+                              </Form.Group>
+                            </Form>
+                          </Modal.Body>
+                          <Modal.Footer>
+                            <Button
+                              className={`${styles.close_btn} mx-2`}
+                              onClick={() => setDlicenseShow(false)}
+                            >
+                              ปิด
+                            </Button>
+                            <Button
+                              className={`${styles.save_btn} mx-2`}
+                              onClick={() => {
+                                handleUpdateProfile("dlicense", dlicense);
+                                setDlicenseShow(false);
+                              }}
+                            >
+                              แก้ไข
+                            </Button>
+                          </Modal.Footer>
+                        </Modal>
+                      </Col>
+                      <br />
+                    </Row>
+                  </div>
+                </Container>
+                <br />
+              </>
+            )}
+
+            {/* Payment */}
+            {data.user.role == "provider" && (
+              <Container>
+                <div className="mb-2">
+                  <Row>
+                    <label htmlFor="citizenID">
+                      <h6 className={styles.text}>ช่องทางการรับเงิน</h6>
+                    </label>
+                    <br />
+                  </Row>
+                  <Row>
+                    <Col>
+                      {/* Payment */}
+                      {!data.user.payment && <p>-</p>}
+                      {data.user.payment && <p>{data.user.payment}</p>}
+                    </Col>
+                    <Col>
+                      <button
+                        className={styles.edit_button}
+                        onClick={() => setPaymentShow(true)}
+                      >
+                        <FiEdit2 /> &nbsp; แก้ไข
+                      </button>
+                      <Modal
+                        size="lg"
+                        show={paymentShow}
+                        onHide={() => setPaymentShow(false)}
+                        centered
+                      >
+                        <Modal.Header closeButton>
+                          <Modal.Title>ช่องทางการรับเงิน</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <Form>
+                            <Form.Group>
+                              <Form.Label className="mb-3">
+                                ช่องทางการรับเงิน
+                              </Form.Label>
+                              <Form.Control
+                                className={`${styles.input} mb-3`}
+                                type="text"
+                                placeholder={data.user.payment}
+                                autoFocus
+                                onChange={(event) => {
+                                  setPayment(event.target.value);
+                                }}
+                              />
+                            </Form.Group>
+                          </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            className={`${styles.close_btn} mx-2`}
+                            onClick={() => setPaymentShow(false)}
+                          >
+                            ปิด
+                          </Button>
+                          <Button
+                            className={`${styles.save_btn} mx-2`}
+                            onClick={() => {
+                              handleUpdateProfile("cid", cid);
+                              setPaymentShow(false);
+                            }}
+                          >
+                            แก้ไข
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </Col>
+                    <br />
+                  </Row>
+                </div>
+              </Container>
+            )}
           </div>
         </div>
       </Layout>
