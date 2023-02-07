@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, Response} from '@nestjs/common';
+import { Body, Controller, Patch, Post, Response} from '@nestjs/common';
 // eslint-disable-next-line prettier/prettier
 import {LoginDto} from './dto/login.dto'
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
+import { UpdateDto } from './dto/update.dto';
 import { ApiTags,ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('Vehicle4U')
@@ -35,6 +36,16 @@ export class AuthController {
     async register(@Body() registerDto : RegisterDto, @Response() res) {
         await this.authService.validateRegister(registerDto);
         const user = await this.authService.register(registerDto)
+        return res.status(200).send(user);
+    }
+
+    @Patch()
+    @ApiResponse({ status: 201, description: 'User Updation Successful.'})
+    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    @ApiResponse({ status: 500, description: 'Invalid update information.'})
+    async update(@Body() updateDto : UpdateDto, @Response() res) {
+        await this.authService.validateUpdate(updateDto);
+        const user = await this.authService.update(updateDto);
         return res.status(200).send(user);
     }
     
