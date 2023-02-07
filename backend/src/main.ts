@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = new DocumentBuilder()
-    .setTitle('Test')
+    .setTitle('Vehicle4U Documents')
     .setDescription('The Vehicle4U API description')
     .setVersion('1.0')
     .addTag('Vehicle4U')
