@@ -4,7 +4,8 @@ import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { User } from './entities/user.entity'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-//import { AuthGuard } from '@nestjs/passport';
+
+import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags,ApiResponse } from '@nestjs/swagger';
 
@@ -16,12 +17,9 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
     
     @Post()
-    async create(@Body() createUserDto: CreateUserDto, @Response() res ) {
-        await this.userService.create(createUserDto);
-        return res.status(200).send({
-            statusCode : 200,
-            message : "create success" 
-        });
+    async create(@Body() createUserDto: CreateUserDto, @Response() res )  {
+        const user = await this.userService.create(createUserDto);
+        return res.status(200).send(user);
     }
     
     @UseGuards(JwtAuthGuard)
