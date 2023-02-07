@@ -87,7 +87,7 @@ export default function Footer() {
                     <br />
 
                     <div className="mt-3">
-                      <a href="/">
+                      <Link href="/">
                         <Image
                           className="me-3"
                           src={facebookPic}
@@ -96,8 +96,8 @@ export default function Footer() {
                           height={42}
                           priority
                         />
-                      </a>
-                      <a href="/">
+                      </Link>
+                      <Link href="/">
                         <Image
                           className="me-3"
                           src={instragramPic}
@@ -106,9 +106,9 @@ export default function Footer() {
                           height={40}
                           priority
                         />
-                      </a>
+                      </Link>
 
-                      <a href="/">
+                      <Link href="/">
                         <Image
                           className="me-3"
                           src={linePic}
@@ -117,7 +117,7 @@ export default function Footer() {
                           height={43}
                           priority
                         />
-                      </a>
+                      </Link>
                     </div>
                   </li>
                 </ul>
