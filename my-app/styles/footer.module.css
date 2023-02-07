@@ -1,5 +1,10 @@
 .footer {
   background-color: #fef9eb;
+  margin-top: 0 3em;
+}
+
+.footer_info{
+  margin-top: 15px;
 }
 
 .link {
