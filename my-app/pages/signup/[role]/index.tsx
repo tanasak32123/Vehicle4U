@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import Layout from "../components/layout";
-import styles from "../styles/register.module.css";
+import Layout from "../../../components/layout";
+import styles from "@/styles/signup/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
@@ -60,7 +60,7 @@ export default function Register() {
 
     setLoading(true);
 
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/signup", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -82,7 +82,7 @@ export default function Register() {
         setInvalid_payment(result.errors.payment);
       } else {
         // alert("creating an account");
-        router.push("/registered", "/register");
+        router.push("/signup/success", "/signup");
       }
     });
   }
@@ -107,7 +107,7 @@ export default function Register() {
         >
           <div className={`p-4 ${styles.reg_container}`}>
             <button
-              onClick={() => router.push("/role_selection")}
+              onClick={() => router.push("/signup")}
               className={`${styles.back_btn} d-flex align-items-center`}
             >
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ

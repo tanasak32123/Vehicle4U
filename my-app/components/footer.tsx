@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "../styles/footer.module.css";
+import styles from "../styles/components/footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
 import Image from "next/image";
 import linePic from "../public/line.png";

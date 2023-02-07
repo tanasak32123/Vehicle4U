@@ -21,7 +21,7 @@ export default function Home() {
 
     setLoading(true);
 
-    const res = await fetch("/api/login", {
+    const res = await fetch("/api/signin", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -54,14 +54,7 @@ export default function Home() {
       </Head>
 
       <Layout>
-        <div
-          style={{
-            backgroundImage: `url(${bg.src})`,
-            height: "100vh",
-            width: "100vw",
-            objectFit: "cover",
-          }}
-        >
+        <div className={`${styles.main}`}>
           <Row style={{ height: "100vh", width: "100%" }}>
             <Col
               sm={12}
@@ -178,11 +171,7 @@ export default function Home() {
                   <small style={{ color: "white" }}>
                     ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                     <b>
-                      <Link
-                        href="/role_selection"
-                        as="/register"
-                        className={`${styles.signup}`}
-                      >
+                      <Link href="/signup" className={`${styles.signup}`}>
                         สมัครบัญชีผู้ใช้งานที่นี่
                       </Link>
                     </b>

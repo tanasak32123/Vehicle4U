@@ -1,3 +1,8 @@
+main {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
 .my-btn {
   border-radius: 100px;
   text-decoration: none;

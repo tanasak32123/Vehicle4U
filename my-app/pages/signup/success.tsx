@@ -1,7 +1,6 @@
-import Layout from "../components/layout";
-import styles from "@/styles/registered.module.css";
-import bg from "../public/bgRegistered.png";
-import correct from "../public/correct.png";
+import Layout from "../../components/layout";
+import styles from "@/styles/signup/success.module.css";
+import correct from "../../public/correct.png";
 import Link from "next/link";
 import Image from "next/image";
 import Head from "next/head";
@@ -16,13 +15,7 @@ export default function Registered() {
 
       <Layout>
         <div
-          style={{
-            backgroundImage: `url(${bg.src})`,
-            height: "100vh",
-            width: "100vw",
-            objectFit: "cover",
-          }}
-          className="d-flex justify-content-center align-items-center"
+          className={`${styles.main} d-flex justify-content-center align-items-center`}
         >
           <div className={`${styles.container}`}>
             <Image src={correct} width={100} height={100} alt="correct" />
