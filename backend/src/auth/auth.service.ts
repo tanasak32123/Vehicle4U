@@ -59,13 +59,16 @@ export class AuthService {
         return await this.userRepository.save(ent);
       }
 
-      async update(updateDto: UpdateDto): Promise<User> {
-        await this.userRepository.update({username: updateDto.username},updateDto);
-        return await this.userRepository.findOneBy({username: updateDto.username});
+      async update(id: number, updateDto: UpdateDto): Promise<User> {
+        await this.userRepository.update({id: id},updateDto);
+        return await this.userRepository.findOneBy({id: id});
       }
 
       async validateUpdate(updateDto: UpdateDto) {
-
+        const usercompare = await this.userRepository.findOneBy({username: updateDto.username});
+        if(usercompare) { 
+          throw new HttpException( "username is exist", HttpStatus.NOT_FOUND);
+        }
       }
       
 

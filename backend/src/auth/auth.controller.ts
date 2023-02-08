@@ -29,7 +29,7 @@ export class AuthController {
             token : token 
         });
       }
-    @Post(['/register/renter' , '/register/provider'])
+    @Post(['/signup/renter' , '/signup/provider'])
     @ApiResponse({ status: 201, description: 'User Registration Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid register information.'})
@@ -39,14 +39,18 @@ export class AuthController {
         return res.status(200).send(user);
     }
 
-    @Patch()
+    @Patch('editprofile')
     @ApiResponse({ status: 201, description: 'User Updation Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid update information.'})
-    async update(@Body() updateDto : UpdateDto, @Response() res) {
-        await this.authService.validateUpdate(updateDto);
-        const user = await this.authService.update(updateDto);
-        return res.status(200).send(user);
+    async update(@Body() id: number, updateDto : UpdateDto, @Response() res) {
+        try {
+            await this.authService.validateUpdate(updateDto);
+            const user = await this.authService.update(id, updateDto);
+            return res.status(200).send(user);
+        }catch(err){
+            console.log(err);
+        }
     }
     
 }
