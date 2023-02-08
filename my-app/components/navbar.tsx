@@ -12,10 +12,9 @@ export default function Header() {
     sessionStorage.removeItem("status_login");
   };
 
-  const userLogin = async () => {
-    await sessionStorage.setItem("status_login", "login");
+  const userLogin = () => {
+    sessionStorage.setItem("status_login", "login");
     router.push("/about_us");
-    // console.log(sessionStorage.getItem("status_login"));
   };
 
   useEffect(() => {
@@ -40,7 +39,7 @@ export default function Header() {
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
-              <Nav.Link href="/about">เกี่ยวกับเรา</Nav.Link>
+              <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
             </Nav>
 
             <Nav>
@@ -55,7 +54,7 @@ export default function Header() {
               {login == "login" && (
                 <>
                   <NavDropdown title="โปรไฟล์" id="collasible-nav-dropdown">
-                    <NavDropdown.Item href={`/profile/`}>
+                    <NavDropdown.Item href={`/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
