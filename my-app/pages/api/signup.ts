@@ -25,11 +25,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     if (!body.username) {
-      errors.username = "** กรุณากรอก username ให้เรียบร้อย";
+      errors.username = "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย";
     }
 
     if (!body.pw) {
-      errors.pw = "** กรุณากรอก password ให้เรียบร้อย";
+      errors.pw = "** กรุณากรอกรหัสผ่านให้เรียบร้อย";
     } else if (body.pw.length < 6) {
       errors.pw = "** password ของคุณมีความยาวน้อยกว่า 6 ตัว";
     }
@@ -62,11 +62,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     for (let e in errors) {
       if (errors[`${e}`] != "") {
-        return res.status(400).json({ message: "Invalidation", errors });
+        return res.status(400).json({ success: false, errors });
       }
     }
 
-    return res.status(200).json({ message: `validated form` });
+    return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }

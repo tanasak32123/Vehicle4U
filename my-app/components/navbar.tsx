@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-// import Link from "next/link";
-import styles from "../styles/navbar.module.css";
-
+import styles from "../styles/components/navbar.module.css";
 
 export default function Header() {
+
 
   const [login,setLogin] = useState("register");
 
@@ -38,6 +37,10 @@ export default function Header() {
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
+            <Nav.Link href="/about">เกี่ยวกับเรา</Nav.Link>
+          </Nav>
 
         <Nav className="me-auto">
           <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
@@ -62,6 +65,7 @@ export default function Header() {
           </>)}
         </Nav>
       
+
         </Navbar.Collapse>
       </Container>
     </Navbar>

@@ -1,8 +1,10 @@
+import Head from "next/head";
 import { useEffect, useState } from "react";
-import Layout from "../components/layout";
-import styles from "../styles/register.module.css";
+import Layout from "../../../components/layout";
+import styles from "@/styles/signup/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
+import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 
 export default function Register() {
   const router = useRouter();
@@ -41,24 +43,24 @@ export default function Register() {
     invalid_payment,
   };
 
-  const data = {
-    role,
-    fName,
-    lName,
-    username,
-    pw,
-    tel,
-    citizenID,
-    drivenID,
-    payment,
-  };
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
 
+    const data = {
+      role,
+      fName,
+      lName,
+      username,
+      pw,
+      tel,
+      citizenID,
+      drivenID,
+      payment,
+    };
+
     setLoading(true);
 
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/signup", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -79,17 +81,14 @@ export default function Register() {
         setInvalid_drivenID(result.errors.drivenID);
         setInvalid_payment(result.errors.payment);
       } else {
-        alert("creating an account");
+        // alert("creating an account");
+        router.push("/signup/success", "/signup");
       }
     });
   }
 
   useEffect(() => {
-    if (
-      query.role != "provider" &&
-      query.role != "user" &&
-      query.role != "renter"
-    ) {
+    if (query.role != "provider" && query.role != "renter") {
       router.push("/");
     } else {
       setRole(query.role);
@@ -97,21 +96,30 @@ export default function Register() {
   }, [query.role]);
 
   return (
-    <Layout>
+    <>
+      <Head>
+        <title>สมัครสมาชิก - VEHICLE4U</title>
+      </Head>
+
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
         <div className={`p-4 ${styles.reg_container}`}>
+          <button
+            onClick={() => router.push("/signup")}
+            className={`${styles.back_btn} d-flex align-items-center`}
+          >
+            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+          </button>
           <h1 className="text-center">สมัครสมาชิก</h1>
           <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
             {role == "renter" && <b>ผู้เช่า</b>}
             {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
-            {role == "user" && <b>ผู้ใช้บริการ</b>}
           </h5>
           <form>
             <Row className="text-left">
               <Col sm={12} lg={6}>
-                <div>
+                <div className="mb-2">
                   <label htmlFor="fName">
                     <h6>ชื่อ</h6>
                   </label>
@@ -129,7 +137,7 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="lName">
                     <h6>นามสกุล</h6>
                   </label>
@@ -147,9 +155,9 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="username">
-                    <h6>Username</h6>
+                    <h6>ชื่อผู้ใช้</h6>
                   </label>
                   <br />
                   <input
@@ -165,9 +173,9 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="password">
-                    <h6>Password</h6>
+                    <h6>รหัสผ่าน</h6>
                   </label>
                   <br />
                   <input
@@ -185,7 +193,7 @@ export default function Register() {
               </Col>
 
               <Col sm={12} lg={6}>
-                <div>
+                <div className="mb-2">
                   <label htmlFor="tel">
                     <h6>เบอร์โทรศัพท์</h6>
                   </label>
@@ -205,7 +213,7 @@ export default function Register() {
                   </div>
                 </div>
 
-                <div>
+                <div className="mb-2">
                   <label htmlFor="citizenID">
                     <h6>หมายเลขบัตรประชาชน</h6>
                   </label>
@@ -226,7 +234,7 @@ export default function Register() {
                 </div>
 
                 {role == "renter" && (
-                  <div>
+                  <div className="mb-2">
                     <label htmlFor="drivenID">
                       <h6>หมายเลขใบขับขี่</h6>
                     </label>
@@ -248,7 +256,7 @@ export default function Register() {
                 )}
 
                 {role == "provider" && (
-                  <div>
+                  <div className="mb-2">
                     <label htmlFor="payment">
                       <h6>ช่องทางการรับเงิน</h6>
                     </label>
@@ -284,11 +292,11 @@ export default function Register() {
                   </div>
                 )}
 
-                <div className="ps-2 pt-3 d-flex align-items-center">
+                <div className="mt-4 text-end">
                   <button
                     type="button"
                     onClick={(event: any) => handleSubmit(event)}
-                    className={`${styles.submit_btn} py-2 me-2`}
+                    className={`py-2 me-2 orange_btn`}
                   >
                     {loading && (
                       <>
@@ -299,7 +307,10 @@ export default function Register() {
                         />{" "}
                       </>
                     )}
-                    <b>เข้าสู่ระบบ</b>
+                    <b>
+                      สมัครสมาชิก&nbsp;&nbsp;
+                      <FaUserAlt />
+                    </b>
                   </button>
                 </div>
               </Col>
@@ -307,6 +318,6 @@ export default function Register() {
           </form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

@@ -1,3 +1,8 @@
+main {
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
 .my-btn {
   border-radius: 100px;
   text-decoration: none;
@@ -12,13 +17,12 @@
   transition: 0.3s;
   text-decoration: none;
   display: inline-block;
-  width: 250px;
-  padding: 8px 0;
-  margin: 20px 100px;
+  padding: 20px 20px;
+  /* margin: 20px 100px; */
   background: orange;
   border-radius: 40px;
   color: white;
-  text-align: center;
+  /* text-align: center; */
   box-shadow: 5px 5px #dadada;
   border: 1px solid orange;
 }
