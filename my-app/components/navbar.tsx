@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
+import { useRouter } from "next/router";
 
 export default function Header() {
+  const router = useRouter();
+
   const [login, setLogin] = useState("register");
 
   const userLogout = () => {
     sessionStorage.removeItem("status_login");
   };
 
-  const userLogin = () => {
-    sessionStorage.setItem("status_login", "login");
+  const userLogin = async () => {
+    await sessionStorage.setItem("status_login", "login");
+    router.push("/about_us");
     // console.log(sessionStorage.getItem("status_login"));
   };
 
@@ -42,10 +46,8 @@ export default function Header() {
             <Nav>
               {login == "register" && (
                 <>
-                  <Nav.Link href="/role_selection" onClick={userLogin}>
-                    เข้าสู่ระบบ
-                  </Nav.Link>
-                  <Nav.Link href="#register" className={`${styles.signup}`}>
+                  <Nav.Link onClick={userLogin}>เข้าสู่ระบบ</Nav.Link>
+                  <Nav.Link href="/signup" className={`${styles.signup}`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
@@ -53,7 +55,7 @@ export default function Header() {
               {login == "login" && (
                 <>
                   <NavDropdown title="โปรไฟล์" id="collasible-nav-dropdown">
-                    <NavDropdown.Item href="#action/3.2">
+                    <NavDropdown.Item href={`/profile/`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
                     <NavDropdown.Divider />

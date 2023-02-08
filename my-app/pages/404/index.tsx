@@ -10,21 +10,23 @@ export default function FourOhFour() {
         <title>ไม่พบหน้าที่คุณค้นหา-VEHICLE4U</title>
       </Head>
 
-      <div
-        style={{ height: "100vh" }}
-        className="d-flex align-items-center justify-content-center"
-      >
-        <div className="text-center">
-          <h3>ขออภัย เราไม่พบหน้าที่คุณค้นหา</h3>
-          <Link
-            href="/"
-            className="orange_btn d-flex align-items-center justify-content-center"
-          >
-            <FaHome />
-            &nbsp;กลับสู่หน้าหลัก
-          </Link>
+      <Layout>
+        <div
+          style={{ height: "100vh" }}
+          className="d-flex align-items-center justify-content-center"
+        >
+          <div className="text-center">
+            <h3>ขออภัย เราไม่พบหน้าที่คุณค้นหา</h3>
+            <Link
+              href="/"
+              className="orange_btn d-flex align-items-center justify-content-center"
+            >
+              <FaHome />
+              &nbsp;กลับสู่หน้าหลัก
+            </Link>
+          </div>
         </div>
-      </div>
+      </Layout>
     </>
   );
 }
