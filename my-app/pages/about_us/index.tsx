@@ -1,10 +1,15 @@
 import Link from "next/link";
 import styles from "../../styles/about.module.css";
 import Layout from "@/components/layout";
+import Head from "next/head";
 
 export default function About() {
   return (
     <>
+      <Head>
+        <title>ไม่พบหน้าของค้นหา-VEHICLE4U</title>
+      </Head>
+
       <Layout>
         <div className={`container ${styles.main} mt-4`}>
           <div>
