@@ -9,16 +9,17 @@ import phonePic from "../public/phone.png";
 
 export default function Footer() {
   return (
-    <div className={styles.footer}>
-      <Container className="py-4">
+    <div className={`${styles.footer} py-4`}>
+      {/* <Container className="py-4"> */}
         <Row>
-          <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
+          {/* QA */}
+          <Col className={styles.block} style={{ borderRight: "1px solid black" }}>
             <div>
               <h4>
                 <b>ศูนย์ความช่วยเหลือ</b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul>
                   <li>
                     <Link href="/" className={`${styles.link}`}>
                       <small>สมัครอย่างไร</small>
@@ -26,7 +27,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul>
                   <li>
                     <Link href="/" className={`${styles.link}`}>
                       <small>ผู้ปล่อยเช่าต้องเตรียมอะไรบ้าง</small>
@@ -34,7 +35,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul>
                   <li>
                     <Link href="/about" className={`${styles.link}`}>
                       <small>ช่องทางการชำระเงินใน Vehicle4U</small>
@@ -45,6 +46,7 @@ export default function Footer() {
               </div>
             </div>
           </Col>
+
           <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
             <div style={{ paddingLeft: "15px" }}>
               <h4>
@@ -73,6 +75,7 @@ export default function Footer() {
                 <ul style={{ listStyleType: "none" }} className="p-0">
                   <li>
                     <small>
+
                       <Image
                         className="me-2"
                         src={phonePic}
@@ -125,7 +128,7 @@ export default function Footer() {
             </div>
           </Col>
         </Row>
-      </Container>
+      {/* </Container> */}
     </div>
   );
 }
