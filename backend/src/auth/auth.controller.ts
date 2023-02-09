@@ -39,7 +39,7 @@ export class AuthController {
         return res.status(200).send(user);
     }
 
-    @Patch('editprofile')
+    @Patch('editProfile')
     @ApiResponse({ status: 201, description: 'User Updation Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid update information.'})
