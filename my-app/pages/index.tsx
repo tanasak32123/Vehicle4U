@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Layout from "../components/layout";
 import styles from "@/styles/home.module.css";
-import bg from "../public/bgHome.png";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
