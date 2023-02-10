@@ -20,7 +20,7 @@ export default function Footer() {
               <div className={styles.footer_info}>
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/" className={`${styles.link}`}>
+                    <Link href="/helpcenter#a" className={`${styles.link}`}>
                       <small>สมัครอย่างไร</small>
                     </Link>
                   </li>
@@ -28,7 +28,7 @@ export default function Footer() {
 
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/" className={`${styles.link}`}>
+                    <Link href="/helpcenter#b" className={`${styles.link}`}>
                       <small>ผู้ปล่อยเช่าต้องเตรียมอะไรบ้าง</small>
                     </Link>
                   </li>
@@ -36,7 +36,7 @@ export default function Footer() {
 
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/about" className={`${styles.link}`}>
+                    <Link href="/helpcenter#c" className={`${styles.link}`}>
                       <small>ช่องทางการชำระเงินใน Vehicle4U</small>
                     </Link>
                   </li>
