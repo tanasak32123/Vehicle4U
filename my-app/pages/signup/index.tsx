@@ -27,7 +27,9 @@ export default function RoleSelector() {
                 <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
               </button>
             </div>
-            <h3 className="mb-4">กรุณาเลือกประเภทผู้ใช้งาน</h3>
+            <h1>กรุณาเลือกประเภทผู้ใช้งาน</h1>
+            <hr />
+            <br />
             <Link
               href="/signup/renter"
               className={`orange_btn ${styles.role} mx-3`}
