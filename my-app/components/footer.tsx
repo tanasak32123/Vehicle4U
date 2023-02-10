@@ -9,9 +9,10 @@ import phonePic from "../public/phone.png";
 
 export default function Footer() {
   return (
-    <div className={styles.footer}>
+    <div className={`${styles.footer}`}>
       <Container className="py-4">
         <Row>
+          {/* QA */}
           <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
             <div>
               <h4>
@@ -45,6 +46,7 @@ export default function Footer() {
               </div>
             </div>
           </Col>
+
           <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
             <div style={{ paddingLeft: "15px" }}>
               <h4>
