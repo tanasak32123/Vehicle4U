@@ -112,7 +112,8 @@ export default function Register() {
             >
               <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
             </button>
-            <h1 className="text-center">สมัครสมาชิก</h1>
+            <h1 className="text-end">สมัครสมาชิก</h1>
+            <hr />
             <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
               {role == "renter" && <b>ผู้เช่า</b>}
               {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
