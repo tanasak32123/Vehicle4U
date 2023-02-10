@@ -20,7 +20,7 @@ export class User {
   first_name: string ;
   @Column()
   last_name: string ;
-  @Column({length : 9})
+  @Column({length : 10})
   tel: string ;
   @Column({length : 13 , unique : true})
   citizen_id: string; 
