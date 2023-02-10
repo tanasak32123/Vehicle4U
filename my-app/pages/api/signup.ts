@@ -6,6 +6,12 @@ type Data = {
   password: string;
   first_name: string;
   last_name: string;
+  tel: string;
+  citizen_id: string;
+  is_provider: boolean;
+  is_renter: boolean;
+  payment_channel: string;
+  driving_license_id: string;
 };
 
 export default async function handler(
@@ -59,7 +65,7 @@ export default async function handler(
     if (body.role == "renter") {
       if (!body.drivenID) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
-      } else if (body.drivenID.length != 8) {
+      } else if (body.drivenID.length != 13) {
         errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
       }
     }
@@ -76,11 +82,38 @@ export default async function handler(
       }
     }
 
-    // await fetch("/", { method: "POST", body: body }).then(() => {
-    //   return res.status(200).json({ success: true });
-    // });
+    const data: Data = {
+      username: body.username,
+      password: body.pw,
+      first_name: body.fName,
+      last_name: body.lName,
+      tel: body.tel,
+      citizen_id: body.citizenID,
+      is_provider: body.role == "provider",
+      is_renter: body.role == "renter",
+      payment_channel: body.payment,
+      driving_license_id: body.drivenID,
+    };
 
-    return res.status(200).json({ success: true });
+    await fetch("http://localhost:3000/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.status == 201) {
+          return res.status(201).json({ success: true, data });
+        } else {
+          res.redirect("/500");
+        }
+      })
+      .catch((err) => {
+        res.redirect("/500");
+      });
+
+    // return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }

@@ -60,7 +60,7 @@ export default function Register() {
 
     setLoading(true);
 
-    const res = await fetch("/api/signup", {
+    await fetch("/api/signup", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -81,15 +81,15 @@ export default function Register() {
         setInvalid_drivenID(result.errors.drivenID);
         setInvalid_payment(result.errors.payment);
       } else {
-        // alert("creating an account");
-        router.push("/signup/success", "/signup");
+        alert("Account is created success.");
+        // router.push("/signup/success", "/signup");
       }
     });
   }
 
   useEffect(() => {
     if (query.role != "provider" && query.role != "renter") {
-      router.push("/");
+      router.push("/signup");
     } else {
       setRole(query.role);
     }
