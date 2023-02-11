@@ -28,8 +28,11 @@ export class AuthService {
       }
       async validateRegister(registerDto : RegisterDto) {
         const user =  await this.userRepository.findOneBy({username : registerDto.username});
+        const user1 =  await this.userRepository.findOneBy({citizen_id : registerDto.citizen_id});
         if (user){
           throw new HttpException( "username exist", HttpStatus.NOT_ACCEPTABLE)
+        }else if (user1){
+          throw new HttpException( "citizen_id exist", HttpStatus.NOT_ACCEPTABLE)
         } 
       }
 
