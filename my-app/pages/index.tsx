@@ -5,8 +5,12 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { getCookie, getCookies } from "cookies-next";
 
 export default function Home() {
+  const router = useRouter();
+
   let [username, setUsername] = useState("");
   let [pw, setPw] = useState("");
   let [role, setRole] = useState("");
@@ -30,8 +34,10 @@ export default function Home() {
         setRole("");
         setInvalid(result.message);
       } else {
+        // const cookie: string = getCookie("user") as string;
+        // const user = JSON.parse(cookie);
         setInvalid("");
-        alert("logging in");
+        router.push("/about_us");
       }
     });
   }

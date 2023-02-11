@@ -2,6 +2,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
 
+type Data = {
+  username: string;
+  password: string;
+  role: string;
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -15,22 +21,44 @@ export default async function handler(
       });
     }
 
-    // try {
-    //handle API call to sign in here.
-    // await fetch("/").then(async (response) => {
-    //   const data = await response.json();
-    //   setCookie("user", JSON.stringify(data), {
-    //     path: "/",
-    //     maxAge: 7200, // Expires after 1hr
-    //     sameSite: true,
-    //   });
-    //   return res.status(200).json({ success: true });
-    // });
-    //   return res.status(200).json({ success: true });
-    // } catch (err) {
-    //   return res.status(400).json({ success: false, err });
-    // }
-    return res.status(200).json({ success: true });
+    try {
+      // handle API call to sign in here.
+      const data: Data = {
+        username: body.username,
+        password: body.password,
+        role: body.role,
+      };
+
+      await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }).then(async (response) => {
+        if (response.status != 200) {
+          return res.status(400).json({
+            success: false,
+            message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
+          });
+        } else {
+          const data = await response.json();
+          sessionStorage.setItem("access_token", data.token.access_token);
+          sessionStorage.setItem("username", data.user.username);
+          sessionStorage.setItem("password", data.user.password);
+          // setCookie("user", JSON.stringify(data), {
+          //   req,
+          //   res,
+          //   path: "/",
+          //   maxAge: 7200, // Expires after 2hr
+          //   sameSite: true,
+          // });
+          return res.status(200).json({ success: true });
+        }
+      });
+    } catch (err) {
+      return res.status(400).json({ success: false, err });
+    }
   } else {
     res.redirect("/404");
   }
