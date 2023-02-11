@@ -81,7 +81,6 @@ export default function Footer() {
                         alt="Picture of the author"
                         width={30}
                         height={30}
-                        priority
                       />
                       : 081-831-8928
                     </small>
@@ -96,7 +95,6 @@ export default function Footer() {
                           alt="Picture of the author"
                           width={42}
                           height={42}
-                          priority
                         />
                       </Link>
                       <Link href="/">
@@ -106,18 +104,16 @@ export default function Footer() {
                           alt="Picture of the author"
                           width={40}
                           height={40}
-                          priority
                         />
                       </Link>
 
-                      <Link href="/">
+                      <Link rel="preload" href="/">
                         <Image
                           className="me-3"
                           src={linePic}
                           alt="Picture of the author"
                           width={43}
                           height={43}
-                          priority
                         />
                       </Link>
                     </div>

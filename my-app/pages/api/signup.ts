@@ -103,8 +103,10 @@ export default async function handler(
       body: JSON.stringify(data),
     })
       .then((response) => {
-        if (response.status == 201) {
-          return res.status(201).json({ success: true, data });
+        if (response.status == 200) {
+          return res
+            .status(201)
+            .json({ success: true, data, status: response.status });
         } else {
           res.redirect("/500");
         }

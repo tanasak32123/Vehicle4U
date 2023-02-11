@@ -10,17 +10,12 @@ export default function Home() {
   let [username, setUsername] = useState("");
   let [pw, setPw] = useState("");
   let [role, setRole] = useState("");
-
   let [invalid, setInvalid] = useState("");
-
   let [loading, setLoading] = useState(false);
-
   async function handleSubmit(event: Event) {
     event.preventDefault();
-
     setLoading(true);
-
-    const res = await fetch("/api/signin", {
+    await fetch("/api/signin", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -28,9 +23,7 @@ export default function Home() {
       body: JSON.stringify({ username: username, password: pw, role }),
     }).then(async (res) => {
       const result = await res.json();
-
       setLoading(false);
-
       if (res.status == 400) {
         setUsername("");
         setPw("");
@@ -42,7 +35,6 @@ export default function Home() {
       }
     });
   }
-
   return (
     <>
       <Head>
@@ -51,7 +43,6 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Layout>
         <div className={`${styles.main}`}>
           <Row style={{ height: "100vh", width: "100%" }}>
@@ -91,10 +82,8 @@ export default function Home() {
                     value={username}
                     onChange={(event) => setUsername(event.target.value)}
                   />
-
                   <br />
                   <br />
-
                   <label htmlFor="password" style={{ color: "white" }}>
                     <b>รหัสผ่าน</b>
                   </label>
@@ -107,10 +96,8 @@ export default function Home() {
                     value={pw}
                     onChange={(event) => setPw(event.target.value)}
                   />
-
                   <br />
                   <br />
-
                   <label
                     htmlFor="role"
                     style={{ color: "white" }}
@@ -140,10 +127,8 @@ export default function Home() {
                       ผู้ปล่อยเช่า
                     </option>
                   </select>
-
                   <br />
                   <br />
-
                   <div className={`mb-2 ${styles.invalid}`}>
                     <small>{invalid}</small>
                   </div>
