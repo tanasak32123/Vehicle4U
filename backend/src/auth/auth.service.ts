@@ -59,13 +59,25 @@ export class AuthService {
         return await this.userRepository.save(ent);
       }
 
-      async update(updateDto: UpdateDto): Promise<User> {
-        await this.userRepository.update({username: updateDto.username},updateDto);
-        return await this.userRepository.findOneBy({username: updateDto.username});
+      async update(id: number, updateDto: UpdateDto): Promise<User> {
+        console.log("in")
+        console.log(id["id"])
+        const user = await this.userRepository.findOneBy({id:id["id"]});
+        if(!user){
+          return null
+        }
+        else{
+          const user = await this.userRepository.findOneBy({username:updateDto.username});
+          if(user){
+            return null
+          }
+        }
+        await this.userRepository.update({id: id},updateDto);
+        return await this.userRepository.findOneBy({id: id});
       }
 
-      async validateUpdate(updateDto: UpdateDto) {
-
+      async validateUpdate(id: number, updateDto: UpdateDto) {
+        
       }
       
 
