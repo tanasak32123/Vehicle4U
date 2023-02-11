@@ -39,7 +39,7 @@ export default function EditProfile() {
       type,
     };
 
-    const res = await fetch("/api/updateProfile", {
+    const res = await fetch("/api/update_profile", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -144,6 +144,7 @@ export default function EditProfile() {
                                     setLName(event.target.value)
                                   }
                                 />
+                                <div>shutter</div>
                               </Col>
                             </Row>
                           </Form.Group>

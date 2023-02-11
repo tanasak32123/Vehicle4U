@@ -1,13 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { useCookies } from "react-cookie";
+import { setCookie } from "cookies-next";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const [cookie, setCookie] = useCookies(["user"]);
-
   if (req.method == "POST") {
     const body = req.body;
     if (!body.username || !body.password || !body.role) {
@@ -17,21 +15,22 @@ export default async function handler(
       });
     }
 
-    try {
-      //handle API call to sign in here.
-      // await fetch("/").then(async (response) => {
-      //   const data = await response.json();
-      //   setCookie("user", JSON.stringify(data), {
-      //     path: "/",
-      //     maxAge: 7200, // Expires after 1hr
-      //     sameSite: true,
-      //   });
-      //   return res.status(200).json({ success: true });
-      // });
-      return res.status(200).json({ success: true });
-    } catch (err) {
-      return res.status(400).json({ success: false, err });
-    }
+    // try {
+    //handle API call to sign in here.
+    // await fetch("/").then(async (response) => {
+    //   const data = await response.json();
+    //   setCookie("user", JSON.stringify(data), {
+    //     path: "/",
+    //     maxAge: 7200, // Expires after 1hr
+    //     sameSite: true,
+    //   });
+    //   return res.status(200).json({ success: true });
+    // });
+    //   return res.status(200).json({ success: true });
+    // } catch (err) {
+    //   return res.status(400).json({ success: false, err });
+    // }
+    return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }
