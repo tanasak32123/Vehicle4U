@@ -104,11 +104,10 @@ export default async function handler(
     })
       .then((response) => {
         if (response.status == 200) {
-          return res
-            .status(201)
-            .json({ success: true, data, status: response.status });
+          return res.status(201).json({ success: true });
         } else {
-          res.redirect("/500");
+          // res.redirect("/500");
+          return res.status(400).json({ success: false, errors });
         }
       })
       .catch((err) => {

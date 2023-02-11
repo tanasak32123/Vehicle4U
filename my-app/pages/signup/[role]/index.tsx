@@ -81,8 +81,7 @@ export default function Register() {
         setInvalid_drivenID(result.errors.drivenID);
         setInvalid_payment(result.errors.payment);
       } else {
-        alert("Account is created success.");
-        // router.push("/signup/success", "/signup");
+        router.push("/signup/success", "/signup");
       }
     });
   }
