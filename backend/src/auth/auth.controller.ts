@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Patch, Post, Response} from '@nestjs/common';
+import { Body, Controller, Patch, Param, Post, Response} from '@nestjs/common';
 // eslint-disable-next-line prettier/prettier
 import {LoginDto} from './dto/login.dto'
 import { AuthService } from './auth.service';
@@ -29,7 +29,7 @@ export class AuthController {
             token : token 
         });
       }
-    @Post(['/register/renter' , '/register/provider'])
+    @Post(['/signup/renter' , '/signup/provider'])
     @ApiResponse({ status: 201, description: 'User Registration Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid register information.'})
@@ -39,14 +39,20 @@ export class AuthController {
         return res.status(200).send(user);
     }
 
-    @Patch()
+    @Patch('/editProfile/:id')
     @ApiResponse({ status: 201, description: 'User Updation Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 500, description: 'Invalid update information.'})
-    async update(@Body() updateDto : UpdateDto, @Response() res) {
-        await this.authService.validateUpdate(updateDto);
-        const user = await this.authService.update(updateDto);
-        return res.status(200).send(user);
+    @ApiResponse({ status: 400, description: 'Bad Request.'})
+    async update(@Param() id: number, @Body() updateDto : UpdateDto, @Response() res) {
+        try {
+            console.log(1)
+            const user = await this.authService.update(id["id"], updateDto);
+            console.log(2)
+            if (!user){return res.status(400)}
+            return res.status(200).send(user);
+        }catch(err){
+            console.log(err);
+        }
     }
     
 }
