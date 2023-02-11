@@ -60,6 +60,7 @@ export default function Register() {
 
     setLoading(true);
 
+    console.log(data);
     await fetch("/api/signup", {
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +72,7 @@ export default function Register() {
 
       const result = await res.json();
 
-      if (res.status == 400) {
+      if (res.status != 201) {
         setInvalid_fName(result.errors.fName);
         setInvalid_lName(result.errors.lName);
         setInvalid_username(result.errors.username);

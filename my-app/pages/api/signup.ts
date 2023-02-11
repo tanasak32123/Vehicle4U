@@ -95,26 +95,33 @@ export default async function handler(
       driving_license_id: body.drivenID,
     };
 
-    await fetch("http://localhost:3000/user", {
+    await fetch(`http://localhost:3000/auth/signup/${body.role}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
-      .then((response) => {
-        if (response.status == 200) {
-          return res.status(201).json({ success: true });
+      .then(async (response) => {
+        const body = await response.json();
+
+        if (response.status != 200) {
+          if (body.message == "username exist") {
+            errors.username = "** ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+          } else {
+            errors.citizenID = "** หมายเลขบัตรประชนนี้ถูกใช้แล้ว";
+          }
+          return res.status(406).json({
+            success: false,
+            errors,
+          });
         } else {
-          // res.redirect("/500");
-          return res.status(400).json({ success: false, errors });
+          return res.status(201).json({ success: true });
         }
       })
       .catch((err) => {
         res.redirect("/500");
       });
-
-    // return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }
