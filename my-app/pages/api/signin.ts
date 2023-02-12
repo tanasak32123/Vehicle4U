@@ -49,7 +49,7 @@ export default async function handler(
           //   maxAge: 7200, // Expires after 2hr
           //   sameSite: true,
           // });
-          return res.status(200).json({ success: true });
+          return res.status(200).json({ success: true, data: user });
         }
       });
     } catch (err) {
