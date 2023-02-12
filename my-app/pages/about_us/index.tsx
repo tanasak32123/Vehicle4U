@@ -2,8 +2,15 @@ import Link from "next/link";
 import styles from "../../styles/about.module.css";
 import Layout from "@/components/layout";
 import Head from "next/head";
+import { useEffect } from "react";
 
 export default function About() {
+  useEffect(() => {
+    let user = sessionStorage.user;
+
+    console.log(user.access_token);
+  }, []);
+
   return (
     <>
       <Head>
