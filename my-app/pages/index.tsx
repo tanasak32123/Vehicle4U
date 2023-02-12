@@ -6,7 +6,12 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { getCookie, getCookies } from "cookies-next";
+
+interface Session {
+  username: string;
+  password: string;
+  access_token: string;
+}
 
 export default function Home() {
   const router = useRouter();
@@ -25,18 +30,28 @@ export default function Home() {
       },
       method: "POST",
       body: JSON.stringify({ username: username, password: pw, role }),
-    }).then(async (res) => {
-      const result = await res.json();
+    }).then(async (response) => {
+      const result = await response.json();
+
       setLoading(false);
-      if (res.status == 400) {
+
+      if (response.status != 200) {
         setUsername("");
         setPw("");
         setRole("");
         setInvalid(result.message);
       } else {
+        const user: Session = {
+          username: result.user.username,
+          password: result.user.password,
+          access_token: result.user.token.access_token,
+        };
+        sessionStorage.setItem("user", JSON.stringify(user));
         // const cookie: string = getCookie("user") as string;
         // const user = JSON.parse(cookie);
+
         setInvalid("");
+
         router.push("/about_us");
       }
     });

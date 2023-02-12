@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { setCookie } from "cookies-next";
 
 type Data = {
   username: string;
@@ -42,10 +41,7 @@ export default async function handler(
             message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
           });
         } else {
-          const data = await response.json();
-          sessionStorage.setItem("access_token", data.token.access_token);
-          sessionStorage.setItem("username", data.user.username);
-          sessionStorage.setItem("password", data.user.password);
+          const user = await response.json();
           // setCookie("user", JSON.stringify(data), {
           //   req,
           //   res,

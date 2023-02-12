@@ -1,34 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type Data = {
-  username: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  tel: string;
-  citizen_id: string;
-  is_provider: boolean;
-  is_renter: boolean;
-  payment_channel: string;
-  driving_license_id: string;
-};
+import { InputSignupValidate } from "../../interfaces/InputSignupValidate";
+import { ErrorSignupValidate } from "../../interfaces/ErrorSignupValidate";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    const errors = {
-      fName: "",
-      lName: "",
-      username: "",
-      pw: "",
-      tel: "",
-      citizenID: "",
-      drivenID: "",
-      payment: "",
-    };
+    const errors: ErrorSignupValidate = {};
 
     const body = req.body;
 
@@ -82,7 +62,7 @@ export default async function handler(
       }
     }
 
-    const data: Data = {
+    const data: InputSignupValidate = {
       username: body.username,
       password: body.pw,
       first_name: body.fName,
