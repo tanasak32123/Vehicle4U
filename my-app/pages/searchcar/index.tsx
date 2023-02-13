@@ -10,6 +10,9 @@ import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
 
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
 const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -28,6 +31,7 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 
 // forwardRef again here!
 // Dropdown needs access to the DOM of the Menu to measure it
+
 const CustomMenu = React.forwardRef(
   ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
     const [value, setValue] = useState("");
@@ -58,6 +62,7 @@ const CustomMenu = React.forwardRef(
 );
 
 export default function SearchCar() {
+  const [startDate, setStartDate] = useState(null);
   let [username, setUsername] = useState("");
   let [pw, setPw] = useState("");
   let [role, setRole] = useState("");
@@ -183,12 +188,21 @@ export default function SearchCar() {
                         <Row>
                           <Col>วัน-เวลารับรถ</Col>
                           <Col>
-                            
+                            <DatePicker
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                            />
                           </Col>
                         </Row>
                         <Row>
                           <Col>วัน-เวลาส่งรถ</Col>
-                          <Col></Col>
+                          <Col>
+                            <DatePicker
+                              selected={startDate}
+                              onChange={(date) => setStartDate(date)}
+                              dateFormat = "dd/MM/yyyy"
+                            />
+                          </Col>
                         </Row>
                       </div>
                     </Col>
