@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import getToken from "@/libs/getToken";
 
 const AuthContext = createContext({});
 
@@ -16,5 +17,10 @@ function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    async function loadUser() {
+      if (getToken()) {
+      }
+    }
+  }, []);
 }
