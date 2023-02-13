@@ -1,5 +1,4 @@
 import Head from "next/head";
-import Layout from "../../components/layout";
 import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 

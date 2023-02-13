@@ -15,7 +15,7 @@ export default function Header() {
   };
 
   useEffect(() => {
-    setLogin(sessionStorage.access_token != undefined);
+    setLogin(sessionStorage.token != undefined);
     if (login) {
       setUsername(sessionStorage.username);
     }

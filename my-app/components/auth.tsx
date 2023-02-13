@@ -1,7 +1,20 @@
-import { useRouter } from "next/router";
+import {
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-export default function Auth({ children }: any) {
-  const router = useRouter();
+const AuthContext = createContext({});
 
-  return <>{children}</>;
+export function useAuthContext() {
+  return useContext(AuthContext);
+}
+
+function AuthProvider({ children }: PropsWithChildren) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {}, []);
 }

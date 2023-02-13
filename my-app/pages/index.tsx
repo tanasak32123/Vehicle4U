@@ -41,7 +41,7 @@ export default function Home() {
         console.log(result.data.user);
         sessionStorage.setItem("username", user.username);
         sessionStorage.setItem("password", user.password);
-        sessionStorage.setItem("access_token", user.access_token);
+        sessionStorage.setItem("token", user.access_token);
         // const cookie: string = getCookie("user") as string;
         // const user = JSON.parse(cookie);
         setInvalid("");
