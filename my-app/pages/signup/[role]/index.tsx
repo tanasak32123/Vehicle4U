@@ -101,231 +101,224 @@ export default function Register() {
         <title>สมัครสมาชิก - VEHICLE4U</title>
       </Head>
 
-      <Layout>
-        <div
-          className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
-        >
-          <div className={`p-4 ${styles.reg_container}`}>
-            <button
-              onClick={() => router.push("/signup")}
-              className={`${styles.back_btn} d-flex align-items-center`}
-            >
-              <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-            </button>
-            <h1 className="text-end">สมัครสมาชิก</h1>
-            <hr />
-            <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
-              {role == "renter" && <b>ผู้เช่า</b>}
-              {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
-            </h5>
-            <form>
-              <Row className="text-left">
-                <Col sm={12} lg={6}>
-                  <div className="mb-2">
-                    <label htmlFor="fName">
-                      <h6>ชื่อ</h6>
-                    </label>
-                    <br />
-                    <input
-                      type="text"
-                      id="fName"
-                      name="fName"
-                      className={styles.input}
-                      value={fName}
-                      onChange={(event) => setFName(event.target.value.trim())}
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_fName}
-                    </div>
+      <div
+        className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
+      >
+        <div className={`p-4 ${styles.reg_container}`}>
+          <button
+            onClick={() => router.push("/signup")}
+            className={`${styles.back_btn} d-flex align-items-center`}
+          >
+            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+          </button>
+          <h1 className="text-end">สมัครสมาชิก</h1>
+          <hr />
+          <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
+            {role == "renter" && <b>ผู้เช่า</b>}
+            {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
+          </h5>
+          <form>
+            <Row className="text-left">
+              <Col sm={12} lg={6}>
+                <div className="mb-2">
+                  <label htmlFor="fName">
+                    <h6>ชื่อ</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="fName"
+                    name="fName"
+                    className={styles.input}
+                    value={fName}
+                    onChange={(event) => setFName(event.target.value.trim())}
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_fName}
                   </div>
+                </div>
 
-                  <div className="mb-2">
-                    <label htmlFor="lName">
-                      <h6>นามสกุล</h6>
-                    </label>
-                    <br />
-                    <input
-                      type="text"
-                      id="lName"
-                      name="lName"
-                      className={styles.input}
-                      value={lName}
-                      onChange={(event) => setLName(event.target.value.trim())}
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_lName}
-                    </div>
+                <div className="mb-2">
+                  <label htmlFor="lName">
+                    <h6>นามสกุล</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="lName"
+                    name="lName"
+                    className={styles.input}
+                    value={lName}
+                    onChange={(event) => setLName(event.target.value.trim())}
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_lName}
                   </div>
+                </div>
 
+                <div className="mb-2">
+                  <label htmlFor="username">
+                    <h6>ชื่อผู้ใช้</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    className={styles.input}
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value.trim())}
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_username}
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="password">
+                    <h6>รหัสผ่าน</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    className={styles.input}
+                    value={pw}
+                    onChange={(event) => setPw(event.target.value.trim())}
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_pw}
+                  </div>
+                </div>
+              </Col>
+
+              <Col sm={12} lg={6}>
+                <div className="mb-2">
+                  <label htmlFor="tel">
+                    <h6>เบอร์โทรศัพท์</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="tel"
+                    name="tel"
+                    className={styles.input}
+                    value={tel}
+                    onChange={(event) =>
+                      setTel(event.target.value.trim().replace("-", ""))
+                    }
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_tel}
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <label htmlFor="citizenID">
+                    <h6>หมายเลขบัตรประชาชน</h6>
+                  </label>
+                  <br />
+                  <input
+                    type="text"
+                    id="citizenID"
+                    name="citizenID"
+                    className={styles.input}
+                    value={citizenID}
+                    onChange={(event) =>
+                      setCitizenID(event.target.value.trim().replace("-", ""))
+                    }
+                  />
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_cizitenID}
+                  </div>
+                </div>
+
+                {role == "renter" && (
                   <div className="mb-2">
-                    <label htmlFor="username">
-                      <h6>ชื่อผู้ใช้</h6>
+                    <label htmlFor="drivenID">
+                      <h6>หมายเลขใบขับขี่</h6>
                     </label>
                     <br />
                     <input
                       type="text"
-                      id="username"
-                      name="username"
+                      id="drivenID"
+                      name="drivenID"
                       className={styles.input}
-                      value={username}
+                      value={drivenID}
                       onChange={(event) =>
-                        setUsername(event.target.value.trim())
+                        setDrivenID(event.target.value.trim())
                       }
                     />
                     <div className={`${styles.feedback}`}>
-                      {errors.invalid_username}
+                      {errors.invalid_drivenID}
                     </div>
                   </div>
+                )}
 
+                {role == "provider" && (
                   <div className="mb-2">
-                    <label htmlFor="password">
-                      <h6>รหัสผ่าน</h6>
+                    <label htmlFor="payment">
+                      <h6>ช่องทางการรับเงิน</h6>
                     </label>
                     <br />
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      className={styles.input}
-                      value={pw}
-                      onChange={(event) => setPw(event.target.value.trim())}
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_pw}
-                    </div>
-                  </div>
-                </Col>
-
-                <Col sm={12} lg={6}>
-                  <div className="mb-2">
-                    <label htmlFor="tel">
-                      <h6>เบอร์โทรศัพท์</h6>
-                    </label>
-                    <br />
-                    <input
-                      type="text"
-                      id="tel"
-                      name="tel"
-                      className={styles.input}
-                      value={tel}
+                    <select
+                      name="payment"
+                      id="payment"
+                      className={`${styles.select}`}
                       onChange={(event) =>
-                        setTel(event.target.value.trim().replace("-", ""))
+                        setPayment(event.target.value.trim())
                       }
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_tel}
-                    </div>
-                  </div>
-
-                  <div className="mb-2">
-                    <label htmlFor="citizenID">
-                      <h6>หมายเลขบัตรประชาชน</h6>
-                    </label>
-                    <br />
-                    <input
-                      type="text"
-                      id="citizenID"
-                      name="citizenID"
-                      className={styles.input}
-                      value={citizenID}
-                      onChange={(event) =>
-                        setCitizenID(event.target.value.trim().replace("-", ""))
-                      }
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_cizitenID}
-                    </div>
-                  </div>
-
-                  {role == "renter" && (
-                    <div className="mb-2">
-                      <label htmlFor="drivenID">
-                        <h6>หมายเลขใบขับขี่</h6>
-                      </label>
-                      <br />
-                      <input
-                        type="text"
-                        id="drivenID"
-                        name="drivenID"
-                        className={styles.input}
-                        value={drivenID}
-                        onChange={(event) =>
-                          setDrivenID(event.target.value.trim())
-                        }
-                      />
-                      <div className={`${styles.feedback}`}>
-                        {errors.invalid_drivenID}
-                      </div>
-                    </div>
-                  )}
-
-                  {role == "provider" && (
-                    <div className="mb-2">
-                      <label htmlFor="payment">
-                        <h6>ช่องทางการรับเงิน</h6>
-                      </label>
-                      <br />
-                      <select
-                        name="payment"
-                        id="payment"
-                        className={`${styles.select}`}
-                        onChange={(event) =>
-                          setPayment(event.target.value.trim())
-                        }
-                      >
-                        <option
-                          className={`${styles.select}`}
-                          value=""
-                          defaultChecked
-                        >
-                          เลือกช่องทางการชำระเงิน
-                        </option>
-                        <option
-                          className={`${styles.option}`}
-                          value="promptpay"
-                        >
-                          พร้อมเพย์
-                        </option>
-                        <option className={`${styles.option}`} value="credit">
-                          บัตรเครดิต
-                        </option>
-                        <option className={`${styles.option}`} value="cash">
-                          เงินสด
-                        </option>
-                      </select>
-                      <div className={`${styles.feedback}`}>
-                        {errors.invalid_payment}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mt-4 text-end">
-                    <button
-                      type="button"
-                      onClick={(event: any) => handleSubmit(event)}
-                      className={`py-2 me-2 orange_btn`}
                     >
-                      {loading && (
-                        <>
-                          <Spinner
-                            className={`${styles.spinner}`}
-                            animation="border"
-                            variant="primary"
-                          />{" "}
-                        </>
-                      )}
-                      <b>
-                        สมัครสมาชิก&nbsp;&nbsp;
-                        <FaUserAlt />
-                      </b>
-                    </button>
+                      <option
+                        className={`${styles.select}`}
+                        value=""
+                        defaultChecked
+                      >
+                        เลือกช่องทางการชำระเงิน
+                      </option>
+                      <option className={`${styles.option}`} value="promptpay">
+                        พร้อมเพย์
+                      </option>
+                      <option className={`${styles.option}`} value="credit">
+                        บัตรเครดิต
+                      </option>
+                      <option className={`${styles.option}`} value="cash">
+                        เงินสด
+                      </option>
+                    </select>
+                    <div className={`${styles.feedback}`}>
+                      {errors.invalid_payment}
+                    </div>
                   </div>
-                </Col>
-              </Row>
-            </form>
-          </div>
+                )}
+
+                <div className="mt-4 text-end">
+                  <button
+                    type="button"
+                    onClick={(event: any) => handleSubmit(event)}
+                    className={`py-2 me-2 orange_btn`}
+                  >
+                    {loading && (
+                      <>
+                        <Spinner
+                          className={`${styles.spinner}`}
+                          animation="border"
+                          variant="primary"
+                        />{" "}
+                      </>
+                    )}
+                    <b>
+                      สมัครสมาชิก&nbsp;&nbsp;
+                      <FaUserAlt />
+                    </b>
+                  </button>
+                </div>
+              </Col>
+            </Row>
+          </form>
         </div>
-      </Layout>
+      </div>
     </>
   );
 }
