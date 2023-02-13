@@ -31,7 +31,7 @@ const CustomMenu = React.forwardRef(
 
     return (
       <div
-        re={ref}
+        ref={ref}
         style={style}
         className={className}
         aria-labelledby={labeledBy}
