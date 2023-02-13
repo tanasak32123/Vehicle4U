@@ -45,8 +45,8 @@ export default async function handler(
     if (body.role == "renter") {
       if (!body.drivenID) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
-      } else if (body.drivenID.length != 13) {
-        errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
+      } else if (body.drivenID.length != 8) {
+        errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
       }
     }
 
