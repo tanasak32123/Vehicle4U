@@ -19,7 +19,7 @@ export default function Header() {
     if (login) {
       setUsername(sessionStorage.username);
     }
-  }, [login]);
+  });
 
   return (
     <>
