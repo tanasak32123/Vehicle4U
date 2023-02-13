@@ -6,12 +6,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-
-interface Session {
-  username: string;
-  password: string;
-  access_token: string;
-}
+import { Session } from "@/interfaces/session";
 
 export default function Home() {
   const router = useRouter();
@@ -21,6 +16,7 @@ export default function Home() {
   let [role, setRole] = useState("");
   let [invalid, setInvalid] = useState("");
   let [loading, setLoading] = useState(false);
+
   async function handleSubmit(event: Event) {
     event.preventDefault();
     setLoading(true);
@@ -36,22 +32,20 @@ export default function Home() {
       setLoading(false);
 
       if (response.status != 200) {
-        setUsername("");
-        setPw("");
-        setRole("");
         setInvalid(result.message);
       } else {
         const user: Session = {
-          username: result.user.username,
-          password: result.user.password,
-          access_token: result.user.token.access_token,
+          username: result.data.user.username,
+          password: result.data.user.password,
+          access_token: result.data.token.access_token,
         };
-        sessionStorage.setItem("user", JSON.stringify(user));
+        console.log(result.data.user);
+        sessionStorage.setItem("username", user.username);
+        sessionStorage.setItem("password", user.password);
+        sessionStorage.setItem("access_token", user.access_token);
         // const cookie: string = getCookie("user") as string;
         // const user = JSON.parse(cookie);
-
         setInvalid("");
-
         router.push("/about_us");
       }
     });

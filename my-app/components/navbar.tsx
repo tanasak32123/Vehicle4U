@@ -6,27 +6,20 @@ import { useRouter } from "next/router";
 export default function Header() {
   const router = useRouter();
 
-  const [login, setLogin] = useState("register");
+  let [login, setLogin] = useState(false);
+  let [username, setUsername] = useState("");
 
   const userLogout = () => {
-    sessionStorage.removeItem("status_login");
-  };
-
-  const userLogin = () => {
-    sessionStorage.setItem("status_login", "login");
-    router.push("/about_us");
+    sessionStorage.clear();
+    router.push("/");
   };
 
   useEffect(() => {
-    var status = sessionStorage.getItem("status_login");
-    if (status == null || status == "register") {
-      status = "register";
-    } else {
-      status = "login";
+    setLogin(sessionStorage.access_token != undefined);
+    if (login) {
+      setUsername(sessionStorage.username);
     }
-    sessionStorage.setItem("status_login", status);
-    setLogin(status);
-  }, []);
+  }, [login]);
 
   return (
     <>
@@ -43,17 +36,17 @@ export default function Header() {
             </Nav>
 
             <Nav>
-              {login == "register" && (
+              {!login && (
                 <>
-                  <Nav.Link onClick={userLogin}>เข้าสู่ระบบ</Nav.Link>
+                  <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
                   <Nav.Link href="/signup" className={`${styles.signup}`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
               )}
-              {login == "login" && (
+              {login && (
                 <>
-                  <NavDropdown title="โปรไฟล์" id="collasible-nav-dropdown">
+                  <NavDropdown title={username} id="collasible-nav-dropdown">
                     <NavDropdown.Item href={`/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
