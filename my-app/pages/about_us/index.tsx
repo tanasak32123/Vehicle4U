@@ -7,7 +7,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>ไม่พบหน้าของค้นหา-VEHICLE4U</title>
+        <title>เกี่ยวกับเรา-VEHICLE4U</title>
       </Head>
 
       <Layout>

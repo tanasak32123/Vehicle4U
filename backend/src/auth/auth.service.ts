@@ -28,8 +28,11 @@ export class AuthService {
       }
       async validateRegister(registerDto : RegisterDto) {
         const user =  await this.userRepository.findOneBy({username : registerDto.username});
+        const user1 =  await this.userRepository.findOneBy({citizen_id : registerDto.citizen_id});
         if (user){
           throw new HttpException( "username exist", HttpStatus.NOT_ACCEPTABLE)
+        }else if (user1){
+          throw new HttpException( "citizen_id exist", HttpStatus.NOT_ACCEPTABLE)
         } 
       }
 
@@ -60,15 +63,24 @@ export class AuthService {
       }
 
       async update(id: number, updateDto: UpdateDto): Promise<User> {
+        console.log("in")
+        console.log(id["id"])
+        const user = await this.userRepository.findOneBy({id:id["id"]});
+        if(!user){
+          return null
+        }
+        else{
+          const user = await this.userRepository.findOneBy({username:updateDto.username});
+          if(user){
+            return null
+          }
+        }
         await this.userRepository.update({id: id},updateDto);
         return await this.userRepository.findOneBy({id: id});
       }
 
-      async validateUpdate(updateDto: UpdateDto) {
-        const usercompare = await this.userRepository.findOneBy({username: updateDto.username});
-        if(usercompare) { 
-          throw new HttpException( "username is exist", HttpStatus.NOT_FOUND);
-        }
+      async validateUpdate(id: number, updateDto: UpdateDto) {
+        
       }
       
 

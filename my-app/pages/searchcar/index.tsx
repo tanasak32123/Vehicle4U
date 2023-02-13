@@ -2,9 +2,6 @@ import Head from "next/head";
 import Layout from "../../components/layout";
 import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
-import Link from "next/link";
-import { FaSignInAlt } from "react-icons/fa";
-import { BiSearchAlt2 } from "react-icons/fa";
 
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -63,41 +60,8 @@ const CustomMenu = React.forwardRef(
 
 export default function SearchCar() {
   const [startDate, setStartDate] = useState(null);
-  let [username, setUsername] = useState("");
-  let [pw, setPw] = useState("");
-  let [role, setRole] = useState("");
-
-  let [invalid, setInvalid] = useState("");
 
   let [loading, setLoading] = useState(false);
-
-  async function handleSubmit(event: Event) {
-    event.preventDefault();
-
-    setLoading(true);
-
-    const res = await fetch("/api/signin", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ username: username, password: pw, role }),
-    }).then(async (res) => {
-      const result = await res.json();
-
-      setLoading(false);
-
-      if (res.status == 400) {
-        setUsername("");
-        setPw("");
-        setRole("");
-        setInvalid(result.message);
-      } else {
-        setInvalid("");
-        alert("logging in");
-      }
-    });
-  }
 
   return (
     <>
@@ -108,130 +72,120 @@ export default function SearchCar() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Layout>
-        <div className={`${styles.main}`}>
-          <Row style={{ height: "100vh", width: "100%" }}>
-            <Col
-              sm={12}
-              lg={20}
-              className="d-flex justify-content-center align-items-center"
+      <div className={`${styles.main}`}>
+        <Row style={{ height: "100vh", width: "100%" }}>
+          <Col
+            sm={12}
+            lg={20}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <div
+              className={`${styles.form_container} justify-content-center d-flex align-items-center`}
             >
-              <div
-                className={`${styles.form_container} justify-content-center d-flex align-items-center`}
-              >
-                <form style={{ width: "90%" }}>
-                  <h5 className={`p-2 ${styles.head} mb-1 text-center`}>
-                    บริการเช่ารถ
-                  </h5>
+              <form style={{ width: "90%" }}>
+                <h5 className={`p-2 ${styles.head} mb-1 text-center`}>
+                  บริการเช่ารถ
+                </h5>
 
-                  <br />
-                  <br />
+                <br />
+                <br />
 
-                  <Row>
-                    <Col sm={12} lg={6}>
-                      <Row className={`p-3 ${styles.role} mb-1 text-center`}>
-                        <Col
-                          sm={12}
-                          lg={5}
-                          style={{ borderRight: "1px solid black" }}
-                        >
-                          <h6>จังหวัด</h6>
-                          <Dropdown>
-                            <Dropdown.Toggle
-                              as={CustomToggle}
-                              id="dropdown-custom-components"
-                            >
+                <Row>
+                  <Col sm={12} lg={6}>
+                    <Row className={`p-3 ${styles.role} mb-1 text-center`}>
+                      <Col
+                        sm={12}
+                        lg={5}
+                        style={{ borderRight: "1px solid black" }}
+                      >
+                        <h6>จังหวัด</h6>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            as={CustomToggle}
+                            id="dropdown-custom-components"
+                          >
+                            กรุงเทพมหานคร
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu as={CustomMenu}>
+                            <Dropdown.Item eventKey="1">
                               กรุงเทพมหานคร
-                            </Dropdown.Toggle>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2">นนทบุรี</Dropdown.Item>
+                            <Dropdown.Item eventKey="3">ปทุมธานี</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                      <Col sm={12} lg={7}>
+                        <h6>สถานที่ส่งรับ-รถคืน</h6>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            as={CustomToggle}
+                            id="dropdown-custom-components"
+                          >
+                            คณะวิศวกรรมศาสตร์ จุฬาฯ
+                          </Dropdown.Toggle>
 
-                            <Dropdown.Menu as={CustomMenu}>
-                              <Dropdown.Item eventKey="1">
-                                กรุงเทพมหานคร
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey="2">
-                                นนทบุรี
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey="3">
-                                ปทุมธานี
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </Col>
-                        <Col sm={12} lg={7}>
-                          <h6>สถานที่ส่งรับ-รถคืน</h6>
-                          <Dropdown>
-                            <Dropdown.Toggle
-                              as={CustomToggle}
-                              id="dropdown-custom-components"
-                            >
+                          <Dropdown.Menu as={CustomMenu}>
+                            <Dropdown.Item eventKey="1">
                               คณะวิศวกรรมศาสตร์ จุฬาฯ
-                            </Dropdown.Toggle>
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2">
+                              คณะอักษรศาสตร์ จุฬาฯ
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="3">
+                              คณะบัญชีศาสตร์ จุฬาฯ
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                    </Row>
+                  </Col>
 
-                            <Dropdown.Menu as={CustomMenu}>
-                              <Dropdown.Item eventKey="1">
-                                คณะวิศวกรรมศาสตร์ จุฬาฯ
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey="2">
-                                คณะอักษรศาสตร์ จุฬาฯ
-                              </Dropdown.Item>
-                              <Dropdown.Item eventKey="3">
-                                คณะบัญชีศาสตร์ จุฬาฯ
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
+                  <Col sm={12} lg={4}>
+                    <div className={`p-2 ${styles.role} mb-3 text-center`}>
+                      <Row>
+                        <Col>วัน-เวลารับรถ</Col>
+                        <Col>
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                          />
                         </Col>
                       </Row>
-                    </Col>
+                      <Row>
+                        <Col>วัน-เวลาส่งรถ</Col>
+                        <Col>
+                          <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  </Col>
 
-                    <Col sm={12} lg={4}>
-                      <div className={`p-2 ${styles.role} mb-3 text-center`}>
-                        <Row>
-                          <Col>วัน-เวลารับรถ</Col>
-                          <Col>
-                            <DatePicker
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                            />
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col>วัน-เวลาส่งรถ</Col>
-                          <Col>
-                            <DatePicker
-                              selected={startDate}
-                              onChange={(date) => setStartDate(date)}
-                              dateFormat = "dd/MM/yyyy"
-                            />
-                          </Col>
-                        </Row>
-                      </div>
-                    </Col>
-
-                    <Col sm={12} lg={2}>
-                      <button
-                        type="button"
-                        onClick={(event: any) => handleSubmit(event)}
-                        className={`${styles.searchbtn}`}
-                      >
-                        {loading && (
-                          <>
-                            <Spinner
-                              className={`${styles.spinner}`}
-                              animation="border"
-                              variant="primary"
-                            />{" "}
-                          </>
-                        )}
-                        <b>ค้นหา</b>
-                      </button>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            </Col>
-          </Row>
-        </div>
-      </Layout>
+                  <Col sm={12} lg={2}>
+                    <button type="button" className={`${styles.searchbtn}`}>
+                      {loading && (
+                        <>
+                          <Spinner
+                            className={`${styles.spinner}`}
+                            animation="border"
+                            variant="primary"
+                          />{" "}
+                        </>
+                      )}
+                      <b>ค้นหา</b>
+                    </button>
+                  </Col>
+                </Row>
+              </form>
+            </div>
+          </Col>
+        </Row>
+      </div>
     </>
   );
 }
