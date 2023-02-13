@@ -2,15 +2,12 @@ import Link from "next/link";
 import styles from "../../styles/about.module.css";
 import Layout from "@/components/layout";
 import Head from "next/head";
-import { useEffect } from "react";
 
 export default function About() {
-  useEffect(() => {}, []);
-
   return (
     <>
       <Head>
-        <title>ไม่พบหน้าของค้นหา-VEHICLE4U</title>
+        <title>เกี่ยวกับเรา-VEHICLE4U</title>
       </Head>
 
       <Layout>

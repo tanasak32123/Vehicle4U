@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.css";
 import { SSRProvider } from "react-bootstrap";
+
 export default function App({
   Component,
   pageProps: { ...pageProps },
