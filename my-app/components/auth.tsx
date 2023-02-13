@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import getToken from "@/libs/getToken";
+import defaultOptions from "@/libs/apiDefault";
 
 const AuthContext = createContext({});
 
@@ -19,8 +19,17 @@ function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     async function loadUser() {
-      if (getToken()) {
+      if (sessionStorage.token) {
+        const response = await fetch("user", { ...defaultOptions });
+        const json = await response.json();
+        const { data: user } = json.user;
+        setUser(user);
+        console.log("Got user", user);
       }
+      setLoading(false);
     }
+    loadUser();
   }, []);
 }
+
+export const useAuth = () => useContext(AuthContext);

@@ -1,30 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type User = {
-  fname: string;
-  lname: string;
-  username: string;
-  password: string;
-  tel: string;
-  cid: string;
-  dlicense: string;
-  payment: string;
-  role: string;
-};
+import { getCookie } from "cookies-next";
+import defaultOptions from "../../libs/apiDefault";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const user: User = {
-    fname: "tanasak",
-    lname: "pusawatwong",
-    username: "tanasak32123",
-    password: "32123",
-    tel: "0818318928",
-    cid: "1102200182381",
-    dlicense: "1102200112345",
-    payment: "cash",
-    role: "provider",
+  const getUser = async () => {
+    const user = await fetch(`/user/${getCookie("id")}`, {
+      ...defaultOptions,
+      method: "GET",
+    });
+    return user;
   };
 
-  return res.status(200).json({ success: true, user });
+  return res.status(200).json({ success: true, user: getUser() });
 }
