@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
 import { useState } from "react";
 import useSWR from "swr";
+import defaultOptions from "@/libs/apiDefault";
 
 export default function EditProfile() {
   const fetcher = (url: any) => fetch(url).then((r) => r.json());
@@ -39,9 +40,7 @@ export default function EditProfile() {
     };
 
     const res = await fetch("/api/update_profile", {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...defaultOptions,
       method: "POST",
       body: JSON.stringify(req),
     }).then(async (res) => {

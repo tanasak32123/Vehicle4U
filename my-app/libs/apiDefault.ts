@@ -1,6 +1,8 @@
+import getToken from "./getToken";
+
 const defaultOptions = {
   headers: {
-    Authorization: "",
+    Authentication: `Bearer ${getToken}`,
     "Content-Type": "application/json",
   },
 };

@@ -1,10 +1,10 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import Layout from "../../../components/layout";
 import styles from "@/styles/signup/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import defaultOptions from "@/libs/apiDefault";
 
 export default function Register() {
   const router = useRouter();
@@ -62,9 +62,7 @@ export default function Register() {
 
     console.log(data);
     await fetch("/api/signup", {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...defaultOptions,
       method: "POST",
       body: JSON.stringify(data),
     }).then(async (res) => {

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { Session } from "@/interfaces/session";
+import defaultOptions from "@/libs/apiDefault";
 
 export default function Home() {
   const router = useRouter();
@@ -20,9 +21,7 @@ export default function Home() {
     event.preventDefault();
     setLoading(true);
     await fetch("/api/signin", {
-      headers: {
-        "Content-Type": "application/json",
-      },
+      ...defaultOptions,
       method: "POST",
       body: JSON.stringify({ username: username, password: pw, role }),
     }).then(async (response) => {
