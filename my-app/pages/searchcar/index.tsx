@@ -6,6 +6,7 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";
+import { AiOutlineSearch } from "react-icons/ai";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -59,7 +60,8 @@ const CustomMenu = React.forwardRef(
 );
 
 export default function SearchCar() {
-  const [startDate, setStartDate] = useState(null);
+  const [startDate1, setStartDate1] = useState(null);
+  const [startDate2, setStartDate2] = useState(null);
 
   let [loading, setLoading] = useState(false);
 
@@ -148,8 +150,9 @@ export default function SearchCar() {
                         <Col>วัน-เวลารับรถ</Col>
                         <Col>
                           <DatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
+                            selected={startDate1}
+                            onChange={(date1) => setStartDate1(date1)}
+                            dateFormat="dd/MM/yyyy"
                           />
                         </Col>
                       </Row>
@@ -157,8 +160,8 @@ export default function SearchCar() {
                         <Col>วัน-เวลาส่งรถ</Col>
                         <Col>
                           <DatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
+                            selected={startDate2}
+                            onChange={(date2) => setStartDate2(date2)}
                             dateFormat="dd/MM/yyyy"
                           />
                         </Col>
@@ -177,7 +180,9 @@ export default function SearchCar() {
                           />{" "}
                         </>
                       )}
+                      <AiOutlineSearch/>
                       <b>ค้นหา</b>
+                      
                     </button>
                   </Col>
                 </Row>
