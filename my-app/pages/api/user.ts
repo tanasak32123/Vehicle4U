@@ -5,8 +5,13 @@ import defaultOptions from "../../libs/apiDefault";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const getUser = async () => {
-    const user = await fetch(`/user/${getCookie("id")}`, {
+    const cookie: string = getCookie("user") as string;
+    const json = JSON.parse(cookie);
+    const user = await fetch(`/user/${json.id}`, {
       ...defaultOptions,
+      headers: {
+        Authorization: `Bearer ` + sessionStorage.getItem("token"),
+      },
       method: "GET",
     });
     return user;

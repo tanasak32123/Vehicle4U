@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -42,13 +43,13 @@ export default async function handler(
           });
         } else {
           const user = await response.json();
-          // setCookie("user", JSON.stringify(data), {
-          //   req,
-          //   res,
-          //   path: "/",
-          //   maxAge: 7200, // Expires after 2hr
-          //   sameSite: true,
-          // });
+          setCookie("user", JSON.stringify(data), {
+            req,
+            res,
+            path: "/",
+            maxAge: 18000, // Expires after 5hr
+            sameSite: true,
+          });
           return res.status(200).json({ success: true, data: user });
         }
       });
