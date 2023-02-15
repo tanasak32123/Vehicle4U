@@ -42,11 +42,11 @@ export class UserController {
     @Response() res,
   ) {
     try {
-      console.log(1);
+      // console.log(1);
       const user = await this.userService.update(id['id'], updateuserDto);
-      console.log(2);
+      // console.log(2);
       if (!user) {
-        return res.status(400);
+        return res.status(400).send({ message: 'must be unique' });
       }
       return res.status(200).send(user);
     } catch (err) {
