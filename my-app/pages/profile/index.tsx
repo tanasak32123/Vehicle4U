@@ -4,14 +4,15 @@ import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
-import { useState } from "react";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
+import User from "@/interfaces/User";
+import { getCookie } from "cookies-next";
 
 export default function EditProfile() {
-  const fetcher = (url: any) => fetch(url).then((r) => r.json());
-
   const router = useRouter();
+
+  const [data, setData] = useState({} as User);
 
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
@@ -21,43 +22,54 @@ export default function EditProfile() {
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
 
-  let [role, setRole] = useState("");
-  let [fName, setFName] = useState("");
-  let [lName, setLName] = useState("");
-  let [username, setUsername] = useState("");
-  let [password, setPassword] = useState("");
-  let [tel, setTel] = useState("");
-  let [cid, setCid] = useState("");
-  let [dlicense, setDlicense] = useState("");
-  let [payment, setPayment] = useState("");
+  const [fName, setFName] = useState("");
+  const [lName, setLName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [tel, setTel] = useState("");
+  const [cid, setCid] = useState("");
+  const [dlicense, setDlicense] = useState("");
+  const [payment, setPayment] = useState("");
 
-  const { data, error, isLoading } = useSWR("/api/user", fetcher);
+  useEffect(() => {
+    const getUser = async () => {
+      const cookies: string = getCookie("user") as string;
+      const json = JSON.parse(cookies);
+      const response = await fetch(`http://localhost:3000/user/${json.id}`, {
+        ...defaultOptions,
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStorage.token}`,
+        },
+      });
+      const user = await response.json();
+      setData(user);
+      setFName(user.first_name);
+      setLName(user.last_name);
+      setUsername(user.username);
+      setPassword(user.password);
+      setTel(user.tel);
+      setCid(user.citizen_id);
+      setDlicense(user.driven_license_id);
+      setPayment(user.payment_channel);
+    };
+    getUser();
+  }, []);
 
   async function handleUpdateProfile(type: String, ...values: String[]) {
     const req = {
       values,
       type,
     };
-
     const res = await fetch("/api/update_profile", {
       ...defaultOptions,
       method: "POST",
       body: JSON.stringify(req),
     }).then(async (res) => {
       const result = await res.json();
-
       console.log(result);
-
-      // if (res.status == 400) {
-      // } else {
-      //   alert("Updating an account");
-      //   router.push("/signup/success", "/signup");
-      // }
     });
   }
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
 
   return (
     <>
@@ -91,7 +103,7 @@ export default function EditProfile() {
                 <Col>
                   {/* name and last name */}
                   <p>
-                    {data.user.fname} {data.user.lname}
+                    {data.first_name} {data.last_name}
                   </p>
                 </Col>
                 <Col>
@@ -120,7 +132,7 @@ export default function EditProfile() {
                                 name="fname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.user.fname}
+                                value={data.first_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setFName(event.target.value)
@@ -133,7 +145,7 @@ export default function EditProfile() {
                                 name="lname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.user.lname}
+                                value={data.last_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setLName(event.target.value)
@@ -181,7 +193,7 @@ export default function EditProfile() {
               <Row>
                 <Col>
                   {/* username */}
-                  <p>{data.user.username}</p>
+                  <p>{data.username}</p>
                 </Col>
                 <Col>
                   <button
@@ -206,7 +218,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.user.username}
+                            value={data.username}
                             autoFocus
                             onChange={(event) => {
                               setUsername(event.target.value);
@@ -327,7 +339,7 @@ export default function EditProfile() {
               <Row>
                 <Col>
                   {/* telephone */}
-                  <p>{data.user.tel}</p>
+                  <p>{data.tel}</p>
                 </Col>
                 <Col>
                   <button
@@ -354,7 +366,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.user.tel}
+                            value={data.tel}
                             autoFocus
                             onChange={(event) => {
                               setTel(event.target.value);
@@ -400,7 +412,7 @@ export default function EditProfile() {
               <Row>
                 <Col>
                   {/* citizen id */}
-                  <p>{data.user.cid}</p>
+                  <p>{data.citizen_id}</p>
                 </Col>
                 <Col>
                   <button
@@ -427,7 +439,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.user.cid}
+                            value={data.citizen_id}
                             autoFocus
                             onChange={(event) => {
                               setCid(event.target.value);
@@ -462,7 +474,7 @@ export default function EditProfile() {
           <br />
 
           {/* Driven id */}
-          {data.user.role == "renter" && (
+          {data.is_renter && (
             <>
               <Container>
                 <div className="mb-2">
@@ -475,8 +487,10 @@ export default function EditProfile() {
                   <Row>
                     <Col>
                       {/* Driven id */}
-                      {!data.user.dlicense && <p>-</p>}
-                      {data.user.dlicense && <p>{data.user.dlicense}</p>}
+                      {!data.driven_license_id && <p>-</p>}
+                      {data.driven_license_id && (
+                        <p>{data.driven_license_id}</p>
+                      )}
                     </Col>
                     <Col>
                       <button
@@ -503,7 +517,7 @@ export default function EditProfile() {
                               <Form.Control
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.user.dlicense}
+                                value={data.driven_license_id}
                                 autoFocus
                                 onChange={(event) => {
                                   setDlicense(event.target.value);
@@ -540,7 +554,7 @@ export default function EditProfile() {
           )}
 
           {/* Payment */}
-          {data.user.role == "provider" && (
+          {data.is_provider && (
             <Container>
               <div className="mb-2">
                 <Row>
@@ -552,12 +566,12 @@ export default function EditProfile() {
                 <Row>
                   <Col>
                     {/* Payment */}
-                    {!data.user.payment && <p>-</p>}
-                    {data.user.payment && (
+                    {!data.payment_channel && <p>-</p>}
+                    {data.payment_channel && (
                       <p>
-                        {data.user.payment == "cash" && "เงินสด"}
-                        {data.user.payment == "promptpay" && "พร้อมเพย์"}
-                        {data.user.payment == "credit" && "เครดิต"}
+                        {data.payment_channel == "cash" && "เงินสด"}
+                        {data.payment_channel == "promptpay" && "พร้อมเพย์"}
+                        {data.payment_channel == "credit" && "เครดิต"}
                       </p>
                     )}
                   </Col>
@@ -589,7 +603,7 @@ export default function EditProfile() {
                                 setPayment(event.target.value);
                               }}
                               className={`${styles.input} mb-3`}
-                              defaultValue={data.user.payment}
+                              defaultValue={data.payment_channel}
                             >
                               <option value="promptpay">พร้อมเพย์</option>
                               <option value="credit">บัตรเครดิต</option>

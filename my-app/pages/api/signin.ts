@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 type Data = {
@@ -41,15 +42,18 @@ export default async function handler(
             message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
           });
         } else {
-          const user = await response.json();
-          // setCookie("user", JSON.stringify(data), {
-          //   req,
-          //   res,
-          //   path: "/",
-          //   maxAge: 7200, // Expires after 2hr
-          //   sameSite: true,
-          // });
-          return res.status(200).json({ success: true, data: user });
+          const json = await response.json();
+          setCookie("user", JSON.stringify(json.user), {
+            req,
+            res,
+            maxAge: 18000, // Expires after 5hr
+          });
+          setCookie("token", JSON.stringify(json.token.access_token), {
+            req,
+            res,
+            maxAge: 18000, // Expires after 5hr
+          });
+          return res.status(200).json({ success: true, data: json });
         }
       });
     } catch (err) {

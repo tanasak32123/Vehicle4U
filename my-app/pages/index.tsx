@@ -37,7 +37,7 @@ export default function Home() {
           password: result.data.user.password,
           access_token: result.data.token.access_token,
         };
-        console.log(result.data.user);
+        // console.log(result.data.user);
         sessionStorage.setItem("username", user.username);
         sessionStorage.setItem("password", user.password);
         sessionStorage.setItem("token", user.access_token);
