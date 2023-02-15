@@ -133,7 +133,7 @@ export default function EditProfile() {
                                 name="fname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={data.first_name}
+                                value={fName}
                                 autoFocus
                                 onChange={(event) =>
                                   setFName(event.target.value)
@@ -146,7 +146,7 @@ export default function EditProfile() {
                                 name="lname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={data.last_name}
+                                value={lName}
                                 autoFocus
                                 onChange={(event) =>
                                   setLName(event.target.value)
@@ -219,7 +219,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={data.username}
+                            value={username}
                             autoFocus
                             onChange={(event) => {
                               setUsername(event.target.value);
@@ -367,7 +367,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={data.tel}
+                            value={tel}
                             autoFocus
                             onChange={(event) => {
                               setTel(event.target.value);
@@ -440,7 +440,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={data.citizen_id}
+                            value={cid}
                             autoFocus
                             onChange={(event) => {
                               setCid(event.target.value);
@@ -488,10 +488,8 @@ export default function EditProfile() {
                   <Row>
                     <Col>
                       {/* Driven id */}
-                      {!data.driving_license_id && <p>-</p>}
-                      {data.driving_license_id && (
-                        <p>{data.driving_license_id}</p>
-                      )}
+                      {!dlicense && <p>-</p>}
+                      {dlicense && <p>{dlicense}</p>}
                     </Col>
                     <Col>
                       <button
@@ -518,7 +516,7 @@ export default function EditProfile() {
                               <Form.Control
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={data.driving_license_id}
+                                value={dlicense}
                                 autoFocus
                                 onChange={(event) => {
                                   setDlicense(event.target.value);
@@ -567,12 +565,12 @@ export default function EditProfile() {
                 <Row>
                   <Col>
                     {/* Payment */}
-                    {!data.payment_channel && <p>-</p>}
-                    {data.payment_channel && (
+                    {!payment && <p>-</p>}
+                    {payment && (
                       <p>
-                        {data.payment_channel == "cash" && "เงินสด"}
-                        {data.payment_channel == "promptpay" && "พร้อมเพย์"}
-                        {data.payment_channel == "credit" && "เครดิต"}
+                        {payment == "cash" && "เงินสด"}
+                        {payment == "promptpay" && "พร้อมเพย์"}
+                        {payment == "credit" && "เครดิต"}
                       </p>
                     )}
                   </Col>
@@ -604,7 +602,7 @@ export default function EditProfile() {
                                 setPayment(event.target.value);
                               }}
                               className={`${styles.input} mb-3`}
-                              defaultValue={data.payment_channel}
+                              defaultValue={payment}
                             >
                               <option value="promptpay">พร้อมเพย์</option>
                               <option value="credit">บัตรเครดิต</option>
