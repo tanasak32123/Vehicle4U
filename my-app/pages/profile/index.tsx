@@ -22,7 +22,6 @@ export default function EditProfile() {
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
 
-  const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -44,7 +43,15 @@ export default function EditProfile() {
         },
       });
       const user = await response.json();
-      console.log(user);
+      setData(user);
+      setFName(user.first_name);
+      setLName(user.last_name);
+      setUsername(user.username);
+      setPassword(user.password);
+      setTel(user.tel);
+      setCid(user.citizen_id);
+      setDlicense(user.driven_license_id);
+      setPayment(user.payment_channel);
     };
     getUser();
   }, []);
@@ -54,21 +61,13 @@ export default function EditProfile() {
       values,
       type,
     };
-
     const res = await fetch("/api/update_profile", {
       ...defaultOptions,
       method: "POST",
       body: JSON.stringify(req),
     }).then(async (res) => {
       const result = await res.json();
-
       console.log(result);
-
-      // if (res.status == 400) {
-      // } else {
-      //   alert("Updating an account");
-      //   router.push("/signup/success", "/signup");
-      // }
     });
   }
 
@@ -133,7 +132,7 @@ export default function EditProfile() {
                                 name="fname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.first_name}
+                                value={data.first_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setFName(event.target.value)
@@ -146,13 +145,12 @@ export default function EditProfile() {
                                 name="lname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.last_name}
+                                value={data.last_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setLName(event.target.value)
                                 }
                               />
-                              <div>shutter</div>
                             </Col>
                           </Row>
                         </Form.Group>
@@ -220,7 +218,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.username}
+                            value={data.username}
                             autoFocus
                             onChange={(event) => {
                               setUsername(event.target.value);
@@ -368,7 +366,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.tel}
+                            value={data.tel}
                             autoFocus
                             onChange={(event) => {
                               setTel(event.target.value);
@@ -441,7 +439,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            placeholder={data.citizen_id}
+                            value={data.citizen_id}
                             autoFocus
                             onChange={(event) => {
                               setCid(event.target.value);
@@ -519,7 +517,7 @@ export default function EditProfile() {
                               <Form.Control
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                placeholder={data.driven_license_id}
+                                value={data.driven_license_id}
                                 autoFocus
                                 onChange={(event) => {
                                   setDlicense(event.target.value);
@@ -556,7 +554,7 @@ export default function EditProfile() {
           )}
 
           {/* Payment */}
-          {data.is_provider == "provider" && (
+          {data.is_provider && (
             <Container>
               <div className="mb-2">
                 <Row>

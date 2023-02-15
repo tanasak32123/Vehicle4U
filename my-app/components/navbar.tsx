@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useRouter } from "next/router";
-import { getCookie, removeCookies } from "cookies-next";
+import { removeCookies } from "cookies-next";
 
 export default function Header() {
   const router = useRouter();
