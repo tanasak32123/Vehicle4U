@@ -78,7 +78,7 @@ export default async function handler(
     await fetch(`http://localhost:3000/auth/signup/${body.role}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
       },
       body: JSON.stringify(data),
     })
