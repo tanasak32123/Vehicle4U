@@ -1,5 +1,4 @@
-export default interface User {
-  id: string;
+export default interface UserProfile {
   username: string;
   password: string;
   first_name: string;
@@ -10,7 +9,4 @@ export default interface User {
   driving_license_id: string;
   is_renter: boolean;
   is_provider: boolean;
-  deleted_at: string;
-  updated_at: string;
-  created_at: string;
 }

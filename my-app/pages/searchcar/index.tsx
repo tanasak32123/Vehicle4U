@@ -8,10 +8,9 @@ import Form from "react-bootstrap/Form";
 
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
+const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
   <a
     href=""
-    ref={ref}
     onClick={(e) => {
       e.preventDefault();
       onClick(e);
@@ -25,16 +24,11 @@ const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
 // forwardRef again here!
 // Dropdown needs access to the DOM of the Menu to measure it
 const CustomMenu = React.forwardRef(
-  ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
+  ({ children, style, className, "aria-labelledby": labeledBy }: any, ref) => {
     const [value, setValue] = useState("");
 
     return (
-      <div
-        ref={ref}
-        style={style}
-        className={className}
-        aria-labelledby={labeledBy}
-      >
+      <div style={style} className={className} aria-labelledby={labeledBy}>
         <Form.Control
           autoFocus
           className="mx-3 my-2 w-auto"

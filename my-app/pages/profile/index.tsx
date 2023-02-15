@@ -6,13 +6,11 @@ import { useRouter } from "next/router";
 import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
-import User from "@/interfaces/User";
+import UserProfile from "@/interfaces/UserProfile";
 import { getCookie } from "cookies-next";
 
 export default function EditProfile() {
   const router = useRouter();
-
-  const [data, setData] = useState({} as User);
 
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
@@ -30,11 +28,27 @@ export default function EditProfile() {
   const [cid, setCid] = useState("");
   const [dlicense, setDlicense] = useState("");
   const [payment, setPayment] = useState("");
+  const [isRenter, setIsRenter] = useState(false);
+  const [isProvider, setIsProvider] = useState(false);
+
+  const data: UserProfile = {
+    username: username,
+    password: password,
+    first_name: fName,
+    last_name: lName,
+    tel: tel,
+    citizen_id: cid,
+    payment_channel: payment,
+    driving_license_id: dlicense,
+    is_renter: isRenter,
+    is_provider: isProvider,
+  };
 
   useEffect(() => {
     const getUser = async () => {
       const cookies: string = getCookie("user") as string;
       const json = JSON.parse(cookies);
+
       const response = await fetch(`http://localhost:3000/user/${json.id}`, {
         ...defaultOptions,
         method: "GET",
@@ -42,9 +56,9 @@ export default function EditProfile() {
           Authorization: `Bearer ${sessionStorage.token}`,
         },
       });
+
       const user = await response.json();
-      // console.log(user);
-      setData(user);
+
       setFName(user.first_name);
       setLName(user.last_name);
       setUsername(user.username);
@@ -53,19 +67,22 @@ export default function EditProfile() {
       setCid(user.citizen_id);
       setDlicense(user.driving_license_id);
       setPayment(user.payment_channel);
+      setIsRenter(user.is_renter);
+      setIsProvider(user.is_provider);
     };
     getUser();
   }, []);
 
   async function handleUpdateProfile(type: String, ...values: String[]) {
-    const req = {
+    const body = {
       values,
       type,
+      profile: data,
     };
-    const res = await fetch("/api/update_profile", {
+    await fetch("/api/update_profile", {
       ...defaultOptions,
       method: "POST",
-      body: JSON.stringify(req),
+      body: JSON.stringify(body),
     }).then(async (res) => {
       const result = await res.json();
       // console.log(result);
@@ -475,7 +492,7 @@ export default function EditProfile() {
           <br />
 
           {/* Driven id */}
-          {data.is_renter && (
+          {isRenter && (
             <>
               <Container>
                 <div className="mb-2">
@@ -553,7 +570,7 @@ export default function EditProfile() {
           )}
 
           {/* Payment */}
-          {data.is_provider && (
+          {isProvider && (
             <Container>
               <div className="mb-2">
                 <Row>
