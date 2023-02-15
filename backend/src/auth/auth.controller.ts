@@ -17,9 +17,6 @@ export class AuthController {
     @ApiResponse({ status: 201, description: 'Login Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid login credentials.'})
-    @ApiResponse({ status: 201, description: 'Login Successful.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 500, description: 'Invalid login credentials.'})
     async login(@Body() loginDto : LoginDto , @Response() res ) {
         const user = await this.authService.validateLogin(loginDto); 
         const token = await this.authService.login(loginDto);
@@ -38,6 +35,5 @@ export class AuthController {
         return res.status(200).send(user);
     }
 
-    
     
 }
