@@ -60,7 +60,6 @@ export default function Register() {
 
     setLoading(true);
 
-    console.log(data);
     await fetch("/api/signup", {
       ...defaultOptions,
       method: "POST",

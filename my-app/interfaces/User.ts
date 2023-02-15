@@ -7,7 +7,7 @@ export default interface User {
   tel: string;
   citizen_id: string;
   payment_channel: string;
-  driven_license_id: string;
+  driving_license_id: string;
   is_renter: string;
   is_provider: string;
   deleted_at: string;

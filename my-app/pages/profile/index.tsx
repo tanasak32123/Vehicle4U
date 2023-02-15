@@ -43,6 +43,7 @@ export default function EditProfile() {
         },
       });
       const user = await response.json();
+      // console.log(user);
       setData(user);
       setFName(user.first_name);
       setLName(user.last_name);
@@ -50,7 +51,7 @@ export default function EditProfile() {
       setPassword(user.password);
       setTel(user.tel);
       setCid(user.citizen_id);
-      setDlicense(user.driven_license_id);
+      setDlicense(user.driving_license_id);
       setPayment(user.payment_channel);
     };
     getUser();
@@ -67,7 +68,7 @@ export default function EditProfile() {
       body: JSON.stringify(req),
     }).then(async (res) => {
       const result = await res.json();
-      console.log(result);
+      // console.log(result);
     });
   }
 
@@ -487,9 +488,9 @@ export default function EditProfile() {
                   <Row>
                     <Col>
                       {/* Driven id */}
-                      {!data.driven_license_id && <p>-</p>}
-                      {data.driven_license_id && (
-                        <p>{data.driven_license_id}</p>
+                      {!data.driving_license_id && <p>-</p>}
+                      {data.driving_license_id && (
+                        <p>{data.driving_license_id}</p>
                       )}
                     </Col>
                     <Col>
@@ -517,7 +518,7 @@ export default function EditProfile() {
                               <Form.Control
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={data.driven_license_id}
+                                value={data.driving_license_id}
                                 autoFocus
                                 onChange={(event) => {
                                   setDlicense(event.target.value);
