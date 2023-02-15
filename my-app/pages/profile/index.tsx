@@ -2,6 +2,7 @@ import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { FiEdit2 } from "react-icons/fi";
+import { FaUndoAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
@@ -67,6 +68,9 @@ export default function EditProfile() {
       });
       const json = await response.json();
 
+      setIsRenter(json.is_renter);
+      setIsProvider(json.is_provider);
+
       setData({
         username: json.username,
         last_name: json.last_name,
@@ -92,10 +96,9 @@ export default function EditProfile() {
       citizen_id: cid || data.citizen_id,
       payment_channel: payment || data.payment_channel,
       driving_license_id: dlicense || data.driving_license_id,
-      is_renter: isRenter,
-      is_provider: isProvider,
+      is_renter: isRenter || data.is_renter,
+      is_provider: isProvider || data.is_provider,
     };
-    // console.log(profile);
 
     const body = {
       values,
@@ -619,88 +622,91 @@ export default function EditProfile() {
 
           {/* Payment */}
           {isProvider && (
-            <Container>
-              <div className="mb-2">
-                <Row>
-                  <label htmlFor="citizenID">
-                    <h6 className={styles.text}>ช่องทางการรับเงิน</h6>
-                  </label>
-                  <br />
-                </Row>
-                <Row>
-                  <Col>
-                    {/* Payment */}
-                    {!payment && <p>-</p>}
-                    {payment && (
-                      <p>
-                        {payment == "cash" && "เงินสด"}
-                        {payment == "promptpay" && "พร้อมเพย์"}
-                        {payment == "credit" && "เครดิต"}
-                      </p>
-                    )}
-                  </Col>
-                  <Col>
-                    <button
-                      className={styles.edit_button}
-                      onClick={() => setPaymentShow(true)}
-                    >
-                      <FiEdit2 /> &nbsp; แก้ไข
-                    </button>
-                    <Modal
-                      size="lg"
-                      show={paymentShow}
-                      onHide={() => setPaymentShow(false)}
-                      centered
-                    >
-                      <Modal.Header closeButton>
-                        <Modal.Title>ช่องทางการรับเงิน</Modal.Title>
-                      </Modal.Header>
-                      <Modal.Body>
-                        <Form>
-                          <Form.Group>
-                            <Form.Label className="mb-3">
-                              ช่องทางการรับเงิน
-                            </Form.Label>
-                            <Form.Select
-                              aria-label="paymnet method"
-                              onChange={(event) => {
-                                setPayment(event.target.value);
-                              }}
-                              className={`${styles.input} mb-3`}
-                              defaultValue={data.payment_channel}
-                            >
-                              <option value="promptpay">พร้อมเพย์</option>
-                              <option value="credit">บัตรเครดิต</option>
-                              <option value="cash">เงินสด</option>
-                            </Form.Select>
-                            <div className={styles.feedback}>
-                              {errors.invalid_payment}
-                            </div>
-                          </Form.Group>
-                        </Form>
-                      </Modal.Body>
-                      <Modal.Footer>
-                        <Button
-                          className={`${styles.close_btn} mx-2`}
-                          onClick={() => setPaymentShow(false)}
-                        >
-                          ปิด
-                        </Button>
-                        <Button
-                          className={`${styles.save_btn} mx-2`}
-                          onClick={() => {
-                            handleUpdateProfile("payment", payment);
-                          }}
-                        >
-                          แก้ไข
-                        </Button>
-                      </Modal.Footer>
-                    </Modal>
-                  </Col>
-                  <br />
-                </Row>
-              </div>
-            </Container>
+            <>
+              <Container>
+                <div className="mb-2">
+                  <Row>
+                    <label htmlFor="citizenID">
+                      <h6 className={styles.text}>ช่องทางการรับเงิน</h6>
+                    </label>
+                    <br />
+                  </Row>
+                  <Row>
+                    <Col>
+                      {/* Payment */}
+                      {!payment && <p>-</p>}
+                      {payment && (
+                        <p>
+                          {payment == "cash" && "เงินสด"}
+                          {payment == "promptpay" && "พร้อมเพย์"}
+                          {payment == "credit" && "เครดิต"}
+                        </p>
+                      )}
+                    </Col>
+                    <Col>
+                      <button
+                        className={styles.edit_button}
+                        onClick={() => setPaymentShow(true)}
+                      >
+                        <FiEdit2 /> &nbsp; แก้ไข
+                      </button>
+                      <Modal
+                        size="lg"
+                        show={paymentShow}
+                        onHide={() => setPaymentShow(false)}
+                        centered
+                      >
+                        <Modal.Header closeButton>
+                          <Modal.Title>ช่องทางการรับเงิน</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <Form>
+                            <Form.Group>
+                              <Form.Label className="mb-3">
+                                ช่องทางการรับเงิน
+                              </Form.Label>
+                              <Form.Select
+                                aria-label="paymnet method"
+                                onChange={(event) => {
+                                  setPayment(event.target.value);
+                                }}
+                                className={`${styles.input} mb-3`}
+                                defaultValue={data.payment_channel}
+                              >
+                                <option value="promptpay">พร้อมเพย์</option>
+                                <option value="credit">บัตรเครดิต</option>
+                                <option value="cash">เงินสด</option>
+                              </Form.Select>
+                              <div className={styles.feedback}>
+                                {errors.invalid_payment}
+                              </div>
+                            </Form.Group>
+                          </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                          <Button
+                            className={`${styles.close_btn} mx-2`}
+                            onClick={() => setPaymentShow(false)}
+                          >
+                            ปิด
+                          </Button>
+                          <Button
+                            className={`${styles.save_btn} mx-2`}
+                            onClick={() => {
+                              handleUpdateProfile("payment", payment);
+                            }}
+                          >
+                            แก้ไข
+                          </Button>
+                        </Modal.Footer>
+                      </Modal>
+                    </Col>
+                    <br />
+                  </Row>
+                </div>
+              </Container>
+              <br />
+            </>
           )}
 
           {/* Role */}
@@ -716,61 +722,18 @@ export default function EditProfile() {
                 <Col>
                   {/* role */}
                   {data.is_renter && <p>ผู้เช่า</p>}
+                  {data.is_provider && <p>ผู้ปล่อยเช่า</p>}
                 </Col>
                 <Col>
                   <button
-                    className={styles.edit_button}
-                    onClick={() => setCiShow(true)}
+                    className={styles.change_button}
+                    onClick={() => {
+                      setIsRenter(!isRenter);
+                      setIsProvider(!isProvider);
+                    }}
                   >
-                    <FiEdit2 /> &nbsp; แก้ไข
+                    <FaUndoAlt /> &nbsp; เปลี่ยน
                   </button>
-                  <Modal
-                    size="lg"
-                    show={ciShow}
-                    onHide={() => setCiShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>หมายเลขบัตรประชาชน</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Form.Label className="mb-3">
-                            หมายเลขบัตรประชาชน
-                          </Form.Label>
-                          <Form.Control
-                            className={`${styles.input} mb-3`}
-                            type="text"
-                            defaultValue={data.citizen_id}
-                            autoFocus
-                            onChange={(event) => {
-                              setCid(event.target.value);
-                            }}
-                          />
-                          <div className={styles.feedback}>
-                            {errors.invalid_cizitenID}
-                          </div>
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setCiShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("cid", cid);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
                 </Col>
                 <br />
               </Row>

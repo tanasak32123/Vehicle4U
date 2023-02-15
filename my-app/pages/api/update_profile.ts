@@ -128,7 +128,7 @@ export default async function handler(
     const user = JSON.parse(req.cookies.user!);
     const token = req.cookies.token!;
     const response = await fetch(
-      `http://localhost:3000/auth/editProfile/${user.id}`,
+      `http://localhost:3000/user/editProfile/${user.id}`,
       {
         ...defaultOptions,
         method: "PATCH",
@@ -137,9 +137,13 @@ export default async function handler(
         },
         body: JSON.stringify(body.profile),
       }
-    );
-
-    return res.status(200).json({ success: true, response });
+    ).then((response) => {
+      if (response.status != 200) {
+        return res.status(400).json({ success: false });
+      } else {
+        return res.status(200).json({ success: true, response });
+      }
+    });
   } else {
     res.redirect("/404");
   }
