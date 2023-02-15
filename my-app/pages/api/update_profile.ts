@@ -7,6 +7,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  function containsNumbers(str) {
+    return /[0-9]/.test(str);
+  }
+
+  function containsOnlyNumbers(str) {
+    return /^\d+$/.test(str);
+  }
+
+  function containsSpecialChars(str) {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+    return specialChars.test(str);
+  }
+
   if (req.method == "POST") {
     const errors: ErrorUpdateProfileValidate = {};
 
@@ -14,9 +27,19 @@ export default async function handler(
 
     if (body.type == "name") {
       if (!body.values["0"]) {
+        errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
+      } else {
+        if (containsSpecialChars(body.values["0"])) {
+          errors.fName = "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น";
+        }
       }
 
       if (!body.values["1"]) {
+        errors.lName = "** กรุณากรอกนามสกุลให้เรียบร้อย";
+      } else {
+        if (containsSpecialChars(body.values["1"])) {
+          errors.fName = "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น";
+        }
       }
     }
 
@@ -40,8 +63,13 @@ export default async function handler(
       // update tel
       if (!body.values["0"]) {
         errors.tel = "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย";
-      } else if (body.values["0"].length != 10) {
-        errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน";
+      } else {
+        if (body.values["0"].length != 10) {
+          errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน";
+        }
+        if (!containsOnlyNumbers(body.values["0"])) {
+          errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น";
+        }
       }
     }
 
@@ -49,8 +77,14 @@ export default async function handler(
       //update cid
       if (!body.values["0"]) {
         errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย";
-      } else if (body.values["0"].length != 13) {
-        errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
+      } else {
+        if (body.values["0"].length != 13) {
+          errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
+        }
+        if (!containsOnlyNumbers(body.values["0"])) {
+          errors.citizenID =
+            "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น";
+        }
       }
     }
 
@@ -58,8 +92,13 @@ export default async function handler(
       //update dlicense
       if (!body.values["0"]) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
-      } else if (body.values["0"].length != 8) {
-        errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
+      } else {
+        if (body.values["0"].length != 8) {
+          errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
+        }
+        if (!containsOnlyNumbers(body.values["0"])) {
+          errors.drivenID = "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น";
+        }
       }
     }
 
