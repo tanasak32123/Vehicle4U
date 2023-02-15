@@ -26,48 +26,55 @@ export default async function handler(
     const body = req.body;
 
     if (body.type == "name") {
-      if (!body.values["0"]) {
+      const first_name = body.values["0"];
+      if (!first_name) {
         errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
-      } else {
-        if (containsSpecialChars(body.values["0"])) {
-          errors.fName = "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น";
-        }
+      } else if (
+        containsSpecialChars(first_name) ||
+        containsNumbers(first_name)
+      ) {
+        errors.fName = "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น";
       }
 
-      if (!body.values["1"]) {
+      const last_name = body.values["1"];
+      if (!last_name) {
         errors.lName = "** กรุณากรอกนามสกุลให้เรียบร้อย";
-      } else {
-        if (containsSpecialChars(body.values["1"])) {
-          errors.fName = "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น";
-        }
+      } else if (
+        containsSpecialChars(last_name) ||
+        containsNumbers(last_name)
+      ) {
+        errors.fName = "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น";
       }
     }
 
     if (body.type == "username") {
       //update username
-      if (!body.values["0"]) {
+      const username = body.values["0"];
+      if (!username) {
         errors.username = "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย";
       }
     }
 
     if (body.type == "password") {
       //update password
-      if (!body.values["0"]) {
+      const password = body.values["0"];
+      if (!password) {
         errors.pw = "** กรุณากรอกรหัสผ่านให้เรียบร้อย";
-      } else if (body.values["0"].length < 6) {
+      } else if (password.length < 6) {
         errors.tel = "** password ของคุณมีความยาวน้อยกว่า 6 ตัว";
       }
     }
 
     if (body.type == "tel") {
       // update tel
-      if (!body.values["0"]) {
+      const tel = body.values["0"];
+      if (!tel) {
         errors.tel = "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย";
       } else {
-        if (body.values["0"].length != 10) {
+        if (tel.length != 10) {
           errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน";
         }
-        if (!containsOnlyNumbers(body.values["0"])) {
+        if (!containsOnlyNumbers(tel)) {
           errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น";
         }
       }
@@ -75,13 +82,14 @@ export default async function handler(
 
     if (body.type == "cid") {
       //update cid
-      if (!body.values["0"]) {
+      const cid = body.values["0"];
+      if (!cid) {
         errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย";
       } else {
-        if (body.values["0"].length != 13) {
+        if (cid.length != 13) {
           errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
         }
-        if (!containsOnlyNumbers(body.values["0"])) {
+        if (!containsOnlyNumbers(cid)) {
           errors.citizenID =
             "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น";
         }
@@ -90,13 +98,14 @@ export default async function handler(
 
     if (body.type == "dlicense") {
       //update dlicense
-      if (!body.values["0"]) {
+      const d_license_id = body.values["0"];
+      if (!d_license_id) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
       } else {
-        if (body.values["0"].length != 8) {
+        if (d_license_id.length != 8) {
           errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
         }
-        if (!containsOnlyNumbers(body.values["0"])) {
+        if (!containsOnlyNumbers(d_license_id)) {
           errors.drivenID = "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น";
         }
       }
@@ -104,7 +113,8 @@ export default async function handler(
 
     if (body.type == "payment") {
       //update payment
-      if (!body.values["0"]) {
+      const payment = body.values["0"];
+      if (!payment) {
         errors.payment = "** กรุณาเลือกวิธีการรับเงินให้เรียบร้อย";
       }
     }

@@ -75,6 +75,8 @@ export default function EditProfile() {
         citizen_id: json.citizen_id,
         driving_license_id: json.driving_license_id,
         payment_channel: json.payment_channel,
+        is_provider: json.is_provider,
+        is_renter: json.is_renter,
       } as UserProfile);
     };
     getUser();
@@ -93,7 +95,7 @@ export default function EditProfile() {
       is_renter: isRenter,
       is_provider: isProvider,
     };
-    console.log(profile);
+    // console.log(profile);
 
     const body = {
       values,
