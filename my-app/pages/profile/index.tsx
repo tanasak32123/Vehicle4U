@@ -702,6 +702,80 @@ export default function EditProfile() {
               </div>
             </Container>
           )}
+
+          {/* Role */}
+          <Container>
+            <div className="mb-2">
+              <Row>
+                <label htmlFor="role">
+                  <h6 className={styles.text}>บทบาท</h6>
+                </label>
+                <br />
+              </Row>
+              <Row>
+                <Col>
+                  {/* role */}
+                  {data.is_renter && <p>ผู้เช่า</p>}
+                </Col>
+                <Col>
+                  <button
+                    className={styles.edit_button}
+                    onClick={() => setCiShow(true)}
+                  >
+                    <FiEdit2 /> &nbsp; แก้ไข
+                  </button>
+                  <Modal
+                    size="lg"
+                    show={ciShow}
+                    onHide={() => setCiShow(false)}
+                    centered
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title>หมายเลขบัตรประชาชน</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <Form>
+                        <Form.Group>
+                          <Form.Label className="mb-3">
+                            หมายเลขบัตรประชาชน
+                          </Form.Label>
+                          <Form.Control
+                            className={`${styles.input} mb-3`}
+                            type="text"
+                            defaultValue={data.citizen_id}
+                            autoFocus
+                            onChange={(event) => {
+                              setCid(event.target.value);
+                            }}
+                          />
+                          <div className={styles.feedback}>
+                            {errors.invalid_cizitenID}
+                          </div>
+                        </Form.Group>
+                      </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                      <Button
+                        className={`${styles.close_btn} mx-2`}
+                        onClick={() => setCiShow(false)}
+                      >
+                        ปิด
+                      </Button>
+                      <Button
+                        className={`${styles.save_btn} mx-2`}
+                        onClick={() => {
+                          handleUpdateProfile("cid", cid);
+                        }}
+                      >
+                        แก้ไข
+                      </Button>
+                    </Modal.Footer>
+                  </Modal>
+                </Col>
+                <br />
+              </Row>
+            </div>
+          </Container>
         </div>
       </div>
     </>
