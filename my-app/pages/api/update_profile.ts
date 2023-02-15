@@ -21,7 +21,7 @@ export default async function handler(
   }
 
   if (req.method == "POST") {
-    const errors: ErrorUpdateProfileValidate = {};
+    const errors = {} as ErrorUpdateProfileValidate;
 
     const body = req.body;
 
@@ -127,21 +127,22 @@ export default async function handler(
 
     const user = JSON.parse(req.cookies.user!);
     const token = req.cookies.token!;
-    const response = await fetch(
-      `http://localhost:3000/user/editProfile/${user.id}`,
-      {
-        ...defaultOptions,
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body.profile),
-      }
-    ).then((response) => {
+    await fetch(`http://localhost:3000/user/editProfile/${user.id}`, {
+      ...defaultOptions,
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body.profile),
+    }).then(async (response) => {
+      const result = await response.json();
       if (response.status != 200) {
-        return res.status(400).json({ success: false });
+        return res.status(400).json({ success: false, errors, result });
       } else {
-        return res.status(200).json({ success: true, response });
+        return res.status(200).json({
+          success: true,
+          result,
+        });
       }
     });
   } else {

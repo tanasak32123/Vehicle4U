@@ -70,9 +70,18 @@ export default function EditProfile() {
 
       setIsRenter(json.is_renter);
       setIsProvider(json.is_provider);
+      setFName(json.first_name);
+      setLName(json.last_name);
+      setUsername(json.username);
+      setPassword(json.password);
+      setTel(json.tel);
+      setCid(json.citizen_id);
+      setDlicense(json.driving_license_id);
+      setPayment(json.payment_channel);
 
       setData({
         username: json.username,
+        password: json.password,
         last_name: json.last_name,
         first_name: json.first_name,
         tel: json.tel,
@@ -88,16 +97,16 @@ export default function EditProfile() {
 
   async function handleUpdateProfile(type: String, ...values: String[]) {
     const profile: UserProfile = {
-      username: username || data.username,
-      password: password || data.password,
-      first_name: fName || data.first_name,
-      last_name: lName || data.last_name,
-      tel: tel || data.tel,
-      citizen_id: cid || data.citizen_id,
-      payment_channel: payment || data.payment_channel,
-      driving_license_id: dlicense || data.driving_license_id,
-      is_renter: isRenter || data.is_renter,
-      is_provider: isProvider || data.is_provider,
+      username: username,
+      password: password,
+      first_name: fName,
+      last_name: lName,
+      tel: tel,
+      citizen_id: cid,
+      payment_channel: payment,
+      driving_license_id: dlicense,
+      is_renter: isRenter,
+      is_provider: isProvider,
     };
 
     const body = {
@@ -113,16 +122,30 @@ export default function EditProfile() {
     }).then(async (res) => {
       const result = await res.json();
       if (res.status != 200) {
-        setInvalid_fName(result.errors.fName);
-        setInvalid_lName(result.errors.lName);
-        setInvalid_username(result.errors.username);
-        setInvalid_pw(result.errors.pw);
-        setInvalid_tel(result.errors.tel);
-        setInvalid_citizenID(result.errors.citizenID);
-        setInvalid_drivenID(result.errors.drivenID);
-        setInvalid_payment(result.errors.payment);
+        const errors = result.errors;
+        setInvalid_fName(errors.fName);
+        setInvalid_lName(errors.lName);
+        setInvalid_username(errors.username);
+        setInvalid_pw(errors.pw);
+        setInvalid_tel(errors.tel);
+        setInvalid_citizenID(errors.citizenID);
+        setInvalid_drivenID(errors.drivenID);
+        setInvalid_payment(errors.payment);
+      } else {
+        const user = result.result;
+        setData({
+          username: user.username,
+          password: user.password,
+          last_name: user.last_name,
+          first_name: user.first_name,
+          tel: user.tel,
+          citizen_id: user.citizen_id,
+          driving_license_id: user.driving_license_id,
+          payment_channel: user.payment_channel,
+          is_provider: user.is_provider,
+          is_renter: user.is_renter,
+        });
       }
-      // console.log(result);
     });
   }
 
@@ -634,12 +657,12 @@ export default function EditProfile() {
                   <Row>
                     <Col>
                       {/* Payment */}
-                      {!payment && <p>-</p>}
-                      {payment && (
+                      {!data.payment_channel && <p>-</p>}
+                      {data.payment_channel && (
                         <p>
-                          {payment == "cash" && "เงินสด"}
-                          {payment == "promptpay" && "พร้อมเพย์"}
-                          {payment == "credit" && "เครดิต"}
+                          {data.payment_channel == "cash" && "เงินสด"}
+                          {data.payment_channel == "promptpay" && "พร้อมเพย์"}
+                          {data.payment_channel == "credit" && "เครดิต"}
                         </p>
                       )}
                     </Col>
@@ -673,6 +696,9 @@ export default function EditProfile() {
                                 className={`${styles.input} mb-3`}
                                 defaultValue={data.payment_channel}
                               >
+                                <option value="">
+                                  กรุณาเลือกช่องทางการรับเงิน
+                                </option>
                                 <option value="promptpay">พร้อมเพย์</option>
                                 <option value="credit">บัตรเครดิต</option>
                                 <option value="cash">เงินสด</option>
@@ -721,8 +747,8 @@ export default function EditProfile() {
               <Row>
                 <Col>
                   {/* role */}
-                  {data.is_renter && <p>ผู้เช่า</p>}
-                  {data.is_provider && <p>ผู้ปล่อยเช่า</p>}
+                  {isRenter && <p>ผู้เช่า</p>}
+                  {isProvider && <p>ผู้ปล่อยเช่า</p>}
                 </Col>
                 <Col>
                   <button
@@ -730,6 +756,12 @@ export default function EditProfile() {
                     onClick={() => {
                       setIsRenter(!isRenter);
                       setIsProvider(!isProvider);
+                      if (isProvider && !data.payment_channel) {
+                        setPaymentShow(true);
+                      }
+                      if (isRenter && !data.driving_license_id) {
+                        setDlicenseShow(true);
+                      }
                     }}
                   >
                     <FaUndoAlt /> &nbsp; เปลี่ยน

@@ -46,12 +46,15 @@ export default async function handler(
           setCookie("user", JSON.stringify(json.user), {
             req,
             res,
-            maxAge: 18000, // Expires after 5hr
           });
-          setCookie("token", JSON.stringify(json.token.access_token), {
+          setCookie("token", json.token.access_token, {
             req,
             res,
             maxAge: 18000, // Expires after 5hr
+          });
+          setCookie("role", data.role, {
+            req,
+            res,
           });
           return res.status(200).json({ success: true, data: json });
         }

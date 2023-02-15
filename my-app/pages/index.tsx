@@ -36,13 +36,12 @@ export default function Home() {
           username: result.data.user.username,
           password: result.data.user.password,
           access_token: result.data.token.access_token,
+          role: role,
         };
-        // console.log(result.data.user);
         sessionStorage.setItem("username", user.username);
         sessionStorage.setItem("password", user.password);
         sessionStorage.setItem("token", user.access_token);
-        // const cookie: string = getCookie("user") as string;
-        // const user = JSON.parse(cookie);
+        sessionStorage.setItem("role", user.role);
         setInvalid("");
         router.push("/about_us");
       }
