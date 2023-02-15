@@ -9,7 +9,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags,ApiResponse } from '@nestjs/swagger';
-import { UpdateDto } from 'src/auth/dto/update.dto';
 
 // /localhost/username/role?=provider 
 @ApiTags('Vehicle4U')
@@ -25,10 +24,20 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id')
-    async update(@Body() updateUserDto: UpdateUserDto, @Response() res) {
-        const user = await this.userService.update(updateUserDto);
-        return res.status(200).send(user);
+    @Patch('/editProfile/:id')
+    @ApiResponse({ status: 201, description: 'User Updation Successful.'})
+    @ApiResponse({ status: 403, description: 'Forbidden.'})
+    @ApiResponse({ status: 400, description: 'Bad Request.'})
+    async update(@Param() id: number, @Body() updateuserDto : UpdateUserDto, @Response() res) {
+        try {
+            console.log(1)
+            const user = await this.userService.update(id["id"], updateuserDto);
+            console.log(2)
+            if (!user){return res.status(400)}
+            return res.status(200).send(user);
+        }catch(err){
+            console.log(err);
+        }
     }
     
     @UseGuards(JwtAuthGuard)
