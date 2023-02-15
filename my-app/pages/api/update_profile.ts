@@ -1,7 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ErrorUpdateProfileValidate } from "../../interfaces/ErrorUpdateProfileValidate";
-import defaultOptions from "../../libs/apiDefault";
 
 export default async function handler(
   req: NextApiRequest,
@@ -127,24 +126,33 @@ export default async function handler(
 
     const user = JSON.parse(req.cookies.user!);
     const token = req.cookies.token!;
-    await fetch(`http://localhost:3000/user/editProfile/${user.id}`, {
-      ...defaultOptions,
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body.profile),
-    }).then(async (response) => {
-      const result = await response.json();
-      if (response.status != 200) {
-        return res.status(400).json({ success: false, errors, result });
-      } else {
-        return res.status(200).json({
-          success: true,
-          result,
-        });
+
+    console.log(body.profile);
+
+    const response = await fetch(
+      `http://localhost:3000/user/editProfile/${user.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body.profile),
       }
-    });
+    );
+
+    const json = await response.json();
+    if (response.status != 200) {
+      return res.status(400).json({
+        success: false,
+        errors,
+      });
+    } else {
+      return res.status(200).json({
+        success: true,
+        result: json,
+      });
+    }
   } else {
     res.redirect("/404");
   }

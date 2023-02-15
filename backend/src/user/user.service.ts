@@ -33,7 +33,7 @@ export class UserService {
       if (user && user.id != id) {
         return null;
       }
-      
+
       const user1 = await this.userRepository.findOneBy({
         citizen_id: updateuserDto.citizen_id,
       });

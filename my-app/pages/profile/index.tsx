@@ -21,6 +21,7 @@ export default function EditProfile() {
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
 
+  const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -55,6 +56,9 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
+    if (!sessionStorage.token) {
+      router.push("/");
+    }
     const getUser = async () => {
       const cookies: string = getCookie("user") as string;
       const obj = JSON.parse(cookies);
@@ -67,6 +71,8 @@ export default function EditProfile() {
         },
       });
       const json = await response.json();
+
+      setRole(getCookie("role") as string);
 
       setIsRenter(json.is_renter);
       setIsProvider(json.is_provider);
@@ -131,8 +137,31 @@ export default function EditProfile() {
         setInvalid_citizenID(errors.citizenID);
         setInvalid_drivenID(errors.drivenID);
         setInvalid_payment(errors.payment);
+        setFName(data.first_name);
+        setLName(data.last_name);
+        setUsername(data.username);
+        setPassword(data.password);
+        setTel(data.tel);
+        setCid(data.citizen_id);
+        setDlicense(data.driving_license_id);
+        setPayment(data.payment_channel);
       } else {
         const user = result.result;
+        setInvalid_fName("");
+        setInvalid_lName("");
+        setInvalid_username("");
+        setInvalid_pw("");
+        setInvalid_tel("");
+        setInvalid_citizenID("");
+        setInvalid_drivenID("");
+        setInvalid_payment("");
+        setNmShow(false);
+        setUnShow(false);
+        setPassShow(false);
+        setCiShow(false);
+        setDlicenseShow(false);
+        setTelShow(false);
+        setPaymentShow(false);
         setData({
           username: user.username,
           password: user.password,
@@ -564,7 +593,7 @@ export default function EditProfile() {
           <br />
 
           {/* Driven id */}
-          {isRenter && (
+          {role == "renter" && (
             <>
               <Container>
                 <div className="mb-2">
@@ -577,8 +606,10 @@ export default function EditProfile() {
                   <Row>
                     <Col>
                       {/* Driven id */}
-                      {!dlicense && <p>-</p>}
-                      {dlicense && <p>{dlicense}</p>}
+                      {!data.driving_license_id && <p>-</p>}
+                      {data.driving_license_id && (
+                        <p>{data.driving_license_id}</p>
+                      )}
                     </Col>
                     <Col>
                       <button
@@ -644,7 +675,7 @@ export default function EditProfile() {
           )}
 
           {/* Payment */}
-          {isProvider && (
+          {role == "provider" && (
             <>
               <Container>
                 <div className="mb-2">
@@ -747,20 +778,24 @@ export default function EditProfile() {
               <Row>
                 <Col>
                   {/* role */}
-                  {isRenter && <p>ผู้เช่า</p>}
-                  {isProvider && <p>ผู้ปล่อยเช่า</p>}
+                  {role == "renter" && <p>ผู้เช่า</p>}
+                  {role == "provider" && <p>ผู้ปล่อยเช่า</p>}
                 </Col>
                 <Col>
                   <button
                     className={styles.change_button}
                     onClick={() => {
-                      setIsRenter(!isRenter);
-                      setIsProvider(!isProvider);
-                      if (isProvider && !data.payment_channel) {
-                        setPaymentShow(true);
+                      if (role == "renter") {
+                        setRole("provider");
+                        if (!data.payment_channel) {
+                          setPaymentShow(true);
+                        }
                       }
-                      if (isRenter && !data.driving_license_id) {
-                        setDlicenseShow(true);
+                      if (role == "provider") {
+                        setRole("renter");
+                        if (!data.driving_license_id) {
+                          setDlicenseShow(true);
+                        }
                       }
                     }}
                   >
