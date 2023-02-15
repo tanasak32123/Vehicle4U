@@ -31,6 +31,26 @@ export default function EditProfile() {
   const [dlicense, setDlicense] = useState("");
   const [payment, setPayment] = useState("");
 
+  let [invalid_fName, setInvalid_fName] = useState("");
+  let [invalid_lName, setInvalid_lName] = useState("");
+  let [invalid_username, setInvalid_username] = useState("");
+  let [invalid_pw, setInvalid_pw] = useState("");
+  let [invalid_tel, setInvalid_tel] = useState("");
+  let [invalid_cizitenID, setInvalid_citizenID] = useState("");
+  let [invalid_drivenID, setInvalid_drivenID] = useState("");
+  let [invalid_payment, setInvalid_payment] = useState("");
+
+  let errors = {
+    invalid_fName,
+    invalid_lName,
+    invalid_username,
+    invalid_pw,
+    invalid_tel,
+    invalid_cizitenID,
+    invalid_drivenID,
+    invalid_payment,
+  };
+
   useEffect(() => {
     const getUser = async () => {
       const cookies: string = getCookie("user") as string;
@@ -68,7 +88,17 @@ export default function EditProfile() {
       body: JSON.stringify(req),
     }).then(async (res) => {
       const result = await res.json();
-      // console.log(result);
+      if (res.status != 200) {
+        setInvalid_fName(result.errors.fName);
+        setInvalid_lName(result.errors.lName);
+        setInvalid_username(result.errors.username);
+        setInvalid_pw(result.errors.pw);
+        setInvalid_tel(result.errors.tel);
+        setInvalid_citizenID(result.errors.citizenID);
+        setInvalid_drivenID(result.errors.drivenID);
+        setInvalid_payment(result.errors.payment);
+      }
+      console.log(result);
     });
   }
 
@@ -139,6 +169,9 @@ export default function EditProfile() {
                                   setFName(event.target.value)
                                 }
                               />
+                              <div className={styles.feedback}>
+                                {errors.invalid_fName}
+                              </div>
                             </Col>
                             <Col>
                               <Form.Label className="mb-3">นามสกุล</Form.Label>
@@ -152,6 +185,9 @@ export default function EditProfile() {
                                   setLName(event.target.value)
                                 }
                               />
+                              <div className={styles.feedback}>
+                                {errors.invalid_lName}
+                              </div>
                             </Col>
                           </Row>
                         </Form.Group>
@@ -225,6 +261,9 @@ export default function EditProfile() {
                               setUsername(event.target.value);
                             }}
                           />
+                          <div className={styles.feedback}>
+                            {errors.invalid_username}
+                          </div>
                         </Form.Group>
                       </Form>
                     </Modal.Body>
@@ -253,7 +292,7 @@ export default function EditProfile() {
           </Container>
           <br />
 
-          {/* username */}
+          {/* password */}
           <Container>
             <div className="mb-2">
               <Row>
@@ -264,7 +303,6 @@ export default function EditProfile() {
               </Row>
               <Row>
                 <Col>
-                  {/* username */}
                   <input
                     type="password"
                     value="*******"
@@ -301,6 +339,9 @@ export default function EditProfile() {
                             }}
                           />
                         </Form.Group>
+                        <div className={styles.feedback}>
+                          {errors.invalid_pw}
+                        </div>
                       </Form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -373,6 +414,9 @@ export default function EditProfile() {
                               setTel(event.target.value);
                             }}
                           />
+                          <div className={styles.feedback}>
+                            {errors.invalid_tel}
+                          </div>
                         </Form.Group>
                       </Form>
                     </Modal.Body>
@@ -446,6 +490,9 @@ export default function EditProfile() {
                               setCid(event.target.value);
                             }}
                           />
+                          <div className={styles.feedback}>
+                            {errors.invalid_cizitenID}
+                          </div>
                         </Form.Group>
                       </Form>
                     </Modal.Body>
@@ -522,6 +569,9 @@ export default function EditProfile() {
                                   setDlicense(event.target.value);
                                 }}
                               />
+                              <div className={styles.feedback}>
+                                {errors.invalid_drivenID}
+                              </div>
                             </Form.Group>
                           </Form>
                         </Modal.Body>
@@ -608,6 +658,9 @@ export default function EditProfile() {
                               <option value="credit">บัตรเครดิต</option>
                               <option value="cash">เงินสด</option>
                             </Form.Select>
+                            <div className={styles.feedback}>
+                              {errors.invalid_payment}
+                            </div>
                           </Form.Group>
                         </Form>
                       </Modal.Body>
