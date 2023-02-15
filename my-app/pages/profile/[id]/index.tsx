@@ -139,7 +139,6 @@ export default function EditProfile() {
                                   setLName(event.target.value)
                                 }
                               />
-                              <div>shutter</div>
                             </Col>
                           </Row>
                         </Form.Group>
