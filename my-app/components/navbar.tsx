@@ -2,31 +2,26 @@ import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useRouter } from "next/router";
+import { removeCookies } from "cookies-next";
 
 export default function Header() {
   const router = useRouter();
 
-  const [login, setLogin] = useState("register");
+  const [login, setLogin] = useState(false);
+  const [username, setUsername] = useState("");
 
   const userLogout = () => {
-    sessionStorage.removeItem("status_login");
-  };
-
-  const userLogin = () => {
-    sessionStorage.setItem("status_login", "login");
-    router.push("/about_us");
+    removeCookies("token");
+    sessionStorage.clear();
+    router.push("/");
   };
 
   useEffect(() => {
-    var status = sessionStorage.getItem("status_login");
-    if (status == null || status == "register") {
-      status = "register";
-    } else {
-      status = "login";
+    setLogin(sessionStorage.token != undefined);
+    if (login) {
+      setUsername(sessionStorage.username);
     }
-    sessionStorage.setItem("status_login", status);
-    setLogin(status);
-  }, []);
+  });
 
   return (
     <>
@@ -38,22 +33,22 @@ export default function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
+              <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
               <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
             </Nav>
 
             <Nav>
-              {login == "register" && (
+              {!login && (
                 <>
-                  <Nav.Link onClick={userLogin}>เข้าสู่ระบบ</Nav.Link>
+                  <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
                   <Nav.Link href="/signup" className={`${styles.signup}`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
               )}
-              {login == "login" && (
+              {login && (
                 <>
-                  <NavDropdown title="โปรไฟล์" id="collasible-nav-dropdown">
+                  <NavDropdown title={username} id="collasible-nav-dropdown">
                     <NavDropdown.Item href={`/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>

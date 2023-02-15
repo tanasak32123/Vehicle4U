@@ -1,34 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type Data = {
-  username: string;
-  password: string;
-  first_name: string;
-  last_name: string;
-  tel: string;
-  citizen_id: string;
-  is_provider: boolean;
-  is_renter: boolean;
-  payment_channel: string;
-  driving_license_id: string;
-};
+import { InputSignupValidate } from "../../interfaces/InputSignupValidate";
+import { ErrorSignupValidate } from "../../interfaces/ErrorSignupValidate";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    const errors = {
-      fName: "",
-      lName: "",
-      username: "",
-      pw: "",
-      tel: "",
-      citizenID: "",
-      drivenID: "",
-      payment: "",
-    };
+    const errors: ErrorSignupValidate = {};
 
     const body = req.body;
 
@@ -65,8 +45,8 @@ export default async function handler(
     if (body.role == "renter") {
       if (!body.drivenID) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
-      } else if (body.drivenID.length != 13) {
-        errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
+      } else if (body.drivenID.length != 8) {
+        errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
       }
     }
 
@@ -82,7 +62,7 @@ export default async function handler(
       }
     }
 
-    const data: Data = {
+    const data: InputSignupValidate = {
       username: body.username,
       password: body.pw,
       first_name: body.fName,
@@ -95,27 +75,33 @@ export default async function handler(
       driving_license_id: body.drivenID,
     };
 
-    await fetch("http://localhost:3000/user", {
+    await fetch(`http://localhost:3000/auth/signup/${body.role}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
       },
       body: JSON.stringify(data),
     })
-      .then((response) => {
-        if (response.status == 200) {
-          return res
-            .status(201)
-            .json({ success: true, data, status: response.status });
+      .then(async (response) => {
+        const body = await response.json();
+
+        if (response.status != 200) {
+          if (body.message == "username exist") {
+            errors.username = "** ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+          } else {
+            errors.citizenID = "** หมายเลขบัตรประชนนี้ถูกใช้แล้ว";
+          }
+          return res.status(406).json({
+            success: false,
+            errors,
+          });
         } else {
-          res.redirect("/500");
+          return res.status(201).json({ success: true });
         }
       })
       .catch((err) => {
         res.redirect("/500");
       });
-
-    // return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }

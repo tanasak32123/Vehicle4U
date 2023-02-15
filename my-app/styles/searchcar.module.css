@@ -1,5 +1,5 @@
 .main {
-  background-image: url("../public/bgHome.png");
+  background-image: url("../public/bgSearchCar.png");
   object-fit: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -7,7 +7,7 @@
 }
 
 .form_container {
-  background-color: rgba(84, 90, 139, 0.85);
+  background-color: rgba(84, 90, 139, 0.9);
   border-radius: 70px;
   padding: 50px 15px;
   width: 80%;
@@ -75,11 +75,43 @@
   color: #cccfcd;
 }
 
-.role {
+.head {
   background: rgba(254, 249, 235, 0.7);
   box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
   border-radius: 5.5px;
   width: 140px;
   border: 1px solid black;
   color: #545a8b;
+}
+
+.role {
+  background: rgba(254, 249, 235, 0.7);
+  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+
+  border: 1px solid black;
+  color: #545a8b;
+}
+
+.searchbtn {
+  background: rgba(254, 249, 235, 0.7);
+  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+  width: 140px;
+  border: 1px solid black;
+  color: #545a8b;
+  border: none;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 24px;
+}
+
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.react-datepicker__time-list {
+  padding-left: 0;
 }

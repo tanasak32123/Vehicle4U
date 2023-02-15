@@ -1,71 +1,85 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Param, Post,Patch, Response, UseGuards } from '@nestjs/common';
-import { UserService } from './user.service'
-import { CreateUserDto } from './dto/create-user.dto'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Patch,
+  Response,
+  UseGuards,
+} from '@nestjs/common';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity'
+import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
-import { ApiTags,ApiResponse } from '@nestjs/swagger';
 
-// /localhost/username/role?=provider 
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
+
+// /localhost/username/role?=provider
 @ApiTags('Vehicle4U')
 @Controller('user')
-
 export class UserController {
-    constructor(private readonly userService: UserService) {}
-    
-    @Post()
-    async create(@Body() createUserDto: CreateUserDto, @Response() res)  {
-        const user = await this.userService.create(createUserDto);
-        return res.status(200).send(user);
-    }
+  constructor(private readonly userService: UserService) {}
 
-    @UseGuards(JwtAuthGuard)
-    @Patch('/editProfile/:id')
-    @ApiResponse({ status: 201, description: 'User Updation Successful.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 400, description: 'Bad Request.'})
-    async update(@Param() id: number, @Body() updateuserDto : UpdateUserDto, @Response() res) {
-        try {
-            console.log(1)
-            const user = await this.userService.update(id["id"], updateuserDto);
-            console.log(2)
-            if (!user){return res.status(400)}
-            return res.status(200).send(user);
-        }catch(err){
-            console.log(err);
-        }
-    }
-    
-    @UseGuards(JwtAuthGuard)
-    @Get(':id')
-    async findUser(@Param('id') id: string): Promise<User> {
-        return await this.userService.findOne(id);
-    }
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto, @Response() res) {
+    const user = await this.userService.create(createUserDto);
+    return res.status(200).send(user);
+  }
 
-    @UseGuards(JwtAuthGuard)
-    @ApiResponse({ status: 200, description: 'Successful.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 404, description: 'User not found.'})
-    @Get('/getroles/:id')
-    async getRoles(@Param("id") id: string ,@Response() res): Promise<UserStatusDto> {
-        const x = await this.userService.checkState(id);
-        if (x == null){
-            return res.status(404).send({
-                statusCode: 404,
-                message: "user not found"
-            })
-        }
-        return res.status(200).send({
-            statusCode : 200,
-            message: "success",
-            isProvider : x.isProvider,
-            isRenter : x.isRenter
-        })
+  @UseGuards(JwtAuthGuard)
+  @Patch('/editProfile/:id')
+  @ApiResponse({ status: 201, description: 'User Updation Successful.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  async update(
+    @Param() id: number,
+    @Body() updateuserDto: UpdateUserDto,
+    @Response() res,
+  ) {
+    try {
+      const user = await this.userService.update(id['id'], updateuserDto);
+      if (!user) {
+        return res.status(400).send({ message: 'not found' });
+      }
+      return res.status(200).send(user);
+    } catch (err) {
+      console.log(err);
     }
+  }
 
-    
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async findUser(@Param('id') id: string): Promise<User> {
+    return await this.userService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Successful.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @Get('/getroles/:id')
+  async getRoles(
+    @Param('id') id: string,
+    @Response() res,
+  ): Promise<UserStatusDto> {
+    const x = await this.userService.checkState(id);
+    if (x == null) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: 'user not found',
+      });
+    }
+    return res.status(200).send({
+      statusCode: 200,
+      message: 'success',
+      isProvider: x.isProvider,
+      isRenter: x.isRenter,
+    });
+  }
 }
