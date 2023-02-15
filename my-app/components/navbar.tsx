@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useRouter } from "next/router";
+import { getCookie, removeCookies } from "cookies-next";
 
 export default function Header() {
   const router = useRouter();
 
-  let [login, setLogin] = useState(false);
-  let [username, setUsername] = useState("");
+  const [login, setLogin] = useState(false);
+  const [username, setUsername] = useState("");
 
   const userLogout = () => {
+    removeCookies("token");
     sessionStorage.clear();
     router.push("/");
   };
@@ -31,7 +33,7 @@ export default function Header() {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="#search">ค้นหายานพาหนะ</Nav.Link>
+              <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
               <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
             </Nav>
 
