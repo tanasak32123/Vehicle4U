@@ -23,10 +23,23 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async update(updateUserDto: UpdateUserDto): Promise<User> {
-    await this.userRepository.update({username: updateUserDto.username},updateUserDto);
-    return await this.userRepository.findOneBy({username: updateUserDto.username});
+  async update(id: number, updateuserDto: UpdateUserDto): Promise<User> {
+    console.log("in")
+    console.log(id["id"])
+    const user = await this.userRepository.findOneBy({id:id["id"]});
+    if(!user){
+      return null
+    }
+    else{
+      const user = await this.userRepository.findOneBy({username:updateuserDto.username});
+      if(user){
+        return null
+      }
+    }
+    await this.userRepository.update({id: id},updateuserDto);
+    return await this.userRepository.findOneBy({id: id});
   }
+
   
   async findOne(id: string): Promise<User> {
     return await this.userRepository.findOneBy({ id: parseInt(id) });
