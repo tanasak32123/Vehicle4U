@@ -9,7 +9,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags,ApiResponse } from '@nestjs/swagger';
-import { UpdateDto } from 'src/auth/dto/update.dto';
 
 // /localhost/username/role?=provider 
 @ApiTags('Vehicle4U')
