@@ -76,9 +76,6 @@ export class AuthService {
         return await this.userRepository.findOneBy({id: id});
       }
 
-      async validateUpdate(id: number, updateDto: UpdateDto) {
-        
-      }
       
 
       
