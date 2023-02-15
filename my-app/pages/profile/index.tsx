@@ -31,18 +31,7 @@ export default function EditProfile() {
   const [isRenter, setIsRenter] = useState(false);
   const [isProvider, setIsProvider] = useState(false);
 
-  const data: UserProfile = {
-    username: username,
-    password: password,
-    first_name: fName,
-    last_name: lName,
-    tel: tel,
-    citizen_id: cid,
-    payment_channel: payment,
-    driving_license_id: dlicense,
-    is_renter: isRenter,
-    is_provider: isProvider,
-  };
+  const [data, setData] = useState({} as UserProfile);
 
   let [invalid_fName, setInvalid_fName] = useState("");
   let [invalid_lName, setInvalid_lName] = useState("");
@@ -67,38 +56,51 @@ export default function EditProfile() {
   useEffect(() => {
     const getUser = async () => {
       const cookies: string = getCookie("user") as string;
-      const json = JSON.parse(cookies);
+      const obj = JSON.parse(cookies);
 
-      const response = await fetch(`http://localhost:3000/user/${json.id}`, {
+      const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
         ...defaultOptions,
         method: "GET",
         headers: {
           Authorization: `Bearer ${sessionStorage.token}`,
         },
       });
+      const json = await response.json();
 
-      const user = await response.json();
-
-      setFName(user.first_name);
-      setLName(user.last_name);
-      setUsername(user.username);
-      setPassword(user.password);
-      setTel(user.tel);
-      setCid(user.citizen_id);
-      setDlicense(user.driving_license_id);
-      setPayment(user.payment_channel);
-      setIsRenter(user.is_renter);
-      setIsProvider(user.is_provider);
+      setData({
+        username: json.username,
+        last_name: json.last_name,
+        first_name: json.first_name,
+        tel: json.tel,
+        citizen_id: json.citizen_id,
+        driving_license_id: json.driving_license_id,
+        payment_channel: json.payment_channel,
+      } as UserProfile);
     };
     getUser();
   }, []);
 
   async function handleUpdateProfile(type: String, ...values: String[]) {
+    const profile: UserProfile = {
+      username: username || data.username,
+      password: password || data.password,
+      first_name: fName || data.first_name,
+      last_name: lName || data.last_name,
+      tel: tel || data.tel,
+      citizen_id: cid || data.citizen_id,
+      payment_channel: payment || data.payment_channel,
+      driving_license_id: dlicense || data.driving_license_id,
+      is_renter: isRenter,
+      is_provider: isProvider,
+    };
+    console.log(profile);
+
     const body = {
       values,
       type,
-      profile: data,
+      profile,
     };
+
     await fetch("/api/update_profile", {
       ...defaultOptions,
       method: "POST",
@@ -115,7 +117,7 @@ export default function EditProfile() {
         setInvalid_drivenID(result.errors.drivenID);
         setInvalid_payment(result.errors.payment);
       }
-      console.log(result);
+      // console.log(result);
     });
   }
 
@@ -180,7 +182,7 @@ export default function EditProfile() {
                                 name="fname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={fName}
+                                defaultValue={data.first_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setFName(event.target.value)
@@ -196,7 +198,7 @@ export default function EditProfile() {
                                 name="lname"
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={lName}
+                                defaultValue={data.last_name}
                                 autoFocus
                                 onChange={(event) =>
                                   setLName(event.target.value)
@@ -221,7 +223,6 @@ export default function EditProfile() {
                         className={`${styles.save_btn} mx-2`}
                         onClick={() => {
                           handleUpdateProfile("name", fName, lName);
-                          setNmShow(false);
                         }}
                       >
                         แก้ไข
@@ -272,7 +273,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={username}
+                            defaultValue={data.username}
                             autoFocus
                             onChange={(event) => {
                               setUsername(event.target.value);
@@ -295,7 +296,6 @@ export default function EditProfile() {
                         className={`${styles.save_btn} mx-2`}
                         onClick={() => {
                           handleUpdateProfile("username", username);
-                          setUnShow(false);
                         }}
                       >
                         แก้ไข
@@ -372,7 +372,6 @@ export default function EditProfile() {
                         className={`${styles.save_btn} mx-2`}
                         onClick={() => {
                           handleUpdateProfile("password", password);
-                          setPassShow(false);
                         }}
                       >
                         แก้ไข
@@ -425,7 +424,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={tel}
+                            defaultValue={data.tel}
                             autoFocus
                             onChange={(event) => {
                               setTel(event.target.value);
@@ -448,7 +447,6 @@ export default function EditProfile() {
                         className={`${styles.save_btn} mx-2`}
                         onClick={() => {
                           handleUpdateProfile("tel", tel);
-                          setTelShow(false);
                         }}
                       >
                         แก้ไข
@@ -501,7 +499,7 @@ export default function EditProfile() {
                           <Form.Control
                             className={`${styles.input} mb-3`}
                             type="text"
-                            value={cid}
+                            defaultValue={data.citizen_id}
                             autoFocus
                             onChange={(event) => {
                               setCid(event.target.value);
@@ -524,7 +522,6 @@ export default function EditProfile() {
                         className={`${styles.save_btn} mx-2`}
                         onClick={() => {
                           handleUpdateProfile("cid", cid);
-                          setCiShow(false);
                         }}
                       >
                         แก้ไข
@@ -580,7 +577,7 @@ export default function EditProfile() {
                               <Form.Control
                                 className={`${styles.input} mb-3`}
                                 type="text"
-                                value={dlicense}
+                                defaultValue={data.driving_license_id}
                                 autoFocus
                                 onChange={(event) => {
                                   setDlicense(event.target.value);
@@ -603,7 +600,6 @@ export default function EditProfile() {
                             className={`${styles.save_btn} mx-2`}
                             onClick={() => {
                               handleUpdateProfile("dlicense", dlicense);
-                              setDlicenseShow(false);
                             }}
                           >
                             แก้ไข
@@ -669,7 +665,7 @@ export default function EditProfile() {
                                 setPayment(event.target.value);
                               }}
                               className={`${styles.input} mb-3`}
-                              defaultValue={payment}
+                              defaultValue={data.payment_channel}
                             >
                               <option value="promptpay">พร้อมเพย์</option>
                               <option value="credit">บัตรเครดิต</option>
@@ -692,7 +688,6 @@ export default function EditProfile() {
                           className={`${styles.save_btn} mx-2`}
                           onClick={() => {
                             handleUpdateProfile("payment", payment);
-                            setPaymentShow(false);
                           }}
                         >
                           แก้ไข
