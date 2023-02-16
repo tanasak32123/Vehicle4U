@@ -3,6 +3,25 @@ import { FiEdit2 } from "react-icons/fi";
 import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
 import { FaUndoAlt } from "react-icons/fa";
 
+function refreshValue(inputs: any, setShowModalFunc: any) {
+  inputs.map((e: any) => {
+    e.setValue(e.value);
+  });
+  setShowModalFunc(true);
+}
+
+async function handleSubmit(
+  name: string,
+  newData: string[],
+  handleupdateFunc: any,
+  setShowModalFunc: any
+) {
+  const success: boolean = await handleupdateFunc(name, newData);
+  if (success) {
+    setShowModalFunc(false);
+  }
+}
+
 export default function InputForm({
   name,
   label,
@@ -59,7 +78,7 @@ export default function InputForm({
                   className={`${styles.edit_button}`}
                   onClick={() => {
                     name != "role"
-                      ? setShowModalFunc(true)
+                      ? refreshValue(inputs, setShowModalFunc)
                       : handleupdateFunc.handleChangeRole();
                   }}
                 >
@@ -106,11 +125,15 @@ export default function InputForm({
                                     name={element.name}
                                     className={`${styles.input} mb-3`}
                                     type="text"
-                                    defaultValue={element.value}
+                                    value={element.currentValue}
                                     autoFocus
-                                    onChange={(event) =>
-                                      element.setValue(event.target.value)
-                                    }
+                                    onChange={(event) => {
+                                      element.setValue(
+                                        event.target.value
+                                          .trim()
+                                          .replace("-", "")
+                                      );
+                                    }}
                                   />
                                 ) : (
                                   <Form.Select
@@ -154,7 +177,12 @@ export default function InputForm({
                     <Button
                       className={`${styles.save_btn} mx-2`}
                       onClick={() => {
-                        handleupdateFunc(name, newData);
+                        handleSubmit(
+                          name,
+                          newData,
+                          handleupdateFunc,
+                          setShowModalFunc
+                        );
                       }}
                     >
                       แก้ไข

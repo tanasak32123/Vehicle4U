@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ErrorUpdateProfileValidate } from "../../interfaces/ErrorUpdateProfileValidate";
 
 function containsNumbers(str) {
   return /[0-9]/.test(str);
@@ -15,121 +14,138 @@ function containsSpecialChars(str) {
   return specialChars.test(str);
 }
 
+function validateUsername(str) {
+  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  return usernameRegex.test(str);
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    const errors = {} as ErrorUpdateProfileValidate;
-
     const body = req.body;
-
-    console.log(body);
 
     if (body.type == "name") {
       const first_name = body.values["0"];
-      if (!first_name) {
-        errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
+      const last_name = body.values["1"];
+      if (!first_name && !last_name) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกชื่อและนามสกุลของคุณให้เรียบร้อย" });
+      } else if (!last_name) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกนามสกุลให้เรียบร้อย" });
+      } else if (!first_name) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกชื่อจริงให้เรียบร้อย" });
       } else if (
         containsSpecialChars(first_name) ||
         containsNumbers(first_name)
       ) {
-        errors.fName = "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น";
-      }
-
-      const last_name = body.values["1"];
-      if (!last_name) {
-        errors.lName = "** กรุณากรอกนามสกุลให้เรียบร้อย";
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น" });
       } else if (
         containsSpecialChars(last_name) ||
         containsNumbers(last_name)
       ) {
-        errors.fName = "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น";
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น" });
       }
     }
 
     if (body.type == "username") {
-      //update username
       const username = body.values["0"];
       if (!username) {
-        errors.username = "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย";
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย" });
+      } else if (validateUsername(username)) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณาเพิ่มตัวอักษรในชื่อผู้ใช้" });
       }
     }
 
     if (body.type == "password") {
-      //update password
       const password = body.values["0"];
       if (!password) {
-        errors.pw = "** กรุณากรอกรหัสผ่านให้เรียบร้อย";
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกรหัสผ่านให้เรียบร้อย" });
       } else if (password.length < 6) {
-        errors.tel = "** password ของคุณมีความยาวน้อยกว่า 6 ตัว";
+        return res
+          .status(400)
+          .json({ message: "** password ของคุณมีความยาวน้อยกว่า 6 ตัว" });
       }
     }
 
     if (body.type == "tel") {
-      // update tel
       const tel = body.values["0"];
       if (!tel) {
-        errors.tel = "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย";
-      } else {
-        if (tel.length != 10) {
-          errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน";
-        }
-        if (!containsOnlyNumbers(tel)) {
-          errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น";
-        }
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย" });
+      } else if (tel.length != 10) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
+      } else if (!containsOnlyNumbers(tel)) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น" });
       }
     }
 
     if (body.type == "cid") {
-      //update cid
       const cid = body.values["0"];
       if (!cid) {
-        errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย";
-      } else {
-        if (cid.length != 13) {
-          errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
-        }
-        if (!containsOnlyNumbers(cid)) {
-          errors.citizenID =
-            "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น";
-        }
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย" });
+      } else if (!containsOnlyNumbers(cid)) {
+        return res.status(400).json({
+          message: "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น",
+        });
+      } else if (cid.length != 13) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน" });
       }
     }
 
     if (body.type == "dlicense") {
-      //update dlicense
       const d_license_id = body.values["0"];
       if (!d_license_id) {
-        errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
-      } else {
-        if (d_license_id.length != 8) {
-          errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
-        }
-        if (!containsOnlyNumbers(d_license_id)) {
-          errors.drivenID = "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น";
-        }
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย" });
+      } else if (!containsOnlyNumbers(d_license_id)) {
+        return res.status(400).json({
+          message: "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น",
+        });
+      } else if (d_license_id.length != 8) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน" });
       }
     }
 
     if (body.type == "payment") {
-      //update payment
       const payment = body.values["0"];
       if (!payment) {
-        errors.payment = "** กรุณาเลือกวิธีการรับเงินให้เรียบร้อย";
-      }
-    }
-
-    for (let e in errors) {
-      if (errors[`${e}`] != "") {
-        return res.status(400).json({ success: false, errors });
+        return res
+          .status(400)
+          .json({ message: "** กรุณาเลือกช่องทางการรับเงินให้เรียบร้อย" });
       }
     }
 
     const user = JSON.parse(req.cookies.user!);
     const token = req.cookies.token!;
-
-    console.log(body.profile);
 
     const response = await fetch(
       `http://localhost:3000/user/editProfile/${user.id}`,
@@ -147,7 +163,7 @@ export default async function handler(
     if (response.status != 200) {
       return res.status(400).json({
         success: false,
-        errors,
+        message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
       });
     } else {
       return res.status(200).json({

@@ -1,52 +1,43 @@
-import Head from "next/head";
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { Session } from "@/interfaces/session";
 import defaultOptions from "@/libs/apiDefault";
+import { useAuthContext } from "@/components/auth";
+import Head from "next/head";
 
 export default function Home() {
+  const { user, isAuthenticate, loading, authAction }: any = useAuthContext();
+
   const router = useRouter();
 
   let [username, setUsername] = useState("");
-  let [pw, setPw] = useState("");
+  let [password, setPassword] = useState("");
   let [role, setRole] = useState("");
   let [invalid, setInvalid] = useState("");
-  let [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    setLoading(true);
-    await fetch("/api/signin", {
+    const response = await fetch("/api/signin", {
       ...defaultOptions,
       method: "POST",
-      body: JSON.stringify({ username: username, password: pw, role }),
-    }).then(async (response) => {
-      const result = await response.json();
-
-      setLoading(false);
-
-      if (response.status != 200) {
-        setInvalid(result.message);
-      } else {
-        const user: Session = {
-          username: result.data.user.username,
-          password: result.data.user.password,
-          access_token: result.data.token.access_token,
-          role: role,
-        };
-        sessionStorage.setItem("username", user.username);
-        sessionStorage.setItem("password", user.password);
-        sessionStorage.setItem("token", user.access_token);
-        sessionStorage.setItem("role", user.role);
-        setInvalid("");
-        router.push("/about_us");
-      }
+      body: JSON.stringify({ username: username, password, role }),
     });
+    const json = await response.json();
+    if (response.status != 200) {
+      setInvalid(json.message);
+    } else {
+      const response = await authAction.login(username, password, role);
+      if (response.success) {
+        router.push("/searchcar");
+      } else {
+        setInvalid(response.message);
+      }
+    }
   }
+
   return (
     <>
       <Head>
@@ -105,8 +96,8 @@ export default function Home() {
                   id="password"
                   name="password"
                   className={styles.input}
-                  value={pw}
-                  onChange={(event) => setPw(event.target.value)}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                 />
                 <br />
                 <br />

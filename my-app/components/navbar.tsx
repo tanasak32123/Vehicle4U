@@ -3,25 +3,16 @@ import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useRouter } from "next/router";
 import { removeCookies } from "cookies-next";
+import { useAuthContext } from "./auth";
 
 export default function Header() {
+  const { user, isAuthenticate, loading, authAction }: any = useAuthContext();
+
   const router = useRouter();
 
-  const [login, setLogin] = useState(false);
-  const [username, setUsername] = useState("");
-
-  const userLogout = () => {
-    removeCookies("token");
-    sessionStorage.clear();
-    router.push("/");
-  };
-
   useEffect(() => {
-    setLogin(sessionStorage.token != undefined);
-    if (login) {
-      setUsername(sessionStorage.username);
-    }
-  });
+    console.log(user);
+  }, []);
 
   return (
     <>
@@ -38,7 +29,7 @@ export default function Header() {
             </Nav>
 
             <Nav>
-              {!login && (
+              {!isAuthenticate && (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
                   <Nav.Link href="/signup" className={`${styles.signup}`}>
@@ -46,14 +37,17 @@ export default function Header() {
                   </Nav.Link>
                 </>
               )}
-              {login && (
+              {isAuthenticate && (
                 <>
-                  <NavDropdown title={username} id="collasible-nav-dropdown">
+                  <NavDropdown
+                    title={user.username}
+                    id="collasible-nav-dropdown"
+                  >
                     <NavDropdown.Item href={`/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="/" onClick={userLogout}>
+                    <NavDropdown.Item href="/" onClick={authAction.logout()}>
                       ล็อกเอาท์
                     </NavDropdown.Item>
                   </NavDropdown>

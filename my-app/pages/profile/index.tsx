@@ -1,17 +1,18 @@
 import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
-import { FiEdit2 } from "react-icons/fi";
-import { FaUndoAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
+import UserModel from "@/interfaces/UserModel";
 import UserProfile from "@/interfaces/UserProfile";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookies } from "cookies-next";
 import InputForm from "@/components/profileForm";
+import { useAuthContext } from "@/components/auth";
 
 export default function EditProfile() {
+  const { user, loading, authAction }: any = useAuthContext();
+
   const router = useRouter();
 
   const [nmShow, setNmShow] = useState(false);
@@ -34,7 +35,7 @@ export default function EditProfile() {
   const [isRenter, setIsRenter] = useState(false);
   const [isProvider, setIsProvider] = useState(false);
 
-  const [data, setData] = useState({} as UserProfile);
+  const [data, setData] = useState({} as UserModel);
 
   const [invalidInput, setInvalidInput] = useState("");
 
@@ -50,6 +51,47 @@ export default function EditProfile() {
     is_renter: isRenter,
     is_provider: isProvider,
   };
+
+  async function handleUpdateProfile(type: String, values: String[]) {
+    const body = {
+      values,
+      type,
+      profile,
+    };
+
+    const response = await fetch("/api/update_profile", {
+      ...defaultOptions,
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    const json = await response.json();
+    const updatedUser = json.result;
+
+    if (response.status != 200) {
+      setInvalidInput(json.message);
+      return false;
+    } else {
+      setInvalidInput("");
+      setCookies("user", updatedUser);
+      return true;
+    }
+  }
+
+  function handleChangeRole() {
+    if (role == "renter") {
+      setRole("provider");
+      if (!data.payment_channel) {
+        setPaymentShow(true);
+      }
+    }
+    if (role == "provider") {
+      setRole("renter");
+      if (!data.driving_license_id) {
+        setDlicenseShow(true);
+      }
+    }
+  }
 
   useEffect(() => {
     if (!sessionStorage.token) {
@@ -69,6 +111,7 @@ export default function EditProfile() {
       const json = await response.json();
 
       setRole(getCookie("role") as string);
+      setCookies("user", json);
 
       setIsRenter(json.is_renter);
       setIsProvider(json.is_provider);
@@ -81,79 +124,10 @@ export default function EditProfile() {
       setDlicense(json.driving_license_id);
       setPayment(json.payment_channel);
 
-      setData({
-        username: json.username,
-        password: json.password,
-        last_name: json.last_name,
-        first_name: json.first_name,
-        tel: json.tel,
-        citizen_id: json.citizen_id,
-        driving_license_id: json.driving_license_id,
-        payment_channel: json.payment_channel,
-        is_provider: json.is_provider,
-        is_renter: json.is_renter,
-      } as UserProfile);
+      setData(json);
     };
     getUser();
   }, []);
-
-  async function handleUpdateProfile(type: String, values: String[]) {
-    const body = {
-      values,
-      type,
-      profile,
-    };
-
-    await fetch("/api/update_profile", {
-      ...defaultOptions,
-      method: "POST",
-      body: JSON.stringify(body),
-    }).then(async (res) => {
-      const result = await res.json();
-      if (res.status != 200) {
-        const errors = result.errors;
-        setFName(data.first_name);
-        setLName(data.last_name);
-        setUsername(data.username);
-        setPassword(data.password);
-        setTel(data.tel);
-        setCid(data.citizen_id);
-        setDlicense(data.driving_license_id);
-        setPayment(data.payment_channel);
-        return false;
-      } else {
-        const user = result.result;
-        setData({
-          username: user.username,
-          password: user.password,
-          last_name: user.last_name,
-          first_name: user.first_name,
-          tel: user.tel,
-          citizen_id: user.citizen_id,
-          driving_license_id: user.driving_license_id,
-          payment_channel: user.payment_channel,
-          is_provider: user.is_provider,
-          is_renter: user.is_renter,
-        });
-        return true;
-      }
-    });
-  }
-
-  function handleChangeRole() {
-    if (role == "renter") {
-      setRole("provider");
-      if (!data.payment_channel) {
-        setPaymentShow(true);
-      }
-    }
-    if (role == "provider") {
-      setRole("renter");
-      if (!data.driving_license_id) {
-        setDlicenseShow(true);
-      }
-    }
-  }
 
   return (
     <>
@@ -185,12 +159,14 @@ export default function EditProfile() {
                 name: "first_name",
                 label: "ชื่อ",
                 value: data.first_name,
+                currentValue: fName,
                 setValue: setFName,
               },
               {
                 name: "last_name",
                 label: "นามสกุล",
                 value: data.last_name,
+                currentValue: lName,
                 setValue: setLName,
               },
             ]}
@@ -211,6 +187,7 @@ export default function EditProfile() {
                 name: "username",
                 label: "ชื่อผู้ใช้",
                 value: data.username,
+                currentValue: username,
                 setValue: setUsername,
               },
             ]}
@@ -251,6 +228,7 @@ export default function EditProfile() {
                 name: "tel",
                 label: "เบอร์โทรศัพท์",
                 value: data.tel,
+                currentValue: tel,
                 setValue: setTel,
               },
             ]}
@@ -271,6 +249,7 @@ export default function EditProfile() {
                 name: "tel",
                 label: "หมายเลขบัตรประชาชน",
                 value: data.citizen_id,
+                currentValue: cid,
                 setValue: setCid,
               },
             ]}
@@ -291,6 +270,7 @@ export default function EditProfile() {
                 name: "driving_license_id",
                 label: "หมายเลขใบขับขี่",
                 value: data.driving_license_id,
+                currentValue: dlicense,
                 setValue: setDlicense,
               },
             ]}
