@@ -2,27 +2,29 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ErrorUpdateProfileValidate } from "../../interfaces/ErrorUpdateProfileValidate";
 
+function containsNumbers(str) {
+  return /[0-9]/.test(str);
+}
+
+function containsOnlyNumbers(str) {
+  return /^\d+$/.test(str);
+}
+
+function containsSpecialChars(str) {
+  const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return specialChars.test(str);
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  function containsNumbers(str) {
-    return /[0-9]/.test(str);
-  }
-
-  function containsOnlyNumbers(str) {
-    return /^\d+$/.test(str);
-  }
-
-  function containsSpecialChars(str) {
-    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
-    return specialChars.test(str);
-  }
-
   if (req.method == "POST") {
     const errors = {} as ErrorUpdateProfileValidate;
 
     const body = req.body;
+
+    console.log(body);
 
     if (body.type == "name") {
       const first_name = body.values["0"];

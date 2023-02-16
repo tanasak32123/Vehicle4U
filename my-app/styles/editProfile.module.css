@@ -36,15 +36,6 @@
 }
 
 .edit_button {
-  width: 80px;
-  float: right;
-  background-color: transparent;
-  border: 0cm;
-  color: rgb(95, 95, 240);
-}
-
-.change_button {
-  width: 100px;
   float: right;
   background-color: transparent;
   border: 0cm;

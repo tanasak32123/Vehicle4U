@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
 import UserProfile from "@/interfaces/UserProfile";
 import { getCookie } from "cookies-next";
+import InputForm from "@/components/profileForm";
 
 export default function EditProfile() {
   const router = useRouter();
@@ -35,24 +36,19 @@ export default function EditProfile() {
 
   const [data, setData] = useState({} as UserProfile);
 
-  let [invalid_fName, setInvalid_fName] = useState("");
-  let [invalid_lName, setInvalid_lName] = useState("");
-  let [invalid_username, setInvalid_username] = useState("");
-  let [invalid_pw, setInvalid_pw] = useState("");
-  let [invalid_tel, setInvalid_tel] = useState("");
-  let [invalid_cizitenID, setInvalid_citizenID] = useState("");
-  let [invalid_drivenID, setInvalid_drivenID] = useState("");
-  let [invalid_payment, setInvalid_payment] = useState("");
+  const [invalidInput, setInvalidInput] = useState("");
 
-  let errors = {
-    invalid_fName,
-    invalid_lName,
-    invalid_username,
-    invalid_pw,
-    invalid_tel,
-    invalid_cizitenID,
-    invalid_drivenID,
-    invalid_payment,
+  const profile: UserProfile = {
+    username: username,
+    password: password,
+    first_name: fName,
+    last_name: lName,
+    tel: tel,
+    citizen_id: cid,
+    payment_channel: payment,
+    driving_license_id: dlicense,
+    is_renter: isRenter,
+    is_provider: isProvider,
   };
 
   useEffect(() => {
@@ -101,20 +97,7 @@ export default function EditProfile() {
     getUser();
   }, []);
 
-  async function handleUpdateProfile(type: String, ...values: String[]) {
-    const profile: UserProfile = {
-      username: username,
-      password: password,
-      first_name: fName,
-      last_name: lName,
-      tel: tel,
-      citizen_id: cid,
-      payment_channel: payment,
-      driving_license_id: dlicense,
-      is_renter: isRenter,
-      is_provider: isProvider,
-    };
-
+  async function handleUpdateProfile(type: String, values: String[]) {
     const body = {
       values,
       type,
@@ -129,14 +112,6 @@ export default function EditProfile() {
       const result = await res.json();
       if (res.status != 200) {
         const errors = result.errors;
-        setInvalid_fName(errors.fName);
-        setInvalid_lName(errors.lName);
-        setInvalid_username(errors.username);
-        setInvalid_pw(errors.pw);
-        setInvalid_tel(errors.tel);
-        setInvalid_citizenID(errors.citizenID);
-        setInvalid_drivenID(errors.drivenID);
-        setInvalid_payment(errors.payment);
         setFName(data.first_name);
         setLName(data.last_name);
         setUsername(data.username);
@@ -145,23 +120,9 @@ export default function EditProfile() {
         setCid(data.citizen_id);
         setDlicense(data.driving_license_id);
         setPayment(data.payment_channel);
+        return false;
       } else {
         const user = result.result;
-        setInvalid_fName("");
-        setInvalid_lName("");
-        setInvalid_username("");
-        setInvalid_pw("");
-        setInvalid_tel("");
-        setInvalid_citizenID("");
-        setInvalid_drivenID("");
-        setInvalid_payment("");
-        setNmShow(false);
-        setUnShow(false);
-        setPassShow(false);
-        setCiShow(false);
-        setDlicenseShow(false);
-        setTelShow(false);
-        setPaymentShow(false);
         setData({
           username: user.username,
           password: user.password,
@@ -174,8 +135,24 @@ export default function EditProfile() {
           is_provider: user.is_provider,
           is_renter: user.is_renter,
         });
+        return true;
       }
     });
+  }
+
+  function handleChangeRole() {
+    if (role == "renter") {
+      setRole("provider");
+      if (!data.payment_channel) {
+        setPaymentShow(true);
+      }
+    }
+    if (role == "provider") {
+      setRole("renter");
+      if (!data.driving_license_id) {
+        setDlicenseShow(true);
+      }
+    }
   }
 
   return (
@@ -198,614 +175,189 @@ export default function EditProfile() {
           <hr />
           <br />
 
-          {/* name and last name */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="fName">
-                  <h6 className={styles.text}>ชื่อ-นามสกุล</h6>
-                </label>
-              </Row>
-              <Row>
-                <Col>
-                  {/* name and last name */}
-                  <p>
-                    {data.first_name} {data.last_name}
-                  </p>
-                </Col>
-                <Col>
-                  <button
-                    className={`${styles.edit_button}`}
-                    onClick={() => setNmShow(true)}
-                  >
-                    <FiEdit2 /> &nbsp; แก้ไข
-                  </button>
-                  <Modal
-                    size="lg"
-                    show={nmShow}
-                    onHide={() => setNmShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>ชื่อ-นามสกุล</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Row>
-                            <Col>
-                              <Form.Label className="mb-3">ชื่อ</Form.Label>
-                              <Form.Control
-                                name="fname"
-                                className={`${styles.input} mb-3`}
-                                type="text"
-                                defaultValue={data.first_name}
-                                autoFocus
-                                onChange={(event) =>
-                                  setFName(event.target.value)
-                                }
-                              />
-                              <div className={styles.feedback}>
-                                {errors.invalid_fName}
-                              </div>
-                            </Col>
-                            <Col>
-                              <Form.Label className="mb-3">นามสกุล</Form.Label>
-                              <Form.Control
-                                name="lname"
-                                className={`${styles.input} mb-3`}
-                                type="text"
-                                defaultValue={data.last_name}
-                                autoFocus
-                                onChange={(event) =>
-                                  setLName(event.target.value)
-                                }
-                              />
-                              <div className={styles.feedback}>
-                                {errors.invalid_lName}
-                              </div>
-                            </Col>
-                          </Row>
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setNmShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("name", fName, lName);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
-          <br />
+          <InputForm
+            name="name"
+            label="ชื่อ - นามสกุล"
+            rawData={`${data.first_name} ${data.last_name}`}
+            newData={[fName, lName]}
+            inputs={[
+              {
+                name: "first_name",
+                label: "ชื่อ",
+                value: data.first_name,
+                setValue: setFName,
+              },
+              {
+                name: "last_name",
+                label: "นามสกุล",
+                value: data.last_name,
+                setValue: setLName,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={nmShow}
+            setShowModalFunc={setNmShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={true}
+          />
 
-          {/* username */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="username">
-                  <h6 className={styles.text}>ชื่อผู้ใช้</h6>
-                </label>
-                <br />
-              </Row>
-              <Row>
-                <Col>
-                  {/* username */}
-                  <p>{data.username}</p>
-                </Col>
-                <Col>
-                  <button
-                    className={styles.edit_button}
-                    onClick={() => setUnShow(true)}
-                  >
-                    <FiEdit2 /> &nbsp; แก้ไข
-                  </button>
-                  <Modal
-                    size="lg"
-                    show={unShow}
-                    onHide={() => setUnShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>ชื่อผู้ใช้</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Form.Label className="mb-3">ชื่อผู้ใช้</Form.Label>
-                          <Form.Control
-                            className={`${styles.input} mb-3`}
-                            type="text"
-                            defaultValue={data.username}
-                            autoFocus
-                            onChange={(event) => {
-                              setUsername(event.target.value);
-                            }}
-                          />
-                          <div className={styles.feedback}>
-                            {errors.invalid_username}
-                          </div>
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setUnShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("username", username);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
-          <br />
+          <InputForm
+            name="username"
+            label="ชื่อผู้ใช้"
+            rawData={`${data.username}`}
+            newData={[username]}
+            inputs={[
+              {
+                name: "username",
+                label: "ชื่อผู้ใช้",
+                value: data.username,
+                setValue: setUsername,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={unShow}
+            setShowModalFunc={setUnShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={true}
+          />
 
-          {/* password */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="password">
-                  <h6 className={styles.text}>รหัสผ่าน</h6>
-                </label>
-                <br />
-              </Row>
-              <Row>
-                <Col>
-                  <input
-                    type="password"
-                    value="*******"
-                    className={`${styles.infor}`}
-                    disabled
-                  />
-                </Col>
-                <Col>
-                  <button
-                    className={styles.edit_button}
-                    onClick={() => setPassShow(true)}
-                  >
-                    <FiEdit2 /> &nbsp; แก้ไข
-                  </button>
-                  <Modal
-                    size="lg"
-                    show={passShow}
-                    onHide={() => setPassShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>รหัสผ่าน</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Form.Label className="mb-3">รหัสผ่าน</Form.Label>
-                          <Form.Control
-                            className={`${styles.input} mb-3`}
-                            type="text"
-                            autoFocus
-                            onChange={(event) => {
-                              setPassword(event.target.value);
-                            }}
-                          />
-                        </Form.Group>
-                        <div className={styles.feedback}>
-                          {errors.invalid_pw}
-                        </div>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setPassShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("password", password);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
-          <br />
+          <InputForm
+            name="password"
+            label="รหัสผ่าน"
+            rawData={`********`}
+            newData={[password]}
+            inputs={[
+              {
+                name: "password",
+                label: "รหัสผ่าน",
+                value: "",
+                setValue: setPassword,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={passShow}
+            setShowModalFunc={setPassShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={true}
+          />
 
-          {/* Tel. */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="tel">
-                  <h6 className={styles.text}>เบอร์โทรศัพท์</h6>
-                </label>
-                <br />
-              </Row>
-              <Row>
-                <Col>
-                  {/* telephone */}
-                  <p>{data.tel}</p>
-                </Col>
-                <Col>
-                  <button
-                    className={styles.edit_button}
-                    onClick={() => setTelShow(true)}
-                  >
-                    <FiEdit2 /> &nbsp; แก้ไข
-                  </button>
-                  <Modal
-                    size="lg"
-                    show={telShow}
-                    onHide={() => setTelShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>เบอร์โทรศัพท์</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Form.Label className="mb-3">
-                            เบอร์โทรศัพท์
-                          </Form.Label>
-                          <Form.Control
-                            className={`${styles.input} mb-3`}
-                            type="text"
-                            defaultValue={data.tel}
-                            autoFocus
-                            onChange={(event) => {
-                              setTel(event.target.value);
-                            }}
-                          />
-                          <div className={styles.feedback}>
-                            {errors.invalid_tel}
-                          </div>
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setTelShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("tel", tel);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
-          <br />
+          <InputForm
+            name="tel"
+            label="เบอร์โทรศัพท์"
+            rawData={`${data.tel}`}
+            newData={[tel]}
+            inputs={[
+              {
+                name: "tel",
+                label: "เบอร์โทรศัพท์",
+                value: data.tel,
+                setValue: setTel,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={telShow}
+            setShowModalFunc={setTelShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={true}
+          />
 
-          {/* Citizen ID */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="citizenID">
-                  <h6 className={styles.text}>หมายเลขบัตรประชาชน</h6>
-                </label>
-                <br />
-              </Row>
-              <Row>
-                <Col>
-                  {/* citizen id */}
-                  <p>{data.citizen_id}</p>
-                </Col>
-                <Col>
-                  <button
-                    className={styles.edit_button}
-                    onClick={() => setCiShow(true)}
-                  >
-                    <FiEdit2 /> &nbsp; แก้ไข
-                  </button>
-                  <Modal
-                    size="lg"
-                    show={ciShow}
-                    onHide={() => setCiShow(false)}
-                    centered
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title>หมายเลขบัตรประชาชน</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <Form>
-                        <Form.Group>
-                          <Form.Label className="mb-3">
-                            หมายเลขบัตรประชาชน
-                          </Form.Label>
-                          <Form.Control
-                            className={`${styles.input} mb-3`}
-                            type="text"
-                            defaultValue={data.citizen_id}
-                            autoFocus
-                            onChange={(event) => {
-                              setCid(event.target.value);
-                            }}
-                          />
-                          <div className={styles.feedback}>
-                            {errors.invalid_cizitenID}
-                          </div>
-                        </Form.Group>
-                      </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                      <Button
-                        className={`${styles.close_btn} mx-2`}
-                        onClick={() => setCiShow(false)}
-                      >
-                        ปิด
-                      </Button>
-                      <Button
-                        className={`${styles.save_btn} mx-2`}
-                        onClick={() => {
-                          handleUpdateProfile("cid", cid);
-                        }}
-                      >
-                        แก้ไข
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
-          <br />
+          <InputForm
+            name="citizen_id"
+            label="หมายเลขบัตรประชาชน"
+            rawData={`${data.citizen_id}`}
+            newData={[cid]}
+            inputs={[
+              {
+                name: "tel",
+                label: "หมายเลขบัตรประชาชน",
+                value: data.citizen_id,
+                setValue: setCid,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={ciShow}
+            setShowModalFunc={setCiShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={true}
+          />
 
-          {/* Driven id */}
-          {role == "renter" && (
-            <>
-              <Container>
-                <div className="mb-2">
-                  <Row>
-                    <label htmlFor="citizenID">
-                      <h6 className={styles.text}>หมายเลขใบขับขี่</h6>
-                    </label>
-                    <br />
-                  </Row>
-                  <Row>
-                    <Col>
-                      {/* Driven id */}
-                      {!data.driving_license_id && <p>-</p>}
-                      {data.driving_license_id && (
-                        <p>{data.driving_license_id}</p>
-                      )}
-                    </Col>
-                    <Col>
-                      <button
-                        className={styles.edit_button}
-                        onClick={() => setDlicenseShow(true)}
-                      >
-                        <FiEdit2 /> &nbsp; แก้ไข
-                      </button>
-                      <Modal
-                        size="lg"
-                        show={DlicenseShow}
-                        onHide={() => setDlicenseShow(false)}
-                        centered
-                      >
-                        <Modal.Header closeButton>
-                          <Modal.Title>หมายเลขใบขับขี่</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          <Form>
-                            <Form.Group>
-                              <Form.Label className="mb-3">
-                                หมายเลขใบขับขี่
-                              </Form.Label>
-                              <Form.Control
-                                className={`${styles.input} mb-3`}
-                                type="text"
-                                defaultValue={data.driving_license_id}
-                                autoFocus
-                                onChange={(event) => {
-                                  setDlicense(event.target.value);
-                                }}
-                              />
-                              <div className={styles.feedback}>
-                                {errors.invalid_drivenID}
-                              </div>
-                            </Form.Group>
-                          </Form>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            className={`${styles.close_btn} mx-2`}
-                            onClick={() => setDlicenseShow(false)}
-                          >
-                            ปิด
-                          </Button>
-                          <Button
-                            className={`${styles.save_btn} mx-2`}
-                            onClick={() => {
-                              handleUpdateProfile("dlicense", dlicense);
-                            }}
-                          >
-                            แก้ไข
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
-                    </Col>
-                    <br />
-                  </Row>
-                </div>
-              </Container>
-              <br />
-            </>
-          )}
+          <InputForm
+            name="driving_license_id"
+            label="หมายเลขใบขับขี่"
+            rawData={`${data.driving_license_id}`}
+            newData={[dlicense]}
+            inputs={[
+              {
+                name: "driving_license_id",
+                label: "หมายเลขใบขับขี่",
+                value: data.driving_license_id,
+                setValue: setDlicense,
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={DlicenseShow}
+            setShowModalFunc={setDlicenseShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={role == "renter"}
+          />
 
-          {/* Payment */}
-          {role == "provider" && (
-            <>
-              <Container>
-                <div className="mb-2">
-                  <Row>
-                    <label htmlFor="citizenID">
-                      <h6 className={styles.text}>ช่องทางการรับเงิน</h6>
-                    </label>
-                    <br />
-                  </Row>
-                  <Row>
-                    <Col>
-                      {/* Payment */}
-                      {!data.payment_channel && <p>-</p>}
-                      {data.payment_channel && (
-                        <p>
-                          {data.payment_channel == "cash" && "เงินสด"}
-                          {data.payment_channel == "promptpay" && "พร้อมเพย์"}
-                          {data.payment_channel == "credit" && "เครดิต"}
-                        </p>
-                      )}
-                    </Col>
-                    <Col>
-                      <button
-                        className={styles.edit_button}
-                        onClick={() => setPaymentShow(true)}
-                      >
-                        <FiEdit2 /> &nbsp; แก้ไข
-                      </button>
-                      <Modal
-                        size="lg"
-                        show={paymentShow}
-                        onHide={() => setPaymentShow(false)}
-                        centered
-                      >
-                        <Modal.Header closeButton>
-                          <Modal.Title>ช่องทางการรับเงิน</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                          <Form>
-                            <Form.Group>
-                              <Form.Label className="mb-3">
-                                ช่องทางการรับเงิน
-                              </Form.Label>
-                              <Form.Select
-                                aria-label="paymnet method"
-                                onChange={(event) => {
-                                  setPayment(event.target.value);
-                                }}
-                                className={`${styles.input} mb-3`}
-                                defaultValue={data.payment_channel}
-                              >
-                                <option value="">
-                                  กรุณาเลือกช่องทางการรับเงิน
-                                </option>
-                                <option value="promptpay">พร้อมเพย์</option>
-                                <option value="credit">บัตรเครดิต</option>
-                                <option value="cash">เงินสด</option>
-                              </Form.Select>
-                              <div className={styles.feedback}>
-                                {errors.invalid_payment}
-                              </div>
-                            </Form.Group>
-                          </Form>
-                        </Modal.Body>
-                        <Modal.Footer>
-                          <Button
-                            className={`${styles.close_btn} mx-2`}
-                            onClick={() => setPaymentShow(false)}
-                          >
-                            ปิด
-                          </Button>
-                          <Button
-                            className={`${styles.save_btn} mx-2`}
-                            onClick={() => {
-                              handleUpdateProfile("payment", payment);
-                            }}
-                          >
-                            แก้ไข
-                          </Button>
-                        </Modal.Footer>
-                      </Modal>
-                    </Col>
-                    <br />
-                  </Row>
-                </div>
-              </Container>
-              <br />
-            </>
-          )}
+          <InputForm
+            name="payment_channel"
+            label="ช่องทางการรับเงิน"
+            input_type="select"
+            rawData={`${data.payment_channel}`}
+            newData={[payment]}
+            inputs={[
+              {
+                name: "payment_channel",
+                label: "ช่องทางการรับเงิน",
+                value: data.payment_channel,
+                setValue: setPayment,
+                options: [
+                  {
+                    en: "",
+                    th: "กรุณาเลือกช่องทางการรับเงิน",
+                  },
+                  {
+                    en: "promptpay",
+                    th: "พร้อมเพย์",
+                  },
+                  {
+                    en: "credit",
+                    th: "บัตรเครดิต",
+                  },
+                  {
+                    en: "cash",
+                    th: "เงินสด",
+                  },
+                ],
+              },
+            ]}
+            invalid={invalidInput}
+            isShowModal={paymentShow}
+            setShowModalFunc={setPaymentShow}
+            handleupdateFunc={handleUpdateProfile}
+            isShow={role == "provider"}
+          />
 
-          {/* Role */}
-          <Container>
-            <div className="mb-2">
-              <Row>
-                <label htmlFor="role">
-                  <h6 className={styles.text}>บทบาท</h6>
-                </label>
-                <br />
-              </Row>
-              <Row>
-                <Col>
-                  {/* role */}
-                  {role == "renter" && <p>ผู้เช่า</p>}
-                  {role == "provider" && <p>ผู้ปล่อยเช่า</p>}
-                </Col>
-                <Col>
-                  <button
-                    className={styles.change_button}
-                    onClick={() => {
-                      if (role == "renter") {
-                        setRole("provider");
-                        if (!data.payment_channel) {
-                          setPaymentShow(true);
-                        }
-                      }
-                      if (role == "provider") {
-                        setRole("renter");
-                        if (!data.driving_license_id) {
-                          setDlicenseShow(true);
-                        }
-                      }
-                    }}
-                  >
-                    <FaUndoAlt /> &nbsp; เปลี่ยน
-                  </button>
-                </Col>
-                <br />
-              </Row>
-            </div>
-          </Container>
+          <InputForm
+            name="role"
+            label="บทบาท"
+            rawData={`${role}`}
+            newData={[role]}
+            inputs={[
+              {
+                name: "role",
+                label: "บทบาท",
+                value: role,
+                setValue: setRole,
+              },
+            ]}
+            invalid={invalidInput}
+            setShowModalFunc={{ setPaymentShow, setDlicenseShow }}
+            handleupdateFunc={{ handleUpdateProfile, handleChangeRole }}
+            isShow={true}
+          />
         </div>
       </div>
     </>
