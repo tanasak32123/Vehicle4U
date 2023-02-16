@@ -41,6 +41,7 @@ export class UserService {
         return null;
       }
     }
+    updateuserDto.password = await bcrypt.hash(updateuserDto.password, 10) ;
     await this.userRepository.update({ id: id }, updateuserDto);
     return await this.userRepository.findOneBy({ id: id });
   }
