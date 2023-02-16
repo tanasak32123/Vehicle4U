@@ -25,8 +25,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
       body: JSON.stringify({ username, password, role }),
     });
     const json = await response.json();
-    console.log(json);
-    console.log(response);
     setLoading(false);
     if (response.status != 200) {
       return {
@@ -34,15 +32,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
         message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       };
     } else {
-      setCookie("user", json.user, {
-        maxAge: 18000, // Expires after 5hr
-      });
+      setCookie(
+        "user",
+        { ...json.user, role },
+        {
+          maxAge: 18000, // Expires after 5hr
+        }
+      );
       setCookie("token", json.token.access_token, {
         maxAge: 18000, // Expires after 5hr
       });
-      setCookie("role", role, {
-        maxAge: 18000, // Expires after 5hr
-      });
+      setUser({ ...json.user, role });
       return { success: true, json };
     }
   };
@@ -51,7 +51,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setLoading(true);
     const user = getCookie("user") as string;
     const token = getCookie("token") as string;
-    console.log(token);
     const obj = JSON.parse(user);
     const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
       ...defaultOptions,
@@ -75,8 +74,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const logout = () => {
     removeCookies("token");
     removeCookies("user");
-    removeCookies("role");
-    setUser(null);
     router.push("/");
   };
 

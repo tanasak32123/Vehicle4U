@@ -24,11 +24,11 @@ const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
 // forwardRef again here!
 // Dropdown needs access to the DOM of the Menu to measure it
 const CustomMenu = React.forwardRef(
-  ({ children, style, className, "aria-labelledby": labeledBy }: any, ref) => {
+  ({ children, style, className }: any, ref) => {
     const [value, setValue] = useState("");
 
     return (
-      <div style={style} className={className} aria-labelledby={labeledBy}>
+      <div style={style} className={className}>
         <Form.Control
           autoFocus
           className="mx-3 my-2 w-auto"
@@ -38,7 +38,7 @@ const CustomMenu = React.forwardRef(
         />
         <ul className="list-unstyled">
           {React.Children.toArray(children).filter(
-            (child) =>
+            (child: any) =>
               !value || child.props.children.toLowerCase().startsWith(value)
           )}
         </ul>
@@ -48,8 +48,6 @@ const CustomMenu = React.forwardRef(
 );
 
 export default function SearchCar() {
-  let [loading, setLoading] = useState(false);
-
   return (
     <>
       <Head>
@@ -142,15 +140,6 @@ export default function SearchCar() {
 
                   <Col sm={12} lg={2}>
                     <button type="button" className={`${styles.searchbtn}`}>
-                      {loading && (
-                        <>
-                          <Spinner
-                            className={`${styles.spinner}`}
-                            animation="border"
-                            variant="primary"
-                          />{" "}
-                        </>
-                      )}
                       <b>ค้นหา</b>
                     </button>
                   </Col>
