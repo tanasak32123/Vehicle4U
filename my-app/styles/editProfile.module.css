@@ -36,6 +36,7 @@
   background-color: transparent;
   border: 0cm;
   color: rgb(95, 95, 240);
+  outline: none;
 }
 
 .close_btn {

@@ -4,34 +4,37 @@ import styles from "@/styles/signup/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import UserSignUp from "@/interfaces/UserSignUp";
+import { useAuth } from "@/components/auth";
 
 export default function Register() {
-  const router = useRouter();
+  const { authAction }: any = useAuth();
 
+  const router = useRouter();
   const query = router.query;
 
-  let [role, setRole] = useState("");
-  let [fName, setFName] = useState("");
-  let [lName, setLName] = useState("");
-  let [username, setUsername] = useState("");
-  let [pw, setPw] = useState("");
-  let [tel, setTel] = useState("");
-  let [citizenID, setCitizenID] = useState("");
-  let [drivenID, setDrivenID] = useState("");
-  let [payment, setPayment] = useState("");
+  const [role, setRole] = useState("");
+  const [fName, setFName] = useState("");
+  const [lName, setLName] = useState("");
+  const [username, setUsername] = useState("");
+  const [pw, setPw] = useState("");
+  const [tel, setTel] = useState("");
+  const [citizenID, setCitizenID] = useState("");
+  const [drivenID, setDrivenID] = useState("");
+  const [payment, setPayment] = useState("");
 
-  let [invalid_fName, setInvalid_fName] = useState("");
-  let [invalid_lName, setInvalid_lName] = useState("");
-  let [invalid_username, setInvalid_username] = useState("");
-  let [invalid_pw, setInvalid_pw] = useState("");
-  let [invalid_tel, setInvalid_tel] = useState("");
-  let [invalid_cizitenID, setInvalid_citizenID] = useState("");
-  let [invalid_drivenID, setInvalid_drivenID] = useState("");
-  let [invalid_payment, setInvalid_payment] = useState("");
+  const [invalid_fName, setInvalid_fName] = useState("");
+  const [invalid_lName, setInvalid_lName] = useState("");
+  const [invalid_username, setInvalid_username] = useState("");
+  const [invalid_pw, setInvalid_pw] = useState("");
+  const [invalid_tel, setInvalid_tel] = useState("");
+  const [invalid_cizitenID, setInvalid_citizenID] = useState("");
+  const [invalid_drivenID, setInvalid_drivenID] = useState("");
+  const [invalid_payment, setInvalid_payment] = useState("");
 
-  let [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  let errors = {
+  const errors = {
     invalid_fName,
     invalid_lName,
     invalid_username,
@@ -42,47 +45,52 @@ export default function Register() {
     invalid_payment,
   };
 
+  const data: UserSignUp = {
+    first_name: fName,
+    last_name: lName,
+    username,
+    password: pw,
+    tel,
+    citizen_id: citizenID,
+    driving_license_id: drivenID,
+    payment_channel: payment,
+    is_renter: role == "renter",
+    is_provider: role == "provider",
+  };
+
   async function handleSubmit(event: Event) {
     event.preventDefault();
-
-    const data = {
-      role,
-      fName,
-      lName,
-      username,
-      pw,
-      tel,
-      citizenID,
-      drivenID,
-      payment,
-    };
-
     setLoading(true);
-
-    await fetch("/api/validateSignup", {
+    const response = await fetch("/api/validateSignup", {
       headers: {
         "Content-Type": "application/json",
       },
       method: "POST",
       body: JSON.stringify(data),
-    }).then(async (res) => {
-      setLoading(false);
-
-      const result = await res.json();
-
-      if (res.status != 201) {
-        setInvalid_fName(result.errors.fName);
-        setInvalid_lName(result.errors.lName);
-        setInvalid_username(result.errors.username);
-        setInvalid_pw(result.errors.pw);
-        setInvalid_tel(result.errors.tel);
-        setInvalid_citizenID(result.errors.citizenID);
-        setInvalid_drivenID(result.errors.drivenID);
-        setInvalid_payment(result.errors.payment);
+    });
+    const body = await response.json();
+    if (response.status != 200) {
+      setInvalid_fName(body.errors.fName);
+      setInvalid_lName(body.errors.lName);
+      setInvalid_username(body.errors.username);
+      setInvalid_pw(body.errors.pw);
+      setInvalid_tel(body.errors.tel);
+      setInvalid_citizenID(body.errors.citizenID);
+      setInvalid_drivenID(body.errors.drivenID);
+      setInvalid_payment(body.errors.payment);
+    } else {
+      const response = await authAction.signUp(body.data, role);
+      if (!response.success) {
+        if (response.error == "username") {
+          setInvalid_username(response.message);
+        } else {
+          setInvalid_citizenID(response.message);
+        }
       } else {
         router.push("/signup/success", "/signup");
       }
-    });
+    }
+    setLoading(false);
   }
 
   useEffect(() => {

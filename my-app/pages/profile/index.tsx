@@ -2,16 +2,16 @@ import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import UserData from "@/interfaces/UserData";
+import { useEffect, useState } from "react";
 import UserProfile from "@/interfaces/UserProfile";
-import { setCookies } from "cookies-next";
+import UserModel from "@/interfaces/UserModel";
 import InputForm from "@/components/profileForm";
 import { useAuth } from "@/components/auth";
 import Skeleton from "react-loading-skeleton";
+import ModalForm from "@/components/modalProfile";
 
 export default function EditProfile() {
-  const { user, isAuthenticate }: any = useAuth();
+  const { user, isAuthenticate, authAction }: any = useAuth();
 
   const router = useRouter();
 
@@ -35,11 +35,9 @@ export default function EditProfile() {
   const [isRenter, setIsRenter] = useState(false);
   const [isProvider, setIsProvider] = useState(false);
 
-  const [data, setData] = useState({} as UserData);
-
   const [invalidInput, setInvalidInput] = useState("");
 
-  const profile: UserProfile = {
+  const data: UserProfile = {
     username: username,
     password: password,
     first_name: fName,
@@ -52,41 +50,60 @@ export default function EditProfile() {
     is_provider: isProvider,
   };
 
+  useEffect(() => {
+    if (user) {
+      setFName(user.first_name);
+      setLName(user.last_name);
+      setUsername(user.username);
+      setPassword(user.password);
+      setTel(user.tel);
+      setCid(user.citizen_id);
+      setDlicense(user.driving_license_id);
+      setPayment(user.payment_channel);
+      setIsRenter(user.driving_license_id != "");
+      setIsProvider(user.payment_channel != "");
+    }
+  }, [isAuthenticate]);
+
   async function handleUpdateProfile(type: String, values: String[]) {
     const body = {
       values,
       type,
-      profile,
     };
-
     const response = await fetch("/api/validateUpdateProfile", {
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "POST",
       body: JSON.stringify(body),
     });
-
     const json = await response.json();
-    const updatedUser = json.result;
-
     if (response.status != 200) {
       setInvalidInput(json.message);
       return false;
     } else {
       setInvalidInput("");
-      setCookies("user", updatedUser);
-      return true;
+      const response = await authAction.updateUser(data);
+      if (!response.success) {
+        setInvalidInput(response.message);
+        return false;
+      } else {
+        authAction.setUser({ ...response.user, role: user.role });
+        return true;
+      }
     }
   }
 
   function handleChangeRole() {
-    if (role == "renter") {
-      setRole("provider");
-      if (!data.payment_channel) {
+    if (user.role == "renter") {
+      authAction.setUser({ ...user, role: "provider" });
+      if (!user.payment_channel) {
         setPaymentShow(true);
       }
     }
-    if (role == "provider") {
-      setRole("renter");
-      if (!data.driving_license_id) {
+    if (user.role == "provider") {
+      authAction.setUser({ ...user, role: "renter" });
+      if (!user.driving_license_id) {
         setDlicenseShow(true);
       }
     }
@@ -118,7 +135,6 @@ export default function EditProfile() {
                 name="name"
                 label="ชื่อ - นามสกุล"
                 rawData={`${user.first_name} ${user.last_name}`}
-                newData={[fName, lName]}
                 inputs={[
                   {
                     name: "first_name",
@@ -135,10 +151,7 @@ export default function EditProfile() {
                     setValue: setLName,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={nmShow}
                 setShowModalFunc={setNmShow}
-                handleupdateFunc={handleUpdateProfile}
                 isShow={true}
               />
 
@@ -146,7 +159,6 @@ export default function EditProfile() {
                 name="username"
                 label="ชื่อผู้ใช้"
                 rawData={`${user.username}`}
-                newData={[username]}
                 inputs={[
                   {
                     name: "username",
@@ -156,10 +168,7 @@ export default function EditProfile() {
                     setValue: setUsername,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={unShow}
                 setShowModalFunc={setUnShow}
-                handleupdateFunc={handleUpdateProfile}
                 isShow={true}
               />
 
@@ -167,7 +176,6 @@ export default function EditProfile() {
                 name="password"
                 label="รหัสผ่าน"
                 rawData={`********`}
-                newData={[password]}
                 inputs={[
                   {
                     name: "password",
@@ -176,10 +184,7 @@ export default function EditProfile() {
                     setValue: setPassword,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={passShow}
                 setShowModalFunc={setPassShow}
-                handleupdateFunc={handleUpdateProfile}
                 isShow={true}
               />
 
@@ -187,7 +192,6 @@ export default function EditProfile() {
                 name="tel"
                 label="เบอร์โทรศัพท์"
                 rawData={`${user.tel}`}
-                newData={[tel]}
                 inputs={[
                   {
                     name: "tel",
@@ -197,10 +201,7 @@ export default function EditProfile() {
                     setValue: setTel,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={telShow}
                 setShowModalFunc={setTelShow}
-                handleupdateFunc={handleUpdateProfile}
                 isShow={true}
               />
 
@@ -208,7 +209,6 @@ export default function EditProfile() {
                 name="citizen_id"
                 label="หมายเลขบัตรประชาชน"
                 rawData={`${user.citizen_id}`}
-                newData={[cid]}
                 inputs={[
                   {
                     name: "tel",
@@ -218,10 +218,7 @@ export default function EditProfile() {
                     setValue: setCid,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={ciShow}
                 setShowModalFunc={setCiShow}
-                handleupdateFunc={handleUpdateProfile}
                 isShow={true}
               />
 
@@ -229,7 +226,6 @@ export default function EditProfile() {
                 name="driving_license_id"
                 label="หมายเลขใบขับขี่"
                 rawData={`${user.driving_license_id}`}
-                newData={[dlicense]}
                 inputs={[
                   {
                     name: "driving_license_id",
@@ -239,11 +235,8 @@ export default function EditProfile() {
                     setValue: setDlicense,
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={DlicenseShow}
                 setShowModalFunc={setDlicenseShow}
-                handleupdateFunc={handleUpdateProfile}
-                isShow={role == "renter"}
+                isShow={user.role == "renter"}
               />
 
               <InputForm
@@ -251,7 +244,6 @@ export default function EditProfile() {
                 label="ช่องทางการรับเงิน"
                 input_type="select"
                 rawData={`${user.payment_channel}`}
-                newData={[payment]}
                 inputs={[
                   {
                     name: "payment_channel",
@@ -278,18 +270,14 @@ export default function EditProfile() {
                     ],
                   },
                 ]}
-                invalid={invalidInput}
-                isShowModal={paymentShow}
                 setShowModalFunc={setPaymentShow}
-                handleupdateFunc={handleUpdateProfile}
-                isShow={role == "provider"}
+                isShow={user.role == "provider"}
               />
 
               <InputForm
                 name="role"
                 label="บทบาท"
                 rawData={`${user.role}`}
-                newData={[role]}
                 inputs={[
                   {
                     name: "role",
@@ -298,10 +286,172 @@ export default function EditProfile() {
                     setValue: setRole,
                   },
                 ]}
-                invalid={invalidInput}
                 setShowModalFunc={{ setPaymentShow, setDlicenseShow }}
                 handleupdateFunc={{ handleUpdateProfile, handleChangeRole }}
                 isShow={true}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`name`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "first_name",
+                    label: "ชื่อ",
+                    value: user.first_name,
+                    currentValue: fName,
+                    setValue: setFName,
+                  },
+                  {
+                    name: "last_name",
+                    label: "นามสกุล",
+                    value: user.last_name,
+                    currentValue: lName,
+                    setValue: setLName,
+                  },
+                ]}
+                newData={[fName, lName]}
+                invalid={invalidInput}
+                isShowModal={nmShow}
+                setShowModalFunc={setNmShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`username`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "username",
+                    label: "ชื่อผู้ใช้",
+                    value: user.username,
+                    currentValue: username,
+                    setValue: setUsername,
+                  },
+                ]}
+                newData={[username]}
+                invalid={invalidInput}
+                isShowModal={unShow}
+                setShowModalFunc={setUnShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`password`}
+                type={`password`}
+                inputs={[
+                  {
+                    name: "password",
+                    label: "รหัสผ่าน",
+                    value: "",
+                    setValue: setPassword,
+                  },
+                ]}
+                newData={[password]}
+                invalid={invalidInput}
+                isShowModal={passShow}
+                setShowModalFunc={setPassShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`tel`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "tel",
+                    label: "เบอร์โทรศัพท์",
+                    value: user.tel,
+                    currentValue: tel,
+                    setValue: setTel,
+                  },
+                ]}
+                newData={[tel]}
+                invalid={invalidInput}
+                isShowModal={telShow}
+                setShowModalFunc={setTelShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`citizen_id`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "tel",
+                    label: "หมายเลขบัตรประชาชน",
+                    value: user.citizen_id,
+                    currentValue: cid,
+                    setValue: setCid,
+                  },
+                ]}
+                newData={[cid]}
+                invalid={invalidInput}
+                isShowModal={ciShow}
+                setShowModalFunc={setCiShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`driving_license_id`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "driving_license_id",
+                    label: "หมายเลขใบขับขี่",
+                    value: user.driving_license_id,
+                    currentValue: dlicense,
+                    setValue: setDlicense,
+                  },
+                ]}
+                newData={[tel]}
+                invalid={invalidInput}
+                isShowModal={DlicenseShow}
+                setShowModalFunc={setDlicenseShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`แก้ไขโปรไฟล์`}
+                id={`payment_channel`}
+                type={`select`}
+                inputs={[
+                  {
+                    name: "payment_channel",
+                    label: "ช่องทางการรับเงิน",
+                    value: user.payment_channel,
+                    setValue: setPayment,
+                    options: [
+                      {
+                        en: "",
+                        th: "กรุณาเลือกช่องทางการรับเงิน",
+                      },
+                      {
+                        en: "promptpay",
+                        th: "พร้อมเพย์",
+                      },
+                      {
+                        en: "credit",
+                        th: "บัตรเครดิต",
+                      },
+                      {
+                        en: "cash",
+                        th: "เงินสด",
+                      },
+                    ],
+                  },
+                ]}
+                newData={[payment]}
+                invalid={invalidInput}
+                isShowModal={paymentShow}
+                setShowModalFunc={setPaymentShow}
+                handleupdateFunc={handleUpdateProfile}
               />
             </>
           ) : (

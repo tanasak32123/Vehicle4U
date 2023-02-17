@@ -144,33 +144,7 @@ export default async function handler(
       }
     }
 
-    const user = JSON.parse(req.cookies.user!);
-    const token = req.cookies.token!;
-
-    const response = await fetch(
-      `http://localhost:3000/user/editProfile/${user.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body.profile),
-      }
-    );
-
-    const json = await response.json();
-    if (response.status != 200) {
-      return res.status(400).json({
-        success: false,
-        message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
-      });
-    } else {
-      return res.status(200).json({
-        success: true,
-        result: json,
-      });
-    }
+    return res.status(200).json({ success: true });
   } else {
     res.redirect("/404");
   }
