@@ -60,7 +60,7 @@ export default function Register() {
 
     setLoading(true);
 
-    await fetch("/api/signup", {
+    await fetch("/api/validateSignup", {
       ...defaultOptions,
       method: "POST",
       body: JSON.stringify(data),

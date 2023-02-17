@@ -1,15 +1,15 @@
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import defaultOptions from "@/libs/apiDefault";
-import { useAuthContext } from "@/components/auth";
+import { useAuth } from "@/components/auth";
 import Head from "next/head";
 
 export default function Home() {
-  const { user, isAuthenticate, loading, authAction }: any = useAuthContext();
+  const { isAuthenticate, loading, authAction }: any = useAuth();
 
   const router = useRouter();
 
@@ -20,7 +20,7 @@ export default function Home() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    const response = await fetch("/api/signin", {
+    const response = await fetch("/api/validateSignin", {
       ...defaultOptions,
       method: "POST",
       body: JSON.stringify({ username: username, password, role }),
@@ -37,6 +37,12 @@ export default function Home() {
       }
     }
   }
+
+  useEffect(() => {
+    if (isAuthenticate) {
+      router.push("/searchcar");
+    }
+  }, []);
 
   return (
     <>

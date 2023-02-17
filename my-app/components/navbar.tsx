@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
-import { useAuthContext } from "./auth";
+import { useAuth } from "./auth";
 
 export default function Header() {
-  const { user, isAuthenticate, loading, authAction }: any = useAuthContext();
+  const { user, isAuthenticate, loading, authAction }: any = useAuth();
 
   return (
     <>

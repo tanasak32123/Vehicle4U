@@ -1,19 +1,20 @@
-import { PropsWithChildren, createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
 import { getCookie, removeCookies, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
+import UserData from "@/interfaces/UserData";
 
 const AuthContext = createContext({});
 
-export function useAuthContext() {
-  return useContext(AuthContext);
-}
-
-export function AuthProvider({ children }: PropsWithChildren) {
+export function AuthProvider({ children }: any) {
   const router = useRouter();
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const login = async (username: string, password: string, role: string) => {
     setLoading(true);
@@ -29,6 +30,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     if (response.status != 200) {
       return {
         success: false,
+        statusCode: response.status,
         message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       };
     } else {
@@ -43,32 +45,34 @@ export function AuthProvider({ children }: PropsWithChildren) {
         maxAge: 18000, // Expires after 5hr
       });
       setUser({ ...json.user, role });
-      return { success: true, json };
+      return { success: true, statusCode: response.status };
     }
   };
 
   const getUser = async () => {
     setLoading(true);
-    const user = getCookie("user") as string;
-    const token = getCookie("token") as string;
-    const obj = JSON.parse(user);
-    const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
-      ...defaultOptions,
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const json = await response.json();
-    setLoading(false);
-    if (response.status == 200) {
-      return { success: true, json };
-    } else {
-      return {
-        success: false,
-        message: "try again!",
-      };
+    const token = getCookie("token")?.toString();
+    if (!user && token) {
+      const userCookie = JSON.parse(getCookie("user")!.toString());
+      const response = await fetch(
+        `http://localhost:3000/user/${userCookie.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const json = await response.json();
+      setLoading(false);
+      if (response.status == 200) {
+        setUser({ ...json, ...userCookie.role });
+        return { success: true, statusCode: response.status };
+      }
+      return { success: false, statusCode: response.status };
     }
+    setLoading(false);
   };
 
   const logout = () => {

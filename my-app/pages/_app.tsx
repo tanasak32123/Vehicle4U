@@ -16,13 +16,13 @@ export default function App({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <SSRProvider>
-        <AuthProvider>
+      <AuthProvider>
+        <SSRProvider>
           <Layout>
             <Component {...pageProps} />
           </Layout>
-        </AuthProvider>
-      </SSRProvider>
+        </SSRProvider>
+      </AuthProvider>
     </>
   );
 }

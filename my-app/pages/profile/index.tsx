@@ -4,15 +4,13 @@ import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import defaultOptions from "@/libs/apiDefault";
-import UserModel from "@/interfaces/UserModel";
+import UserData from "@/interfaces/UserData";
 import UserProfile from "@/interfaces/UserProfile";
-import { getCookie, setCookies } from "cookies-next";
+import { setCookies } from "cookies-next";
 import InputForm from "@/components/profileForm";
-import { useAuthContext } from "@/components/auth";
+import { useAuth } from "@/components/auth";
 
 export default function EditProfile() {
-  const { user, loading, authAction }: any = useAuthContext();
-
   const router = useRouter();
 
   const [nmShow, setNmShow] = useState(false);
@@ -35,7 +33,7 @@ export default function EditProfile() {
   const [isRenter, setIsRenter] = useState(false);
   const [isProvider, setIsProvider] = useState(false);
 
-  const [data, setData] = useState({} as UserModel);
+  const [data, setData] = useState({} as UserData);
 
   const [invalidInput, setInvalidInput] = useState("");
 
@@ -59,7 +57,7 @@ export default function EditProfile() {
       profile,
     };
 
-    const response = await fetch("/api/update_profile", {
+    const response = await fetch("/api/validateUpdateProfile", {
       ...defaultOptions,
       method: "POST",
       body: JSON.stringify(body),
@@ -93,41 +91,38 @@ export default function EditProfile() {
     }
   }
 
-  useEffect(() => {
-    if (!sessionStorage.token) {
-      router.push("/");
-    }
-    const getUser = async () => {
-      const cookies: string = getCookie("user") as string;
-      const obj = JSON.parse(cookies);
-
-      const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
-        ...defaultOptions,
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.token}`,
-        },
-      });
-      const json = await response.json();
-
-      setRole(getCookie("role") as string);
-      setCookies("user", json);
-
-      setIsRenter(json.is_renter);
-      setIsProvider(json.is_provider);
-      setFName(json.first_name);
-      setLName(json.last_name);
-      setUsername(json.username);
-      setPassword(json.password);
-      setTel(json.tel);
-      setCid(json.citizen_id);
-      setDlicense(json.driving_license_id);
-      setPayment(json.payment_channel);
-
-      setData(json);
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  // if (!isAuthenticate) {
+  //   router.push("/");
+  // } else {
+  //   const getUser = async () => {
+  //     const cookies: string = getCookie("user") as string;
+  //     const obj = JSON.parse(cookies);
+  //     const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
+  //       ...defaultOptions,
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${sessionStorage.token}`,
+  //       },
+  //     });
+  //     const json = await response.json();
+  //     setRole(getCookie("role") as string);
+  //     setCookies("user", json);
+  //     setIsRenter(json.is_renter);
+  //     setIsProvider(json.is_provider);
+  //     setFName(json.first_name);
+  //     setLName(json.last_name);
+  //     setUsername(json.username);
+  //     setPassword(json.password);
+  //     setTel(json.tel);
+  //     setCid(json.citizen_id);
+  //     setDlicense(json.driving_license_id);
+  //     setPayment(json.payment_channel);
+  //     setData(json);
+  //   };
+  //   getUser();
+  // }
+  // }, []);
 
   return (
     <>
