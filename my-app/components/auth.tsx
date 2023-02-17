@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import defaultOptions from "@/libs/apiDefault";
 import { getCookie, removeCookies, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import UserData from "@/interfaces/UserData";
@@ -67,7 +66,7 @@ export function AuthProvider({ children }: any) {
       const json = await response.json();
       setLoading(false);
       if (response.status == 200) {
-        setUser({ ...json, ...userCookie.role });
+        setUser({ ...json, role: userCookie.role });
         return { success: true, statusCode: response.status };
       }
       return { success: false, statusCode: response.status };

@@ -2,15 +2,17 @@ import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import defaultOptions from "@/libs/apiDefault";
+import { useState } from "react";
 import UserData from "@/interfaces/UserData";
 import UserProfile from "@/interfaces/UserProfile";
 import { setCookies } from "cookies-next";
 import InputForm from "@/components/profileForm";
 import { useAuth } from "@/components/auth";
+import Skeleton from "react-loading-skeleton";
 
 export default function EditProfile() {
+  const { user, isAuthenticate }: any = useAuth();
+
   const router = useRouter();
 
   const [nmShow, setNmShow] = useState(false);
@@ -58,7 +60,6 @@ export default function EditProfile() {
     };
 
     const response = await fetch("/api/validateUpdateProfile", {
-      ...defaultOptions,
       method: "POST",
       body: JSON.stringify(body),
     });
@@ -91,39 +92,6 @@ export default function EditProfile() {
     }
   }
 
-  // useEffect(() => {
-  // if (!isAuthenticate) {
-  //   router.push("/");
-  // } else {
-  //   const getUser = async () => {
-  //     const cookies: string = getCookie("user") as string;
-  //     const obj = JSON.parse(cookies);
-  //     const response = await fetch(`http://localhost:3000/user/${obj.id}`, {
-  //       ...defaultOptions,
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${sessionStorage.token}`,
-  //       },
-  //     });
-  //     const json = await response.json();
-  //     setRole(getCookie("role") as string);
-  //     setCookies("user", json);
-  //     setIsRenter(json.is_renter);
-  //     setIsProvider(json.is_provider);
-  //     setFName(json.first_name);
-  //     setLName(json.last_name);
-  //     setUsername(json.username);
-  //     setPassword(json.password);
-  //     setTel(json.tel);
-  //     setCid(json.citizen_id);
-  //     setDlicense(json.driving_license_id);
-  //     setPayment(json.payment_channel);
-  //     setData(json);
-  //   };
-  //   getUser();
-  // }
-  // }, []);
-
   return (
     <>
       <Head>
@@ -144,195 +112,225 @@ export default function EditProfile() {
           <hr />
           <br />
 
-          <InputForm
-            name="name"
-            label="ชื่อ - นามสกุล"
-            rawData={`${data.first_name} ${data.last_name}`}
-            newData={[fName, lName]}
-            inputs={[
-              {
-                name: "first_name",
-                label: "ชื่อ",
-                value: data.first_name,
-                currentValue: fName,
-                setValue: setFName,
-              },
-              {
-                name: "last_name",
-                label: "นามสกุล",
-                value: data.last_name,
-                currentValue: lName,
-                setValue: setLName,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={nmShow}
-            setShowModalFunc={setNmShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={true}
-          />
-
-          <InputForm
-            name="username"
-            label="ชื่อผู้ใช้"
-            rawData={`${data.username}`}
-            newData={[username]}
-            inputs={[
-              {
-                name: "username",
-                label: "ชื่อผู้ใช้",
-                value: data.username,
-                currentValue: username,
-                setValue: setUsername,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={unShow}
-            setShowModalFunc={setUnShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={true}
-          />
-
-          <InputForm
-            name="password"
-            label="รหัสผ่าน"
-            rawData={`********`}
-            newData={[password]}
-            inputs={[
-              {
-                name: "password",
-                label: "รหัสผ่าน",
-                value: "",
-                setValue: setPassword,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={passShow}
-            setShowModalFunc={setPassShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={true}
-          />
-
-          <InputForm
-            name="tel"
-            label="เบอร์โทรศัพท์"
-            rawData={`${data.tel}`}
-            newData={[tel]}
-            inputs={[
-              {
-                name: "tel",
-                label: "เบอร์โทรศัพท์",
-                value: data.tel,
-                currentValue: tel,
-                setValue: setTel,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={telShow}
-            setShowModalFunc={setTelShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={true}
-          />
-
-          <InputForm
-            name="citizen_id"
-            label="หมายเลขบัตรประชาชน"
-            rawData={`${data.citizen_id}`}
-            newData={[cid]}
-            inputs={[
-              {
-                name: "tel",
-                label: "หมายเลขบัตรประชาชน",
-                value: data.citizen_id,
-                currentValue: cid,
-                setValue: setCid,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={ciShow}
-            setShowModalFunc={setCiShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={true}
-          />
-
-          <InputForm
-            name="driving_license_id"
-            label="หมายเลขใบขับขี่"
-            rawData={`${data.driving_license_id}`}
-            newData={[dlicense]}
-            inputs={[
-              {
-                name: "driving_license_id",
-                label: "หมายเลขใบขับขี่",
-                value: data.driving_license_id,
-                currentValue: dlicense,
-                setValue: setDlicense,
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={DlicenseShow}
-            setShowModalFunc={setDlicenseShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={role == "renter"}
-          />
-
-          <InputForm
-            name="payment_channel"
-            label="ช่องทางการรับเงิน"
-            input_type="select"
-            rawData={`${data.payment_channel}`}
-            newData={[payment]}
-            inputs={[
-              {
-                name: "payment_channel",
-                label: "ช่องทางการรับเงิน",
-                value: data.payment_channel,
-                setValue: setPayment,
-                options: [
+          {isAuthenticate ? (
+            <>
+              <InputForm
+                name="name"
+                label="ชื่อ - นามสกุล"
+                rawData={`${user.first_name} ${user.last_name}`}
+                newData={[fName, lName]}
+                inputs={[
                   {
-                    en: "",
-                    th: "กรุณาเลือกช่องทางการรับเงิน",
+                    name: "first_name",
+                    label: "ชื่อ",
+                    value: user.first_name,
+                    currentValue: fName,
+                    setValue: setFName,
                   },
                   {
-                    en: "promptpay",
-                    th: "พร้อมเพย์",
+                    name: "last_name",
+                    label: "นามสกุล",
+                    value: user.last_name,
+                    currentValue: lName,
+                    setValue: setLName,
                   },
-                  {
-                    en: "credit",
-                    th: "บัตรเครดิต",
-                  },
-                  {
-                    en: "cash",
-                    th: "เงินสด",
-                  },
-                ],
-              },
-            ]}
-            invalid={invalidInput}
-            isShowModal={paymentShow}
-            setShowModalFunc={setPaymentShow}
-            handleupdateFunc={handleUpdateProfile}
-            isShow={role == "provider"}
-          />
+                ]}
+                invalid={invalidInput}
+                isShowModal={nmShow}
+                setShowModalFunc={setNmShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={true}
+              />
 
-          <InputForm
-            name="role"
-            label="บทบาท"
-            rawData={`${role}`}
-            newData={[role]}
-            inputs={[
-              {
-                name: "role",
-                label: "บทบาท",
-                value: role,
-                setValue: setRole,
-              },
-            ]}
-            invalid={invalidInput}
-            setShowModalFunc={{ setPaymentShow, setDlicenseShow }}
-            handleupdateFunc={{ handleUpdateProfile, handleChangeRole }}
-            isShow={true}
-          />
+              <InputForm
+                name="username"
+                label="ชื่อผู้ใช้"
+                rawData={`${user.username}`}
+                newData={[username]}
+                inputs={[
+                  {
+                    name: "username",
+                    label: "ชื่อผู้ใช้",
+                    value: user.username,
+                    currentValue: username,
+                    setValue: setUsername,
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={unShow}
+                setShowModalFunc={setUnShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={true}
+              />
+
+              <InputForm
+                name="password"
+                label="รหัสผ่าน"
+                rawData={`********`}
+                newData={[password]}
+                inputs={[
+                  {
+                    name: "password",
+                    label: "รหัสผ่าน",
+                    value: "",
+                    setValue: setPassword,
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={passShow}
+                setShowModalFunc={setPassShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={true}
+              />
+
+              <InputForm
+                name="tel"
+                label="เบอร์โทรศัพท์"
+                rawData={`${user.tel}`}
+                newData={[tel]}
+                inputs={[
+                  {
+                    name: "tel",
+                    label: "เบอร์โทรศัพท์",
+                    value: user.tel,
+                    currentValue: tel,
+                    setValue: setTel,
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={telShow}
+                setShowModalFunc={setTelShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={true}
+              />
+
+              <InputForm
+                name="citizen_id"
+                label="หมายเลขบัตรประชาชน"
+                rawData={`${user.citizen_id}`}
+                newData={[cid]}
+                inputs={[
+                  {
+                    name: "tel",
+                    label: "หมายเลขบัตรประชาชน",
+                    value: user.citizen_id,
+                    currentValue: cid,
+                    setValue: setCid,
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={ciShow}
+                setShowModalFunc={setCiShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={true}
+              />
+
+              <InputForm
+                name="driving_license_id"
+                label="หมายเลขใบขับขี่"
+                rawData={`${user.driving_license_id}`}
+                newData={[dlicense]}
+                inputs={[
+                  {
+                    name: "driving_license_id",
+                    label: "หมายเลขใบขับขี่",
+                    value: user.driving_license_id,
+                    currentValue: dlicense,
+                    setValue: setDlicense,
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={DlicenseShow}
+                setShowModalFunc={setDlicenseShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={role == "renter"}
+              />
+
+              <InputForm
+                name="payment_channel"
+                label="ช่องทางการรับเงิน"
+                input_type="select"
+                rawData={`${user.payment_channel}`}
+                newData={[payment]}
+                inputs={[
+                  {
+                    name: "payment_channel",
+                    label: "ช่องทางการรับเงิน",
+                    value: user.payment_channel,
+                    setValue: setPayment,
+                    options: [
+                      {
+                        en: "",
+                        th: "กรุณาเลือกช่องทางการรับเงิน",
+                      },
+                      {
+                        en: "promptpay",
+                        th: "พร้อมเพย์",
+                      },
+                      {
+                        en: "credit",
+                        th: "บัตรเครดิต",
+                      },
+                      {
+                        en: "cash",
+                        th: "เงินสด",
+                      },
+                    ],
+                  },
+                ]}
+                invalid={invalidInput}
+                isShowModal={paymentShow}
+                setShowModalFunc={setPaymentShow}
+                handleupdateFunc={handleUpdateProfile}
+                isShow={role == "provider"}
+              />
+
+              <InputForm
+                name="role"
+                label="บทบาท"
+                rawData={`${user.role}`}
+                newData={[role]}
+                inputs={[
+                  {
+                    name: "role",
+                    label: "บทบาท",
+                    value: user.role,
+                    setValue: setRole,
+                  },
+                ]}
+                invalid={invalidInput}
+                setShowModalFunc={{ setPaymentShow, setDlicenseShow }}
+                handleupdateFunc={{ handleUpdateProfile, handleChangeRole }}
+                isShow={true}
+              />
+            </>
+          ) : (
+            <>
+              <h6>ชื่อ - นามสกุล</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+              <br />
+              <h6>ชื่อผู้ใช้</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+              <br />
+              <h6>รหัสผ่าน</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+              <br />
+              <h6>เบอร์โทรศัพท์</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+              <br />
+              <h6>หมายเลขบัตรประชาชน</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+              <br />
+              <h6>บทบาท</h6>
+              <Skeleton width={`100%`} height={50} />
+              <br />
+            </>
+          )}
         </div>
       </div>
     </>

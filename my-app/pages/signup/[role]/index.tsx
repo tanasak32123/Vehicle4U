@@ -4,7 +4,6 @@ import styles from "@/styles/signup/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import defaultOptions from "@/libs/apiDefault";
 
 export default function Register() {
   const router = useRouter();
@@ -61,7 +60,9 @@ export default function Register() {
     setLoading(true);
 
     await fetch("/api/validateSignup", {
-      ...defaultOptions,
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "POST",
       body: JSON.stringify(data),
     }).then(async (res) => {

@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { SSRProvider } from "react-bootstrap";
 import Layout from "@/components/layout";
 import { AuthProvider } from "@/components/auth";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export default function App({
   Component,

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import defaultOptions from "@/libs/apiDefault";
 import { useAuth } from "@/components/auth";
 import Head from "next/head";
 
@@ -21,7 +20,9 @@ export default function Home() {
   async function handleSubmit(event: Event) {
     event.preventDefault();
     const response = await fetch("/api/validateSignin", {
-      ...defaultOptions,
+      headers: {
+        "Content-Type": "application/json",
+      },
       method: "POST",
       body: JSON.stringify({ username: username, password, role }),
     });
