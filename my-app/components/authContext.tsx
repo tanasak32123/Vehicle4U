@@ -109,7 +109,7 @@ export function AuthProvider({ children }: Props) {
       });
       const body = await response.json();
       if (response.ok) {
-        router.push("/");
+        router.push("/signup/success", "/signup");
       }
       return body;
     } catch (error) {
