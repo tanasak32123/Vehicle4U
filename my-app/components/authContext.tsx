@@ -37,7 +37,7 @@ export function AuthProvider({ children }: Props) {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [user]);
 
   const fetchUser = async () => {
     setLoading(true);
@@ -51,6 +51,13 @@ export function AuthProvider({ children }: Props) {
             setLoading(false);
           } else {
             const data = await response.json();
+            setCookie(
+              "user",
+              { ...data.user, role },
+              {
+                maxAge: 18000, // Expires after 5hr
+              }
+            );
             setUser({ ...data.user, role });
             setLoading(false);
           }
@@ -117,36 +124,24 @@ export function AuthProvider({ children }: Props) {
     }
   };
 
-  const updateUser = async (data: UserProfile) => {
+  const updateUser = async (
+    data: UserProfile,
+    type: string,
+    values: string[]
+  ) => {
     setLoading(true);
-    const token = getCookie("token")?.toString();
-    const userCookie = JSON.parse(getCookie("user")!.toString());
-    const response = await fetch(
-      `http://localhost:3000/user/editProfile/${userCookie.id}`,
-      {
-        method: "PATCH",
+    try {
+      const response = await fetch("/api/updateProfile", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
-      }
-    );
-    const json = await response.json();
-    if (response.status != 200) {
-      setLoading(false);
-      return {
-        success: false,
-        statusCode: response.status,
-        message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
-      };
-    } else {
-      setLoading(false);
-      return {
-        success: true,
-        statusCode: response.status,
-        user: json,
-      };
+        body: JSON.stringify({ data, type, values }),
+      });
+      const body = await response.json();
+      return body;
+    } catch (error) {
+      console.error(error);
     }
   };
 

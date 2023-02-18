@@ -19,13 +19,19 @@ function validateUsername(str) {
   return usernameRegex.test(str);
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method == "POST") {
     const body = req.body;
+    const data = body.data;
+    const type = body.type;
+    const values = body.values;
 
-    if (body.type == "name") {
-      const first_name = body.values["0"];
-      const last_name = body.values["1"];
+    if (type == "name") {
+      const first_name = values["0"];
+      const last_name = values["1"];
       if (!first_name && !last_name) {
         return res
           .status(400)
@@ -55,8 +61,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "username") {
-      const username = body.values["0"];
+    if (type == "username") {
+      const username = values["0"];
       if (!username) {
         return res
           .status(400)
@@ -68,8 +74,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "password") {
-      const password = body.values["0"];
+    if (type == "password") {
+      const password = values["0"];
       if (!password) {
         return res
           .status(400)
@@ -81,8 +87,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "tel") {
-      const tel = body.values["0"];
+    if (type == "tel") {
+      const tel = values["0"];
       if (!tel) {
         return res
           .status(400)
@@ -98,8 +104,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "cid") {
-      const cid = body.values["0"];
+    if (type == "citizen_id") {
+      const cid = values["0"];
       if (!cid) {
         return res
           .status(400)
@@ -115,8 +121,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "dlicense") {
-      const d_license_id = body.values["0"];
+    if (type == "driving_license_id" || type == "add_driving_license_id") {
+      const d_license_id = values["0"];
       if (!d_license_id) {
         return res
           .status(400)
@@ -132,8 +138,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    if (body.type == "payment") {
-      const payment = body.values["0"];
+    if (type == "payment_channel" || type == "add_payment_channel") {
+      const payment = values["0"];
       if (!payment) {
         return res
           .status(400)
@@ -141,7 +147,30 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     }
 
-    return res.status(200).json({ success: true });
+    const token = req.cookies.token;
+    const user = JSON.parse(req.cookies.user!);
+    try {
+      await fetch(`http://localhost:3000/user/editProfile/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      }).then(async (response) => {
+        const user = await response.json();
+        if (!response.ok) {
+          return res.status(400).json({
+            success: false,
+            message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
+          });
+        } else {
+          return res.status(200).json({ success: true, user });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   } else {
     res.redirect("/404");
   }

@@ -20,6 +20,7 @@ export default function ModalForm({
   inputs,
   newData,
   invalid,
+  setInvalid,
   isShowModal,
   setShowModalFunc,
   handleupdateFunc,
@@ -31,7 +32,10 @@ export default function ModalForm({
         id={`modal_${id}`}
         size="lg"
         show={isShowModal}
-        onHide={() => setShowModalFunc(false)}
+        onHide={() => {
+          setInvalid("");
+          setShowModalFunc(false);
+        }}
         centered
         backdrop={`static`}
       >
@@ -64,7 +68,7 @@ export default function ModalForm({
                       ) : (
                         <Form.Select
                           key={id}
-                          aria-label="payment_channel"
+                          aria-label={id}
                           onChange={(event) => {
                             element.setValue(event.target.value);
                           }}
@@ -93,13 +97,18 @@ export default function ModalForm({
         <Modal.Footer className={`${styles.modal_footer}`}>
           <Button
             className={`${styles.close_btn} mx-2`}
-            onClick={() => setShowModalFunc(false)}
+            onClick={(event) => {
+              event.preventDefault();
+              setInvalid("");
+              setShowModalFunc(false);
+            }}
           >
             ปิด
           </Button>
           <Button
             className={`${styles.save_btn} mx-2`}
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               handleSubmit(id, newData, handleupdateFunc, setShowModalFunc);
             }}
           >

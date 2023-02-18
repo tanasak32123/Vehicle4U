@@ -8,6 +8,7 @@ import InputForm from "@/components/profileForm";
 import { useAuth } from "@/components/authContext";
 import Skeleton from "react-loading-skeleton";
 import ModalForm from "@/components/modalProfile";
+import { setCookie } from "cookies-next";
 
 export default function EditProfile() {
   const { user, isAuthenticate, authAction }: any = useAuth();
@@ -22,6 +23,9 @@ export default function EditProfile() {
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
 
+  const [addDlicenseShow, setAddDlicenseShow] = useState(false);
+  const [addPaymentShow, setAddPaymentShow] = useState(false);
+
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -30,8 +34,6 @@ export default function EditProfile() {
   const [cid, setCid] = useState("");
   const [dlicense, setDlicense] = useState("");
   const [payment, setPayment] = useState("");
-  const [isRenter, setIsRenter] = useState(false);
-  const [isProvider, setIsProvider] = useState(false);
 
   const [invalidInput, setInvalidInput] = useState("");
 
@@ -44,65 +46,60 @@ export default function EditProfile() {
     citizen_id: cid,
     payment_channel: payment,
     driving_license_id: dlicense,
-    is_renter: isRenter,
-    is_provider: isProvider,
+    is_renter: dlicense != "",
+    is_provider: payment != "",
   };
 
   useEffect(() => {
+    console.log(user);
     if (isAuthenticate) {
       setFName(user.first_name);
       setLName(user.last_name);
       setUsername(user.username);
-      setPassword(user.password);
       setTel(user.tel);
       setCid(user.citizen_id);
       setDlicense(user.driving_license_id);
       setPayment(user.payment_channel);
-      setIsRenter(user.driving_license_id != "");
-      setIsProvider(user.payment_channel != "");
     }
   }, [isAuthenticate]);
 
   async function handleUpdateProfile(type: String, values: String[]) {
-    const body = {
-      values,
-      type,
-    };
-    const response = await fetch("/api/validateUpdateProfile", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    const json = await response.json();
-    if (response.status != 200) {
-      setInvalidInput(json.message);
-      return false;
-    } else {
-      setInvalidInput("");
-      const response = await authAction.updateUser(data);
+    try {
+      const response = await authAction.updateUser(data, type, values);
       if (!response.success) {
         setInvalidInput(response.message);
-        return false;
       } else {
-        authAction.setUser({ ...response.user, role: user.role });
-        return true;
+        if (type == "add_payment_channel") {
+          authAction.setUser({ ...response.user, role: "provider" });
+        } else if (type == "add_driving_license_id") {
+          authAction.setUser({ ...response.user, role: "renter" });
+        } else {
+          authAction.setUser({ ...response.user, role: user.role });
+        }
       }
+      return response.success;
+    } catch (error) {
+      console.error(error);
     }
   }
 
   function handleChangeRole() {
     if (user.role == "renter") {
-      authAction.setUser({ ...user, role: "provider" });
       if (!user.payment_channel) {
-        setPaymentShow(true);
+        setAddPaymentShow(true);
+      } else {
+        authAction.setUser({ ...user, role: "provider" });
+        setCookie("user", { ...user, role: "provider" });
+        // pop up
       }
     }
     if (user.role == "provider") {
-      authAction.setUser({ ...user, role: "renter" });
       if (!user.driving_license_id) {
-        setDlicenseShow(true);
+        setAddDlicenseShow(true);
+      } else {
+        authAction.setUser({ ...user, role: "renter" });
+        setCookie("user", { ...user, role: "renter" });
+        // pop up
       }
     }
   }
@@ -313,6 +310,7 @@ export default function EditProfile() {
                 ]}
                 newData={[fName, lName]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={nmShow}
                 setShowModalFunc={setNmShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -333,6 +331,7 @@ export default function EditProfile() {
                 ]}
                 newData={[username]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={unShow}
                 setShowModalFunc={setUnShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -345,13 +344,14 @@ export default function EditProfile() {
                 inputs={[
                   {
                     name: "password",
-                    label: "รหัสผ่าน",
+                    label: "รหัสผ่านใหม่",
                     value: "",
                     setValue: setPassword,
                   },
                 ]}
                 newData={[password]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={passShow}
                 setShowModalFunc={setPassShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -372,6 +372,7 @@ export default function EditProfile() {
                 ]}
                 newData={[tel]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={telShow}
                 setShowModalFunc={setTelShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -392,6 +393,7 @@ export default function EditProfile() {
                 ]}
                 newData={[cid]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={ciShow}
                 setShowModalFunc={setCiShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -410,8 +412,9 @@ export default function EditProfile() {
                     setValue: setDlicense,
                   },
                 ]}
-                newData={[tel]}
+                newData={[dlicense]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={DlicenseShow}
                 setShowModalFunc={setDlicenseShow}
                 handleupdateFunc={handleUpdateProfile}
@@ -449,8 +452,68 @@ export default function EditProfile() {
                 ]}
                 newData={[payment]}
                 invalid={invalidInput}
+                setInvalid={setInvalidInput}
                 isShowModal={paymentShow}
                 setShowModalFunc={setPaymentShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`เพิ่มข้อมูลโปรไฟล์`}
+                id={`add_driving_license_id`}
+                type={`text`}
+                inputs={[
+                  {
+                    name: "add_driving_license_id",
+                    label: "หมายเลขใบขับขี่",
+                    value: user.driving_license_id,
+                    currentValue: dlicense,
+                    setValue: setDlicense,
+                  },
+                ]}
+                newData={[dlicense]}
+                invalid={invalidInput}
+                setInvalid={setInvalidInput}
+                isShowModal={addDlicenseShow}
+                setShowModalFunc={setAddDlicenseShow}
+                handleupdateFunc={handleUpdateProfile}
+              />
+
+              <ModalForm
+                title={`เพิ่มข้อมูลโปรไฟล์`}
+                id={`add_payment_channel`}
+                type={`select`}
+                inputs={[
+                  {
+                    name: "add_payment_channel",
+                    label: "ช่องทางการรับเงิน",
+                    value: user.payment_channel,
+                    setValue: setPayment,
+                    options: [
+                      {
+                        en: "",
+                        th: "กรุณาเลือกช่องทางการรับเงิน",
+                      },
+                      {
+                        en: "promptpay",
+                        th: "พร้อมเพย์",
+                      },
+                      {
+                        en: "credit",
+                        th: "บัตรเครดิต",
+                      },
+                      {
+                        en: "cash",
+                        th: "เงินสด",
+                      },
+                    ],
+                  },
+                ]}
+                newData={[payment]}
+                invalid={invalidInput}
+                setInvalid={setInvalidInput}
+                isShowModal={addPaymentShow}
+                setShowModalFunc={setAddPaymentShow}
                 handleupdateFunc={handleUpdateProfile}
               />
             </>

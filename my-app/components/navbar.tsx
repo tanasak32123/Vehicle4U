@@ -2,7 +2,6 @@ import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useAuth } from "./authContext";
 import Skeleton from "react-loading-skeleton";
-import { useEffect, useState } from "react";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
