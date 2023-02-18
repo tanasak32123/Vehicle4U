@@ -1,7 +1,8 @@
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
-import { useAuth } from "./auth";
+import { useAuth } from "./authContext";
 import Skeleton from "react-loading-skeleton";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
@@ -23,7 +24,7 @@ export default function Header() {
             <Nav>
               {loading ? (
                 <>
-                  <Skeleton width={40} height={`100%`} />
+                  <Skeleton width={150} height={`100%`} />
                 </>
               ) : isAuthenticate ? (
                 <NavDropdown title={user.username} id="collasible-nav-dropdown">

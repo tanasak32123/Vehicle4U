@@ -19,10 +19,7 @@ function validateUsername(str) {
   return usernameRegex.test(str);
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method == "POST") {
     const body = req.body;
 
@@ -64,10 +61,10 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย" });
-      } else if (validateUsername(username)) {
+      } else if (!validateUsername(username)) {
         return res
           .status(400)
-          .json({ message: "** กรุณาเพิ่มตัวอักษรในชื่อผู้ใช้" });
+          .json({ message: "** กรุณาเพิ่มตัวอักษร a-z หรือ 0-9 ในชื่อผู้ใช้" });
       }
     }
 

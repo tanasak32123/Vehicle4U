@@ -1,6 +1,6 @@
 import styles from "@/styles/editProfile.module.css";
 import { FiEdit2 } from "react-icons/fi";
-import { Row, Col, Container, Modal, Form, Button } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import { FaUndoAlt } from "react-icons/fa";
 
 function refreshValue(inputs: any, setShowModalFunc: any) {

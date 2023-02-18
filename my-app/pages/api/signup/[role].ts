@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ErrorSignupValidate } from "../../interfaces/ErrorSignupValidate";
+import { ErrorSignupValidate } from "../../../interfaces/ErrorSignupValidate";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,6 +9,7 @@ export default async function handler(
   if (req.method == "POST") {
     const errors: ErrorSignupValidate = {};
     const body = req.body;
+    const role = req.query.role;
 
     if (!body.first_name) {
       errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
@@ -40,7 +41,7 @@ export default async function handler(
       errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
     }
 
-    if (body.role == "renter") {
+    if (role == "renter") {
       if (!body.driving_license_id) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
       } else if (body.driving_license_id.length != 8) {
@@ -48,7 +49,7 @@ export default async function handler(
       }
     }
 
-    if (body.role == "provider") {
+    if (role == "provider") {
       if (!body.payment_channel) {
         errors.payment = "** กรุณาเลือกวิธีการรับเงินให้เรียบร้อย";
       }
@@ -60,7 +61,34 @@ export default async function handler(
       }
     }
 
-    return res.status(200).json({ success: true, data: body });
+    await fetch(`http://localhost:3000/auth/signup/${role}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }).then(async (response) => {
+      const data = await response.json();
+      if (!response.ok) {
+        if (data.message == "username exist") {
+          errors.username = "** ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+          return res.status(400).json({
+            success: false,
+            errors,
+          });
+        } else {
+          errors.citizenID = "** หมายเลขบัตรประชนนี้ถูกใช้แล้ว";
+          return res.status(400).json({
+            success: false,
+            errors,
+          });
+        }
+      } else {
+        return res
+          .status(201)
+          .json({ success: true, message: "created successfully" });
+      }
+    });
   } else {
     res.redirect("/404");
   }

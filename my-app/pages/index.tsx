@@ -1,16 +1,13 @@
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
-import { useRouter } from "next/router";
-import { useAuth } from "@/components/auth";
+import { useAuth } from "@/components/authContext";
 import Head from "next/head";
 
 export default function Home() {
-  const { isAuthenticate, loading, authAction }: any = useAuth();
-
-  const router = useRouter();
+  const { loading, authAction }: any = useAuth();
 
   let [username, setUsername] = useState("");
   let [password, setPassword] = useState("");
@@ -19,31 +16,12 @@ export default function Home() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    const response = await fetch("/api/validateSignin", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ username: username, password, role }),
-    });
-    const json = await response.json();
-    if (response.status != 200) {
-      setInvalid(json.message);
-    } else {
-      const response = await authAction.login(username, password, role);
-      if (response.success) {
-        router.push("/searchcar");
-      } else {
-        setInvalid(response.message);
-      }
+    authAction.setLoading(true);
+    const response = await authAction.login(username, password, role);
+    if (!response.success) {
+      setInvalid(response.message);
     }
   }
-
-  useEffect(() => {
-    if (isAuthenticate) {
-      router.push("/searchcar");
-    }
-  }, []);
 
   return (
     <>

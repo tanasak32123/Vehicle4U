@@ -1,12 +1,11 @@
 import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UserProfile from "@/interfaces/UserProfile";
-import UserModel from "@/interfaces/UserModel";
 import InputForm from "@/components/profileForm";
-import { useAuth } from "@/components/auth";
+import { useAuth } from "@/components/authContext";
 import Skeleton from "react-loading-skeleton";
 import ModalForm from "@/components/modalProfile";
 
@@ -23,7 +22,6 @@ export default function EditProfile() {
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
 
-  const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -51,7 +49,7 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (isAuthenticate) {
       setFName(user.first_name);
       setLName(user.last_name);
       setUsername(user.username);
@@ -125,7 +123,10 @@ export default function EditProfile() {
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
-          <h1 className="text-end">การตั้งค่า</h1>
+          <h1 className="align-items-center d-flex justify-content-end">
+            <FaUserAlt />
+            &nbsp; โปรไฟล์ของฉัน
+          </h1>
           <hr />
           <br />
 
@@ -283,7 +284,6 @@ export default function EditProfile() {
                     name: "role",
                     label: "บทบาท",
                     value: user.role,
-                    setValue: setRole,
                   },
                 ]}
                 setShowModalFunc={{ setPaymentShow, setDlicenseShow }}

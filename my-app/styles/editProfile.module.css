@@ -44,20 +44,22 @@
   border-radius: 20px;
   width: 80px;
   box-shadow: 5px 5px #dadada;
-  border: 1px solid black;
+  border: 1px solid #cfcfcf;
   color: black;
+  float: left;
 }
 
 .close_btn:hover {
-  background: #ffffff;
+  background: #cfcfcf;
   border-radius: 20px;
   width: 80px;
   box-shadow: 5px 5px #dadada;
-  border: 1px solid black;
+  border: 1px solid white;
   color: black;
 }
 
 .save_btn {
+  float: right;
   background: orange;
   border-radius: 20px;
   width: 80px;
@@ -117,4 +119,8 @@
 
 .lName_feedback {
   color: black;
+}
+
+.modal_footer {
+  display: block;
 }

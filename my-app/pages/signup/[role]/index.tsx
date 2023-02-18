@@ -5,7 +5,7 @@ import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 import UserSignUp from "@/interfaces/UserSignUp";
-import { useAuth } from "@/components/auth";
+import { useAuth } from "@/components/authContext";
 
 export default function Register() {
   const { authAction }: any = useAuth();
@@ -61,34 +61,16 @@ export default function Register() {
   async function handleSubmit(event: Event) {
     event.preventDefault();
     setLoading(true);
-    const response = await fetch("/api/validateSignup", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-    const body = await response.json();
-    if (response.status != 200) {
-      setInvalid_fName(body.errors.fName);
-      setInvalid_lName(body.errors.lName);
-      setInvalid_username(body.errors.username);
-      setInvalid_pw(body.errors.pw);
-      setInvalid_tel(body.errors.tel);
-      setInvalid_citizenID(body.errors.citizenID);
-      setInvalid_drivenID(body.errors.drivenID);
-      setInvalid_payment(body.errors.payment);
-    } else {
-      const response = await authAction.signUp(body.data, role);
-      if (!response.success) {
-        if (response.error == "username") {
-          setInvalid_username(response.message);
-        } else {
-          setInvalid_citizenID(response.message);
-        }
-      } else {
-        router.push("/signup/success", "/signup");
-      }
+    const response = await authAction.signUp(data, role);
+    if (!response.success) {
+      setInvalid_fName(response.errors.fName);
+      setInvalid_lName(response.errors.lName);
+      setInvalid_username(response.errors.username);
+      setInvalid_pw(response.errors.pw);
+      setInvalid_tel(response.errors.tel);
+      setInvalid_citizenID(response.errors.citizenID);
+      setInvalid_drivenID(response.errors.drivenID);
+      setInvalid_payment(response.errors.payment);
     }
     setLoading(false);
   }

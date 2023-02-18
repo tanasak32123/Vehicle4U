@@ -90,7 +90,7 @@ export default function ModalForm({
             </Form.Group>
           </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className={`${styles.modal_footer}`}>
           <Button
             className={`${styles.close_btn} mx-2`}
             onClick={() => setShowModalFunc(false)}
