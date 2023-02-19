@@ -39,7 +39,6 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async update(
     @Request() req,
-    //@Param() id: number,
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
@@ -70,8 +69,9 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findUser(@Param('id') id: string): Promise<User> {
+  @Get('')
+  async findUser(@Request() req): Promise<User> {
+    let id = req.body['id'];
     return await this.userService.findOne(id);
   }
 
@@ -79,11 +79,13 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Successful.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @Get('/getroles/:id')
+  @Get('/getroles')
   async getRoles(
-    @Param('id') id: string,
-    @Response() res,
+  @Request() req,
+  @Response() res,
   ): Promise<UserStatusDto> {
+    let id = req.body['id']
+    console.log(id)
     const x = await this.userService.checkState(id);
     if (x == null) {
       return res.status(404).send({
