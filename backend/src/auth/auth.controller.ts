@@ -14,9 +14,10 @@ export class AuthController {
     
 
     @Post('login')
-    @ApiResponse({ status: 201, description: 'Login Successful.'})
-    @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 500, description: 'Invalid login credentials.'})
+    @ApiResponse({ status: 200, description: 'Login Successful.'})
+    @ApiResponse({ status: 403, description: 'Forbidden.' })
+    @ApiResponse({ status: 404, description: 'Username not found/Role not registered.'})
+    @ApiResponse({ status: 406, description: 'Wrong password.'})
     async login(@Body() loginDto : LoginDto , @Response() res ) {
         const user = await this.authService.validateLogin(loginDto); 
         const token = await this.authService.login(loginDto);
@@ -28,7 +29,7 @@ export class AuthController {
     @Post(['/signup/renter' , '/signup/provider'])
     @ApiResponse({ status: 201, description: 'User Registration Successful.'})
     @ApiResponse({ status: 403, description: 'Forbidden.'})
-    @ApiResponse({ status: 500, description: 'Invalid register information.'})
+    @ApiResponse({ status: 406, description: 'Provided Information already exists'})
     async register(@Body() registerDto : RegisterDto, @Response() res) {
         await this.authService.validateRegister(registerDto);
         const user = await this.authService.register(registerDto)

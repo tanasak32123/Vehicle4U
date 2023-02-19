@@ -42,9 +42,7 @@ export class UserController {
     @Response() res,
   ) {
     try {
-      console.log(1);
       const user = await this.userService.update(id['id'], updateuserDto);
-      console.log(2);
       if (!user) {
         return res.status(400);
       }
