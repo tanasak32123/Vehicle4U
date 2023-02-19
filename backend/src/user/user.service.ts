@@ -46,7 +46,9 @@ export class UserService {
         throw new HttpException( "citizen_id is exist", HttpStatus.NOT_MODIFIED);
       }
     }
-    updateuserDto.password = await bcrypt.hash(updateuserDto.password, 10);
+    if(updateuserDto.password){
+      updateuserDto.password = await bcrypt.hash(updateuserDto.password, 10);
+    }
     await this.userRepository.update({ id: id }, updateuserDto);
     return await this.userRepository.findOneBy({ id: id });
   }

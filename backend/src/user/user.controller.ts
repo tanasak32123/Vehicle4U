@@ -24,7 +24,10 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 @ApiTags('Vehicle4U')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService , private jwtService: JwtService) {}
+  constructor(
+    private readonly userService: UserService,
+    private jwtService: JwtService,
+  ) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Response() res) {
@@ -44,13 +47,13 @@ export class UserController {
     @Response() res,
   ) {
     try {
-      const token = req.headers['authorization'].replace('Bearer','').trim();
+      const token = req.headers['authorization'].replace('Bearer', '').trim();
       console.log(token);
 
       //Make sure token exists
       let id;
-      if(token) {
-        let jwtService :JwtService;
+      if (token) {
+        let jwtService: JwtService;
         const decoded = await this.jwtService.decode(token);
         console.log(decoded);
         id = decoded['id'];
@@ -59,13 +62,12 @@ export class UserController {
       if (!user) {
         return res.status(404).send({
           statusCode: 404,
-          message: 'user not found'
-        });;
-
+          message: 'user not found',
+        });
       }
       return res.status(200).send(user);
-    }catch (err) {
-      console.log(err);  
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -88,7 +90,7 @@ export class UserController {
     if (x == null) {
       return res.status(404).send({
         statusCode: 404,
-        message: 'user not found'
+        message: 'user not found',
       });
     }
     return res.status(200).send({
