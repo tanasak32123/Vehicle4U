@@ -9,6 +9,8 @@ import {
   Patch,
   Response,
   UseGuards,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -37,38 +39,41 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('/editProfile')
-  @ApiResponse({ status: 201, description: 'User Updation Successful.' })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiResponse({ status: 400, description: 'Bad Request.' })
+  @ApiResponse({ status: 200, description: 'User Updation Successful.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @ApiResponse({ status: 406, description: 'Duplicate information' })
   async update(
     @Request() req,
     //@Param() id: number,
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
+    let id;
     try {
       const token = req.headers['authorization'].replace('Bearer', '').trim();
       console.log(token);
 
       //Make sure token exists
-      let id;
+      
       if (token) {
         let jwtService: JwtService;
         const decoded = await this.jwtService.decode(token);
         console.log(decoded);
         id = decoded['id'];
       }
-      const user = await this.userService.update(id, updateuserDto);
-      if (!user) {
-        return res.status(404).send({
-          statusCode: 404,
-          message: 'user not found',
-        });
-      }
-      return res.status(200).send(user);
-    } catch (err) {
+    }catch (err) {
       console.log(err);
+      throw new HttpException( "Unauthorized", HttpStatus.UNAUTHORIZED);
     }
+    const user = await this.userService.update(id, updateuserDto);
+    if (!user) {
+      return res.status(404).send({
+        statusCode: 404,
+        message: 'user not found',
+      });
+    }
+    return res.status(200).send(user);
   }
 
   @UseGuards(JwtAuthGuard)
