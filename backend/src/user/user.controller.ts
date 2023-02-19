@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Request,
   Post,
   Patch,
   Response,
@@ -14,7 +15,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-
+import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
@@ -23,7 +24,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 @ApiTags('Vehicle4U')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService , private jwtService: JwtService) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Response() res) {
@@ -32,25 +33,39 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/editProfile/:id')
+  @Patch('/editProfile')
   @ApiResponse({ status: 201, description: 'User Updation Successful.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async update(
-    @Param() id: number,
+    @Request() req,
+    //@Param() id: number,
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
     try {
-      // console.log(1);
-      const user = await this.userService.update(id['id'], updateuserDto);
-      // console.log(2);
+      const token = req.headers['authorization'].replace('Bearer','').trim();
+      console.log(token);
+
+      //Make sure token exists
+      let id;
+      if(token) {
+        let jwtService :JwtService;
+        const decoded = await this.jwtService.decode(token);
+        console.log(decoded);
+        id = decoded['id'];
+      }
+      const user = await this.userService.update(id, updateuserDto);
       if (!user) {
-        return res.status(400).send({ message: 'must be unique' });
+        return res.status(404).send({
+          statusCode: 404,
+          message: 'user not found'
+        });;
+
       }
       return res.status(200).send(user);
-    } catch (err) {
-      console.log(err);
+    }catch (err) {
+      console.log(err);  
     }
   }
 
@@ -73,7 +88,7 @@ export class UserController {
     if (x == null) {
       return res.status(404).send({
         statusCode: 404,
-        message: 'user not found',
+        message: 'user not found'
       });
     }
     return res.status(200).send({

@@ -19,7 +19,7 @@ export class AuthService {
           id: user.id,
           username: user.username,
         };
-        return { access_token: this.jwtService.sign(payload) };
+        return { access_token: this.jwtService.sign(payload)};
       }
       async login(loginDto : LoginDto){
         const user =  await this.userRepository.findOneBy({username : loginDto.username});
@@ -59,9 +59,5 @@ export class AuthService {
         registerDto.password = await bcrypt.hash(registerDto.password, 10) ;
         const ent = await this.userRepository.create(registerDto);
         return await this.userRepository.save(ent);
-      }
-
-      
-
-      
+      }      
 }
