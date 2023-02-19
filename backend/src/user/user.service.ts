@@ -27,14 +27,14 @@ export class UserService {
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) {
-      throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
+      throw new HttpException( "User not found", HttpStatus.NOT_FOUND);
     }
     if(updateuserDto.username){
       const userusername = await this.userRepository.findOneBy({
         username: updateuserDto.username,
       });
       if (userusername && userusername.id != id) {
-        throw new HttpException( "username is exist", HttpStatus.NOT_MODIFIED);
+        throw new HttpException( "username is exist", HttpStatus.NOT_ACCEPTABLE);
       }
     }
     if(updateuserDto.citizen_id){
@@ -43,7 +43,7 @@ export class UserService {
         citizen_id: updateuserDto.citizen_id,
       });
       if (usercitizen && usercitizen.id != id) {
-        throw new HttpException( "citizen_id is exist", HttpStatus.NOT_MODIFIED);
+        throw new HttpException( "citizen_id is exist", HttpStatus.NOT_ACCEPTABLE);
       }
     }
     if(updateuserDto.password){
