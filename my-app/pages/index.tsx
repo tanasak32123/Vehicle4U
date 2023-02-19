@@ -1,53 +1,28 @@
-import Head from "next/head";
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
-import { useRouter } from "next/router";
-import { Session } from "@/interfaces/session";
-import defaultOptions from "@/libs/apiDefault";
+import { useAuth } from "@/components/authContext";
+import Head from "next/head";
 
 export default function Home() {
-  const router = useRouter();
+  const { loading, authAction }: any = useAuth();
 
   let [username, setUsername] = useState("");
-  let [pw, setPw] = useState("");
+  let [password, setPassword] = useState("");
   let [role, setRole] = useState("");
   let [invalid, setInvalid] = useState("");
-  let [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    setLoading(true);
-    await fetch("/api/signin", {
-      ...defaultOptions,
-      method: "POST",
-      body: JSON.stringify({ username: username, password: pw, role }),
-    }).then(async (response) => {
-      const result = await response.json();
-
-      setLoading(false);
-
-      if (response.status != 200) {
-        setInvalid(result.message);
-      } else {
-        const user: Session = {
-          username: result.data.user.username,
-          password: result.data.user.password,
-          access_token: result.data.token.access_token,
-        };
-        // console.log(result.data.user);
-        sessionStorage.setItem("username", user.username);
-        sessionStorage.setItem("password", user.password);
-        sessionStorage.setItem("token", user.access_token);
-        // const cookie: string = getCookie("user") as string;
-        // const user = JSON.parse(cookie);
-        setInvalid("");
-        router.push("/about_us");
-      }
-    });
+    authAction.setLoading(true);
+    const response = await authAction.login(username, password, role);
+    if (!response.success) {
+      setInvalid(response.message);
+    }
   }
+
   return (
     <>
       <Head>
@@ -106,8 +81,8 @@ export default function Home() {
                   id="password"
                   name="password"
                   className={styles.input}
-                  value={pw}
-                  onChange={(event) => setPw(event.target.value)}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                 />
                 <br />
                 <br />

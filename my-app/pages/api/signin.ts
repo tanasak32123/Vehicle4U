@@ -1,12 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-type Data = {
-  username: string;
-  password: string;
-  role: string;
-};
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,46 +13,32 @@ export default async function handler(
         message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
     }
-
     try {
-      // handle API call to sign in here.
-      const data: Data = {
-        username: body.username,
-        password: body.password,
-        role: body.role,
-      };
-
       await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          username: body.username,
+          password: body.password,
+          role: body.role,
+        }),
       }).then(async (response) => {
-        if (response.status != 200) {
-          return res.status(400).json({
+        if (!response.ok) {
+          res.status(400).json({
             success: false,
             message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
           });
         } else {
-          const json = await response.json();
-          setCookie("user", JSON.stringify(json.user), {
-            req,
-            res,
-            maxAge: 18000, // Expires after 5hr
-          });
-          setCookie("token", JSON.stringify(json.token.access_token), {
-            req,
-            res,
-            maxAge: 18000, // Expires after 5hr
-          });
-          return res.status(200).json({ success: true, data: json });
+          const user = await response.json();
+          res.status(200).json({ success: true, ...user });
         }
       });
-    } catch (err) {
-      return res.status(400).json({ success: false, err });
+    } catch (error) {
+      console.error(error);
     }
   } else {
-    res.redirect("/404");
+    res.status(404).redirect("/404");
   }
 }

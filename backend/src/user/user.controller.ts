@@ -61,6 +61,7 @@ export class UserController {
           statusCode: 404,
           message: 'user not found'
         });;
+
       }
       return res.status(200).send(user);
     }catch (err) {

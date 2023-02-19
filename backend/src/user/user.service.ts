@@ -39,13 +39,14 @@ export class UserService {
     }
     if(updateuserDto.citizen_id){
       const usercitizen = await this.userRepository.findOneBy({
+
         citizen_id: updateuserDto.citizen_id,
       });
       if (usercitizen && usercitizen.id != id) {
         throw new HttpException( "citizen_id is exist", HttpStatus.NOT_MODIFIED);
       }
     }
-    updateuserDto.password = await bcrypt.hash(updateuserDto.password, 10) ;
+    updateuserDto.password = await bcrypt.hash(updateuserDto.password, 10);
     await this.userRepository.update({ id: id }, updateuserDto);
     return await this.userRepository.findOneBy({ id: id });
   }
