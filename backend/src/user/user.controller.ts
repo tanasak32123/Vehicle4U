@@ -3,21 +3,17 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Request,
   Post,
   Patch,
   Response,
   UseGuards,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
@@ -27,8 +23,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 @Controller('user')
 export class UserController {
   constructor(
-    private readonly userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService
   ) {}
 
   @Post()
@@ -48,23 +43,7 @@ export class UserController {
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
-    let id;
-    try {
-      const token = req.headers['authorization'].replace('Bearer', '').trim();
-      console.log(token);
-
-      //Make sure token exists
-      
-      if (token) {
-        let jwtService: JwtService;
-        const decoded = await this.jwtService.decode(token);
-        console.log(decoded);
-        id = decoded['id'];
-      }
-    }catch (err) {
-      console.log(err);
-      throw new HttpException( "Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
+    let id = req.body['id'];
     const user = await this.userService.update(id, updateuserDto);
     if (!user) {
       return res.status(404).send({
