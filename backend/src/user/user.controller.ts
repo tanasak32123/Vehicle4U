@@ -3,21 +3,17 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Request,
   Post,
   Patch,
   Response,
   UseGuards,
-  HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
@@ -27,8 +23,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 @Controller('user')
 export class UserController {
   constructor(
-    private readonly userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService
   ) {}
 
   @Post()
@@ -45,27 +40,10 @@ export class UserController {
   @ApiResponse({ status: 406, description: 'Duplicate information' })
   async update(
     @Request() req,
-    //@Param() id: number,
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
-    let id;
-    try {
-      const token = req.headers['authorization'].replace('Bearer', '').trim();
-      console.log(token);
-
-      //Make sure token exists
-      
-      if (token) {
-        let jwtService: JwtService;
-        const decoded = await this.jwtService.decode(token);
-        console.log(decoded);
-        id = decoded['id'];
-      }
-    }catch (err) {
-      console.log(err);
-      throw new HttpException( "Unauthorized", HttpStatus.UNAUTHORIZED);
-    }
+    let id = req.body['id'];
     const user = await this.userService.update(id, updateuserDto);
     if (!user) {
       return res.status(404).send({
@@ -77,8 +55,9 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  async findUser(@Param('id') id: string): Promise<User> {
+  @Get('')
+  async findUser(@Request() req): Promise<User> {
+    let id = req.body['id'];
     return await this.userService.findOne(id);
   }
 
@@ -86,11 +65,13 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Successful.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  @Get('/getroles/:id')
+  @Get('/getroles')
   async getRoles(
-    @Param('id') id: string,
-    @Response() res,
+  @Request() req,
+  @Response() res,
   ): Promise<UserStatusDto> {
+    let id = req.body['id']
+    console.log(id)
     const x = await this.userService.checkState(id);
     if (x == null) {
       return res.status(404).send({

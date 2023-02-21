@@ -1,5 +1,6 @@
+import { UserController } from './user/user.controller';
 /* eslint-disable prettier/prettier */
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +8,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import  config  from './config/config';
 import { AuthModule } from './auth/auth.module';
+import { TokenMiddleware } from './middleware/token.decode.middleware';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,4 +35,10 @@ import { AuthModule } from './auth/auth.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule{
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(TokenMiddleware)
+      .forRoutes(UserController);
+  }
+}
