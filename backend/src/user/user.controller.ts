@@ -43,7 +43,7 @@ export class UserController {
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
-    let id = req.body['id'];
+    const id = req.body['id'];
     const user = await this.userService.update(id, updateuserDto);
     if (!user) {
       return res.status(404).send({
@@ -57,7 +57,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('')
   async findUser(@Request() req): Promise<User> {
-    let id = req.body['id'];
+    const id = req.body['id'];
     return await this.userService.findOne(id);
   }
 
@@ -70,7 +70,7 @@ export class UserController {
   @Request() req,
   @Response() res,
   ): Promise<UserStatusDto> {
-    let id = req.body['id']
+    const id = req.body['id']
     console.log(id)
     const x = await this.userService.checkState(id);
     if (x == null) {
