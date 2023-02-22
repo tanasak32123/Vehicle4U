@@ -16,7 +16,7 @@ import { Injectable } from '@nestjs/common';
 //   };
   type TokenPayload = {
     id: number;
-    name: string;
+    username: string;
   };
 
 @Injectable()
@@ -32,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: TokenPayload) {
     return {
       id: payload.id,
-      name: payload.name,
+      username: payload.username,
     };
   }
 
