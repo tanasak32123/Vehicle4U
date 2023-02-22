@@ -36,32 +36,31 @@ export function AuthProvider({ children }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUser();
-  }, [user]);
+    getUser();
+    console.log();
+  }, []);
 
-  const fetchUser = async () => {
+  const getUser = async () => {
     setLoading(true);
     const token = getCookie("token")?.toString();
     if (!user && token) {
       const role = JSON.parse(getCookie("user")!.toString()).role;
       try {
-        await fetch("/api/fetchUser").then(async (response) => {
-          if (!response.ok) {
-            logout();
-            setLoading(false);
-          } else {
-            const data = await response.json();
-            setCookie(
-              "user",
-              { ...data.user, role },
-              {
-                maxAge: 18000, // Expires after 5hr
-              }
-            );
-            setUser({ ...data.user, role });
-            setLoading(false);
-          }
-        });
+        const res = await fetch("/api/fetchUser");
+        if (!res.ok) {
+          logout();
+        } else {
+          const data = await res.json();
+          setCookie(
+            "user",
+            { ...data.user, role },
+            {
+              maxAge: 18000, // Expires after 5hr
+            }
+          );
+          setUser({ ...data.user, role });
+        }
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
@@ -82,11 +81,9 @@ export function AuthProvider({ children }: Props) {
           role,
         }),
       });
-      setLoading(false);
       const data = await response.json();
       if (response.ok) {
         setUser({ ...data.user, role });
-        sessionStorage.setItem("token", data.token.access_token);
         setCookie(
           "user",
           { ...data.user, role },
@@ -99,6 +96,7 @@ export function AuthProvider({ children }: Props) {
         });
         router.push("/searchcar");
       }
+      setLoading(false);
       return data;
     } catch (error) {
       console.error(error);
@@ -162,7 +160,7 @@ export function AuthProvider({ children }: Props) {
       login,
       signUp,
       logout,
-      fetchUser,
+      getUser,
       updateUser,
     },
   };

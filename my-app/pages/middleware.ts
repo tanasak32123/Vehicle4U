@@ -1,13 +1,26 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { authenticate } from "../libs/auth";
 
 export function middleware(req: NextRequest) {
-  const url = req.nextUrl.clone();
-  url.pathname = "/about-temp";
-  return NextResponse.rewrite(url);
+  if (req.nextUrl.pathname.startsWith("/")) {
+    return NextResponse.rewrite(new URL("/index", req.url));
+  }
+  if (req.nextUrl.pathname.startsWith("/profile")) {
+    return NextResponse.rewrite(new URL("/userProfile", req.url));
+  }
 }
 
 export const config = {
-  matcher: ["/about_us"],
+  matcher: [
+    "/profile",
+    "/",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };
