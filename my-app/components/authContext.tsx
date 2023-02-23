@@ -79,7 +79,7 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify({
           username,
           password,
-          role: role == "provider",
+          role: role,
         }),
       });
       const data = await response.json();

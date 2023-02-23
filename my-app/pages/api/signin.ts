@@ -22,7 +22,7 @@ export default async function handler(
         body: JSON.stringify({
           username: body.username,
           password: body.password,
-          role: body.role,
+          role: body.role == "provider" ? 1 : 0,
         }),
       }).then(async (response) => {
         if (!response.ok) {
