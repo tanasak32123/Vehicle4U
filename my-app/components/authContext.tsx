@@ -5,12 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import {
-  deleteCookie,
-  getCookie,
-  removeCookies,
-  setCookie,
-} from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import UserModel from "@/interfaces/UserModel";
 import UserSignUp from "@/interfaces/UserSignUp";
@@ -110,6 +105,7 @@ export function AuthProvider({ children }: Props) {
   };
 
   const signUp = async (data: UserSignUp, role: string) => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/signup/${role}`, {
         method: "POST",
@@ -119,12 +115,11 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify(data),
       });
       const body = await response.json();
-      if (response.ok) {
-        router.push("/signup/success", "/signup");
-      }
+      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
