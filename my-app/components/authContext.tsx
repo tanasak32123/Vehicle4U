@@ -5,7 +5,12 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getCookie, removeCookies, setCookie } from "cookies-next";
+import {
+  deleteCookie,
+  getCookie,
+  removeCookies,
+  setCookie,
+} from "cookies-next";
 import { useRouter } from "next/router";
 import UserModel from "@/interfaces/UserModel";
 import UserSignUp from "@/interfaces/UserSignUp";
@@ -37,7 +42,7 @@ export function AuthProvider({ children }: Props) {
 
   useEffect(() => {
     getUser();
-  }, [user]);
+  }, []);
 
   const getUser = async () => {
     setLoading(true);
@@ -63,8 +68,10 @@ export function AuthProvider({ children }: Props) {
       } catch (error) {
         console.error(error);
       }
+    } else {
+      setUser(null);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const login = async (username: string, password: string, role: string) => {
@@ -143,10 +150,9 @@ export function AuthProvider({ children }: Props) {
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
-    removeCookies("token");
-    removeCookies("user");
-    router.push("/");
+    deleteCookie("token");
+    deleteCookie("user");
+    setUser(null);
   };
 
   const value: AuthContextValue = {

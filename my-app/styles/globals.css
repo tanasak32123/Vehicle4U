@@ -33,3 +33,7 @@ main {
   color: white;
   border-color: white;
 }
+
+.modal_wo_border {
+  border: 0px !important;
+}
