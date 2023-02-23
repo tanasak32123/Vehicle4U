@@ -1,10 +1,55 @@
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  Modal,
+  Nav,
+  Navbar,
+  NavDropdown,
+} from "react-bootstrap";
 import styles from "../styles/components/navbar.module.css";
 import { useAuth } from "./authContext";
 import Skeleton from "react-loading-skeleton";
+import { useState } from "react";
+import { useRouter } from "next/router";
+
+function MyVerticallyCenteredModal({ show, onHide, authAction }: any) {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    authAction.logout();
+    onHide();
+    router.push("/");
+  };
+
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>ออกจากระบบ</h4>
+        <p className={`text-center`}>คุณยืนยันที่จะออกจากระบบหรือไม่</p>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex`}>
+        <Button className={`me-auto`} onClick={onHide}>
+          ยกเลิก
+        </Button>
+        <Button onClick={handleLogout} variant="danger">
+          ยืนยัน
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
+
+  const [showSignout, setShowSignout] = useState(false);
 
   return (
     <>
@@ -31,8 +76,8 @@ export default function Header() {
                     โปรไฟล์ของฉัน
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item href="/" onClick={authAction.logout}>
-                    ล็อกเอาท์
+                  <NavDropdown.Item onClick={() => setShowSignout(true)}>
+                    ออกจากระบบ
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
@@ -47,6 +92,12 @@ export default function Header() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      <MyVerticallyCenteredModal
+        show={showSignout}
+        onHide={() => setShowSignout(false)}
+        authAction={authAction}
+      />
     </>
   );
 }
