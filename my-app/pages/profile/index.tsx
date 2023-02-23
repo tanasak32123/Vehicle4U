@@ -88,7 +88,6 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
-    console.log(user);
     if (isAuthenticate) {
       setFName(user.first_name);
       setLName(user.last_name);
