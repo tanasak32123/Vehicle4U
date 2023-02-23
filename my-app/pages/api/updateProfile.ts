@@ -15,7 +15,7 @@ function containsSpecialChars(str: string) {
 }
 
 function validateUsername(str: string) {
-  const usernameRegex = /^[a-zA-Z0-9]+$/;
+  const usernameRegex = /\W/;
   return usernameRegex.test(str);
 }
 
@@ -72,10 +72,11 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย" });
-      } else if (!validateUsername(username)) {
-        return res
-          .status(400)
-          .json({ message: "** กรุณาเพิ่มตัวอักษร a-z หรือ 0-9 ในชื่อผู้ใช้" });
+      } else if (validateUsername(username)) {
+        return res.status(400).json({
+          message:
+            "** กรุณาเปลี่ยนชื่อผู้ใช้ เนื่องจากสามารถมีเพียงตัวอักษรและตัวเลขเท่านั้น",
+        });
       }
 
       data = {
@@ -106,14 +107,14 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย" });
-      } else if (tel.length != 10) {
-        return res
-          .status(400)
-          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
       } else if (!containsOnlyNumbers(tel)) {
         return res
           .status(400)
           .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น" });
+      } else if (tel.length != 10) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
       }
 
       data = {

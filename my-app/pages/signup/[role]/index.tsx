@@ -1,17 +1,46 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import styles from "@/styles/signup/signup.module.css";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
 import { useRouter } from "next/router";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import UserSignUp from "@/interfaces/UserSignUp";
 import { useAuth } from "@/components/authContext";
 
-export default function Register() {
-  const { authAction }: any = useAuth();
+function MyVerticallyCenteredModal({ show, onHide }: any) {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>
+          <FaCheckCircle className={`green_color`} />
+        </h4>
+        <h4 className={`text-center`}>สมัครสมาชิกสำเร็จ</h4>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
+        <Button
+          className={`orange_btn`}
+          onClick={() => {
+            onHide();
+          }}
+        >
+          เข้าสู่ระบบ
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
+
+export default function Register({ regisRole }: any) {
+  const { authAction, loading }: any = useAuth();
 
   const router = useRouter();
-  const query = router.query;
 
   const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
@@ -32,7 +61,7 @@ export default function Register() {
   const [invalid_drivenID, setInvalid_drivenID] = useState("");
   const [invalid_payment, setInvalid_payment] = useState("");
 
-  const [loading, setLoading] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const errors = {
     invalid_fName,
@@ -60,7 +89,6 @@ export default function Register() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    setLoading(true);
     const response = await authAction.signUp(data, role);
     if (!response.success) {
       setInvalid_fName(response.errors.fName);
@@ -71,17 +99,17 @@ export default function Register() {
       setInvalid_citizenID(response.errors.citizenID);
       setInvalid_drivenID(response.errors.drivenID);
       setInvalid_payment(response.errors.payment);
+    } else {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
     }
-    setLoading(false);
   }
 
   useEffect(() => {
-    if (query.role != "provider" && query.role != "renter") {
-      router.push("/signup");
-    } else {
-      setRole(query.role);
-    }
-  }, [query.role]);
+    setRole(regisRole);
+  }, []);
 
   return (
     <>
@@ -105,208 +133,220 @@ export default function Register() {
             {role == "renter" && <b>ผู้เช่า</b>}
             {role == "provider" && <b>ผู้ปล่อยเช่า</b>}
           </h5>
-          <form>
-            <Row className="text-left">
-              <Col sm={12} lg={6}>
+
+          <Row className="text-left">
+            <Col sm={12} lg={6}>
+              <div className="mb-2">
+                <label htmlFor="fName">
+                  <h6>ชื่อ</h6>
+                </label>
+                <br />
+                <input
+                  type="text"
+                  id="fName"
+                  name="fName"
+                  className={styles.input}
+                  value={fName}
+                  onChange={(event) => setFName(event.target.value.trim())}
+                />
+                <div className={`${styles.feedback}`}>
+                  {errors.invalid_fName}
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <label htmlFor="lName">
+                  <h6>นามสกุล</h6>
+                </label>
+                <br />
+                <input
+                  type="text"
+                  id="lName"
+                  name="lName"
+                  className={styles.input}
+                  value={lName}
+                  onChange={(event) => setLName(event.target.value.trim())}
+                />
+                <div className={`${styles.feedback}`}>
+                  {errors.invalid_lName}
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <label htmlFor="username">
+                  <h6>ชื่อผู้ใช้</h6>
+                </label>
+                <br />
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  className={styles.input}
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value.trim())}
+                />
+                <div className={`${styles.feedback}`}>
+                  {errors.invalid_username}
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <label htmlFor="password">
+                  <h6>รหัสผ่าน</h6>
+                </label>
+                <br />
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  className={styles.input}
+                  value={pw}
+                  onChange={(event) => setPw(event.target.value.trim())}
+                />
+                <div className={`${styles.feedback}`}>{errors.invalid_pw}</div>
+              </div>
+            </Col>
+
+            <Col sm={12} lg={6}>
+              <div className="mb-2">
+                <label htmlFor="tel">
+                  <h6>เบอร์โทรศัพท์</h6>
+                </label>
+                <br />
+                <input
+                  type="text"
+                  id="tel"
+                  name="tel"
+                  className={styles.input}
+                  value={tel}
+                  onChange={(event) =>
+                    setTel(event.target.value.trim().replace("-", ""))
+                  }
+                />
+                <div className={`${styles.feedback}`}>{errors.invalid_tel}</div>
+              </div>
+
+              <div className="mb-2">
+                <label htmlFor="citizenID">
+                  <h6>หมายเลขบัตรประชาชน</h6>
+                </label>
+                <br />
+                <input
+                  type="text"
+                  id="citizenID"
+                  name="citizenID"
+                  className={styles.input}
+                  value={citizenID}
+                  onChange={(event) =>
+                    setCitizenID(event.target.value.trim().replace("-", ""))
+                  }
+                />
+                <div className={`${styles.feedback}`}>
+                  {errors.invalid_cizitenID}
+                </div>
+              </div>
+
+              {role == "renter" && (
                 <div className="mb-2">
-                  <label htmlFor="fName">
-                    <h6>ชื่อ</h6>
+                  <label htmlFor="drivenID">
+                    <h6>หมายเลขใบขับขี่</h6>
                   </label>
                   <br />
                   <input
                     type="text"
-                    id="fName"
-                    name="fName"
+                    id="drivenID"
+                    name="drivenID"
                     className={styles.input}
-                    value={fName}
-                    onChange={(event) => setFName(event.target.value.trim())}
+                    value={drivenID}
+                    onChange={(event) => setDrivenID(event.target.value.trim())}
                   />
                   <div className={`${styles.feedback}`}>
-                    {errors.invalid_fName}
+                    {errors.invalid_drivenID}
                   </div>
                 </div>
+              )}
 
+              {role == "provider" && (
                 <div className="mb-2">
-                  <label htmlFor="lName">
-                    <h6>นามสกุล</h6>
+                  <label htmlFor="payment">
+                    <h6>ช่องทางการรับเงิน</h6>
                   </label>
                   <br />
-                  <input
-                    type="text"
-                    id="lName"
-                    name="lName"
-                    className={styles.input}
-                    value={lName}
-                    onChange={(event) => setLName(event.target.value.trim())}
-                  />
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_lName}
-                  </div>
-                </div>
-
-                <div className="mb-2">
-                  <label htmlFor="username">
-                    <h6>ชื่อผู้ใช้</h6>
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    className={styles.input}
-                    value={username}
-                    onChange={(event) => setUsername(event.target.value.trim())}
-                  />
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_username}
-                  </div>
-                </div>
-
-                <div className="mb-2">
-                  <label htmlFor="password">
-                    <h6>รหัสผ่าน</h6>
-                  </label>
-                  <br />
-                  <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    className={styles.input}
-                    value={pw}
-                    onChange={(event) => setPw(event.target.value.trim())}
-                  />
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_pw}
-                  </div>
-                </div>
-              </Col>
-
-              <Col sm={12} lg={6}>
-                <div className="mb-2">
-                  <label htmlFor="tel">
-                    <h6>เบอร์โทรศัพท์</h6>
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    id="tel"
-                    name="tel"
-                    className={styles.input}
-                    value={tel}
-                    onChange={(event) =>
-                      setTel(event.target.value.trim().replace("-", ""))
-                    }
-                  />
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_tel}
-                  </div>
-                </div>
-
-                <div className="mb-2">
-                  <label htmlFor="citizenID">
-                    <h6>หมายเลขบัตรประชาชน</h6>
-                  </label>
-                  <br />
-                  <input
-                    type="text"
-                    id="citizenID"
-                    name="citizenID"
-                    className={styles.input}
-                    value={citizenID}
-                    onChange={(event) =>
-                      setCitizenID(event.target.value.trim().replace("-", ""))
-                    }
-                  />
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_cizitenID}
-                  </div>
-                </div>
-
-                {role == "renter" && (
-                  <div className="mb-2">
-                    <label htmlFor="drivenID">
-                      <h6>หมายเลขใบขับขี่</h6>
-                    </label>
-                    <br />
-                    <input
-                      type="text"
-                      id="drivenID"
-                      name="drivenID"
-                      className={styles.input}
-                      value={drivenID}
-                      onChange={(event) =>
-                        setDrivenID(event.target.value.trim())
-                      }
-                    />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_drivenID}
-                    </div>
-                  </div>
-                )}
-
-                {role == "provider" && (
-                  <div className="mb-2">
-                    <label htmlFor="payment">
-                      <h6>ช่องทางการรับเงิน</h6>
-                    </label>
-                    <br />
-                    <select
-                      name="payment"
-                      id="payment"
-                      className={`${styles.select}`}
-                      onChange={(event) =>
-                        setPayment(event.target.value.trim())
-                      }
-                    >
-                      <option
-                        className={`${styles.select}`}
-                        value=""
-                        defaultChecked
-                      >
-                        เลือกช่องทางการชำระเงิน
-                      </option>
-                      <option className={`${styles.option}`} value="promptpay">
-                        พร้อมเพย์
-                      </option>
-                      <option className={`${styles.option}`} value="credit">
-                        บัตรเครดิต
-                      </option>
-                      <option className={`${styles.option}`} value="cash">
-                        เงินสด
-                      </option>
-                    </select>
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_payment}
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-4 text-end">
-                  <button
-                    type="button"
-                    onClick={(event: any) => handleSubmit(event)}
-                    className={`py-2 me-2 orange_btn`}
+                  <select
+                    name="payment"
+                    id="payment"
+                    className={`${styles.select}`}
+                    onChange={(event) => setPayment(event.target.value.trim())}
                   >
-                    {loading && (
-                      <>
-                        <Spinner
-                          className={`${styles.spinner}`}
-                          animation="border"
-                          variant="primary"
-                        />{" "}
-                      </>
-                    )}
-                    <b>
-                      สมัครสมาชิก&nbsp;&nbsp;
-                      <FaUserAlt />
-                    </b>
-                  </button>
+                    <option
+                      className={`${styles.select}`}
+                      value=""
+                      defaultChecked
+                    >
+                      เลือกช่องทางการชำระเงิน
+                    </option>
+                    <option className={`${styles.option}`} value="promptpay">
+                      พร้อมเพย์
+                    </option>
+                    <option className={`${styles.option}`} value="credit">
+                      บัตรเครดิต
+                    </option>
+                    <option className={`${styles.option}`} value="cash">
+                      เงินสด
+                    </option>
+                  </select>
+                  <div className={`${styles.feedback}`}>
+                    {errors.invalid_payment}
+                  </div>
                 </div>
-              </Col>
-            </Row>
-          </form>
+              )}
+
+              <div className="mt-4 text-end">
+                <button
+                  type="button"
+                  onClick={(event: any) => handleSubmit(event)}
+                  className={`py-2 me-2 orange_btn`}
+                >
+                  {loading && (
+                    <>
+                      <Spinner
+                        className={`${styles.spinner}`}
+                        animation="border"
+                        variant="primary"
+                      />{" "}
+                    </>
+                  )}
+                  <b>
+                    สมัครสมาชิก&nbsp;&nbsp;
+                    <FaUserAlt />
+                  </b>
+                </button>
+              </div>
+            </Col>
+          </Row>
+
+          <MyVerticallyCenteredModal
+            show={showAlert}
+            onHide={() => {
+              setShowAlert(false);
+              router.push("/");
+            }}
+          />
         </div>
       </div>
     </>
   );
+}
+
+export async function getServerSideProps({ query }: any) {
+  if (query.role != "provider" && query.role != "renter") {
+    return {
+      redirect: {
+        destination: "/signup",
+        permanent: false,
+      },
+    };
+  } else {
+    return { props: { regisRole: query.role } };
+  }
 }
