@@ -37,8 +37,7 @@ export function AuthProvider({ children }: Props) {
 
   useEffect(() => {
     getUser();
-    console.log();
-  }, []);
+  }, [user]);
 
   const getUser = async () => {
     setLoading(true);
@@ -78,7 +77,7 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify({
           username,
           password,
-          role,
+          role: role == "provider",
         }),
       });
       const data = await response.json();
