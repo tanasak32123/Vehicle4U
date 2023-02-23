@@ -37,7 +37,7 @@ export default function ModalForm({
           setShowModalFunc(false);
         }}
         centered
-        backdrop={`static`}
+        // backdrop={`static`}
       >
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>

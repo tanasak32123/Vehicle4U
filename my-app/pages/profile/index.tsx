@@ -1,6 +1,6 @@
 import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UserProfile from "@/interfaces/UserProfile";
@@ -9,6 +9,41 @@ import { useAuth } from "@/components/authContext";
 import Skeleton from "react-loading-skeleton";
 import ModalForm from "@/components/modalProfile";
 import { setCookie } from "cookies-next";
+import { Button, Modal, Alert } from "react-bootstrap";
+
+function MyVerticallyCenteredModal({ show, onHide, role }: any) {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>
+          <FaCheckCircle className={`green_color`} />
+        </h4>
+        <h4 className={`text-center`}>เปลี่ยนบทบาทสำเร็จ</h4>
+        <p className={`text-center`}>
+          ตอนนี้บทบาทของคุณคือ "
+          {role == "provider" ? "ผู้ปล่อยเช่า" : "ผู้เช่า"}"
+        </p>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
+        <Button
+          onClick={() => {
+            onHide();
+          }}
+          variant="primary"
+        >
+          ปิด
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+}
 
 export default function EditProfile() {
   const { user, isAuthenticate, authAction }: any = useAuth();
@@ -22,6 +57,8 @@ export default function EditProfile() {
   const [ciShow, setCiShow] = useState(false);
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
+  const [showChangeRole, setShowChangeRole] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const [addDlicenseShow, setAddDlicenseShow] = useState(false);
   const [addPaymentShow, setAddPaymentShow] = useState(false);
@@ -51,6 +88,7 @@ export default function EditProfile() {
   };
 
   useEffect(() => {
+    console.log(user);
     if (isAuthenticate) {
       setFName(user.first_name);
       setLName(user.last_name);
@@ -60,7 +98,7 @@ export default function EditProfile() {
       setDlicense(user.driving_license_id);
       setPayment(user.payment_channel);
     }
-  }, [isAuthenticate]);
+  }, [user]);
 
   async function handleUpdateProfile(type: String, values: String[]) {
     try {
@@ -70,10 +108,13 @@ export default function EditProfile() {
       } else {
         if (type == "add_payment_channel") {
           authAction.setUser({ ...response.user, role: "provider" });
+          popUpChangeRole();
         } else if (type == "add_driving_license_id") {
           authAction.setUser({ ...response.user, role: "renter" });
+          popUpChangeRole();
         } else {
           authAction.setUser({ ...response.user, role: user.role });
+          popUpAlert();
         }
       }
       return response.success;
@@ -89,7 +130,7 @@ export default function EditProfile() {
       } else {
         authAction.setUser({ ...user, role: "provider" });
         setCookie("user", { ...user, role: "provider" });
-        // pop up
+        popUpChangeRole();
       }
     }
     if (user.role == "provider") {
@@ -98,10 +139,24 @@ export default function EditProfile() {
       } else {
         authAction.setUser({ ...user, role: "renter" });
         setCookie("user", { ...user, role: "renter" });
-        // pop up
+        popUpChangeRole();
       }
     }
   }
+
+  const popUpChangeRole = () => {
+    setShowChangeRole(true);
+    setTimeout(() => {
+      setShowChangeRole(false);
+    }, 3000);
+  };
+
+  const popUpAlert = () => {
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  };
 
   return (
     <>
@@ -124,6 +179,14 @@ export default function EditProfile() {
             &nbsp; โปรไฟล์ของฉัน
           </h1>
           <hr />
+          <Alert
+            variant="success"
+            show={showAlert}
+            onClose={() => setShowAlert(false)}
+            dismissible
+          >
+            <FaCheckCircle className={`green_color`} /> แก้ไขโปรไฟล์สำเร็จ
+          </Alert>
           <br />
 
           {isAuthenticate ? (
@@ -514,6 +577,14 @@ export default function EditProfile() {
                 isShowModal={addPaymentShow}
                 setShowModalFunc={setAddPaymentShow}
                 handleupdateFunc={handleUpdateProfile}
+              />
+
+              <MyVerticallyCenteredModal
+                show={showChangeRole}
+                onHide={() => {
+                  setShowChangeRole(false);
+                }}
+                role={user.role}
               />
             </>
           ) : (
