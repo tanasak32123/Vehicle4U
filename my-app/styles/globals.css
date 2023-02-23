@@ -34,6 +34,23 @@ main {
   border-color: white;
 }
 
+.modal-body {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
 .modal_wo_border {
   border: 0px !important;
+}
+
+.modal-header {
+  border: 0px !important;
+}
+
+.modal-footer {
+  border: 0px !important;
+}
+
+.green_color {
+  color: green;
 }

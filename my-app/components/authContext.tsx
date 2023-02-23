@@ -143,9 +143,11 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify({ data, type, values }),
       });
       const body = await response.json();
+      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 

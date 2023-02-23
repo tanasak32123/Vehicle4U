@@ -161,6 +161,10 @@ export default async function handler(
       data = {
         driving_license_id: d_license_id,
       };
+
+      if (type == "add_driving_license_id") {
+        data["is_renter"] = true;
+      }
     }
 
     if (type == "payment_channel" || type == "add_payment_channel") {
@@ -174,6 +178,10 @@ export default async function handler(
       data = {
         payment_channel: payment,
       };
+
+      if (type == "add_payment_channel") {
+        data["is_provider"] = true;
+      }
     }
 
     const token = req.cookies.token;
