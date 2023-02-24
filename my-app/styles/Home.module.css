@@ -1,4 +1,5 @@
-.main {
+.container {
+  height: 100vh !important;
   background-image: url("../public/bg/bgHome.png");
   object-fit: cover;
   background-position: center;
@@ -6,18 +7,37 @@
   background-size: cover;
 }
 
+.manifesto_title {
+  color: white;
+  font-weight: 1000;
+}
+
+.title_4U {
+  color: #545a8b;
+}
+
+.form {
+  width: 80%;
+}
+
 .form_container {
-  background-color: rgba(84, 90, 139, 0.85);
+  /* background-color: rgba(84, 90, 139, 0.85); */
   border-radius: 70px;
+  border: 2px solid black;
+  background-color: rgba(254, 249, 235, 0.9);
   padding: 50px 15px;
   width: 80%;
+}
+
+.form_text {
+  color: black;
 }
 
 .input {
   background-color: transparent;
   border: 0px;
-  border-bottom: 1px solid white;
-  color: white;
+  border-bottom: 1px solid black;
+  color: black;
   width: 100%;
   outline: none;
 }
@@ -48,7 +68,7 @@
 }
 
 .invalid {
-  color: white;
+  color: red;
 }
 
 .select {
@@ -67,13 +87,13 @@
   background-size: 0.65rem auto;
 }
 
-.signup {
+/* .signup {
   color: white;
 }
 
 .signup:hover {
   color: #cccfcd;
-}
+} */
 
 .role {
   background: rgba(254, 249, 235, 0.7);
