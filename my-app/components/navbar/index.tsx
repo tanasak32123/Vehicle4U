@@ -1,11 +1,4 @@
-import {
-  Button,
-  Container,
-  Modal,
-  Nav,
-  Navbar,
-  NavDropdown,
-} from "react-bootstrap";
+import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../../styles/components/navbar.module.css";
 import { useAuth } from "../authContext";
 import Skeleton from "react-loading-skeleton";
