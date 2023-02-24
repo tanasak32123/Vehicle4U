@@ -6,45 +6,11 @@ import {
   Navbar,
   NavDropdown,
 } from "react-bootstrap";
-import styles from "../styles/components/navbar.module.css";
-import { useAuth } from "./authContext";
+import styles from "../../styles/components/navbar.module.css";
+import { useAuth } from "../authContext";
 import Skeleton from "react-loading-skeleton";
 import { useState } from "react";
-import { useRouter } from "next/router";
-
-function MyVerticallyCenteredModal({ show, onHide, authAction }: any) {
-  const router = useRouter();
-
-  const handleLogout = () => {
-    authAction.logout();
-    onHide();
-    router.push("/");
-  };
-
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-      <Modal.Body>
-        <h4 className={`text-center`}>ออกจากระบบ</h4>
-        <p className={`text-center`}>คุณยืนยันที่จะออกจากระบบหรือไม่</p>
-      </Modal.Body>
-      <Modal.Footer className={`modal_wo_border d-flex`}>
-        <Button className={`me-auto`} onClick={onHide}>
-          ยกเลิก
-        </Button>
-        <Button onClick={handleLogout} variant="danger">
-          ยืนยัน
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-}
+import LogoutModal from "./logoutModal";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
@@ -93,7 +59,7 @@ export default function Header() {
         </Container>
       </Navbar>
 
-      <MyVerticallyCenteredModal
+      <LogoutModal
         show={showSignout}
         onHide={() => setShowSignout(false)}
         authAction={authAction}
