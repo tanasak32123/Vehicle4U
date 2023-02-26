@@ -1,17 +1,9 @@
-import {
-  Container,
-  Dropdown,
-  DropdownButton,
-  Nav,
-  Navbar,
-  NavDropdown,
-} from "react-bootstrap";
+import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "../../styles/components/navbar.module.css";
 import { useAuth } from "../authContext";
 import Skeleton from "react-loading-skeleton";
 import { useState } from "react";
 import LogoutModal from "./logoutModal";
-import { FaUserCircle } from "react-icons/fa";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
