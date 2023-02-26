@@ -1,7 +1,12 @@
 import { Button, Modal } from "react-bootstrap";
 import styles from "@/styles/signup/role.module.css";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 export default function SelectRoleModal({ show, onHide }: any) {
+  const router = useRouter();
+
   return (
     <Modal
       show={show}
@@ -11,7 +16,17 @@ export default function SelectRoleModal({ show, onHide }: any) {
       backdrop={`static`}
       centered
     >
-      <Modal.Header className={`modal_wo_border`}></Modal.Header>
+      <Modal.Header className={`modal_wo_border`}>
+        <Link
+          href=""
+          onClick={() => router.back()}
+          className={`text-start ${styles.back_link}`}
+        >
+          <small>
+            <FaArrowAltCircleLeft /> ย้อนกลับ
+          </small>
+        </Link>
+      </Modal.Header>
       <Modal.Body>
         <h4 className={`text-center`}>กรุณาเลือกบทบาทที่คุณต้องการสมัคร</h4>
       </Modal.Body>
