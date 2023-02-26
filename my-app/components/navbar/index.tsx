@@ -1,9 +1,17 @@
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import {
+  Container,
+  Dropdown,
+  DropdownButton,
+  Nav,
+  Navbar,
+  NavDropdown,
+} from "react-bootstrap";
 import styles from "../../styles/components/navbar.module.css";
 import { useAuth } from "../authContext";
 import Skeleton from "react-loading-skeleton";
 import { useState } from "react";
 import LogoutModal from "./logoutModal";
+import { FaUserCircle } from "react-icons/fa";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
@@ -30,15 +38,21 @@ export default function Header() {
                   <Skeleton width={150} height={`100%`} />
                 </>
               ) : isAuthenticate ? (
-                <NavDropdown title={user.username} id="collasible-nav-dropdown">
-                  <NavDropdown.Item href={`/profile`}>
-                    โปรไฟล์ของฉัน
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={() => setShowSignout(true)}>
-                    ออกจากระบบ
-                  </NavDropdown.Item>
-                </NavDropdown>
+                <>
+                  <NavDropdown
+                    title={`${user.username} `}
+                    id="collasible-nav-dropdown"
+                    align="end"
+                  >
+                    <NavDropdown.Item href={`/profile`}>
+                      โปรไฟล์ของฉัน
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={() => setShowSignout(true)}>
+                      ออกจากระบบ
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </>
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
