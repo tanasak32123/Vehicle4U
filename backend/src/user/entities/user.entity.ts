@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { UserVehicle } from './user-vehicle.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -85,4 +88,10 @@ export class User {
 
   @CreateDateColumn()
   created_at: string;
+
+  @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
+  vehicles: Vehicle[]
+
+  @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.user)
+  user_vehicle : UserVehicle[]
 }
