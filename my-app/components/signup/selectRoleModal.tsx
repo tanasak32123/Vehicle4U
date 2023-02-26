@@ -1,5 +1,5 @@
 import { Button, Modal } from "react-bootstrap";
-import styles from "@/styles/signup/role.module.css";
+import styles from "@/styles/signup.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";

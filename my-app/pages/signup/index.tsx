@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import styles from "@/styles/signup/signup.module.css";
+import styles from "@/styles/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
