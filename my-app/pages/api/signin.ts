@@ -10,7 +10,7 @@ export default async function handler(
     if (!body.username || !body.password || !body.role) {
       return res.status(400).json({
         success: false,
-        message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
+        message: "ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
     }
     try {

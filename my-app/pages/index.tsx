@@ -1,24 +1,26 @@
 import styles from "@/styles/home.module.css";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { useState } from "react";
 import Link from "next/link";
-import { FaSignInAlt } from "react-icons/fa";
+import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
 import { useAuth } from "@/components/authContext";
 import Head from "next/head";
 
 export default function Home() {
   const { loading, authAction }: any = useAuth();
 
-  let [username, setUsername] = useState("");
-  let [password, setPassword] = useState("");
-  let [role, setRole] = useState("");
-  let [invalid, setInvalid] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
+  const [invalid, setInvalid] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
     authAction.setLoading(true);
     const response = await authAction.login(username, password, role);
     if (!response.success) {
+      setShowAlert(true);
       setInvalid(response.message);
     }
   }
@@ -106,9 +108,17 @@ export default function Home() {
               </select>
               <br />
               <br />
-              <div className={`mb-2 ${styles.invalid}`}>
+              <Alert
+                variant="danger"
+                show={showAlert}
+                onClose={() => setShowAlert(false)}
+                dismissible
+              >
+                <FaTimesCircle className={`red_color`} /> {invalid}
+              </Alert>
+              {/* <div className={`mb-2 ${styles.invalid}`}>
                 <small>{invalid}</small>
-              </div>
+              </div> */}
               <button
                 type="button"
                 onClick={(event: any) => handleSubmit(event)}

@@ -48,7 +48,7 @@ export default function Header() {
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
-                  <Nav.Link href="/signup" className={`${styles.signup}`}>
+                  <Nav.Link href="/signup" className={`orange_btn px-3`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
