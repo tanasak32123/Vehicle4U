@@ -10,7 +10,9 @@ import {
   DeleteDateColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
+import { Request } from 'src/request/entities/request.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
@@ -34,4 +36,7 @@ export class Vehicle {
 
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.vehicle)
   user_vehicle : UserVehicle[]
+
+  @OneToOne(()=>Request, (request)=> request.vehicle)
+  request: Request;
 }
