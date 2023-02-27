@@ -91,3 +91,11 @@
   color: black;
   text-decoration: underline;
 }
+
+.role {
+  min-width: 140px;
+}
+
+.back_link {
+  text-decoration: none;
+}

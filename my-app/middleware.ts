@@ -1,19 +1,26 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+const authPrefixes = ["/profile"];
+
 export function middleware(req: NextRequest) {
-  if (req.nextUrl.pathname.startsWith("/")) {
-    return NextResponse.rewrite(new URL("/index", req.url));
+  const token = req.cookies.get("token")?.value;
+
+  const { pathname, origin } = req.nextUrl;
+
+  if (authPrefixes.some((prefix) => pathname.startsWith(prefix)) && !token) {
+    return NextResponse.redirect(`${origin}/`);
   }
-  if (req.nextUrl.pathname.startsWith("/profile")) {
-    return NextResponse.rewrite(new URL("/userProfile", req.url));
+
+  if (pathname.startsWith(`${origin}`) && token) {
+    return NextResponse.redirect(`${origin}/searchcar`);
   }
+
+  NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    "/profile",
-    "/",
     /*
      * Match all request paths except for the ones starting with:
      * - api (API routes)
