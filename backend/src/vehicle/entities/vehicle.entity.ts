@@ -10,6 +10,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   OneToMany,
+  Column,
 } from 'typeorm';
 
 @Entity({ name: 'vehicles' })
@@ -19,6 +20,24 @@ export class Vehicle {
 })
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  name: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  province: string;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @Column()
+  maximumCapacity: number;
 
   @DeleteDateColumn()
   deleted_at: string;
