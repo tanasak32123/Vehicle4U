@@ -9,8 +9,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
 
 export enum Request_status {
@@ -57,7 +57,13 @@ status(enum), rent_place*/
   })
   @Column({type: 'enum'})
   status : Request_status;
-
+  
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  rent_place: string;
+  
   @DeleteDateColumn()
   deleted_at: string;
 
@@ -67,9 +73,9 @@ status(enum), rent_place*/
   @CreateDateColumn()
   created_at: string;
 
-  @ManyToOne(() => User, (user) => user.user_vehicle)
-  user : User
+  @ManyToOne(() => User, (user) => user.requests)
+  user : User;
 
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.user_vehicle)
-  vehicle : Vehicle
+  @OneToOne(() => Vehicle, (vehicle) => vehicle.request)
+  vehicle : Vehicle;
 }
