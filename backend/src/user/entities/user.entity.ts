@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { Request } from 'src/request/entities/request.entity';
+import { Request } from 'src/renting-request/entities/renting-request.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import {
   Column,

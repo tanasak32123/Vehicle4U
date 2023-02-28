@@ -15,10 +15,13 @@ import {
 
 export enum Request_status {
   //custom status
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
 }
 
 @Entity()
-export class Request {
+export class RentingRequest {
 /*renter_id, car_id,
 start_rent-date, end_rent_date,
 status(enum), rent_place*/

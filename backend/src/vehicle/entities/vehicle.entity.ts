@@ -12,7 +12,7 @@ import {
   OneToMany,
   OneToOne,
 } from 'typeorm';
-import { Request } from 'src/request/entities/request.entity';
+import { Request } from 'src/renting-request/entities/renting-request.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
