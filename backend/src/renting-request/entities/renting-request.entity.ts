@@ -76,9 +76,9 @@ status(enum), rent_place*/
   @CreateDateColumn()
   created_at: string;
 
-  @ManyToOne(() => User, (user) => user.requests)
+  @ManyToOne(() => User, (user) => user.rentingRequests)
   user : User;
 
-  @OneToOne(() => Vehicle, (vehicle) => vehicle.request)
+  @OneToOne(() => Vehicle, (vehicle) => vehicle.rentingRequest)
   vehicle : Vehicle;
 }
