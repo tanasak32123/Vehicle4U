@@ -15,6 +15,8 @@ import {
 
 export enum Request_status {
   //custom status
+  A = 'a',
+  B = 'b'
 }
 
 @Entity({name:'requests'})
@@ -55,7 +57,7 @@ status(enum), rent_place*/
   @ApiProperty({
     type: Request_status,
   })
-  @Column({type: 'enum'})
+  @Column({ type: 'enum', enum:{}})
   status : Request_status;
   
   @ApiProperty({
