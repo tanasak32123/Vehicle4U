@@ -8,7 +8,7 @@ import { UserVehicle } from './entities/user-vehicle.entity';
 
 @Module({
   imports: [ 
-    TypeOrmModule.forFeature([User,UserVehicle])],
+    TypeOrmModule.forFeature([User,UserVehicle,Request])],
   providers: [UserService],
   controllers: [UserController]
 })
