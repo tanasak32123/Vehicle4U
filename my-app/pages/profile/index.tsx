@@ -13,10 +13,12 @@ import { Alert } from "react-bootstrap";
 import RoleModal from "@/components/profile/roleModal";
 
 export default function EditProfile() {
+  // useContext from authContext
   const { user, isAuthenticate, authAction }: any = useAuth();
 
   const router = useRouter();
 
+  // modal
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
   const [passShow, setPassShow] = useState(false);
@@ -26,10 +28,14 @@ export default function EditProfile() {
   const [paymentShow, setPaymentShow] = useState(false);
   const [showChangeRole, setShowChangeRole] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
   const [addDlicenseShow, setAddDlicenseShow] = useState(false);
   const [addPaymentShow, setAddPaymentShow] = useState(false);
 
+  // pop up id
+  const [alertID, setAlertID] = useState<NodeJS.Timeout | null>(null);
+  const [changeRoleID, setChangeRoleID] = useState<NodeJS.Timeout | null>(null);
+
+  // inputs
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -39,6 +45,7 @@ export default function EditProfile() {
   const [dlicense, setDlicense] = useState("");
   const [payment, setPayment] = useState("");
 
+  // error message
   const [invalidInput, setInvalidInput] = useState("");
 
   const data: UserProfile = {
@@ -54,6 +61,7 @@ export default function EditProfile() {
     is_provider: payment != "",
   };
 
+  // client side rendering (csr)
   useEffect(() => {
     if (isAuthenticate) {
       setFName(user.first_name);
@@ -66,6 +74,7 @@ export default function EditProfile() {
     }
   }, [user]);
 
+  // update user profile
   async function handleUpdateProfile(type: String, values: String[]) {
     try {
       const response = await authAction.updateUser(data, type, values);
@@ -89,6 +98,7 @@ export default function EditProfile() {
     }
   }
 
+  // handle change role button
   function handleChangeRole() {
     if (user.role == "renter") {
       if (!user.payment_channel) {
@@ -99,6 +109,7 @@ export default function EditProfile() {
         popUpChangeRole();
       }
     }
+
     if (user.role == "provider") {
       if (!user.driving_license_id) {
         setAddDlicenseShow(true);
@@ -110,18 +121,34 @@ export default function EditProfile() {
     }
   }
 
+  // Change role pop up
   const popUpChangeRole = () => {
     setShowChangeRole(true);
-    setTimeout(() => {
+
+    const crtimeoutID = setTimeout(() => {
       setShowChangeRole(false);
+      setChangeRoleID(null);
     }, 3000);
+
+    if (changeRoleID) {
+      clearTimeout(changeRoleID);
+    }
+    setChangeRoleID(crtimeoutID);
   };
 
+  // Alert pop up
   const popUpAlert = () => {
     setShowAlert(true);
-    setTimeout(() => {
+
+    const timeoutID = setTimeout(() => {
       setShowAlert(false);
+      setAlertID(null);
     }, 3000);
+
+    if (alertID) {
+      clearTimeout(alertID);
+    }
+    setAlertID(timeoutID);
   };
 
   return (
@@ -148,7 +175,9 @@ export default function EditProfile() {
           <Alert
             variant="success"
             show={showAlert}
-            onClose={() => setShowAlert(false)}
+            onClose={() => {
+              setShowAlert(false);
+            }}
             dismissible
           >
             <FaCheckCircle className={`green_color`} /> แก้ไขโปรไฟล์สำเร็จ
