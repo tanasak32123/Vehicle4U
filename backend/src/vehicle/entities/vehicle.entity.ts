@@ -37,6 +37,6 @@ export class Vehicle {
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.vehicle)
   user_vehicle : UserVehicle[]
 
-  @OneToOne(()=>Request, (request)=> request.vehicle)
+  @OneToOne(()=>Request, (requests)=> requests.vehicle)
   request: Request;
 }

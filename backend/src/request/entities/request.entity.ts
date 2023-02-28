@@ -17,7 +17,7 @@ export enum Request_status {
   //custom status
 }
 
-@Entity()
+@Entity({name:'requests'})
 export class Request {
 /*renter_id, car_id,
 start_rent-date, end_rent_date,
