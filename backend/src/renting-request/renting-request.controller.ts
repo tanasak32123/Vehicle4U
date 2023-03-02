@@ -19,7 +19,7 @@ export class RentingRequestController{
 
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 200, description: 'Successful.' })
-    //@ApiResponse({ status: 403, description: 'Forbidden.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found.' })
     @ApiResponse({ status: 406, description: 'No Access Rights'})
     @Get('/provider')
@@ -30,7 +30,7 @@ export class RentingRequestController{
 
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 200, description: 'Successful.' })
-    //@ApiResponse({ status: 403, description: 'Forbidden.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found.' })
     @ApiResponse({ status: 406, description: 'No Access Rights'})
     @Get('/renter')
