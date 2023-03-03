@@ -1,15 +1,8 @@
-import { useAuth } from "@/components/authContext";
 import styles from "@/styles/upload_car.module.css";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
-export const metadata = {
-  title: "Next.js",
-};
-
 export default function UploadCar() {
-  const { user, isAuthenticate, authAction }: any = useAuth();
-
   const router = useRouter();
 
   return (
