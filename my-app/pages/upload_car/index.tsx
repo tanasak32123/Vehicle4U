@@ -3,6 +3,10 @@ import styles from "@/styles/upload_car.module.css";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
+export const metadata = {
+  title: "Next.js",
+};
+
 export default function UploadCar() {
   const { user, isAuthenticate, authAction }: any = useAuth();
 
@@ -21,7 +25,7 @@ export default function UploadCar() {
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
           <h1 className="align-items-center d-flex justify-content-end">
-            เพิ่มรถเช่า
+            เพิ่มรถให้เช่า
           </h1>
           <hr />
         </div>
