@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Post, Request, Response, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Delete, Request, Response, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
@@ -56,7 +56,7 @@ export class RentingRequestController{
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found.' })
     @ApiResponse({ status: 406, description: 'No Access Rights'})
-    @Patch(['/provider','/renter'])
+    @Delete(['/provider','/renter'])
     async delete(@Body() id: number, @Request() req, @Response() res){
         const rentingRequest = await this.rentingRequestService.delete(id);
         if(!rentingRequest) return res.status(404).send('rentingrequest not found');
