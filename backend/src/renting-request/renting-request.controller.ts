@@ -50,4 +50,16 @@ export class RentingRequestController{
         const rentingrequest = await this.rentingRequestService.update(updateRentingRequestDto.id, updateRentingRequestDto);
         return res.status(200).send(rentingrequest);
     }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'User not found.' })
+    @ApiResponse({ status: 406, description: 'No Access Rights'})
+    @Patch(['/provider','/renter'])
+    async delete(@Body() id: number, @Request() req, @Response() res){
+        const rentingRequest = await this.rentingRequestService.delete(id);
+        if(!rentingRequest) return res.status(404).send('rentingrequest not found');
+        return res.status(200).send(rentingRequest);
+    }
 }

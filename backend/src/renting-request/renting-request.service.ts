@@ -6,7 +6,7 @@ import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { Repository } from 'typeorm';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
-import { RentingRequest, Request_status } from './entities/renting-request.entity';
+import { RentingRequest } from './entities/renting-request.entity';
 
 @UseGuards(JwtAuthGuard)
 @Injectable()
@@ -69,5 +69,12 @@ export class RentingRequestService {
 
         await this.rentingRequestRepository.update({'id':rentingRequest_id}, updateRentingRequestDto);
         return await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
+    }
+    
+    async delete(rentingRequest_id:number): Promise<RentingRequest> {
+        const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
+        if(!rentingRequest) return null;
+        await this.rentingRequestRepository.delete({'id':rentingRequest_id});
+        return rentingRequest;
     }
 }
