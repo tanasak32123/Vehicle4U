@@ -5,7 +5,7 @@ import { VehicleService } from './vehicle.service';
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
-  @Get()
+  @Get('search')
   async search(
     @Query('province') province: string,
     @Query('name') carName: string,

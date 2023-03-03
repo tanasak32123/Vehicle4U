@@ -1,7 +1,8 @@
-import { Any, MoreThan, Repository } from 'typeorm';
+import { Any, Like, MoreThan, MoreThanOrEqual, Raw, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
+import { max } from 'class-validator';
 
 @Injectable()
 export class VehicleService {
@@ -14,13 +15,20 @@ export class VehicleService {
     carName: string,
     maxPassenger: number,
   ): Promise<Vehicle[]> {
-    return await this.vehicleRepository
+    const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
-      .where('vehicles.name = :carName', { carName: carName })
+      .where(
+        `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
+        {
+          carName: carName,
+        },
+      )
       .andWhere('vehicles.province = :province', { province: province })
-      .andWhere('vehicles.maxPassenger > :maxPassenger', {
+      .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
         maxPassenger: maxPassenger,
       })
+      .printSql()
       .getMany();
+    return x;
   }
 }
