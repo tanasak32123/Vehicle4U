@@ -39,4 +39,5 @@ export class Vehicle {
 
   @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
   rentingRequest: RentingRequest;
+
 }

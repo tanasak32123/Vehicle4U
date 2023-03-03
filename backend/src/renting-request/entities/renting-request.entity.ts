@@ -22,6 +22,7 @@ export enum Request_status {
 
 @Entity()
 export class RentingRequest {
+
 /*renter_id, car_id,
 start_rent-date, end_rent_date,
 status(enum), rent_place*/
@@ -58,7 +59,7 @@ status(enum), rent_place*/
   @ApiProperty({
     type: Request_status,
   })
-  @Column({type: 'enum'})
+  @Column({ type: 'enum', enum:{}})
   status : Request_status;
   
   @ApiProperty({
