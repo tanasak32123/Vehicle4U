@@ -4,8 +4,9 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { Repository } from 'typeorm';
-import { CreateRentingRequestDto } from './dto/create-reningrequest.dto';
-import { RentingRequest } from './entities/renting-request.entity';
+import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
+import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
+import { RentingRequest, Request_status } from './entities/renting-request.entity';
 
 @UseGuards(JwtAuthGuard)
 @Injectable()
@@ -40,8 +41,8 @@ export class RentingRequestService {
         return await this.rentingRequestRepository.save(renreq);
     }
 
-    async providergetrequest(id: number): Promise<RentingRequest[]>{
-        const user = await this.userRepository.findOneBy({'id': id});
+    async providergetrequest(provider_id: number): Promise<RentingRequest[]>{
+        const user = await this.userRepository.findOneBy({'id': provider_id});
         if(!user)throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
         if(!user.is_provider)throw new HttpException("no access rights", HttpStatus.NOT_ACCEPTABLE);
         
@@ -53,12 +54,20 @@ export class RentingRequestService {
         return requests;
     }
 
-    async rentergetrequest(id: number): Promise<RentingRequest[]>{
-        const user = await this.userRepository.findOneBy({'id': id});
+    async rentergetrequest(renter_id: number): Promise<RentingRequest[]>{
+        const user = await this.userRepository.findOneBy({'id': renter_id});
         if(!user)throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
 
         if(!user.is_provider)throw new HttpException("no access rights", HttpStatus.NOT_ACCEPTABLE);
 
         return user.rentingRequests;
+    }
+
+    async update(rentingRequest_id:number, updateRentingRequestDto: UpdateRentingRequestDto): Promise<RentingRequest>{
+        const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
+        if(!rentingRequest) throw new HttpException( "rentingrequest not found", HttpStatus.NOT_FOUND);
+
+        await this.rentingRequestRepository.update({'id':rentingRequest_id}, updateRentingRequestDto);
+        return await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
     }
 }

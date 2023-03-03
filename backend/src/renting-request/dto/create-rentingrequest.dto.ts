@@ -1,13 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { Column } from "typeorm";
-
-export enum Request_status {
-    //custom status
-    PENDING = 'pending',
-    ACCEPTED = 'accepted',
-    REJECTED = 'rejected',
-}
+import { Request_status } from "../entities/renting-request.entity";
 
 export class CreateRentingRequestDto {
     @ApiProperty({

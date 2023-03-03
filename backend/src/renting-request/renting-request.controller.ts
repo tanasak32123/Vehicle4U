@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Request, Response, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Request, Response, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { CreateRentingRequestDto } from './dto/create-reningrequest.dto';
+import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
+import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequestService } from './renting-request.service';
 
 @ApiTags('Vehicle4U')
@@ -37,5 +38,16 @@ export class RentingRequestController{
     async renterGetRequest(@Request() req,@Response() res) {
     const request = await this.rentingRequestService.rentergetrequest(req.body['id']);
         return res.status(200).send(request);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'User not found.' })
+    @ApiResponse({ status: 406, description: 'No Access Rights'})
+    @Patch(['/provider','/renter'])
+    async updateStatus(@Body() updateRentingRequestDto: UpdateRentingRequestDto, @Request() req,@Response() res) {
+        const rentingrequest = await this.rentingRequestService.update(updateRentingRequestDto.id, updateRentingRequestDto);
+        return res.status(200).send(rentingrequest);
     }
 }
