@@ -20,7 +20,7 @@ export class UpdateRentingRequestDto {
     // end_rent_date : string ;
     
     @ApiProperty({
-        type: Request_status,
+        enum:['pending','accepted','rejected'],
     })
     status : Request_status;
       

@@ -1,15 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from 'src/user/user.module';
-import { VehicleModule } from 'src/vehicle/vehicle.module';
+import { User } from 'src/user/entities/user.entity';
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
+import { RentingRequest } from './entities/renting-request.entity';
 import { RentingRequestController } from './renting-request.controller';
 import { RentingRequestService } from './renting-request.service';
 
 @Module({
   imports: [
-    UserModule,
-    VehicleModule,
-    TypeOrmModule.forFeature([Request])],
+    TypeOrmModule.forFeature([RentingRequest, User, Vehicle])],
   controllers: [RentingRequestController],
   providers: [RentingRequestService]
 })

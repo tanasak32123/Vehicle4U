@@ -5,10 +5,10 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserVehicle } from './entities/user-vehicle.entity';
-import { Request } from 'src/request/entities/request.entity';
+import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,UserVehicle,Request])],
+  imports: [TypeOrmModule.forFeature([User,UserVehicle,RentingRequest])],
   providers: [UserService],
   controllers: [UserController]
 })

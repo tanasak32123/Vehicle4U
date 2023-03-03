@@ -22,7 +22,7 @@ export class CreateRentingRequestDto {
     end_rent_date : string ;
     
     @ApiProperty({
-        type: Request_status,
+        enum:['pending','accepted','rejected'],
     })
     @IsNotEmpty()
     status : Request_status;
