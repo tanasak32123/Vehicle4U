@@ -14,7 +14,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
 

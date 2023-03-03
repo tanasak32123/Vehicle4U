@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getCookie, removeCookies, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import UserModel from "@/interfaces/UserModel";
 import UserSignUp from "@/interfaces/UserSignUp";
@@ -36,37 +36,37 @@ export function AuthProvider({ children }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUser();
-  }, [user]);
+    getUser();
+  }, []);
 
-  const fetchUser = async () => {
+  const getUser = async () => {
     setLoading(true);
     const token = getCookie("token")?.toString();
     if (!user && token) {
       const role = JSON.parse(getCookie("user")!.toString()).role;
       try {
-        await fetch("/api/fetchUser").then(async (response) => {
-          if (!response.ok) {
-            logout();
-            setLoading(false);
-          } else {
-            const data = await response.json();
-            setCookie(
-              "user",
-              { ...data.user, role },
-              {
-                maxAge: 18000, // Expires after 5hr
-              }
-            );
-            setUser({ ...data.user, role });
-            setLoading(false);
-          }
-        });
+        const res = await fetch("/api/fetchUser");
+        if (!res.ok) {
+          logout();
+        } else {
+          const data = await res.json();
+          setCookie(
+            "user",
+            { ...data.user, role },
+            {
+              maxAge: 18000, // Expires after 5hr
+            }
+          );
+          setUser({ ...data.user, role });
+        }
+        setLoading(false);
       } catch (error) {
         console.error(error);
       }
+    } else {
+      setUser(null);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const login = async (username: string, password: string, role: string) => {
@@ -79,14 +79,12 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify({
           username,
           password,
-          role,
+          role: role,
         }),
       });
-      setLoading(false);
       const data = await response.json();
       if (response.ok) {
         setUser({ ...data.user, role });
-        sessionStorage.setItem("token", data.token.access_token);
         setCookie(
           "user",
           { ...data.user, role },
@@ -99,6 +97,7 @@ export function AuthProvider({ children }: Props) {
         });
         router.push("/searchcar");
       }
+      setLoading(false);
       return data;
     } catch (error) {
       console.error(error);
@@ -106,6 +105,7 @@ export function AuthProvider({ children }: Props) {
   };
 
   const signUp = async (data: UserSignUp, role: string) => {
+    setLoading(true);
     try {
       const response = await fetch(`/api/signup/${role}`, {
         method: "POST",
@@ -115,12 +115,11 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify(data),
       });
       const body = await response.json();
-      if (response.ok) {
-        router.push("/signup/success", "/signup");
-      }
+      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -139,17 +138,18 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify({ data, type, values }),
       });
       const body = await response.json();
+      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
   const logout = () => {
-    sessionStorage.removeItem("token");
-    removeCookies("token");
-    removeCookies("user");
-    router.push("/");
+    deleteCookie("token");
+    deleteCookie("user");
+    setUser(null);
   };
 
   const value: AuthContextValue = {
@@ -162,7 +162,7 @@ export function AuthProvider({ children }: Props) {
       login,
       signUp,
       logout,
-      fetchUser,
+      getUser,
       updateUser,
     },
   };

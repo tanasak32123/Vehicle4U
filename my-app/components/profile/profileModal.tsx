@@ -1,19 +1,7 @@
 import { Row, Col, Modal, Form, Button } from "react-bootstrap";
 import styles from "@/styles/editProfile.module.css";
 
-async function handleSubmit(
-  name: string,
-  newData: string[],
-  handleupdateFunc: any,
-  setShowModalFunc: any
-) {
-  const success: boolean = await handleupdateFunc(name, newData);
-  if (success) {
-    setShowModalFunc(false);
-  }
-}
-
-export default function ModalForm({
+export default function ProfileModal({
   title,
   id,
   type,
@@ -25,6 +13,18 @@ export default function ModalForm({
   setShowModalFunc,
   handleupdateFunc,
 }: any) {
+  async function handleSubmit(
+    name: string,
+    newData: string[],
+    handleupdateFunc: any,
+    setShowModalFunc: any
+  ) {
+    const success: boolean = await handleupdateFunc(name, newData);
+    if (success) {
+      setShowModalFunc(false);
+    }
+  }
+
   return (
     <>
       {" "}
@@ -37,7 +37,7 @@ export default function ModalForm({
           setShowModalFunc(false);
         }}
         centered
-        backdrop={`static`}
+        // backdrop={`static`}
       >
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>

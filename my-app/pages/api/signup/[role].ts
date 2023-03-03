@@ -2,6 +2,24 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ErrorSignupValidate } from "../../../interfaces/ErrorSignupValidate";
 
+function containsNumbers(str: string) {
+  return /[0-9]/.test(str);
+}
+
+function containsOnlyNumbers(str: string) {
+  return /^\d+$/.test(str);
+}
+
+function containsSpecialChars(str: string) {
+  const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
+  return specialChars.test(str);
+}
+
+function validateUsername(str: string) {
+  const usernameRegex = /\W/;
+  return usernameRegex.test(str);
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -13,14 +31,27 @@ export default async function handler(
 
     if (!body.first_name) {
       errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
+    } else if (
+      containsSpecialChars(body.first_name) ||
+      containsNumbers(body.first_name)
+    ) {
+      errors.fName = "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น";
     }
 
     if (!body.last_name) {
       errors.lName = "** กรุณากรอกนามสกุลให้เรียบร้อย";
+    } else if (
+      containsSpecialChars(body.last_name) ||
+      containsNumbers(body.last_name)
+    ) {
+      errors.lName = "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น";
     }
 
     if (!body.username) {
       errors.username = "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย";
+    } else if (validateUsername(body.username)) {
+      errors.username =
+        "** กรุณาเปลี่ยนชื่อผู้ใช้ เนื่องจากสามารถมีเพียงตัวอักษรและตัวเลขเท่านั้น";
     }
 
     if (!body.password) {
@@ -31,12 +62,16 @@ export default async function handler(
 
     if (!body.tel) {
       errors.tel = "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย";
+    } else if (!containsOnlyNumbers(body.tel)) {
+      errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น";
     } else if (body.tel.length != 10) {
       errors.tel = "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน";
     }
 
     if (!body.citizen_id) {
       errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย";
+    } else if (!containsOnlyNumbers(body.citizen_id)) {
+      errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น";
     } else if (body.citizen_id.length != 13) {
       errors.citizenID = "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน";
     }
@@ -44,6 +79,8 @@ export default async function handler(
     if (role == "renter") {
       if (!body.driving_license_id) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย";
+      } else if (!containsOnlyNumbers(body.driving_license_id)) {
+        errors.drivenID = "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น";
       } else if (body.driving_license_id.length != 8) {
         errors.drivenID = "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน";
       }

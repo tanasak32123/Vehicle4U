@@ -1,20 +1,24 @@
 import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UserProfile from "@/interfaces/UserProfile";
-import InputForm from "@/components/profileForm";
+import InputForm from "@/components/profile/profileForm";
 import { useAuth } from "@/components/authContext";
 import Skeleton from "react-loading-skeleton";
-import ModalForm from "@/components/modalProfile";
+import ModalForm from "@/components/profile/profileModal";
 import { setCookie } from "cookies-next";
+import { Alert } from "react-bootstrap";
+import RoleModal from "@/components/profile/roleModal";
 
 export default function EditProfile() {
+  // useContext from authContext
   const { user, isAuthenticate, authAction }: any = useAuth();
 
   const router = useRouter();
 
+  // modal
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
   const [passShow, setPassShow] = useState(false);
@@ -22,10 +26,16 @@ export default function EditProfile() {
   const [ciShow, setCiShow] = useState(false);
   const [DlicenseShow, setDlicenseShow] = useState(false);
   const [paymentShow, setPaymentShow] = useState(false);
-
+  const [showChangeRole, setShowChangeRole] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [addDlicenseShow, setAddDlicenseShow] = useState(false);
   const [addPaymentShow, setAddPaymentShow] = useState(false);
 
+  // pop up id
+  const [alertID, setAlertID] = useState<NodeJS.Timeout | null>(null);
+  const [changeRoleID, setChangeRoleID] = useState<NodeJS.Timeout | null>(null);
+
+  // inputs
   const [fName, setFName] = useState("");
   const [lName, setLName] = useState("");
   const [username, setUsername] = useState("");
@@ -35,6 +45,7 @@ export default function EditProfile() {
   const [dlicense, setDlicense] = useState("");
   const [payment, setPayment] = useState("");
 
+  // error message
   const [invalidInput, setInvalidInput] = useState("");
 
   const data: UserProfile = {
@@ -50,8 +61,8 @@ export default function EditProfile() {
     is_provider: payment != "",
   };
 
+  // client side rendering (csr)
   useEffect(() => {
-    console.log(user);
     if (isAuthenticate) {
       setFName(user.first_name);
       setLName(user.last_name);
@@ -61,8 +72,9 @@ export default function EditProfile() {
       setDlicense(user.driving_license_id);
       setPayment(user.payment_channel);
     }
-  }, [isAuthenticate]);
+  }, [user]);
 
+  // update user profile
   async function handleUpdateProfile(type: String, values: String[]) {
     try {
       const response = await authAction.updateUser(data, type, values);
@@ -71,10 +83,13 @@ export default function EditProfile() {
       } else {
         if (type == "add_payment_channel") {
           authAction.setUser({ ...response.user, role: "provider" });
+          popUpChangeRole();
         } else if (type == "add_driving_license_id") {
           authAction.setUser({ ...response.user, role: "renter" });
+          popUpChangeRole();
         } else {
           authAction.setUser({ ...response.user, role: user.role });
+          popUpAlert();
         }
       }
       return response.success;
@@ -83,6 +98,7 @@ export default function EditProfile() {
     }
   }
 
+  // handle change role button
   function handleChangeRole() {
     if (user.role == "renter") {
       if (!user.payment_channel) {
@@ -90,19 +106,50 @@ export default function EditProfile() {
       } else {
         authAction.setUser({ ...user, role: "provider" });
         setCookie("user", { ...user, role: "provider" });
-        // pop up
+        popUpChangeRole();
       }
     }
+
     if (user.role == "provider") {
       if (!user.driving_license_id) {
         setAddDlicenseShow(true);
       } else {
         authAction.setUser({ ...user, role: "renter" });
         setCookie("user", { ...user, role: "renter" });
-        // pop up
+        popUpChangeRole();
       }
     }
   }
+
+  // Change role pop up
+  const popUpChangeRole = () => {
+    setShowChangeRole(true);
+
+    const crtimeoutID = setTimeout(() => {
+      setShowChangeRole(false);
+      setChangeRoleID(null);
+    }, 3000);
+
+    if (changeRoleID) {
+      clearTimeout(changeRoleID);
+    }
+    setChangeRoleID(crtimeoutID);
+  };
+
+  // Alert pop up
+  const popUpAlert = () => {
+    setShowAlert(true);
+
+    const timeoutID = setTimeout(() => {
+      setShowAlert(false);
+      setAlertID(null);
+    }, 3000);
+
+    if (alertID) {
+      clearTimeout(alertID);
+    }
+    setAlertID(timeoutID);
+  };
 
   return (
     <>
@@ -125,6 +172,16 @@ export default function EditProfile() {
             &nbsp; โปรไฟล์ของฉัน
           </h1>
           <hr />
+          <Alert
+            variant="success"
+            show={showAlert}
+            onClose={() => {
+              setShowAlert(false);
+            }}
+            dismissible
+          >
+            <FaCheckCircle className={`green_color`} /> แก้ไขโปรไฟล์สำเร็จ
+          </Alert>
           <br />
 
           {isAuthenticate ? (
@@ -515,6 +572,14 @@ export default function EditProfile() {
                 isShowModal={addPaymentShow}
                 setShowModalFunc={setAddPaymentShow}
                 handleupdateFunc={handleUpdateProfile}
+              />
+
+              <RoleModal
+                show={showChangeRole}
+                onHide={() => {
+                  setShowChangeRole(false);
+                }}
+                role={user.role}
               />
             </>
           ) : (
