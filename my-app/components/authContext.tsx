@@ -1,16 +1,11 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import UserModel from "@/interfaces/UserModel";
 import UserSignUp from "@/interfaces/UserSignUp";
 import UserProfile from "@/interfaces/UserSignUp";
 import AuthContextValue from "@/interfaces/AuthContextValue";
+import useSWR from "swr";
 
 const authContextDefaultValues: AuthContextValue = {
   user: null,
@@ -35,9 +30,19 @@ export function AuthProvider({ children }: Props) {
   const [user, setUser] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    getUser();
-  }, []);
+  const fetcher = (url: string) =>
+    fetch(url).then(async (res) => {
+      if (!res.ok) {
+        setLoading(false);
+        return null;
+      }
+      const data = await res.json();
+      setUser(data);
+      setLoading(false);
+      return data;
+    });
+
+  const { data } = useSWR("http://localhost:3001/api/fetchUser", fetcher);
 
   const getUser = async () => {
     setLoading(true);
@@ -97,7 +102,7 @@ export function AuthProvider({ children }: Props) {
         });
         router.push("/searchcar");
       }
-      setLoading(false);
+      // setLoading(false);
       return data;
     } catch (error) {
       console.error(error);

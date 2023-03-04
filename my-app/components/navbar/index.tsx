@@ -32,7 +32,7 @@ export default function Header() {
               ) : isAuthenticate ? (
                 <>
                   <NavDropdown
-                    title={`${user.username} `}
+                    title={`${user?.username} `}
                     id="collasible-nav-dropdown"
                     align="end"
                   >

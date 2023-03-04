@@ -19,7 +19,7 @@ export default async function handler(
       return res.status(401).json({ message: "Unauthorized" });
     }
 
-    return res.status(200).json({ user });
+    return res.status(200).json({ ...user });
   } else {
     res.redirect("/404");
   }

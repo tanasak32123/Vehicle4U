@@ -116,9 +116,6 @@ export default function Home() {
               >
                 <FaTimesCircle className={`red_color`} /> {invalid}
               </Alert>
-              {/* <div className={`mb-2 ${styles.invalid}`}>
-                <small>{invalid}</small>
-              </div> */}
               <button
                 type="button"
                 onClick={(event: any) => handleSubmit(event)}
