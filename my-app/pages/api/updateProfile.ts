@@ -1,5 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { updateProfile } from "../../libs/updateProfile";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
@@ -186,28 +187,17 @@ export default async function handler(
     }
 
     const token = req.cookies.token;
-    try {
-      const response = await fetch(`http://localhost:3000/user/editProfile`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      });
 
-      if (!response.ok) {
-        return res.status(400).json({
-          success: false,
-          message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
-        });
-      } else {
-        const user = await response.json();
-        return res.status(200).json({ success: true, user });
-      }
-    } catch (error) {
-      console.log(error);
+    const user = await updateProfile(token, data);
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
+      });
     }
+
+    return res.status(200).json({ success: true, user });
   } else {
     res.redirect("/404");
   }
