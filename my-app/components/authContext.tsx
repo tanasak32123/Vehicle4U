@@ -1,11 +1,16 @@
-import { ReactNode, createContext, useContext, useState } from "react";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { deleteCookie, getCookie, hasCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import UserModel from "@/interfaces/UserModel";
 import UserSignUp from "@/interfaces/UserSignUp";
 import UserProfile from "@/interfaces/UserSignUp";
 import AuthContextValue from "@/interfaces/AuthContextValue";
-import useSWR from "swr";
 
 const authContextDefaultValues: AuthContextValue = {
   user: null,
@@ -30,27 +35,18 @@ export function AuthProvider({ children }: Props) {
   const [user, setUser] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetcher = (url: string) =>
-    fetch(url).then(async (res) => {
-      if (!res.ok) {
-        setLoading(false);
-        return null;
-      }
-      const data = await res.json();
-      setUser(data);
-      setLoading(false);
-      return data;
-    });
-
-  const { data } = useSWR("http://localhost:3001/api/fetchUser", fetcher);
+  useEffect(() => {
+    getUser();
+  }, []);
 
   const getUser = async () => {
     setLoading(true);
     const token = getCookie("token")?.toString();
-    if (!user && token) {
-      const role = JSON.parse(getCookie("user")!.toString()).role;
+    if (token && hasCookie("user")) {
+      const cookies = getCookie("user")!.toString();
+      const role = JSON.parse(cookies!).role;
       try {
-        const res = await fetch("/api/fetchUser");
+        const res = await fetch("/api/auth/fetchUser");
         if (!res.ok) {
           logout();
         } else {
@@ -59,7 +55,7 @@ export function AuthProvider({ children }: Props) {
             "user",
             { ...data.user, role },
             {
-              maxAge: 18000, // Expires after 5hr
+              maxAge: 1800, // Expires after 5hr
             }
           );
           setUser({ ...data.user, role });
@@ -76,7 +72,7 @@ export function AuthProvider({ children }: Props) {
 
   const login = async (username: string, password: string, role: string) => {
     try {
-      const response = await fetch("/api/signin", {
+      const response = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -94,7 +90,7 @@ export function AuthProvider({ children }: Props) {
           "user",
           { ...data.user, role },
           {
-            maxAge: 18000, // Expires after 5hr
+            maxAge: 1800, // Expires after 5hr
           }
         );
         setCookie("token", data.token.access_token, {
@@ -102,7 +98,7 @@ export function AuthProvider({ children }: Props) {
         });
         router.push("/searchcar");
       }
-      // setLoading(false);
+      setLoading(false);
       return data;
     } catch (error) {
       console.error(error);
@@ -112,7 +108,7 @@ export function AuthProvider({ children }: Props) {
   const signUp = async (data: UserSignUp, role: string) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/signup/${role}`, {
+      const response = await fetch(`/api/auth/signup/${role}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +131,7 @@ export function AuthProvider({ children }: Props) {
   ) => {
     setLoading(true);
     try {
-      const response = await fetch("/api/updateProfile", {
+      const response = await fetch("/api/auth/updateProfile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

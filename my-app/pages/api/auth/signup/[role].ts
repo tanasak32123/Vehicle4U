@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ErrorSignupValidate } from "../../../interfaces/ErrorSignupValidate";
-import { userRegister } from "../../../libs/userRegister";
+import { ErrorSignupValidate } from "../../../../interfaces/ErrorSignupValidate";
+import { userRegister } from "../../../../libs/auth/userRegister";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);

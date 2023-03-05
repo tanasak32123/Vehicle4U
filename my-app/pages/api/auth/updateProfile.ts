@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { updateProfile } from "../../libs/updateProfile";
+import { updateProfile } from "../../../libs/auth/updateProfile";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
