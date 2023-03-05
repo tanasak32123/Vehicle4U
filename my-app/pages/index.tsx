@@ -7,22 +7,24 @@ import { useAuth } from "@/components/authContext";
 import Head from "next/head";
 
 export default function Home() {
-  const { loading, authAction }: any = useAuth();
+  const { authAction }: any = useAuth();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
   const [invalid, setInvalid] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    authAction.setLoading(true);
+    setLoading(true);
     const response = await authAction.login(username, password, role);
     if (!response.success) {
       setShowAlert(true);
       setInvalid(response.message);
     }
+    setLoading(false);
   }
 
   return (

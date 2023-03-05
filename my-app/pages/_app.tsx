@@ -6,6 +6,7 @@ import Layout from "@/components/layout";
 import { AuthProvider } from "@/components/authContext";
 import "react-loading-skeleton/dist/skeleton.css";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { Suspense } from "react";
 
 export default function App({
   Component,
