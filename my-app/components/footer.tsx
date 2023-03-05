@@ -2,10 +2,10 @@ import Link from "next/link";
 import styles from "../styles/components/footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
 import Image from "next/image";
-import linePic from "../public/line.png";
-import instragramPic from "../public/instragram.png";
-import facebookPic from "../public/facebook.png";
-import phonePic from "../public/phone.png";
+import linePic from "../public/images/line.png";
+import instragramPic from "../public/images/instragram.png";
+import facebookPic from "../public/images/facebook.png";
+import phonePic from "../public/images/phone.png";
 
 export default function Footer() {
   return (

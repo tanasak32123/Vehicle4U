@@ -10,7 +10,6 @@ class ErrorBoundary extends React.Component<any, any> {
 
   static getDerivedStateFromError(error: any) {
     // Update state so the next render will show the fallback UI
-
     return { hasError: true };
   }
 
@@ -24,14 +23,17 @@ class ErrorBoundary extends React.Component<any, any> {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div>
-          <h2>เกิดข้อผิดพลาดชึ้น โปรดลองอีกครั้ง</h2>
-          <button
-            type="button"
-            onClick={() => this.setState({ hasError: false })}
-          >
-            ลองอีกครั้ง
-          </button>
+        <div className="d-flex main justify-content-center align-items-center">
+          <div className="text-center">
+            <h4 className="text-center">เกิดข้อผิดพลาดชึ้น โปรดลองอีกครั้ง</h4>
+            <button
+              type="button"
+              className="orange_btn"
+              onClick={() => this.setState({ hasError: false })}
+            >
+              ลองอีกครั้ง
+            </button>
+          </div>
         </div>
       );
     }

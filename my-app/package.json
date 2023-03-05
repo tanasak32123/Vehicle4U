@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/font": "13.1.4",
+    "@types/formidable": "^2.0.5",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
@@ -17,6 +18,7 @@
     "cookies-next": "^2.1.1",
     "eslint": "8.32.0",
     "eslint-config-next": "^13.2.3",
+    "formidable": "^2.1.1",
     "moment": "^2.29.4",
     "next": "^13.2.3",
     "next-session": "^4.0.5",
@@ -41,5 +43,10 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }
