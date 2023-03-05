@@ -1,5 +1,6 @@
 import { useAuth } from "@/components/authContext";
 import styles from "@/styles/upload_car.module.css";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
@@ -10,6 +11,10 @@ export default function UploadCar() {
 
   return (
     <>
+      <Head>
+        <title>เพิ่มรถเช่า-VEHICLE4U</title>
+      </Head>
+
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >

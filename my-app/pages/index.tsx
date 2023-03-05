@@ -67,7 +67,7 @@ export default function Home() {
                 name="username"
                 className={styles.input}
                 value={username}
-                onChange={(event) => setUsername(event.target.value)}
+                onChange={(event) => setUsername(event.target.value.trim())}
               />
               <br />
               <br />
@@ -81,7 +81,7 @@ export default function Home() {
                 name="password"
                 className={styles.input}
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
+                onChange={(event) => setPassword(event.target.value.trim())}
               />
               <br />
               <br />
@@ -116,9 +116,6 @@ export default function Home() {
               >
                 <FaTimesCircle className={`red_color`} /> {invalid}
               </Alert>
-              {/* <div className={`mb-2 ${styles.invalid}`}>
-                <small>{invalid}</small>
-              </div> */}
               <button
                 type="button"
                 onClick={(event: any) => handleSubmit(event)}

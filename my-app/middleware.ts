@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(`${origin}/`);
   }
 
-  if (pathname.startsWith(`${origin}`) && token) {
+  if (pathname.startsWith(`${origin}/`) && token) {
     return NextResponse.redirect(`${origin}/searchcar`);
   }
 

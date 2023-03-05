@@ -1,4 +1,4 @@
-import UserSignUp from "../interfaces/UserSignUp";
+import UserSignUp from "../../interfaces/UserSignUp";
 
 export const userRegister = async (data: UserSignUp, role: string) => {
   try {
