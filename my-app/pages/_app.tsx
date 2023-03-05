@@ -5,7 +5,6 @@ import { SSRProvider } from "react-bootstrap";
 import Layout from "@/components/layout";
 import { AuthProvider } from "@/components/authContext";
 import "react-loading-skeleton/dist/skeleton.css";
-import ProtectRoute from "@/components/protectRoute";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function App({
@@ -16,13 +15,11 @@ export default function App({
     <>
       <ErrorBoundary>
         <AuthProvider>
-          <ProtectRoute>
-            <SSRProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </SSRProvider>
-          </ProtectRoute>
+          <SSRProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SSRProvider>
         </AuthProvider>
       </ErrorBoundary>
     </>

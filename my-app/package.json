@@ -19,7 +19,6 @@
     "eslint-config-next": "^13.2.3",
     "moment": "^2.29.4",
     "next": "^13.2.3",
-    "next-auth": "^4.19.2",
     "next-session": "^4.0.5",
     "node-sessionstorage": "^1.0.0",
     "react": "^18.2.0",
