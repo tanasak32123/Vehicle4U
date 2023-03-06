@@ -11,6 +11,10 @@ export default function UploadCar() {
   const [imgFile, setImgFile] = useState<File>();
 
   const handleSubmit = async () => {
+    console.log("send data");
+  };
+
+  const uploadImage = async () => {
     if (!imgFile) return;
     let formData = new FormData();
     formData.append("file", imgFile);
@@ -49,20 +53,26 @@ export default function UploadCar() {
             <label htmlFor="carImgFile" className="form-label">
               <b>อัปโหลดรูปรถ</b>
             </label>
-            <input
-              className="form-control"
-              type="file"
-              id="carImgFile"
-              onChange={({ target }) => {
-                if (target.files) {
-                  const file = target.files[0];
-                  setImgFile(file);
-                }
-              }}
-            />
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="file"
+                id="carImgFile"
+                onChange={({ target }) => {
+                  if (target.files) {
+                    const file = target.files[0];
+                    setImgFile(file);
+                  }
+                }}
+              />
+              <button className="btn btn-outline-secondary" type="button">
+                อัปโหลดรูป
+              </button>
+            </div>
           </div>
 
           <Row>
+            <Col lg={12}></Col>
             <Col lg={6}>
               <div className="mb-3">
                 <label htmlFor="carName" className="form-label">

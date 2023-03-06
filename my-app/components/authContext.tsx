@@ -46,7 +46,12 @@ export function AuthProvider({ children }: Props) {
       const cookies = getCookie("user")!.toString();
       const role = JSON.parse(cookies!).role;
       try {
-        const res = await fetch("/api/auth/fetchUser");
+        const res = await fetch("/api/auth/fetchUser", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!res.ok) {
           logout();
         } else {
@@ -106,7 +111,6 @@ export function AuthProvider({ children }: Props) {
   };
 
   const signUp = async (data: UserSignUp, role: string) => {
-    setLoading(true);
     try {
       const response = await fetch(`/api/auth/signup/${role}`, {
         method: "POST",
@@ -116,11 +120,9 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify(data),
       });
       const body = await response.json();
-      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
   };
 

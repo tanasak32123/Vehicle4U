@@ -9,22 +9,25 @@ export default async function handler(
   if (req.method == "POST") {
     const body = req.body;
     if (!body.username || !body.password || !body.role) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
     }
 
-    const user = await userLogin(body.username, body.password, body.role);
+    const data = await userLogin(body.username, body.password, body.role);
 
-    if (!user) {
-      return res.status(400).json({
+    if (!data) {
+      res.status(400).json({
         success: false,
         message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
     }
 
-    return res.status(200).json({ success: true, ...user });
+    res
+      .setHeader(`authorization`, `Bearer ${data.token.access_token}`)
+      .status(200)
+      .json({ success: true, ...data });
   } else {
     res.status(404).redirect("/404");
   }

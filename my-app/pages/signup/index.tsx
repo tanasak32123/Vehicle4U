@@ -11,9 +11,11 @@ import Skeleton from "react-loading-skeleton";
 import SelectRoleModal from "@/components/signup/selectRoleModal";
 
 export default function Register() {
-  const { authAction, loading }: any = useAuth();
+  const { authAction }: any = useAuth();
 
   const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
 
   const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
@@ -65,7 +67,9 @@ export default function Register() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
+    setLoading(true);
     const response = await authAction.signUp(data, role);
+    setLoading(false);
     if (!response.success) {
       setInvalid_fName(response.errors.fName);
       setInvalid_lName(response.errors.lName);
