@@ -4,16 +4,21 @@ import { NextResponse } from "next/server";
 const authPrefixes = ["/profile"];
 
 export function middleware(req: NextRequest) {
+  // console.log("Middleware");
   const token = req.cookies.get("token")?.value;
+  const basicAuth = req.headers.get("authorization");
 
-  const { pathname, origin } = req.nextUrl;
+  const { pathname } = req.nextUrl;
+  const url = req.nextUrl;
 
   if (authPrefixes.some((prefix) => pathname.startsWith(prefix)) && !token) {
-    return NextResponse.redirect(`${origin}/`);
+    url.pathname = "/";
+    return NextResponse.rewrite(url);
   }
 
-  if (pathname.startsWith(`${origin}/`) && token) {
-    return NextResponse.redirect(`${origin}/searchcar`);
+  if (pathname.startsWith(`/`) && token) {
+    url.pathname = "/searchcar";
+    return NextResponse.rewrite(url);
   }
 
   NextResponse.next();

@@ -46,7 +46,12 @@ export function AuthProvider({ children }: Props) {
       const cookies = getCookie("user")!.toString();
       const role = JSON.parse(cookies!).role;
       try {
-        const res = await fetch("/api/auth/fetchUser");
+        const res = await fetch("/api/auth/fetchUser", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!res.ok) {
           logout();
         } else {
