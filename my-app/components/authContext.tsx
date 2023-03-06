@@ -106,7 +106,6 @@ export function AuthProvider({ children }: Props) {
   };
 
   const signUp = async (data: UserSignUp, role: string) => {
-    setLoading(true);
     try {
       const response = await fetch(`/api/auth/signup/${role}`, {
         method: "POST",
@@ -116,11 +115,9 @@ export function AuthProvider({ children }: Props) {
         body: JSON.stringify(data),
       });
       const body = await response.json();
-      setLoading(false);
       return body;
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
   };
 
