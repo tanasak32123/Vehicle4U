@@ -1,6 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { updateProfile } from "../../../libs/auth/updateProfile";
+import { updateProfile } from "../../../../libs/auth/updateProfile";
+import { setCookie } from "cookies-next";
+import UserProfile from "../../../../interfaces/UserProfile";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
@@ -25,10 +27,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
+    let { role } = req.query;
     const body = req.body;
-    let data = {};
     const type = body.type;
     const values = body.values;
+    const data: UserProfile = {};
 
     if (type == "name") {
       const first_name = values["0"];
@@ -61,10 +64,8 @@ export default async function handler(
           .json({ message: "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น" });
       }
 
-      data = {
-        first_name: first_name,
-        last_name: last_name,
-      };
+      data["first_name"] = first_name;
+      data["last_name"] = last_name;
     }
 
     if (type == "username") {
@@ -80,9 +81,7 @@ export default async function handler(
         });
       }
 
-      data = {
-        username: username,
-      };
+      data["username"] = username;
     }
 
     if (type == "password") {
@@ -97,9 +96,7 @@ export default async function handler(
           .json({ message: "** password ของคุณมีความยาวน้อยกว่า 6 ตัว" });
       }
 
-      data = {
-        password: password,
-      };
+      data["password"] = password;
     }
 
     if (type == "tel") {
@@ -118,9 +115,7 @@ export default async function handler(
           .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
       }
 
-      data = {
-        tel: tel,
-      };
+      data["tel"] = tel;
     }
 
     if (type == "citizen_id") {
@@ -139,9 +134,7 @@ export default async function handler(
           .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน" });
       }
 
-      data = {
-        citizen_id: cid,
-      };
+      data["citizen_id"] = cid;
     }
 
     if (type == "driving_license_id" || type == "add_driving_license_id") {
@@ -160,11 +153,10 @@ export default async function handler(
           .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน" });
       }
 
-      data = {
-        driving_license_id: d_license_id,
-      };
+      data["driving_license_id"] = d_license_id;
 
       if (type == "add_driving_license_id") {
+        role = "renter";
         data["is_renter"] = true;
       }
     }
@@ -177,11 +169,10 @@ export default async function handler(
           .json({ message: "** กรุณาเลือกช่องทางการรับเงินให้เรียบร้อย" });
       }
 
-      data = {
-        payment_channel: payment,
-      };
+      data["payment_channel"] = payment;
 
       if (type == "add_payment_channel") {
+        role = "provider";
         data["is_provider"] = true;
       }
     }
@@ -196,6 +187,18 @@ export default async function handler(
         message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
       });
     }
+
+    setCookie(
+      "user",
+      { ...user, role },
+      {
+        req,
+        res,
+        maxAge: 60 * 60,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: true,
+      }
+    );
 
     return res.status(200).json({ success: true, user });
   } else {

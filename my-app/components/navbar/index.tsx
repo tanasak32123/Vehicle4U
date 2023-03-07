@@ -12,7 +12,7 @@ export default function Header() {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="lg" className={styles.nav}>
+      <Navbar collapseOnSelect expand="lg" className={`${styles.nav}`}>
         <Container>
           <Navbar.Brand className={`px-3 ${styles.brand}`} href="/">
             VEHICLE4U

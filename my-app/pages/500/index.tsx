@@ -1,9 +1,8 @@
 import Head from "next/head";
 import Link from "next/link";
-import { FaHome } from "react-icons/fa";
 import { useRouter } from "next/router";
 
-export default function FiveOhFive() {
+export default function FiveOhOh() {
   const router = useRouter();
 
   return (
@@ -25,8 +24,7 @@ export default function FiveOhFive() {
             }}
             className="orange_btn d-flex align-items-center justify-content-center"
           >
-            <FaHome />
-            &nbsp;ลองใหม่อีกครั้ง
+            ลองใหม่อีกครั้ง
           </Link>
         </div>
       </div>
