@@ -2,17 +2,16 @@ import Link from "next/link";
 import styles from "../styles/components/footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
 import Image from "next/image";
-import linePic from "../public/images/line.png";
-import instragramPic from "../public/images/instragram.png";
-import facebookPic from "../public/images/facebook.png";
-import phonePic from "../public/images/phone.png";
+import linePic from "../public/images/line.webp";
+import instragramPic from "../public/images/instragram.webp";
+import facebookPic from "../public/images/facebook.webp";
+import phonePic from "../public/images/phone.webp";
 
 export default function Footer() {
   return (
     <div className={`${styles.footer}`}>
       <Container className="py-4">
         <Row>
-          {/* QA */}
           <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
             <div>
               <h4>
@@ -81,6 +80,7 @@ export default function Footer() {
                         alt="Picture of the author"
                         width={30}
                         height={30}
+                        loading="eager"
                       />
                       : 081-831-8928
                     </small>
@@ -95,6 +95,7 @@ export default function Footer() {
                           alt="Picture of the author"
                           width={42}
                           height={42}
+                          loading="eager"
                         />
                       </Link>
                       <Link href="/">
@@ -104,6 +105,7 @@ export default function Footer() {
                           alt="Picture of the author"
                           width={40}
                           height={40}
+                          loading="eager"
                         />
                       </Link>
 
@@ -114,6 +116,7 @@ export default function Footer() {
                           alt="Picture of the author"
                           width={43}
                           height={43}
+                          loading="eager"
                         />
                       </Link>
                     </div>

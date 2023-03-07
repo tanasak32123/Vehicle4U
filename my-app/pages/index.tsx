@@ -43,6 +43,7 @@ export default function Home() {
           alt="Picture of car renter"
           loading="eager"
           fill
+          priority
         />
         <Row className={`${styles.container}`}>
           <Col
