@@ -1,10 +1,11 @@
 .container {
   height: 100vh !important;
-  background-image: url("../public/images/backgrounds/home.png");
+}
+
+.image_bg {
   object-fit: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  object-position: center;
+  z-index: -100;
 }
 
 .manifesto_title {

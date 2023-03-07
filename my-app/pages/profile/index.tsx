@@ -2,7 +2,7 @@ import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
 import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import UserProfile from "@/interfaces/UserProfile";
 import InputForm from "@/components/profile/profileForm";
 import { useAuth } from "@/components/authContext";
@@ -68,7 +68,6 @@ export default function EditProfile() {
       if (!response.success) {
         setInvalidInput(response.message);
       } else {
-        console.log(response.user);
         if (type == "add_payment_channel") {
           authAction.setUser({ ...response.user, role: "provider" });
           popUpChangeRole();
@@ -93,7 +92,15 @@ export default function EditProfile() {
         setAddPaymentShow(true);
       } else {
         authAction.setUser({ ...user, role: "provider" });
-        setCookie("user", { ...user, role: "provider" });
+        setCookie(
+          "user",
+          { ...user, role: "provider" },
+          {
+            maxAge: 60 * 60,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          }
+        );
         popUpChangeRole();
       }
     }
@@ -103,7 +110,15 @@ export default function EditProfile() {
         setAddDlicenseShow(true);
       } else {
         authAction.setUser({ ...user, role: "renter" });
-        setCookie("user", { ...user, role: "renter" });
+        setCookie(
+          "user",
+          { ...user, role: "renter" },
+          {
+            maxAge: 60 * 60,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          }
+        );
         popUpChangeRole();
       }
     }
