@@ -7,10 +7,10 @@ import {
 } from "react";
 import { getCookie, hasCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import UserModel from "@/interfaces/UserModel";
-import UserSignUp from "@/interfaces/UserSignUp";
-import UserProfile from "@/interfaces/UserSignUp";
-import AuthContextValue from "@/interfaces/AuthContextValue";
+import UserModel from "types/UserModel";
+import UserSignUp from "types/UserSignUp";
+import UserProfile from "types/UserSignUp";
+import AuthContextValue from "types/AuthContextValue";
 
 const initValues: AuthContextValue = {
   user: null,

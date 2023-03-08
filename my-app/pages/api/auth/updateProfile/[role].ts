@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { updateProfile } from "../../../../libs/auth/updateProfile";
 import { setCookie } from "cookies-next";
-import UserProfile from "../../../../interfaces/UserProfile";
+import UserProfile from "types/UserProfile";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);

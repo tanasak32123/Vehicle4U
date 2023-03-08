@@ -1,7 +1,6 @@
 import Head from "next/head";
 import styles from "@/styles/searchcar.module.css";
-import { Row, Col, Spinner } from "react-bootstrap";
-
+import { Row, Col } from "react-bootstrap";
 import React, { useState } from "react";
 import Dropdown from "react-bootstrap/Dropdown";
 import Form from "react-bootstrap/Form";

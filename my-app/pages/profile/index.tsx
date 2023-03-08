@@ -3,7 +3,7 @@ import Head from "next/head";
 import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import UserProfile from "@/interfaces/UserProfile";
+import UserProfile from "types/UserProfile";
 import InputForm from "@/components/profile/profileForm";
 import { useAuth } from "@/components/authContext";
 import Skeleton from "react-loading-skeleton";

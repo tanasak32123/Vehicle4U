@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
-import { userLogin } from "../../../libs/auth/userLogin";
+import { userLogin } from "libs/auth/userLogin";
 
 export default async function handler(
   req: NextApiRequest,

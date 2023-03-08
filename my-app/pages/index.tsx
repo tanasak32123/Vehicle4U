@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
 import { useAuth } from "@/components/authContext";
 import Head from "next/head";
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 export default function Home() {
   const { authAction }: any = useAuth();
@@ -37,14 +37,16 @@ export default function Home() {
       </Head>
 
       <div className={`position-relative`}>
-        <Image
-          className={`${styles.image_bg}`}
-          src="/images/backgrounds/home.webp"
-          alt="Picture of car renter"
-          loading="eager"
-          fill
-          priority
-        />
+        <div>
+          <Image
+            className={`${styles.image_bg}`}
+            src="/images/backgrounds/home.webp"
+            alt="Picture of car renter"
+            loading="eager"
+            layout="fill"
+            priority
+          />
+        </div>
         <Row className={`${styles.container}`}>
           <Col
             sm={12}
