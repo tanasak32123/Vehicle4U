@@ -202,6 +202,6 @@ export default async function handler(
 
     return res.status(200).json({ success: true, user });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }

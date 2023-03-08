@@ -1,11 +1,13 @@
+import Link from "next/link";
+import Head from "next/head";
+import Image from "next/image";
+import { useState } from "react";
+
+import { useAuth } from "@/components/authContext";
+
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import { useState } from "react";
-import Link from "next/link";
 import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
-import { useAuth } from "@/components/authContext";
-import Head from "next/head";
-import Image from "next/legacy/image";
 
 export default function Home() {
   const { authAction }: any = useAuth();
@@ -37,16 +39,12 @@ export default function Home() {
       </Head>
 
       <div className={`position-relative`}>
-        <div>
-          <Image
-            className={`${styles.image_bg}`}
-            src="/images/backgrounds/home.webp"
-            alt="Picture of car renter"
-            loading="eager"
-            layout="fill"
-            priority
-          />
-        </div>
+        <Image
+          className={`${styles.image_bg}`}
+          src="/images/backgrounds/home.webp"
+          alt="Picture of car renter"
+          fill
+        />
         <Row className={`${styles.container}`}>
           <Col
             sm={12}
@@ -156,7 +154,11 @@ export default function Home() {
                 <small className={`${styles.form_text}`}>
                   ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
                   <b>
-                    <Link href="/signup" className={`${styles.signup}`}>
+                    <Link
+                      href="/signup"
+                      className={`${styles.signup}`}
+                      prefetch={false}
+                    >
                       สมัครบัญชีผู้ใช้งานที่นี่
                     </Link>
                   </b>

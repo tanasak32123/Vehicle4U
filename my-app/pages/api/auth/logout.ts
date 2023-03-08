@@ -11,6 +11,6 @@ export default async function handler(
     deleteCookie("user", { res, req });
     return res.status(200).redirect("/");
   } else {
-    res.status(404).redirect("/404");
+    return res.status(404).redirect("/404");
   }
 }

@@ -10,7 +10,7 @@ export default async function handler(
   if (req.method == "POST") {
     const body = req.body;
     if (!body.username || !body.password || !body.role) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
@@ -19,7 +19,7 @@ export default async function handler(
     const data = await userLogin(body.username, body.password, body.role);
 
     if (!data) {
-      res.status(400).json({
+      return res.status(400).json({
         success: false,
         message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
       });
@@ -48,6 +48,6 @@ export default async function handler(
 
     return res.status(200).json({ user: { ...data.user } });
   } else {
-    res.status(404).redirect("/404");
+    return res.status(404).redirect("/404");
   }
 }

@@ -1,11 +1,9 @@
 import Link from "next/link";
+import Image from "next/image";
+
+//css
 import styles from "styles/components/footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
-import Image from "next/image";
-import linePic from "@/public/images/line.webp";
-import instragramPic from "@/public/images/instragram.webp";
-import facebookPic from "@/public/images/facebook.webp";
-import phonePic from "@/public/images/phone.webp";
 
 export default function Footer() {
   return (
@@ -20,7 +18,11 @@ export default function Footer() {
               <div className={styles.footer_info}>
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/helpcenter#a" className={`${styles.link}`}>
+                    <Link
+                      href="/helpcenter#a"
+                      className={`${styles.link}`}
+                      prefetch={false}
+                    >
                       <small>สมัครอย่างไร</small>
                     </Link>
                   </li>
@@ -28,7 +30,11 @@ export default function Footer() {
 
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/helpcenter#b" className={`${styles.link}`}>
+                    <Link
+                      href="/helpcenter#b"
+                      className={`${styles.link}`}
+                      prefetch={false}
+                    >
                       <small>ผู้ปล่อยเช่าต้องเตรียมอะไรบ้าง</small>
                     </Link>
                   </li>
@@ -36,7 +42,11 @@ export default function Footer() {
 
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/helpcenter#c" className={`${styles.link}`}>
+                    <Link
+                      href="/helpcenter#c"
+                      className={`${styles.link}`}
+                      prefetch={false}
+                    >
                       <small>ช่องทางการชำระเงินใน Vehicle4U</small>
                     </Link>
                   </li>
@@ -57,7 +67,11 @@ export default function Footer() {
               <div className={styles.footer_info}>
                 <ul style={{ paddingLeft: "20px" }}>
                   <li>
-                    <Link href="/about" className={`${styles.link}`}>
+                    <Link
+                      href="/about"
+                      className={`${styles.link}`}
+                      prefetch={false}
+                    >
                       <small>เกี่ยวกับเรา</small>
                     </Link>
                   </li>
@@ -73,50 +87,50 @@ export default function Footer() {
               <div className={styles.footer_info}>
                 <ul style={{ listStyleType: "none" }} className="p-0">
                   <li>
-                    <small>
+                    <div className="d-flex align-items-center">
                       <Image
-                        className="me-2"
-                        src={phonePic}
+                        src={`/images/phone.webp`}
                         alt="Picture of the author"
                         width={30}
                         height={30}
-                        loading="eager"
                       />
-                      : 081-831-8928
-                    </small>
-
-                    <br />
+                      <small>&nbsp;&nbsp;: 081-831-8928</small>
+                    </div>
 
                     <div className="mt-3">
-                      <Link href="/">
+                      <Link
+                        rel="preload"
+                        href="/"
+                        className="me-3"
+                        prefetch={false}
+                      >
                         <Image
-                          className="me-3"
-                          src={facebookPic}
+                          src={`/images/facebook.webp`}
                           alt="Picture of the author"
                           width={42}
                           height={42}
-                          loading="eager"
                         />
                       </Link>
-                      <Link href="/">
+                      <Link
+                        rel="preload"
+                        href="/"
+                        className="me-3"
+                        prefetch={false}
+                      >
                         <Image
-                          className="me-3"
-                          src={instragramPic}
+                          src={`/images/instragram.webp`}
                           alt="Picture of the author"
                           width={40}
                           height={40}
-                          loading="eager"
                         />
                       </Link>
 
-                      <Link rel="preload" href="/">
+                      <Link rel="preload" href="/" prefetch={false}>
                         <Image
-                          className="me-3"
-                          src={linePic}
+                          src={`/images/line.webp`}
                           alt="Picture of the author"
                           width={43}
                           height={43}
-                          loading="eager"
                         />
                       </Link>
                     </div>

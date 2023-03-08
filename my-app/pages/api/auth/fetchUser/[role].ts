@@ -31,8 +31,8 @@ export default async function handler(
     );
 
     res.setHeader("Cache-Control", "public, max-age=5, immutable");
-    res.status(200).json({ user });
+    return res.status(200).json({ user });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }

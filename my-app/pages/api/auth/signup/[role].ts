@@ -121,6 +121,6 @@ export default async function handler(
       .status(201)
       .json({ success: true, message: "created successfully" });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }
