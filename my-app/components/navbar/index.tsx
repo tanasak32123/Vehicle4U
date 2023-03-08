@@ -1,9 +1,16 @@
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import styles from "../../styles/components/navbar.module.css";
-import { useAuth } from "../authContext";
-import Skeleton from "react-loading-skeleton";
 import { useState } from "react";
-import LogoutModal from "./logoutModal";
+import dynamic from "next/dynamic";
+
+import { useAuth } from "../authContext";
+
+//css
+import Skeleton from "react-loading-skeleton";
+import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import styles from "styles/components/navbar.module.css";
+
+const LogoutModal = dynamic(() => import("./logoutModal"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
@@ -27,7 +34,7 @@ export default function Header() {
             <Nav>
               {loading ? (
                 <>
-                  <Skeleton width={150} height={`100%`} />
+                  <Skeleton width={100} height={`80%`} />
                 </>
               ) : isAuthenticate ? (
                 <>

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { deleteCookie, setCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,6 +11,6 @@ export default async function handler(
     deleteCookie("user", { res, req });
     return res.status(200).redirect("/");
   } else {
-    res.status(404).redirect("/404");
+    return res.status(404).redirect("/404");
   }
 }

@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ErrorSignupValidate } from "../../../../interfaces/ErrorSignupValidate";
-import { userRegister } from "../../../../libs/auth/userRegister";
+import { ErrorSignupValidate } from "types/ErrorSignupValidate";
+import { userRegister } from "libs/auth/userRegister";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
@@ -26,7 +26,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    const errors: ErrorSignupValidate = {};
+    const errors: { [index: string]: any } = <ErrorSignupValidate>{};
     const body = req.body;
     const role = req.query.role as string;
 
@@ -121,6 +121,6 @@ export default async function handler(
       .status(201)
       .json({ success: true, message: "created successfully" });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }

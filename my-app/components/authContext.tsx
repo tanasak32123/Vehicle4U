@@ -7,16 +7,19 @@ import {
 } from "react";
 import { getCookie, hasCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import UserModel from "@/interfaces/UserModel";
-import UserSignUp from "@/interfaces/UserSignUp";
-import UserProfile from "@/interfaces/UserSignUp";
-import AuthContextValue from "@/interfaces/AuthContextValue";
+
+//types
+import UserModel from "types/UserModel";
+import UserSignUp from "types/UserSignUp";
+import UserProfile from "types/UserSignUp";
+import AuthContextValue from "types/AuthContextValue";
 
 const initValues: AuthContextValue = {
   user: null,
   isAuthenticate: false,
   loading: true,
   authAction: {},
+  setAction: {},
 };
 
 const AuthContext = createContext(initValues);
@@ -74,37 +77,6 @@ export function AuthProvider({ children }: Props) {
     router.push("/searchcar");
   };
 
-  const signUp = async (data: UserSignUp, role: string) => {
-    const response = await fetch(`/api/auth/signup/${role}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const body = await response.json();
-    setLoading(false);
-    return body;
-  };
-
-  const updateUser = async (
-    data: UserProfile,
-    type: string,
-    values: string[]
-  ) => {
-    setLoading(true);
-    const response = await fetch(`/api/auth/updateProfile/${user?.role}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data, type, values }),
-    });
-    const body = await response.json();
-    setLoading(false);
-    return body;
-  };
-
   const logout = async () => {
     await fetch("/api/auth/logout");
     setLoading(false);
@@ -116,13 +88,13 @@ export function AuthProvider({ children }: Props) {
     isAuthenticate: !!user,
     loading,
     authAction: {
-      setUser,
-      setLoading,
       login,
-      signUp,
       logout,
       fetchUser,
-      updateUser,
+    },
+    setAction: {
+      setUser,
+      setLoading,
     },
   };
 

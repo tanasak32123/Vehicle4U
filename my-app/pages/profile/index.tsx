@@ -1,20 +1,35 @@
-import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
-import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
-import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 import { useState } from "react";
-import UserProfile from "@/interfaces/UserProfile";
-import InputForm from "@/components/profile/profileForm";
-import { useAuth } from "@/components/authContext";
-import Skeleton from "react-loading-skeleton";
-import ModalForm from "@/components/profile/profileModal";
+import { useRouter } from "next/router";
 import { setCookie } from "cookies-next";
+
+//css
+import styles from "styles/editProfile.module.css";
+import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 import { Alert } from "react-bootstrap";
-import RoleModal from "@/components/profile/roleModal";
+
+//type
+import UserProfile from "types/UserProfile";
+
+import { useAuth } from "@/components/authContext";
+
+const InputForm = dynamic(() => import("@/components/profile/profileForm"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const ModalForm = dynamic(() => import("@/components/profile/profileModal"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const RoleModal = dynamic(() => import("@/components/profile/roleModal"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function EditProfile() {
   // useContext from authContext
-  const { user, isAuthenticate, authAction }: any = useAuth();
+  const { user, isAuthenticate, setAction }: any = useAuth();
 
   const router = useRouter();
 
@@ -62,20 +77,20 @@ export default function EditProfile() {
   };
 
   // update user profile
-  async function handleUpdateProfile(type: String, values: String[]) {
+  async function handleUpdateProfile(type: string, values: string[]) {
     try {
-      const response = await authAction.updateUser(data, type, values);
+      const response = await updateUser(data, type, values);
       if (!response.success) {
         setInvalidInput(response.message);
       } else {
         if (type == "add_payment_channel") {
-          authAction.setUser({ ...response.user, role: "provider" });
+          setAction.setUser({ ...response.user, role: "provider" });
           popUpChangeRole();
         } else if (type == "add_driving_license_id") {
-          authAction.setUser({ ...response.user, role: "renter" });
+          setAction.setUser({ ...response.user, role: "renter" });
           popUpChangeRole();
         } else {
-          authAction.setUser({ ...response.user, role: user.role });
+          setAction.setUser({ ...response.user, role: user.role });
           popUpAlert();
         }
       }
@@ -91,7 +106,7 @@ export default function EditProfile() {
       if (!user.payment_channel) {
         setAddPaymentShow(true);
       } else {
-        authAction.setUser({ ...user, role: "provider" });
+        setAction.setUser({ ...user, role: "provider" });
         setCookie(
           "user",
           { ...user, role: "provider" },
@@ -109,7 +124,7 @@ export default function EditProfile() {
       if (!user.driving_license_id) {
         setAddDlicenseShow(true);
       } else {
-        authAction.setUser({ ...user, role: "renter" });
+        setAction.setUser({ ...user, role: "renter" });
         setCookie(
           "user",
           { ...user, role: "renter" },
@@ -127,12 +142,10 @@ export default function EditProfile() {
   // Change role pop up
   const popUpChangeRole = () => {
     setShowChangeRole(true);
-
     const crtimeoutID = setTimeout(() => {
       setShowChangeRole(false);
       setChangeRoleID(null);
     }, 3000);
-
     if (changeRoleID) {
       clearTimeout(changeRoleID);
     }
@@ -142,16 +155,31 @@ export default function EditProfile() {
   // Alert pop up
   const popUpAlert = () => {
     setShowAlert(true);
-
     const timeoutID = setTimeout(() => {
       setShowAlert(false);
       setAlertID(null);
     }, 3000);
-
     if (alertID) {
       clearTimeout(alertID);
     }
     setAlertID(timeoutID);
+  };
+
+  // update user data
+  const updateUser = async (
+    data: UserProfile,
+    type: string,
+    values: string[]
+  ) => {
+    const response = await fetch(`/api/auth/updateProfile/${user?.role}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data, type, values }),
+    });
+    const body = await response.json();
+    return body;
   };
 
   return (

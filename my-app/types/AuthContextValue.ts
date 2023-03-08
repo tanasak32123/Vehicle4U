@@ -5,4 +5,5 @@ export default interface AuthContextValue {
   isAuthenticate?: boolean;
   loading?: boolean;
   authAction?: Object;
+  setAction?: Object;
 }

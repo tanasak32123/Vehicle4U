@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getUser } from "../../../../libs/auth/getUser";
+import { getUser } from "libs/auth/getUser";
 import { setCookie } from "cookies-next";
 
 export default async function handler(
@@ -31,8 +31,8 @@ export default async function handler(
     );
 
     res.setHeader("Cache-Control", "public, max-age=5, immutable");
-    res.status(200).json({ user });
+    return res.status(200).json({ user });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }
