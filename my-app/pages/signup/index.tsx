@@ -338,10 +338,7 @@ export default function Register() {
                           />{" "}
                         </>
                       )}
-                      <b>
-                        สมัครสมาชิก&nbsp;&nbsp;
-                        <FaUserAlt />
-                      </b>
+                      <b>สร้างบัญชี</b>
                     </button>
                   </div>
 

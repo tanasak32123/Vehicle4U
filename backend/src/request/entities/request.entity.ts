@@ -9,12 +9,19 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   DeleteDateColumn,
-  OneToMany,
   ManyToOne,
+  OneToOne,
 } from 'typeorm';
+
+export enum Request_status {
+  //custom status
+}
 
 @Entity()
 export class Request {
+/*renter_id, car_id,
+start_rent-date, end_rent_date,
+status(enum), rent_place*/
   @ApiProperty({
     type: Number,
   })
@@ -22,16 +29,40 @@ export class Request {
   id: number;
 
   @ApiProperty({
-    type: String,
+    type: Number,
   })
-  @Column({ type: 'date' })
-  rent_date : string ; 
+  @Column()
+  renter_id : number;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @Column()
+  car_id : number;
 
   @ApiProperty({
     type: String,
   })
   @Column({ type: 'date' })
-  return_date : string ; 
+  start_rent_date : string ; 
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column({ type: 'date' })
+  end_rent_date : string ;
+
+  @ApiProperty({
+    type: Request_status,
+  })
+  @Column({type: 'enum'})
+  status : Request_status;
+  
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  rent_place: string;
   
   @DeleteDateColumn()
   deleted_at: string;
@@ -42,9 +73,9 @@ export class Request {
   @CreateDateColumn()
   created_at: string;
 
-  @ManyToOne(() => User, (user) => user.user_vehicle)
-  user : User
+  @ManyToOne(() => User, (user) => user.requests)
+  user : User;
 
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.user_vehicle)
-  vehicle : Vehicle
+  @OneToOne(() => Vehicle, (vehicle) => vehicle.request)
+  vehicle : Vehicle;
 }
