@@ -1,20 +1,35 @@
-import styles from "@/styles/editProfile.module.css";
 import Head from "next/head";
-import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
+import dynamic from "next/dynamic";
+import { useState } from "react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import UserProfile from "@/interfaces/UserProfile";
-import InputForm from "@/components/profile/profileForm";
-import { useAuth } from "@/components/authContext";
-import Skeleton from "react-loading-skeleton";
-import ModalForm from "@/components/profile/profileModal";
 import { setCookie } from "cookies-next";
+
+//css
+import styles from "styles/editProfile.module.css";
+import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
+import Skeleton from "react-loading-skeleton";
 import { Alert } from "react-bootstrap";
-import RoleModal from "@/components/profile/roleModal";
+
+//type
+import UserProfile from "types/UserProfile";
+
+import { useAuth } from "@/components/authContext";
+
+const InputForm = dynamic(() => import("@/components/profile/profileForm"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const ModalForm = dynamic(() => import("@/components/profile/profileModal"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const RoleModal = dynamic(() => import("@/components/profile/roleModal"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function EditProfile() {
   // useContext from authContext
-  const { user, isAuthenticate, authAction }: any = useAuth();
+  const { user, isAuthenticate, setAction }: any = useAuth();
 
   const router = useRouter();
 
@@ -36,14 +51,14 @@ export default function EditProfile() {
   const [changeRoleID, setChangeRoleID] = useState<NodeJS.Timeout | null>(null);
 
   // inputs
-  const [fName, setFName] = useState("");
-  const [lName, setLName] = useState("");
-  const [username, setUsername] = useState("");
+  const [fName, setFName] = useState(user?.first_name);
+  const [lName, setLName] = useState(user?.last_name);
+  const [username, setUsername] = useState(user?.username);
   const [password, setPassword] = useState("");
-  const [tel, setTel] = useState("");
-  const [cid, setCid] = useState("");
-  const [dlicense, setDlicense] = useState("");
-  const [payment, setPayment] = useState("");
+  const [tel, setTel] = useState(user?.tel);
+  const [cid, setCid] = useState(user?.citizen_id);
+  const [dlicense, setDlicense] = useState(user?.driving_license_id);
+  const [payment, setPayment] = useState(user?.payment_channel);
 
   // error message
   const [invalidInput, setInvalidInput] = useState("");
@@ -61,34 +76,21 @@ export default function EditProfile() {
     is_provider: payment != "",
   };
 
-  // client side rendering (csr)
-  useEffect(() => {
-    if (isAuthenticate) {
-      setFName(user.first_name);
-      setLName(user.last_name);
-      setUsername(user.username);
-      setTel(user.tel);
-      setCid(user.citizen_id);
-      setDlicense(user.driving_license_id);
-      setPayment(user.payment_channel);
-    }
-  }, [user]);
-
   // update user profile
-  async function handleUpdateProfile(type: String, values: String[]) {
+  async function handleUpdateProfile(type: string, values: string[]) {
     try {
-      const response = await authAction.updateUser(data, type, values);
+      const response = await updateUser(data, type, values);
       if (!response.success) {
         setInvalidInput(response.message);
       } else {
         if (type == "add_payment_channel") {
-          authAction.setUser({ ...response.user, role: "provider" });
+          setAction.setUser({ ...response.user, role: "provider" });
           popUpChangeRole();
         } else if (type == "add_driving_license_id") {
-          authAction.setUser({ ...response.user, role: "renter" });
+          setAction.setUser({ ...response.user, role: "renter" });
           popUpChangeRole();
         } else {
-          authAction.setUser({ ...response.user, role: user.role });
+          setAction.setUser({ ...response.user, role: user.role });
           popUpAlert();
         }
       }
@@ -104,8 +106,16 @@ export default function EditProfile() {
       if (!user.payment_channel) {
         setAddPaymentShow(true);
       } else {
-        authAction.setUser({ ...user, role: "provider" });
-        setCookie("user", { ...user, role: "provider" });
+        setAction.setUser({ ...user, role: "provider" });
+        setCookie(
+          "user",
+          { ...user, role: "provider" },
+          {
+            maxAge: 60 * 60,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          }
+        );
         popUpChangeRole();
       }
     }
@@ -114,8 +124,16 @@ export default function EditProfile() {
       if (!user.driving_license_id) {
         setAddDlicenseShow(true);
       } else {
-        authAction.setUser({ ...user, role: "renter" });
-        setCookie("user", { ...user, role: "renter" });
+        setAction.setUser({ ...user, role: "renter" });
+        setCookie(
+          "user",
+          { ...user, role: "renter" },
+          {
+            maxAge: 60 * 60,
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          }
+        );
         popUpChangeRole();
       }
     }
@@ -124,12 +142,10 @@ export default function EditProfile() {
   // Change role pop up
   const popUpChangeRole = () => {
     setShowChangeRole(true);
-
     const crtimeoutID = setTimeout(() => {
       setShowChangeRole(false);
       setChangeRoleID(null);
     }, 3000);
-
     if (changeRoleID) {
       clearTimeout(changeRoleID);
     }
@@ -139,16 +155,31 @@ export default function EditProfile() {
   // Alert pop up
   const popUpAlert = () => {
     setShowAlert(true);
-
     const timeoutID = setTimeout(() => {
       setShowAlert(false);
       setAlertID(null);
     }, 3000);
-
     if (alertID) {
       clearTimeout(alertID);
     }
     setAlertID(timeoutID);
+  };
+
+  // update user data
+  const updateUser = async (
+    data: UserProfile,
+    type: string,
+    values: string[]
+  ) => {
+    const response = await fetch(`/api/auth/updateProfile/${user?.role}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data, type, values }),
+    });
+    const body = await response.json();
+    return body;
   };
 
   return (
@@ -189,19 +220,19 @@ export default function EditProfile() {
               <InputForm
                 name="name"
                 label="ชื่อ - นามสกุล"
-                rawData={`${user.first_name} ${user.last_name}`}
+                rawData={`${user?.first_name} ${user?.last_name}`}
                 inputs={[
                   {
                     name: "first_name",
                     label: "ชื่อ",
-                    value: user.first_name,
+                    value: user?.first_name,
                     currentValue: fName,
                     setValue: setFName,
                   },
                   {
                     name: "last_name",
                     label: "นามสกุล",
-                    value: user.last_name,
+                    value: user?.last_name,
                     currentValue: lName,
                     setValue: setLName,
                   },
@@ -213,12 +244,12 @@ export default function EditProfile() {
               <InputForm
                 name="username"
                 label="ชื่อผู้ใช้"
-                rawData={`${user.username}`}
+                rawData={`${user?.username}`}
                 inputs={[
                   {
                     name: "username",
                     label: "ชื่อผู้ใช้",
-                    value: user.username,
+                    value: user?.username,
                     currentValue: username,
                     setValue: setUsername,
                   },
@@ -246,12 +277,12 @@ export default function EditProfile() {
               <InputForm
                 name="tel"
                 label="เบอร์โทรศัพท์"
-                rawData={`${user.tel}`}
+                rawData={`${user?.tel}`}
                 inputs={[
                   {
                     name: "tel",
                     label: "เบอร์โทรศัพท์",
-                    value: user.tel,
+                    value: user?.tel,
                     currentValue: tel,
                     setValue: setTel,
                   },
@@ -263,12 +294,12 @@ export default function EditProfile() {
               <InputForm
                 name="citizen_id"
                 label="หมายเลขบัตรประชาชน"
-                rawData={`${user.citizen_id}`}
+                rawData={`${user?.citizen_id}`}
                 inputs={[
                   {
                     name: "tel",
                     label: "หมายเลขบัตรประชาชน",
-                    value: user.citizen_id,
+                    value: user?.citizen_id,
                     currentValue: cid,
                     setValue: setCid,
                   },
@@ -280,30 +311,30 @@ export default function EditProfile() {
               <InputForm
                 name="driving_license_id"
                 label="หมายเลขใบขับขี่"
-                rawData={`${user.driving_license_id}`}
+                rawData={`${user?.driving_license_id}`}
                 inputs={[
                   {
                     name: "driving_license_id",
                     label: "หมายเลขใบขับขี่",
-                    value: user.driving_license_id,
+                    value: user?.driving_license_id,
                     currentValue: dlicense,
                     setValue: setDlicense,
                   },
                 ]}
                 setShowModalFunc={setDlicenseShow}
-                isShow={user.role == "renter"}
+                isShow={user?.role == "renter"}
               />
 
               <InputForm
                 name="payment_channel"
                 label="ช่องทางการรับเงิน"
                 input_type="select"
-                rawData={`${user.payment_channel}`}
+                rawData={`${user?.payment_channel}`}
                 inputs={[
                   {
                     name: "payment_channel",
                     label: "ช่องทางการรับเงิน",
-                    value: user.payment_channel,
+                    value: user?.payment_channel,
                     setValue: setPayment,
                     options: [
                       {
@@ -326,18 +357,18 @@ export default function EditProfile() {
                   },
                 ]}
                 setShowModalFunc={setPaymentShow}
-                isShow={user.role == "provider"}
+                isShow={user?.role == "provider"}
               />
 
               <InputForm
                 name="role"
                 label="บทบาท"
-                rawData={`${user.role}`}
+                rawData={`${user?.role}`}
                 inputs={[
                   {
                     name: "role",
                     label: "บทบาท",
-                    value: user.role,
+                    value: user?.role,
                   },
                 ]}
                 setShowModalFunc={{ setPaymentShow, setDlicenseShow }}
@@ -353,14 +384,14 @@ export default function EditProfile() {
                   {
                     name: "first_name",
                     label: "ชื่อ",
-                    value: user.first_name,
+                    value: user?.first_name,
                     currentValue: fName,
                     setValue: setFName,
                   },
                   {
                     name: "last_name",
                     label: "นามสกุล",
-                    value: user.last_name,
+                    value: user?.last_name,
                     currentValue: lName,
                     setValue: setLName,
                   },
@@ -381,7 +412,7 @@ export default function EditProfile() {
                   {
                     name: "username",
                     label: "ชื่อผู้ใช้",
-                    value: user.username,
+                    value: user?.username,
                     currentValue: username,
                     setValue: setUsername,
                   },
@@ -422,7 +453,7 @@ export default function EditProfile() {
                   {
                     name: "tel",
                     label: "เบอร์โทรศัพท์",
-                    value: user.tel,
+                    value: user?.tel,
                     currentValue: tel,
                     setValue: setTel,
                   },
@@ -443,7 +474,7 @@ export default function EditProfile() {
                   {
                     name: "tel",
                     label: "หมายเลขบัตรประชาชน",
-                    value: user.citizen_id,
+                    value: user?.citizen_id,
                     currentValue: cid,
                     setValue: setCid,
                   },
@@ -464,7 +495,7 @@ export default function EditProfile() {
                   {
                     name: "driving_license_id",
                     label: "หมายเลขใบขับขี่",
-                    value: user.driving_license_id,
+                    value: user?.driving_license_id,
                     currentValue: dlicense,
                     setValue: setDlicense,
                   },
@@ -485,7 +516,7 @@ export default function EditProfile() {
                   {
                     name: "payment_channel",
                     label: "ช่องทางการรับเงิน",
-                    value: user.payment_channel,
+                    value: user?.payment_channel,
                     setValue: setPayment,
                     options: [
                       {
@@ -523,7 +554,7 @@ export default function EditProfile() {
                   {
                     name: "add_driving_license_id",
                     label: "หมายเลขใบขับขี่",
-                    value: user.driving_license_id,
+                    value: user?.driving_license_id,
                     currentValue: dlicense,
                     setValue: setDlicense,
                   },
@@ -544,7 +575,7 @@ export default function EditProfile() {
                   {
                     name: "add_payment_channel",
                     label: "ช่องทางการรับเงิน",
-                    value: user.payment_channel,
+                    value: user?.payment_channel,
                     setValue: setPayment,
                     options: [
                       {
@@ -579,7 +610,7 @@ export default function EditProfile() {
                 onHide={() => {
                   setShowChangeRole(false);
                 }}
-                role={user.role}
+                role={user?.role}
               />
             </>
           ) : (

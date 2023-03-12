@@ -1,12 +1,27 @@
-import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import "bootstrap/dist/css/bootstrap.css";
+import dynamic from "next/dynamic";
+
+//global css
+import "@/styles/globals.css";
+
+//bootstrap5 css
+import "bootstrap/dist/css/bootstrap.min.css";
+
+//react bootstrap
 import { SSRProvider } from "react-bootstrap";
-import Layout from "@/components/layout";
-import { AuthProvider } from "@/components/authContext";
+
+//loading skeleton
 import "react-loading-skeleton/dist/skeleton.css";
-import ProtectRoute from "@/components/protectRoute";
-import ErrorBoundary from "@/components/ErrorBoundary";
+
+import { AuthProvider } from "@/components/authContext";
+
+const Layout = dynamic(() => import("@/components/layout"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function App({
   Component,
@@ -14,17 +29,15 @@ export default function App({
 }: AppProps) {
   return (
     <>
-      <ErrorBoundary>
-        <AuthProvider>
-          <ProtectRoute>
-            <SSRProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </SSRProvider>
-          </ProtectRoute>
-        </AuthProvider>
-      </ErrorBoundary>
+      <SSRProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthProvider>
+        </ErrorBoundary>
+      </SSRProvider>
     </>
   );
 }

@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ErrorSignupValidate } from "../../../interfaces/ErrorSignupValidate";
+import { ErrorSignupValidate } from "types/ErrorSignupValidate";
+import { userRegister } from "libs/auth/userRegister";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
@@ -25,9 +26,9 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "POST") {
-    const errors: ErrorSignupValidate = {};
+    const errors: { [index: string]: any } = <ErrorSignupValidate>{};
     const body = req.body;
-    const role = req.query.role;
+    const role = req.query.role as string;
 
     if (!body.first_name) {
       errors.fName = "** กรุณากรอกชื่อให้เรียบร้อย";
@@ -98,35 +99,28 @@ export default async function handler(
       }
     }
 
-    await fetch(`http://localhost:3000/auth/signup/${role}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    }).then(async (response) => {
-      const data = await response.json();
-      if (!response.ok) {
-        if (data.message == "username exist") {
-          errors.username = "** ชื่อผู้ใช้นี้ถูกใช้แล้ว";
-          return res.status(400).json({
-            success: false,
-            errors,
-          });
-        } else {
-          errors.citizenID = "** หมายเลขบัตรประชนนี้ถูกใช้แล้ว";
-          return res.status(400).json({
-            success: false,
-            errors,
-          });
-        }
+    const response = await userRegister(body, role);
+
+    if (!response.success) {
+      if (response.message == "username exist") {
+        errors.username = "** ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+        return res.status(400).json({
+          success: false,
+          errors,
+        });
       } else {
-        return res
-          .status(201)
-          .json({ success: true, message: "created successfully" });
+        errors.citizenID = "** หมายเลขบัตรประชนนี้ถูกใช้แล้ว";
+        return res.status(400).json({
+          success: false,
+          errors,
+        });
       }
-    });
+    }
+
+    return res
+      .status(201)
+      .json({ success: true, message: "created successfully" });
   } else {
-    res.redirect("/404");
+    return res.redirect("/404");
   }
 }

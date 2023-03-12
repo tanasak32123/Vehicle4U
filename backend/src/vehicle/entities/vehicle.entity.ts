@@ -10,9 +10,10 @@ import {
   DeleteDateColumn,
   ManyToOne,
   OneToMany,
+  Column,
   OneToOne,
 } from 'typeorm';
-import { Request } from 'src/request/entities/request.entity';
+import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
@@ -21,6 +22,24 @@ export class Vehicle {
 })
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  name: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  province: string;
+
+  @ApiProperty({
+    type: Number,
+  })
+  @Column()
+  maximumCapacity: number;
 
   @DeleteDateColumn()
   deleted_at: string;
@@ -37,6 +56,7 @@ export class Vehicle {
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.vehicle)
   user_vehicle : UserVehicle[]
 
-  @OneToOne(()=>Request, (requests)=> requests.vehicle)
-  request: Request;
+  @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
+  rentingRequest: RentingRequest;
+
 }

@@ -5,23 +5,24 @@ import {
   useEffect,
   useState,
 } from "react";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { getCookie, hasCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import UserModel from "@/interfaces/UserModel";
-import UserSignUp from "@/interfaces/UserSignUp";
-import UserProfile from "@/interfaces/UserSignUp";
-import AuthContextValue from "@/interfaces/AuthContextValue";
 
-const authContextDefaultValues: AuthContextValue = {
+//types
+import UserModel from "types/UserModel";
+import UserSignUp from "types/UserSignUp";
+import UserProfile from "types/UserSignUp";
+import AuthContextValue from "types/AuthContextValue";
+
+const initValues: AuthContextValue = {
   user: null,
   isAuthenticate: false,
   loading: true,
   authAction: {},
+  setAction: {},
 };
 
-export const AuthContext = createContext<AuthContextValue>(
-  authContextDefaultValues
-);
+const AuthContext = createContext(initValues);
 
 export const useAuth = () => useContext(AuthContext);
 
@@ -36,119 +37,49 @@ export function AuthProvider({ children }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getUser();
-  }, []);
-
-  const getUser = async () => {
-    setLoading(true);
-    const token = getCookie("token")?.toString();
-    if (!user && token) {
-      const role = JSON.parse(getCookie("user")!.toString()).role;
-      try {
-        const res = await fetch("/api/fetchUser");
-        if (!res.ok) {
-          logout();
-        } else {
-          const data = await res.json();
-          setCookie(
-            "user",
-            { ...data.user, role },
-            {
-              maxAge: 18000, // Expires after 5hr
-            }
-          );
-          setUser({ ...data.user, role });
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      setUser(null);
-      setLoading(false);
+    if (!user) {
+      fetchUser();
     }
+  }, [user]);
+
+  const fetchUser = async () => {
+    if (!hasCookie("user")) {
+      setLoading(false);
+      return;
+    }
+    const role = JSON.parse(getCookie("user") as string).role;
+    const res = await fetch(`/api/auth/fetchUser/${role}`);
+    setLoading(false);
+    if (!res.ok) {
+      logout();
+      return;
+    }
+    const user = JSON.parse(getCookie("user")?.toString()!);
+    setUser({ ...user });
   };
 
   const login = async (username: string, password: string, role: string) => {
-    try {
-      const response = await fetch("/api/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-          role: role,
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUser({ ...data.user, role });
-        setCookie(
-          "user",
-          { ...data.user, role },
-          {
-            maxAge: 18000, // Expires after 5hr
-          }
-        );
-        setCookie("token", data.token.access_token, {
-          maxAge: 18000, // Expires after 5hr
-        });
-        router.push("/searchcar");
-      }
-      setLoading(false);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        role,
+      }),
+    });
+    const data = await response.json();
+    setLoading(false);
+    if (!response.ok) return data;
+    setUser({ ...data.user });
+    router.push("/searchcar");
   };
 
-  const signUp = async (data: UserSignUp, role: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/signup/${role}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const body = await response.json();
-      setLoading(false);
-      return body;
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-
-  const updateUser = async (
-    data: UserProfile,
-    type: string,
-    values: string[]
-  ) => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/updateProfile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data, type, values }),
-      });
-      const body = await response.json();
-      setLoading(false);
-      return body;
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-
-  const logout = () => {
-    deleteCookie("token");
-    deleteCookie("user");
+  const logout = async () => {
+    await fetch("/api/auth/logout");
+    setLoading(false);
     setUser(null);
   };
 
@@ -157,13 +88,13 @@ export function AuthProvider({ children }: Props) {
     isAuthenticate: !!user,
     loading,
     authAction: {
+      login,
+      logout,
+      fetchUser,
+    },
+    setAction: {
       setUser,
       setLoading,
-      login,
-      signUp,
-      logout,
-      getUser,
-      updateUser,
     },
   };
 

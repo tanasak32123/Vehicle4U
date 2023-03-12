@@ -10,7 +10,7 @@ import config from './config/config';
 import { AuthModule } from './auth/auth.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { TokenMiddleware } from './middleware/token.decode.middleware';
-import { RequestModule } from './request/request.module';
+import { RentingRequestModule } from './renting-request/renting-request.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,7 +33,7 @@ import { RequestModule } from './request/request.module';
     UserModule,
     AuthModule,
     VehicleModule,
-    RequestModule
+    RentingRequestModule
   ],
   controllers: [AppController],
   providers: [AppService],

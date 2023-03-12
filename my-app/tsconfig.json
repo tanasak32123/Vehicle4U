@@ -16,9 +16,17 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": ["./*"],
+      "types/*": ["./types/*"],
+      "libs/*": ["./libs/*"],
+      "styles/*": ["./styles/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.tsx", ".next/types/**/*.ts", "**/*.ts"],
   "exclude": ["node_modules"]
 }

@@ -15,12 +15,14 @@ import {
 
 export enum Request_status {
   //custom status
-  A = 'a',
-  B = 'b'
+  PENDING = 'pending',
+  ACCEPTED = 'accepted',
+  REJECTED = 'rejected',
 }
 
-@Entity({name:'requests'})
-export class Request {
+@Entity()
+export class RentingRequest {
+
 /*renter_id, car_id,
 start_rent-date, end_rent_date,
 status(enum), rent_place*/
@@ -55,9 +57,9 @@ status(enum), rent_place*/
   end_rent_date : string ;
 
   @ApiProperty({
-    type: Request_status,
+    enum:['pending','accepted','rejected'],
   })
-  @Column({ type: 'enum', enum:{}})
+  @Column({ type: 'enum', enum:Request_status})
   status : Request_status;
   
   @ApiProperty({
@@ -75,9 +77,9 @@ status(enum), rent_place*/
   @CreateDateColumn()
   created_at: string;
 
-  @ManyToOne(() => User, (user) => user.requests)
+  @ManyToOne(() => User, (user) => user.rentingRequests)
   user : User;
 
-  @OneToOne(() => Vehicle, (vehicle) => vehicle.request)
+  @OneToOne(() => Vehicle, (vehicle) => vehicle.rentingRequest)
   vehicle : Vehicle;
 }
