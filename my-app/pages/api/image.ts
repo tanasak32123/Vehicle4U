@@ -30,6 +30,10 @@ const readFile = (
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  if (req.method != "POST") {
+    res.status(405).send("Method not allowed");
+    return;
+  }
   try {
     await fs.readdir(path.join(process.cwd() + "/public", "/images", "cars"));
   } catch (error) {

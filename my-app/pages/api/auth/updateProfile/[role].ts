@@ -188,18 +188,6 @@ export default async function handler(
       });
     }
 
-    setCookie(
-      "user",
-      { ...user, role },
-      {
-        req,
-        res,
-        maxAge: 60 * 60,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: true,
-      }
-    );
-
     return res.status(200).json({ success: true, user });
   } else {
     return res.redirect("/404");

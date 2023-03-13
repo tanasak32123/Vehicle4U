@@ -2,7 +2,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 //css
 import styles from "styles/editProfile.module.css";
@@ -118,12 +118,24 @@ export default function EditProfile() {
         authAction.mutate({ ...auth, user: { ...body.user } });
         if (type == "add_payment_channel") {
           setUser({ ...body.user, role: "provider" });
+          setCookie("role", "provider", {
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          });
           popUpChangeRole();
         } else if (type == "add_driving_license_id") {
           setUser({ ...body.user, role: "renter" });
+          setCookie("role", "renter", {
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          });
           popUpChangeRole();
         } else {
           setUser({ ...body.user, role: user.role });
+          setCookie("role", user.role, {
+            secure: process.env.NODE_ENV !== "development",
+            sameSite: true,
+          });
           popUpAlert();
         }
       }
@@ -135,7 +147,6 @@ export default function EditProfile() {
 
   // handle change role button
   function handleChangeRole() {
-    console.log(user);
     if (user?.role == "renter") {
       if (!user.payment_channel) {
         setAddPaymentShow(true);
@@ -562,7 +573,7 @@ export default function EditProfile() {
                   type={`text`}
                   inputs={[
                     {
-                      name: "add_driving_license_id",
+                      name: "driving_license_id",
                       label: "หมายเลขใบขับขี่",
                       value: auth?.user?.driving_license_id,
                       setValue: setUser,
@@ -585,7 +596,7 @@ export default function EditProfile() {
                   type={`select`}
                   inputs={[
                     {
-                      name: "add_payment_channel",
+                      name: "payment_channel",
                       label: "ช่องทางการรับเงิน",
                       value: auth?.user?.payment_channel,
                       setValue: setUser,

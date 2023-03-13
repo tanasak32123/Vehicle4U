@@ -25,3 +25,26 @@
 .back_btn:hover {
   color: #4d4b4b;
 }
+
+.first_col {
+  height: 400px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border: 1px dashed grey;
+  color: grey;
+}
+
+.empty_img {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+}
