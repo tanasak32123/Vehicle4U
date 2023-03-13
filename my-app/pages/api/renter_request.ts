@@ -14,6 +14,7 @@ export default async function handler(
     const start_time = body.starttime.split(':');
     const stop_time = body.endtime.split(':');
     const contact = body.contact;
+    var accept = body.accept;
 
     var start_year = parseInt(start[0]);
     var start_month = parseInt(start[1]);
@@ -49,8 +50,8 @@ export default async function handler(
     var cal = /^[0-9]{10}/.test(contact);
     var empt = body.startdate == "" || body.enddate == "" || body.starttime == "" || body.endtime == "" && body.contact != "";
 
-    console.log(time);
-    // empt || !cal
+
+    // console.log(cal);
 
     if ( empt || !cal || time ) {
       return res.status(400).json({
@@ -59,7 +60,7 @@ export default async function handler(
       });
     }
     // return res.status(200).send('success');
-    const token = getCookie("token")
+    const token = req.cookies?.token
 
     try {
       await fetch("http://localhost:3000/renting-request", { // ถาม path ปลื้ม
@@ -79,10 +80,12 @@ export default async function handler(
           status:body.status,
         }),
       }).then(async (response) => {
+        console.log(response.status)
+      
         if (!response.ok) {
           res.status(400).json({
             success: false,
-            message: "** ชื่อผู้ใช้ รหัสผ่าน หรือบทบาทของคุณไม่ถูกต้อง",
+            message: "** can't receive response ok from back-end",
           });
         } else {
           const user = await response.json();

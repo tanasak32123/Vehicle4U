@@ -48,19 +48,37 @@ status(enum), rent_place*/
     type: String,
   })
   @Column({ type: 'date' })
-  start_rent_date : string ; 
+  startdate : string ;
+  
+  @ApiProperty({
+    type: String,
+  })
+  @Column({ type: 'time' })
+  starttime : string ;
 
   @ApiProperty({
     type: String,
   })
   @Column({ type: 'date' })
-  end_rent_date : string ;
+  enddate : string ;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column({ type: 'time' })
+  endtime : string ;
 
   @ApiProperty({
     enum:['pending','accepted','rejected'],
   })
   @Column({ type: 'enum', enum:Request_status})
   status : Request_status;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  info: string;
   
   @ApiProperty({
     type: String,

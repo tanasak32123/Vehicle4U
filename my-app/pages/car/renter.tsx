@@ -1,12 +1,10 @@
 import Head from "next/head";
 import { useState } from "react";
 import styles from "@/styles/renter.module.css";
-import { Row, Col, Spinner } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import UserSignUp from "@/types/UserSignUp";
-import { useAuth } from "@/components/authContext";
-import Link from 'next/link';
+import { useAuth } from "@/components/AuthContext";
 
 
 export default function Register() {
@@ -22,7 +20,8 @@ export default function Register() {
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
   const [status,setStatus] = useState("pending");
-  const [carid,setCarid] = useState(0);
+  const [carid,setCarid] = useState(1);
+  const [accept,setAccept] = useState("");
 
 
   const [invalid_fName, setInvalid_fName] = useState("");
@@ -48,7 +47,6 @@ export default function Register() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    authAction.setLoading(true);
     const response = await fetch("/api/renter_request", {
         method: "POST",
         headers: {
@@ -64,6 +62,7 @@ export default function Register() {
           location,
           carid,
           status,
+          accept,
         }),
       });
       const data = await response.json()
@@ -72,7 +71,7 @@ export default function Register() {
   return (
     <>
       <Head>
-        <title>สมัครสมาชิก - VEHICLE4U</title>
+        <title>กรอกข้อมูลสำหรับเช่ารถ - VEHICLE4U</title>
       </Head>
 
       <div
@@ -179,23 +178,9 @@ export default function Register() {
                     <input type="tel" 
                     id="phone" 
                     name="phone" 
-                    placeholder="XXX-XXX-XXXX" 
                     className={styles.input_tel}
                     onChange={(event) => setContact(event.target.value.trim())}
                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
-
-{/* 
-                    <input
-                      type="text"
-                      id="citizenID"
-                      name="citizenID"
-                      className={styles.input}
-                      value={citizenID}
-                      onChange={(event) =>
-                        setCitizenID(event.target.value.trim().replace("-", ""))
-                      }
-                    /> */}
-
 
                     <div className={`${styles.feedback}`}>
                       {errors.invalid_cizitenID}
@@ -210,7 +195,7 @@ export default function Register() {
             <div className="form-check">
                 <input className="form-check-input" type="checkbox" 
                 onChange={(event) => console.log(event.target.value)}
-                value="accept" id="defaultCheck1"  />
+                value="accept" id="defaultCheck1" />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     ยอมรับ
                 </label>
