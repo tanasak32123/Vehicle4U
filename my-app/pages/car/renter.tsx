@@ -4,7 +4,7 @@ import styles from "@/styles/renter.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import UserSignUp from "@/interfaces/UserSignUp";
+import UserSignUp from "@/types/UserSignUp";
 import { useAuth } from "@/components/authContext";
 import Link from 'next/link';
 
