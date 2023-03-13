@@ -50,6 +50,17 @@ export class UserService {
     return {oldImageName , vehicle}
   }
 
+  async getVehicles(id : number) : Promise<User[]>{ 
+    const vehicles = await this.userRepository.find({
+      where : {
+        id : id , 
+      }, 
+      relations: {
+        vehicles : true , 
+    },
+    })
+    return vehicles 
+  }
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) {
