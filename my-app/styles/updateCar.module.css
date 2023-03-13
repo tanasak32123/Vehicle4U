@@ -1,0 +1,138 @@
+.container {
+  background-color: #c7dde7;
+  min-height: 100vh;
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.reg_container {
+  background: #ffffff;
+  box-shadow: 0px 10px 40px 16px rgba(90, 82, 128, 0.22);
+  border-radius: 26px;
+  width: 80%;
+}
+
+.back_btn {
+  color: black;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.back_btn:hover {
+  color: #4d4b4b;
+}
+
+.upload_btn {
+  margin-top: 20px;
+  background: orange;
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid transparent;
+  color: white;
+}
+
+.upload_btn:hover {
+  background: rgb(234, 152, 0);
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid white;
+}
+
+.first_col {
+  height: 450px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.image {
+  align-self: center;
+}
+
+.edit_button {
+  float: right;
+  background-color: transparent;
+  border: 0cm;
+  color: rgb(95, 95, 240);
+  outline: none;
+  touch-action: none;
+  height: 26px;
+  padding: 1px 6px 1px 6px;
+}
+
+.close_btn {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid #cfcfcf;
+  color: black;
+  float: left;
+}
+
+.close_btn:hover {
+  background: #cfcfcf;
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid white;
+  color: black;
+}
+
+.save_btn {
+  float: right;
+  background: orange;
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid transparent;
+  color: white;
+}
+
+.save_btn:hover {
+  background: rgb(234, 152, 0);
+  border-radius: 20px;
+  width: 80px;
+  box-shadow: 5px 5px #dadada;
+  border: 1px solid white;
+}
+
+.input {
+  width: 100%;
+  background-color: rgba(254, 249, 235, 0.7);
+  border: 1px solid black;
+  box-shadow: 0px 5.52941px 5.52941px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+  outline: none;
+  padding: 5px;
+}
+
+.input:hover {
+  width: 100%;
+  background-color: rgba(254, 249, 235, 0.7);
+  border: 1.2px solid black;
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+  outline: none;
+  padding: 5px;
+}
+
+.input:not(:hover) {
+  width: 100%;
+  background-color: rgba(254, 249, 235, 0.7);
+  border: 1px solid black;
+  box-shadow: 0px 5.52941px 5.52941px rgba(0, 0, 0, 0.25);
+  border-radius: 5.5px;
+  outline: none;
+  padding: 5px;
+}
+
+.modal_footer {
+  display: block;
+}

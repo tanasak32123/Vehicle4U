@@ -1,23 +1,42 @@
+import { AppProps } from "next/app";
+import dynamic from "next/dynamic";
+
+//global css
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import "bootstrap/dist/css/bootstrap.css";
+
+//bootstrap5 css
+import "bootstrap/dist/css/bootstrap.min.css";
+
+//react bootstrap
 import { SSRProvider } from "react-bootstrap";
-import Layout from "@/components/layout";
 
-export default function App({
-  Component,
-  pageProps: { ...pageProps },
-}: AppProps) {
+//loading skeleton
+import "react-loading-skeleton/dist/skeleton.css";
+
+import { AuthProvider } from "@/components/AuthContext";
+
+const Layout = dynamic(() => import("@/components/layout"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const App = ({ Component, pageProps: { ...pageProps } }: AppProps) => {
   return (
-    <SSRProvider>
-      <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </SSRProvider>
+    <>
+      <SSRProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthProvider>
+        </ErrorBoundary>
+      </SSRProvider>
+    </>
   );
-}
+};
+
+export default App;

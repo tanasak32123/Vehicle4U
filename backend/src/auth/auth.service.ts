@@ -10,7 +10,6 @@ import { Repository } from 'typeorm';
 import { RegisterDto} from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions';
-import { UpdateDto } from './dto/update.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +19,7 @@ export class AuthService {
           id: user.id,
           username: user.username,
         };
-        return { access_token: this.jwtService.sign(payload) };
+        return { access_token: this.jwtService.sign(payload)};
       }
       async login(loginDto : LoginDto){
         const user =  await this.userRepository.findOneBy({username : loginDto.username});
@@ -60,29 +59,5 @@ export class AuthService {
         registerDto.password = await bcrypt.hash(registerDto.password, 10) ;
         const ent = await this.userRepository.create(registerDto);
         return await this.userRepository.save(ent);
-      }
-
-      async update(id: number, updateDto: UpdateDto): Promise<User> {
-        console.log("in")
-        console.log(id["id"])
-        const user = await this.userRepository.findOneBy({id:id["id"]});
-        if(!user){
-          return null
-        }
-        else{
-          const user = await this.userRepository.findOneBy({username:updateDto.username});
-          if(user){
-            return null
-          }
-        }
-        await this.userRepository.update({id: id},updateDto);
-        return await this.userRepository.findOneBy({id: id});
-      }
-
-      async validateUpdate(id: number, updateDto: UpdateDto) {
-        
-      }
-      
-
-      
+      }      
 }

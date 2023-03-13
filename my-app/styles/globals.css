@@ -3,6 +3,10 @@ main {
   min-width: 100vw;
 }
 
+.main {
+  height: 100vh !important;
+}
+
 .my-btn {
   border-radius: 100px;
   text-decoration: none;
@@ -18,18 +22,41 @@ main {
   text-decoration: none;
   display: inline-block;
   padding: 20px 20px;
-  /* margin: 20px 100px; */
-  background: orange;
+  background: orange !important;
   border-radius: 40px;
-  color: white;
-  /* text-align: center; */
+  color: white !important;
   box-shadow: 5px 5px #dadada;
-  border: 1px solid orange;
+  border: 1px solid orange !important;
 }
 
 .orange_btn:hover {
   color: inherit;
-  background-color: #e69809;
+  background-color: #e69809 !important;
   color: white;
-  border-color: white;
+  border-color: white !important;
+}
+
+.modal-body {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.modal_wo_border {
+  border: 0px !important;
+}
+
+.modal-header {
+  border: 0px !important;
+}
+
+.modal-footer {
+  border: 0px !important;
+}
+
+.green_color {
+  color: green;
+}
+
+.red_color {
+  color: red;
 }
