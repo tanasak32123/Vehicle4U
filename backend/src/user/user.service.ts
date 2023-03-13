@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, Request, UseGuards } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,6 +12,7 @@ import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 @UseGuards(JwtAuthGuard)
 @Injectable()
 export class UserService {
@@ -35,6 +36,18 @@ export class UserService {
     const vehicle = await this.vehicleRepository.create(createVehicleDto);
     vehicle.user = await this.findOne(id.toString())
     return await this.vehicleRepository.save(vehicle);
+  }
+
+  async updateVehicle(updateVehicleDto: UpdateVehicleDto)  {
+    const ent = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
+    if (!ent){
+      throw new HttpException( "id dont exist", HttpStatus.NOT_FOUND)
+    }
+    const oldImageName = ent.imagename
+  
+    await this.vehicleRepository.update({id:updateVehicleDto.id} , updateVehicleDto);
+    const vehicle = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
+    return {oldImageName , vehicle}
   }
 
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 

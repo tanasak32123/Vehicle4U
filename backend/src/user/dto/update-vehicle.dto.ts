@@ -1,36 +1,34 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-export class CreateVehicleDto {
+export class UpdateVehicleDto {
+  @ApiProperty({
+   type: Number,
+  })
+  @IsNotEmpty()
+  id : number;
+
   @ApiProperty({
     type: String,
   })
-  @IsNotEmpty()
   name: string;
 
   @ApiProperty({
     type: String,
   })
-  @IsNotEmpty()
   registrationId: string;
 
   @ApiProperty({
     type: String,
   })
-  @IsNotEmpty()
   imagename: string;
 
   @ApiProperty({
     type: String,
   })
-  @IsNotEmpty()
   province: string;
 
   @ApiProperty({
     type: Number,
   })
-  @IsNotEmpty()
   maximumCapacity: number;
-
-  
-
 }

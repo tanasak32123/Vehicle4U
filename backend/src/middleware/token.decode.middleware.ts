@@ -23,7 +23,7 @@ export class TokenMiddleware implements NestMiddleware {
             //console.log(decoded);
             id = decoded['id'];
         }
-        req.body['id'] = id;
+        //req.body['id'] = id;
     }
   catch (err) {
       console.log(err)
