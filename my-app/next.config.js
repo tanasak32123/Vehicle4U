@@ -6,6 +6,9 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV != "development",
   },
+  images: {
+    minimumCacheTTL: 60,
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

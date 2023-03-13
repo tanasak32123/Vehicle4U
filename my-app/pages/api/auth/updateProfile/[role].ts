@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { updateProfile } from "../../../../libs/auth/updateProfile";
+import { updateUserProfile } from "libs/auth/updateUserProfile";
 import { setCookie } from "cookies-next";
 import UserProfile from "types/UserProfile";
 
@@ -179,7 +179,7 @@ export default async function handler(
 
     const token = req.cookies.token;
 
-    const user = await updateProfile(token, data);
+    const user = await updateUserProfile(token, data);
 
     if (!user) {
       return res.status(400).json({

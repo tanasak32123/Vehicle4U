@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 const authPrefixes = ["/profile"];
 
 export function middleware(req: NextRequest) {
-  // console.log("Middleware");
   const token = req.cookies.get("token")?.value;
 
   const { pathname } = req.nextUrl;
@@ -15,7 +14,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  if (pathname === `/` && token) {
+  if (pathname === "/" && token) {
     url.pathname = "/searchcar";
     return NextResponse.rewrite(url);
   }
