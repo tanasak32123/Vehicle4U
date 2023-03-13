@@ -27,6 +27,8 @@ export class RentingRequestService {
         
         //update renreq in user
         const user = await this.userRepository.findOneBy({'id':id});
+        if(!user)throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
+        
         await user.rentingRequests.push(renreq);
         await this.userRepository.update({'id': id}, {'rentingRequests': user.rentingRequests});
 
