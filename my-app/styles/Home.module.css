@@ -1,8 +1,6 @@
 .container {
   height: 100vh !important;
   z-index: 100;
-  position: relative;
-  --bs-gutter-x: 0;
 }
 
 .image_bg {
@@ -21,7 +19,7 @@
 }
 
 .form {
-  width: 80%;
+  width: 90%;
 }
 
 .form_container {

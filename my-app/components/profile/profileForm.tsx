@@ -3,17 +3,9 @@ import { FiEdit2 } from "react-icons/fi";
 import { Row, Col, Container } from "react-bootstrap";
 import { FaUndoAlt } from "react-icons/fa";
 
-function refreshValue(inputs: any, setShowModalFunc: any) {
-  inputs.map((e: any) => {
-    e.setValue(e.value);
-  });
-  setShowModalFunc(true);
-}
-
 export default function InputForm({
   name,
   label,
-  inputs,
   rawData,
   setShowModalFunc,
   handleupdateFunc,
@@ -62,7 +54,7 @@ export default function InputForm({
                   className={`${styles.edit_button}`}
                   onClick={() => {
                     name != "role"
-                      ? refreshValue(inputs, setShowModalFunc)
+                      ? setShowModalFunc(true)
                       : handleupdateFunc.handleChangeRole();
                   }}
                 >

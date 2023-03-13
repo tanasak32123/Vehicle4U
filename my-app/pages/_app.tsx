@@ -1,4 +1,4 @@
-import type { AppProps } from "next/app";
+import { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 
 //global css
@@ -13,9 +13,9 @@ import { SSRProvider } from "react-bootstrap";
 //loading skeleton
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { AuthProvider } from "@/components/authContext";
+import { AuthProvider } from "@/components/AuthContext";
 
-const Layout = dynamic(() => import("@/components/layout"), {
+const Layout = dynamic(() => import("@/components/Layout"), {
   loading: () => <p>Loading...</p>,
 });
 
@@ -23,10 +23,7 @@ const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), {
   loading: () => <p>Loading...</p>,
 });
 
-export default function App({
-  Component,
-  pageProps: { ...pageProps },
-}: AppProps) {
+const App = ({ Component, pageProps: { ...pageProps } }: AppProps) => {
   return (
     <>
       <SSRProvider>
@@ -40,4 +37,6 @@ export default function App({
       </SSRProvider>
     </>
   );
-}
+};
+
+export default App;
