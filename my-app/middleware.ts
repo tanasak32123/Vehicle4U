@@ -6,14 +6,17 @@ const authPrefixes = ["/profile"];
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
 
-  const { pathname, origin } = req.nextUrl;
+  const { pathname } = req.nextUrl;
+  const url = req.nextUrl;
 
-  if (authPrefixes.some((prefix) => pathname.startsWith(prefix)) && !token) {
-    return NextResponse.redirect(`${origin}/`);
+  if (authPrefixes.includes(pathname) && !token) {
+    url.pathname = "/";
+    return NextResponse.rewrite(url);
   }
 
-  if (pathname.startsWith(`${origin}`) && token) {
-    return NextResponse.redirect(`${origin}/searchcar`);
+  if (pathname === "/" && token) {
+    url.pathname = "/searchcar";
+    return NextResponse.rewrite(url);
   }
 
   NextResponse.next();
@@ -28,6 +31,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

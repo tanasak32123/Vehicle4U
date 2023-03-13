@@ -1,30 +1,42 @@
-import "@/styles/globals.css";
-import type { AppProps } from "next/app";
-import "bootstrap/dist/css/bootstrap.css";
-import { SSRProvider } from "react-bootstrap";
-import Layout from "@/components/layout";
-import { AuthProvider } from "@/components/authContext";
-import "react-loading-skeleton/dist/skeleton.css";
-import ProtectRoute from "@/components/protectRoute";
-import ErrorBoundary from "@/components/ErrorBoundary";
+import { AppProps } from "next/app";
+import dynamic from "next/dynamic";
 
-export default function App({
-  Component,
-  pageProps: { ...pageProps },
-}: AppProps) {
+//global css
+import "@/styles/globals.css";
+
+//bootstrap5 css
+import "bootstrap/dist/css/bootstrap.min.css";
+
+//react bootstrap
+import { SSRProvider } from "react-bootstrap";
+
+//loading skeleton
+import "react-loading-skeleton/dist/skeleton.css";
+
+import { AuthProvider } from "@/components/AuthContext";
+
+const Layout = dynamic(() => import("@/components/Layout"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), {
+  loading: () => <p>Loading...</p>,
+});
+
+const App = ({ Component, pageProps: { ...pageProps } }: AppProps) => {
   return (
     <>
-      <ErrorBoundary>
-        <AuthProvider>
-          <ProtectRoute>
-            <SSRProvider>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </SSRProvider>
-          </ProtectRoute>
-        </AuthProvider>
-      </ErrorBoundary>
+      <SSRProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </AuthProvider>
+        </ErrorBoundary>
+      </SSRProvider>
     </>
   );
-}
+};
+
+export default App;

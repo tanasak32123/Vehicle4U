@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
-import { Request } from 'src/request/entities/request.entity';
+import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import {
   Column,
@@ -91,11 +91,11 @@ export class User {
   created_at: string;
 
   @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
-  vehicles: Vehicle[]
+  vehicles: Vehicle[];
 
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.user)
-  user_vehicle : UserVehicle[]
+  user_vehicle : UserVehicle[];
 
-  @OneToMany(() => Request, (request)=>request.user)
-  requests:Request[];
+  @OneToMany(() => RentingRequest, (rentingRequest)=>rentingRequest.user)
+  rentingRequests:RentingRequest[];
 }

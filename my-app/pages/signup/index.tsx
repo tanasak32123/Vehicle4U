@@ -1,19 +1,30 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
 import styles from "@/styles/signup.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
-import { useRouter } from "next/router";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import UserSignUp from "@/interfaces/UserSignUp";
-import { useAuth } from "@/components/authContext";
-import SucessModal from "@/components/signup/successModal";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
-import SelectRoleModal from "@/components/signup/selectRoleModal";
+
+import UserSignUp from "types/UserSignUp";
+
+const SelectRoleModal = dynamic(
+  () => import("@/components/signup/selectRoleModal"),
+  {
+    loading: () => <p>Loading...</p>,
+  }
+);
+
+const SucessModal = dynamic(() => import("@/components/signup/successModal"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function Register() {
-  const { authAction, loading }: any = useAuth();
-
   const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
 
   const [role, setRole] = useState("");
   const [fName, setFName] = useState("");
@@ -65,7 +76,9 @@ export default function Register() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    const response = await authAction.signUp(data, role);
+    setLoading(true);
+    const response = await signUp(data, role);
+    setLoading(false);
     if (!response.success) {
       setInvalid_fName(response.errors.fName);
       setInvalid_lName(response.errors.lName);
@@ -83,6 +96,19 @@ export default function Register() {
     }
   }
 
+  const signUp = async (data: UserSignUp, role: string) => {
+    const response = await fetch(`/api/auth/signup/${role}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const body = await response.json();
+    setLoading(false);
+    return body;
+  };
+
   useEffect(() => {
     setShowSelect(true);
   });
@@ -98,7 +124,7 @@ export default function Register() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           <button
-            onClick={() => router.push("/signup")}
+            onClick={() => router.back()}
             className={`${styles.back_btn} d-flex align-items-center`}
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ

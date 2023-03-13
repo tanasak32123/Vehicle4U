@@ -1,4 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { getCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
@@ -58,11 +59,14 @@ export default async function handler(
       });
     }
     // return res.status(200).send('success');
+    const token = getCookie("token")
+
     try {
       await fetch("http://localhost:3000/renting-request", { // ถาม path ปลื้ม
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           startdate: body.startdate,
