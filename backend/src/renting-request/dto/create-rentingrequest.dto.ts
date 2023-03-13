@@ -44,4 +44,15 @@ export class CreateRentingRequestDto {
     @IsNotEmpty()
     rent_place: string;
 
+    @ApiProperty({
+        type: String,
+    })
+    @IsNotEmpty()
+    contact: string;
+
+    // @ApiProperty({
+    //     type: Boolean,
+    // })
+    // @IsNotEmpty()
+    // accepted: boolean;
 }

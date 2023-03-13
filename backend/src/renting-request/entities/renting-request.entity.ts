@@ -10,7 +10,6 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
-  OneToOne,
 } from 'typeorm';
 
 export enum Request_status {
@@ -73,6 +72,18 @@ status(enum), rent_place*/
   })
   @Column()
   rent_place: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column({length : 10})
+  contact: string;
+
+  // @ApiProperty({
+  //   type: Boolean,
+  // })
+  // @Column({default : true})
+  // accepted: boolean;
   
   @DeleteDateColumn()
   deleted_at: string;
