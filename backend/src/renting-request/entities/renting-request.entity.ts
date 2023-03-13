@@ -33,34 +33,40 @@ status(enum), rent_place*/
   id: number;
 
   @ApiProperty({
-    type: Number,
+    type: String,
   })
   @Column()
-  renter_id : number;
-
+  startdate : string ;
+  
   @ApiProperty({
-    type: Number,
+    type: String,
   })
   @Column()
-  car_id : number;
+  starttime : string ;
 
   @ApiProperty({
     type: String,
   })
-  @Column({ type: 'date' })
-  start_rent_date : string ; 
+  @Column()
+  enddate : string ;
 
   @ApiProperty({
     type: String,
   })
-  @Column({ type: 'date' })
-  end_rent_date : string ;
+  @Column()
+  endtime : string ;
 
   @ApiProperty({
-    enum:['pending','accepted','rejected'],
+    enum :["pending","accepted","rejected"]
   })
-  @Column({ type: 'enum', enum:Request_status})
+  @Column()
   status : Request_status;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  info: string;
   
   @ApiProperty({
     type: String,
@@ -80,6 +86,6 @@ status(enum), rent_place*/
   @ManyToOne(() => User, (user) => user.rentingRequests)
   user : User;
 
-  @OneToOne(() => Vehicle, (vehicle) => vehicle.rentingRequest)
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.rentingRequests)
   vehicle : Vehicle;
 }

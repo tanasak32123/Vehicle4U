@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ErrorSignupValidate } from "types/ErrorSignupValidate";
-import { userRegister } from "libs/auth/userRegister";
+import { createUser } from "@/libs/auth/createUser";
 
 function containsNumbers(str: string) {
   return /[0-9]/.test(str);
@@ -99,7 +99,7 @@ export default async function handler(
       }
     }
 
-    const response = await userRegister(body, role);
+    const response = await createUser(body, role);
 
     if (!response.success) {
       if (response.message == "username exist") {

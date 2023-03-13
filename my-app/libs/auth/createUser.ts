@@ -1,6 +1,6 @@
 import UserSignUp from "types/UserSignUp";
 
-export const userRegister = async (data: UserSignUp, role: string) => {
+export const createUser = async (data: UserSignUp, role: string) => {
   try {
     const res = await fetch(`http://localhost:3000/auth/signup/${role}`, {
       method: "POST",

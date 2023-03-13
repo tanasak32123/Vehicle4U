@@ -1,5 +1,5 @@
-import { Row, Col, Modal, Form, Button } from "react-bootstrap";
 import styles from "@/styles/editProfile.module.css";
+import { Row, Col, Modal, Form, Button } from "react-bootstrap";
 
 export default function ProfileModal({
   title,
@@ -12,7 +12,20 @@ export default function ProfileModal({
   isShowModal,
   setShowModalFunc,
   handleupdateFunc,
-}: any) {
+  user,
+}: {
+  title: string;
+  id: string;
+  type: string;
+  inputs: Array<object>;
+  newData: Array<string>;
+  invalid: string;
+  setInvalid: any;
+  isShowModal: boolean;
+  setShowModalFunc: any;
+  handleupdateFunc: Function;
+  user: object;
+}) {
   async function handleSubmit(
     name: string,
     newData: string[],
@@ -37,7 +50,6 @@ export default function ProfileModal({
           setShowModalFunc(false);
         }}
         centered
-        // backdrop={`static`}
       >
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
@@ -49,25 +61,34 @@ export default function ProfileModal({
                 {inputs.map((element: any) => {
                   return (
                     <Col key={element.name} lg={id == "name" ? 6 : 12}>
-                      <Form.Label className="mb-3" name={element.name}>
+                      <Form.Label
+                        className="mb-3"
+                        name={element.name}
+                        htmlFor={id}
+                      >
                         {element.label}
                       </Form.Label>
                       {type != "select" ? (
                         <Form.Control
+                          key={element.name}
                           name={element.name}
                           className={`${styles.input} mb-3`}
                           type={type}
-                          value={element.currentValue}
+                          defaultValue={element.value}
                           autoFocus
-                          onChange={(event) => {
-                            element.setValue(
-                              event.target.value.trim().replace("-", "")
-                            );
+                          onChange={(event: any) => {
+                            element.setValue({
+                              ...user,
+                              [element.name]: event.target.value
+                                .trim()
+                                .replace("-", ""),
+                            });
                           }}
                         />
                       ) : (
                         <Form.Select
-                          key={id}
+                          id={id}
+                          name={id}
                           aria-label={id}
                           onChange={(event) => {
                             element.setValue(event.target.value);

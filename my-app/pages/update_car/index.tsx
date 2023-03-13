@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "@/styles/updateCar.module.css";
 import { useRouter } from "next/router";
-import { useAuth } from "@/components/authContext";
+import { useAuth } from "@/components/AuthContext";
 import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import { ChangeEvent, useState } from "react";
 import {

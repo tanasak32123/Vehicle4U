@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 //css
-import styles from "styles/components/footer.module.css";
+import styles from "styles/components/Footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
 
 export default function Footer() {

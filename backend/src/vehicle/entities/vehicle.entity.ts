@@ -26,8 +26,20 @@ export class Vehicle {
   @ApiProperty({
     type: String,
   })
+  @Column({ unique: true })
+  registrationId: string;
+
+  @ApiProperty({
+    type: String,
+  })
   @Column()
   name: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
+  imagename: string;
 
   @ApiProperty({
     type: String,
@@ -57,6 +69,6 @@ export class Vehicle {
   user_vehicle : UserVehicle[]
 
   @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
-  rentingRequest: RentingRequest;
+  rentingRequests: RentingRequest[];
 
 }
