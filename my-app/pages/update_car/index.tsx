@@ -1,9 +1,8 @@
 import Head from "next/head";
 import styles from "@/styles/updateCar.module.css";
 import { useRouter } from "next/router";
-import { useAuth } from "@/components/AuthContext";
 import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -11,8 +10,6 @@ import {
   Form,
   FormControl,
   FormGroup,
-  FormLabel,
-  FormSelect,
   Image,
   Row,
 } from "react-bootstrap";
@@ -20,36 +17,87 @@ import CarModal from "@/components/car/carModal";
 import GearOption from "@/components/car/gearOption";
 import SizeOption from "@/components/car/sizeOption";
 import CarForm from "@/components/car/carForm";
-import EditCar from "@/types/EditCar";
+import axios from "axios";
+
+interface CarData {
+  id: number;
+  name: string;
+  registrationId: string;
+  imagename: string;
+  province: string;
+  maximumCapacity: number;
+}
 
 export default function UpdateCar() {
   // modal
   const [nameShow, setNameShow] = useState(false);
-  const [insuranceShow, setInsuranceShow] = useState(false);
-  const [colorShow, setColorShow] = useState(false);
-  const [gearTypeShow, setGearTypeShow] = useState(false);
-  const [regNumShow, setRegNumShow] = useState(false);
-  const [passengerShow, setPassengerShow] = useState(false);
-  const [wheelShow, setWheelShow] = useState(false);
-  const [powerShow, setPowerShow] = useState(false);
-  const [sizeShow, setSizeShow] = useState(false);
+  const [registrationIdShow, setRegistrationIdShow] = useState(false);
+  const [maximumCapacityShow, setMaximumCapacityShow] = useState(false);
   const [provinceShow, setProvinceShow] = useState(false);
 
   const [name, setName] = useState("");
-  const [insurance, setInsurance] = useState("");
-  const [color, setColor] = useState("");
-  const [gearType, setGearType] = useState("");
-  const [regNum, setRegNum] = useState("");
-  const [passenger, setPassenger] = useState("");
-  const [wheel, setWheel] = useState("");
-  const [power, setPower] = useState("");
-  const [size, setSize] = useState("");
+  const [registrationId, setRegistrationId] = useState("");
+  const [maximumCapacity, setMaximumCapacity] = useState("");
   const [province, setProvince] = useState("");
 
   const [invalidInput, setInvalidInput] = useState("");
 
+  const [car, setCar] = useState<CarData>({
+    id: 0,
+    name: "",
+    imagename: "",
+    registrationId: "",
+    province: "",
+    maximumCapacity: 0,
+  });
+
+  // useEffect(() => {
+  //   setCar({
+  //     imageName: car?.imageName,
+  //     name: car?.name,
+  //     registrationId: car?.registrationId,
+  //     maximumCapacity: car?.maximumCapacity,
+  //     province: car?.province,
+  //   });
+  // });
+
+  // update car
+  async function handleEditCar(type: string, values: string[]) {
+    try {
+      const data = {
+        id: car?.id,
+        name: car?.name,
+        registrationId: car?.registrationId,
+        imagename: car?.imagename,
+        province: car?.province,
+        maximumCapacity: car?.maximumCapacity,
+      };
+      console.log(data);
+      console.log(type);
+      console.log(values);
+      const response = await fetch(`/api/updateCar`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data, type, values }),
+      });
+      const body = await response.json();
+      if (!body.success) {
+        setInvalidInput(body.message);
+      } else {
+        setInvalidInput("");
+      }
+      return body.success;
+    } catch (error) {
+      console.error(error);
+      router.push("/500");
+    }
+  }
+
   // image
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -57,6 +105,7 @@ export default function UpdateCar() {
       const reader = new FileReader();
       reader.onload = () => {
         setImageSrc(reader.result as string);
+        setSelectedFile(file);
       };
       reader.readAsDataURL(file);
     }
@@ -64,59 +113,15 @@ export default function UpdateCar() {
 
   const handleSubmitImage = async () => {
     try {
-      if (!imageSrc) return;
+      if (!selectedFile) return;
       const formData = new FormData();
-      formData.append("myImage", imageSrc);
-      const { data }: any = await fetch("/api/editImage", {
-        method: "POST",
-        body: formData,
-      });
+      formData.append("myImage", selectedFile);
+      const { data }: any = await axios.post("/api/editImage", formData);
+      console.log(data);
     } catch (error: any) {
       console.log(error.response?.data);
     }
-    console.log(FormData);
-    // Upload the file to your server here
   };
-
-  const data: EditCar = {
-    name: name,
-    insurance: insurance,
-    color: color,
-    typeOfGear: gearType,
-    regNum: regNum,
-    passenger: passenger,
-    wheel: wheel,
-    power: power,
-    size: size,
-    province: province,
-  };
-
-  const updateCar = async (data: EditCar, type: string, values: string[]) => {
-    const response = await fetch(`api/updateCar`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ data, type, values }),
-    });
-    const body = await response.json();
-    return body;
-  };
-
-  // update car
-  async function handleEditCar(type: string, values: string[]) {
-    try {
-      const response = await updateCar(data, type, values);
-      if (!response.success) {
-        setInvalidInput(response.message);
-      }
-      return response.success;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  const { user, isAuthenticate, authAction }: any = useAuth();
 
   const router = useRouter();
 
@@ -165,8 +170,10 @@ export default function UpdateCar() {
                     </div>
                   </FormGroup>
                 </Form>
-                <br />
-                {/* ชื่อรถ */}
+              </Col>
+              <br />
+              {/* ชื่อรถ */}
+              <Col className={`${styles.col}`}>
                 <CarForm
                   name="name"
                   label="ชื่อรถ"
@@ -202,261 +209,86 @@ export default function UpdateCar() {
                   isShowModal={nameShow}
                   setShowModalFunc={setNameShow}
                   handleupdateFunc={handleEditCar}
+                  car={car}
                 />
-                {/* สีรถ */}
-                <CarForm
-                  name="color"
-                  label="สีของรถ"
-                  rawData={`car_color`}
-                  inputs={[
-                    {
-                      name: "color",
-                      label: "สีของรถ",
-                      value: "car_color",
-                      currentValue: color,
-                      setValue: setColor,
-                    },
-                  ]}
-                  setShowModalFunc={setColorShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`color`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "color",
-                      label: "สีของรถ",
-                      value: "car_color",
-                      currentValue: color,
-                      setValue: setColor,
-                    },
-                  ]}
-                  newData={[color]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={colorShow}
-                  setShowModalFunc={setColorShow}
-                  handleupdateFunc={handleEditCar}
-                />
-              </Col>
-              <Col>
+
                 {/* หมายเลขทะเบียน */}
                 <CarForm
-                  name="regNum"
+                  name="registrationId"
                   label="เลขทะเบียนของรถ"
                   rawData={`car_regNum`}
                   inputs={[
                     {
-                      name: "regNum",
+                      name: "registrationId",
                       label: "เลขทะเบียนของรถ",
                       value: "car_regNum",
-                      currentValue: regNum,
-                      setValue: setRegNum,
+                      currentValue: registrationId,
+                      setValue: setRegistrationId,
                     },
                   ]}
-                  setShowModalFunc={setRegNumShow}
+                  setShowModalFunc={setRegistrationIdShow}
                   isShow={true}
                 />
                 <CarModal
                   title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`regNum`}
+                  id={`registrationId`}
                   type={`text`}
                   inputs={[
                     {
-                      name: "regNum",
+                      name: "registrationId",
                       label: "เลขทะเบียนของรถ",
                       value: "car_regNum",
-                      currentValue: regNum,
-                      setValue: setRegNum,
+                      currentValue: registrationId,
+                      setValue: setRegistrationId,
                     },
                   ]}
-                  newData={[regNum]}
+                  newData={[registrationId]}
                   invalid={invalidInput}
                   setInvalid={setInvalidInput}
-                  isShowModal={regNumShow}
-                  setShowModalFunc={setRegNumShow}
+                  isShowModal={registrationIdShow}
+                  setShowModalFunc={setRegistrationIdShow}
                   handleupdateFunc={handleEditCar}
+                  car={car}
                 />
-                {/* ชนิดเกียร์ */}
-                <Container>
-                  <Row>
-                    <h6>ประเภทเกียร์</h6>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p>เกียร์ออโต้ (auto)</p>
-                    </Col>
-                    <Col>
-                      <GearOption />
-                    </Col>
-                  </Row>
-                </Container>
-                <br />
+
                 {/* ที่นั่ง */}
                 <CarForm
-                  name="passenger"
+                  name="maximumCapacity"
                   label="จำนวนที่นั่ง"
-                  rawData={`passenger`}
+                  rawData={`maximumCapacity`}
                   inputs={[
                     {
-                      name: "passenger",
+                      name: "maximumCapacity",
                       label: "จำนวนที่นั่ง",
-                      value: "passenger",
-                      currentValue: passenger,
-                      setValue: setPassenger,
+                      value: "maximumCapacity",
+                      currentValue: maximumCapacity,
+                      setValue: setMaximumCapacity,
                     },
                   ]}
-                  setShowModalFunc={setPassengerShow}
+                  setShowModalFunc={setMaximumCapacityShow}
                   isShow={true}
                 />
                 <CarModal
                   title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`passenger`}
+                  id={`maximumCapacity`}
                   type={`text`}
                   inputs={[
                     {
                       name: "paseenger",
                       label: "จำนวนที่นั่ง",
-                      value: "passenger",
-                      currentValue: passenger,
-                      setValue: setPassenger,
+                      value: "maximumCapacity",
+                      currentValue: maximumCapacity,
+                      setValue: setMaximumCapacity,
                     },
                   ]}
-                  newData={[passenger]}
+                  newData={[maximumCapacity]}
                   invalid={invalidInput}
                   setInvalid={setInvalidInput}
-                  isShowModal={passengerShow}
-                  setShowModalFunc={setPassengerShow}
+                  isShowModal={maximumCapacityShow}
+                  setShowModalFunc={setMaximumCapacityShow}
                   handleupdateFunc={handleEditCar}
+                  car={car}
                 />
-                {/* จำนวนล้อ */}
-                <CarForm
-                  name="wheel"
-                  label="จำนวนล้อ"
-                  rawData={`car_wheel`}
-                  inputs={[
-                    {
-                      name: "wheel",
-                      label: "จำนวนล้อ",
-                      value: "car_wheel",
-                      currentValue: wheel,
-                      setValue: setWheel,
-                    },
-                  ]}
-                  setShowModalFunc={setWheelShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`wheel`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "wheel",
-                      label: "จำนวนล้อ",
-                      value: "car_wheel",
-                      currentValue: wheel,
-                      setValue: setWheel,
-                    },
-                  ]}
-                  newData={[wheel]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={wheelShow}
-                  setShowModalFunc={setWheelShow}
-                  handleupdateFunc={handleEditCar}
-                />
-                {/* แรงม้า */}
-                <CarForm
-                  name="power"
-                  label="แรงม้า"
-                  rawData={`car_power`}
-                  inputs={[
-                    {
-                      name: "power",
-                      label: "แรงม้า",
-                      value: "car_power",
-                      currentValue: power,
-                      setValue: setPower,
-                    },
-                  ]}
-                  setShowModalFunc={setPowerShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`power`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "power",
-                      label: "แรงม้า",
-                      value: "power",
-                      currentValue: power,
-                      setValue: setPower,
-                    },
-                  ]}
-                  newData={[power]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={powerShow}
-                  setShowModalFunc={setPowerShow}
-                  handleupdateFunc={handleEditCar}
-                />
-                {/* ประกัน */}
-                <CarForm
-                  name="insurance"
-                  label="ประกันภัยของรถ"
-                  rawData={`car_insurance`}
-                  inputs={[
-                    {
-                      name: "insurance",
-                      label: "ประกันภัยของรถ",
-                      value: "car_insurance",
-                      currentValue: insurance,
-                      setValue: setInsurance,
-                    },
-                  ]}
-                  setShowModalFunc={setInsuranceShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`insurance`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "insurance",
-                      label: "ประกันภัยของรถ",
-                      value: "car_insurance",
-                      currentValue: insurance,
-                      setValue: setInsurance,
-                    },
-                  ]}
-                  newData={[insurance]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={insuranceShow}
-                  setShowModalFunc={setInsuranceShow}
-                  handleupdateFunc={handleEditCar}
-                />
-                {/* ขนาดของรถ */}
-                <Container>
-                  <Row>
-                    <h6>ขนาดของรถ</h6>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <p>กลาง</p>
-                    </Col>
-                    <Col>
-                      <SizeOption />
-                    </Col>
-                  </Row>
-                </Container>
-                <br />
                 {/* จังหวัด */}
                 <CarForm
                   name="province"
@@ -493,6 +325,7 @@ export default function UpdateCar() {
                   isShowModal={provinceShow}
                   setShowModalFunc={setProvinceShow}
                   handleupdateFunc={handleEditCar}
+                  car={car}
                 />
                 <br />
               </Col>

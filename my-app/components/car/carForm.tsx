@@ -22,7 +22,7 @@ export default function InputForm({
   return (
     <>
       {isShow ? (
-        <Container>
+        <Container className={`${styles.form_container}`}>
           <div className="mb-2">
             <Row>
               <label htmlFor={name}>
