@@ -1,52 +1,118 @@
 import { useState } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import styles from "@/styles/updateCar.module.css";
-import { FaUndoAlt } from "react-icons/fa";
-import { FiEdit2 } from "react-icons/fi";
 
-export default function CarModal() {
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+export default function CarModal({
+  title,
+  id,
+  type,
+  inputs,
+  newData,
+  invalid,
+  setInvalid,
+  isShowModal,
+  setShowModalFunc,
+  handleupdateFunc,
+}: any) {
+  async function handleSubmit(
+    name: string,
+    newData: string[],
+    handleupdateFunc: any,
+    setShowModalFunc: any
+  ) {
+    console.log(inputs);
+    const success: boolean = await handleupdateFunc(name, newData);
+    if (success) {
+      setShowModalFunc(false);
+    }
+  }
 
   return (
     <>
-      <button className={`${styles.edit_button}`} onClick={handleShow}>
-        <FiEdit2 /> &nbsp; แก้ไข
-      </button>
-
+      {" "}
       <Modal
-        show={show}
-        onHide={handleClose}
+        id={`modal_${id}`}
         size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
+        show={isShowModal}
+        onHide={() => {
+          setInvalid("");
+          setShowModalFunc(false);
+        }}
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>แก้ไขข้อมูลรถยนต์</Modal.Title>
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>lorem ipsum</Form.Label>
-              <Form.Control
-                className={`${styles.input}`}
-                type="email"
-                placeholder="lorem ipsum"
-                autoFocus
-              />
+            <Form.Group>
+              <Row key={id}>
+                {inputs?.map((element: any) => {
+                  return (
+                    <Col key={element.name} lg={(id = 12)}>
+                      <Form.Label className="mb-3" name={element.name}>
+                        {element.label}
+                      </Form.Label>
+                      {type != "select" ? (
+                        <Form.Control
+                          name={element.name}
+                          className={`${styles.input}`}
+                          type={type}
+                          value={element.currentValue}
+                          autoFocus
+                          onChange={(event) => {
+                            element.setValue(
+                              event.target.value.trim().replace("-", "")
+                            );
+                          }}
+                        />
+                      ) : (
+                        <Form.Select
+                          key={id}
+                          aria-label={id}
+                          onChange={(event) => {
+                            element.setValue(event.target.value);
+                          }}
+                          className={`${styles.input} mb-3`}
+                          defaultValue={element.value}
+                        >
+                          {element.options.map((option: any) => {
+                            return (
+                              <option key={option.en} value={option.en}>
+                                {option.th}
+                              </option>
+                            );
+                          })}
+                        </Form.Select>
+                      )}
+                    </Col>
+                  );
+                })}
+                <Col lg={12}>
+                  <small className={styles.feedback}>{invalid}</small>
+                </Col>
+              </Row>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer className={`${styles.modal_footer}`}>
-          <Button className={`${styles.close_btn} mx-2`} onClick={handleClose}>
+          <Button
+            className={`${styles.close_btn} mx-2`}
+            onClick={(event) => {
+              event.preventDefault();
+              setInvalid("");
+              setShowModalFunc(false);
+            }}
+          >
             ปิด
           </Button>
-          <Button className={`${styles.save_btn} mx-2`} onClick={handleClose}>
+          <Button
+            className={`${styles.save_btn} mx-2`}
+            onClick={(event) => {
+              event.preventDefault();
+              handleSubmit(id, newData, handleupdateFunc, setShowModalFunc);
+            }}
+          >
             แก้ไข
           </Button>
         </Modal.Footer>
