@@ -1,21 +1,21 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 
-function containsNumbers(str) {
+function containsNumbers(str: string) {
   return /[0-9]/.test(str);
 }
 
-function containsOnlyNumbers(str) {
+function containsOnlyNumbers(str: string) {
   return /^\d+$/.test(str);
 }
 
-function containsSpecialChars(str) {
+function containsSpecialChars(str: string) {
   const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
   return specialChars.test(str);
 }
 
-function validateUsername(str) {
-  const usernameRegex = /^[a-zA-Z0-9]+$/;
+function validateUsername(str: string) {
+  const usernameRegex = /\W/;
   return usernameRegex.test(str);
 }
 
@@ -25,7 +25,7 @@ export default async function handler(
 ) {
   if (req.method == "POST") {
     const body = req.body;
-    const data = body.data;
+    let data = {};
     const type = body.type;
     const values = body.values;
 
@@ -59,6 +59,11 @@ export default async function handler(
           .status(400)
           .json({ message: "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น" });
       }
+
+      data = {
+        first_name: first_name,
+        last_name: last_name,
+      };
     }
 
     if (type == "username") {
@@ -67,11 +72,16 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย" });
-      } else if (!validateUsername(username)) {
-        return res
-          .status(400)
-          .json({ message: "** กรุณาเพิ่มตัวอักษร a-z หรือ 0-9 ในชื่อผู้ใช้" });
+      } else if (validateUsername(username)) {
+        return res.status(400).json({
+          message:
+            "** กรุณาเปลี่ยนชื่อผู้ใช้ เนื่องจากสามารถมีเพียงตัวอักษรและตัวเลขเท่านั้น",
+        });
       }
+
+      data = {
+        username: username,
+      };
     }
 
     if (type == "password") {
@@ -85,6 +95,10 @@ export default async function handler(
           .status(400)
           .json({ message: "** password ของคุณมีความยาวน้อยกว่า 6 ตัว" });
       }
+
+      data = {
+        password: password,
+      };
     }
 
     if (type == "tel") {
@@ -93,15 +107,19 @@ export default async function handler(
         return res
           .status(400)
           .json({ message: "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย" });
-      } else if (tel.length != 10) {
-        return res
-          .status(400)
-          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
       } else if (!containsOnlyNumbers(tel)) {
         return res
           .status(400)
           .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น" });
+      } else if (tel.length != 10) {
+        return res
+          .status(400)
+          .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
       }
+
+      data = {
+        tel: tel,
+      };
     }
 
     if (type == "citizen_id") {
@@ -119,6 +137,10 @@ export default async function handler(
           .status(400)
           .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน" });
       }
+
+      data = {
+        citizen_id: cid,
+      };
     }
 
     if (type == "driving_license_id" || type == "add_driving_license_id") {
@@ -136,6 +158,14 @@ export default async function handler(
           .status(400)
           .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน" });
       }
+
+      data = {
+        driving_license_id: d_license_id,
+      };
+
+      if (type == "add_driving_license_id") {
+        data["is_renter"] = true;
+      }
     }
 
     if (type == "payment_channel" || type == "add_payment_channel") {
@@ -145,29 +175,36 @@ export default async function handler(
           .status(400)
           .json({ message: "** กรุณาเลือกช่องทางการรับเงินให้เรียบร้อย" });
       }
+
+      data = {
+        payment_channel: payment,
+      };
+
+      if (type == "add_payment_channel") {
+        data["is_provider"] = true;
+      }
     }
 
     const token = req.cookies.token;
-    const user = JSON.parse(req.cookies.user!);
     try {
-      await fetch(`http://localhost:3000/user/editProfile/${user.id}`, {
+      const response = await fetch(`http://localhost:3000/user/editProfile`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
-      }).then(async (response) => {
-        const user = await response.json();
-        if (!response.ok) {
-          return res.status(400).json({
-            success: false,
-            message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
-          });
-        } else {
-          return res.status(200).json({ success: true, user });
-        }
       });
+
+      if (!response.ok) {
+        return res.status(400).json({
+          success: false,
+          message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
+        });
+      } else {
+        const user = await response.json();
+        return res.status(200).json({ success: true, user });
+      }
     } catch (error) {
       console.log(error);
     }

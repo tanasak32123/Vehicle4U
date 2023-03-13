@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useAuth } from "./authContext";
+import { getCookie } from "cookies-next";
 
 export default function ProtectRoute({ children }: any) {
   const { isAuthenticate }: any = useAuth();
@@ -10,7 +11,7 @@ export default function ProtectRoute({ children }: any) {
   const isLoginRoutes = ["/"];
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = getCookie("token")?.toString();
     if (
       mustLoginRoutes.includes(router.pathname) &&
       !token &&

@@ -1,10 +1,14 @@
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
-import styles from "../styles/components/navbar.module.css";
-import { useAuth } from "./authContext";
+import styles from "../../styles/components/navbar.module.css";
+import { useAuth } from "../authContext";
 import Skeleton from "react-loading-skeleton";
+import { useState } from "react";
+import LogoutModal from "./logoutModal";
 
 export default function Header() {
   const { user, isAuthenticate, loading, authAction }: any = useAuth();
+
+  const [showSignout, setShowSignout] = useState(false);
 
   return (
     <>
@@ -26,19 +30,25 @@ export default function Header() {
                   <Skeleton width={150} height={`100%`} />
                 </>
               ) : isAuthenticate ? (
-                <NavDropdown title={user.username} id="collasible-nav-dropdown">
-                  <NavDropdown.Item href={`/profile`}>
-                    โปรไฟล์ของฉัน
-                  </NavDropdown.Item>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item href="/" onClick={authAction.logout}>
-                    ล็อกเอาท์
-                  </NavDropdown.Item>
-                </NavDropdown>
+                <>
+                  <NavDropdown
+                    title={`${user.username} `}
+                    id="collasible-nav-dropdown"
+                    align="end"
+                  >
+                    <NavDropdown.Item href={`/profile`}>
+                      โปรไฟล์ของฉัน
+                    </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={() => setShowSignout(true)}>
+                      ออกจากระบบ
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </>
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
-                  <Nav.Link href="/signup" className={`${styles.signup}`}>
+                  <Nav.Link href="/signup" className={`orange_btn px-3`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
@@ -47,6 +57,12 @@ export default function Header() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
+      <LogoutModal
+        show={showSignout}
+        onHide={() => setShowSignout(false)}
+        authAction={authAction}
+      />
     </>
   );
 }

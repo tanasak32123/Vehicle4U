@@ -11,7 +11,9 @@ import {
   ManyToOne,
   OneToMany,
   Column,
+  OneToOne,
 } from 'typeorm';
+import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
@@ -53,4 +55,8 @@ export class Vehicle {
 
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.vehicle)
   user_vehicle : UserVehicle[]
+
+  @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
+  rentingRequest: RentingRequest;
+
 }
