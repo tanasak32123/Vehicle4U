@@ -19,7 +19,7 @@ import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-import { UpdateResult } from 'typeorm';
+
 
 
 // /localhost/username/role?=provider
@@ -81,6 +81,14 @@ export class UserController {
       oldImageName: oldImageName,
       vehicle : vehicle,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/vehicles')
+  async getVehicles(@Request() req) : Promise<User[]> {
+    const id = req.user['id']
+    const vehicles = await this.userService.getVehicles(id)
+    return vehicles 
   }
 
   @UseGuards(JwtAuthGuard)
