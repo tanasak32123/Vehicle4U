@@ -8,9 +8,9 @@ export default async function handler(
 ) {
   if (req.method == "GET") {
     deleteCookie("token", { res, req });
-    deleteCookie("user", { res, req });
-    return res.status(200).redirect("/");
+    deleteCookie("role", { res, req });
+    res.status(200).send("Logout successfully");
   } else {
-    return res.status(404).redirect("/404");
+    res.status(404).redirect("/404");
   }
 }

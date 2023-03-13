@@ -1,4 +1,4 @@
-export const updateProfile = async (
+export const updateUserProfile = async (
   token: string | undefined,
   data: object
 ) => {

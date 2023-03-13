@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
-import { userLogin } from "libs/auth/userLogin";
+import { login } from "@/libs/auth/login";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +16,7 @@ export default async function handler(
       });
     }
 
-    const data = await userLogin(body.username, body.password, body.role);
+    const data = await login(body.username, body.password, body.role);
 
     if (!data) {
       return res.status(400).json({
@@ -25,17 +25,13 @@ export default async function handler(
       });
     }
 
-    setCookie(
-      "user",
-      { ...data.user, role: body.role },
-      {
-        req,
-        res,
-        maxAge: 60 * 60,
-        secure: process.env.NODE_ENV !== "development",
-        sameSite: true,
-      }
-    );
+    setCookie("role", body.role, {
+      req,
+      res,
+      maxAge: 60 * 60,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: true,
+    });
 
     setCookie("token", data.token.access_token, {
       req,
@@ -46,7 +42,7 @@ export default async function handler(
       sameSite: true,
     });
 
-    return res.status(200).json({ user: { ...data.user } });
+    return res.status(200).send("Login successfully");
   } else {
     return res.status(404).redirect("/404");
   }

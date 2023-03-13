@@ -1,20 +1,19 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import { useAuth } from "../authContext";
+import { useAuth } from "./AuthContext";
 
 //css
 import Skeleton from "react-loading-skeleton";
 import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
 import styles from "styles/components/navbar.module.css";
 
-const LogoutModal = dynamic(() => import("./logoutModal"), {
+const LogoutModal = dynamic(() => import("./LogoutModal"), {
   loading: () => <p>Loading...</p>,
 });
 
 export default function Header() {
-  const { user, isAuthenticate, loading, authAction }: any = useAuth();
-
+  const { auth, isLoading, authAction } = useAuth();
   const [showSignout, setShowSignout] = useState(false);
 
   return (
@@ -32,14 +31,14 @@ export default function Header() {
             </Nav>
 
             <Nav>
-              {loading ? (
+              {isLoading ? (
                 <>
                   <Skeleton width={100} height={`80%`} />
                 </>
-              ) : isAuthenticate ? (
+              ) : auth?.status == "SIGNED_IN" ? (
                 <>
                   <NavDropdown
-                    title={`${user?.username} `}
+                    title={`${auth?.user?.username} `}
                     id="collasible-nav-dropdown"
                     align="end"
                   >
@@ -65,11 +64,13 @@ export default function Header() {
         </Container>
       </Navbar>
 
-      <LogoutModal
-        show={showSignout}
-        onHide={() => setShowSignout(false)}
-        authAction={authAction}
-      />
+      {showSignout && (
+        <LogoutModal
+          show={showSignout}
+          onHide={() => setShowSignout(false)}
+          authAction={authAction}
+        />
+      )}
     </>
   );
 }
