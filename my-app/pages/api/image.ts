@@ -30,6 +30,21 @@ const readFile = (
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  if (req.method != "POST") {
+    res.status(405).send("Method not allowed");
+    return;
+  }
+  console.log("uploading ....");
+  console.log(req.headers["content-type"]);
+  const form = formidable({ multiples: true });
+  form.parse(req, (err, fields, files) => {
+    if (!err) {
+      req.body = fields;
+    }
+    console.log(files);
+  });
+
+  console.log(req.body);
   try {
     await fs.readdir(path.join(process.cwd() + "/public", "/images", "cars"));
   } catch (error) {

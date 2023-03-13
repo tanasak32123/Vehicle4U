@@ -14,10 +14,12 @@ export default function UploadCar() {
     console.log("send data");
   };
 
-  const uploadImage = async () => {
+  const uploadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!imgFile) return;
     let formData = new FormData();
     formData.append("file", imgFile);
+    formData.append("message", "hello");
     try {
       const { data }: any = await fetch("/api/image", {
         method: "POST",
@@ -65,7 +67,11 @@ export default function UploadCar() {
                   }
                 }}
               />
-              <button className="btn btn-outline-secondary" type="button">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={(e) => uploadImage(e)}
+              >
                 อัปโหลดรูป
               </button>
             </div>
