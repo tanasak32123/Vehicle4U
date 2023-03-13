@@ -19,7 +19,6 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
-  const [status,setStatus] = useState("pending");
   const [carid,setCarid] = useState(1);
   const [accept,setAccept] = useState("");
 
@@ -61,11 +60,15 @@ export default function Register() {
           info,
           location,
           carid,
-          status,
           accept,
         }),
       });
-      const data = await response.json()
+      // setLoading(false);
+      if (!response.ok){
+        const data = await response.json();
+        return;
+      }
+      router.push("/car/payment");
   }
 
   return (

@@ -1,8 +1,7 @@
-import { Any, Like, MoreThan, MoreThanOrEqual, Raw, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
-import { max } from 'class-validator';
 
 
 @Injectable()
@@ -16,6 +15,7 @@ export class VehicleService {
     carName: string,
     maxPassenger: number,
   ): Promise<Vehicle[]> {
+    const pagination_count = 2;
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
       .where(
@@ -30,6 +30,19 @@ export class VehicleService {
       })
       .printSql()
       .getMany();
-    return x;
+    const paginated_vehicles = [];
+    let buffer = [];
+    for (const vehicle of x) {
+      console.log(vehicle);
+      if (buffer.length == pagination_count) {
+        paginated_vehicles.push(buffer);
+        buffer = [];
+      }
+      buffer.push(vehicle);
+      console.log(buffer);
+    }
+    if (buffer.length != 0) paginated_vehicles.push(buffer);
+    console.log(paginated_vehicles);
+    return paginated_vehicles;
   }
 }

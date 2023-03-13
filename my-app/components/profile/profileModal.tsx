@@ -91,7 +91,10 @@ export default function ProfileModal({
                           name={id}
                           aria-label={id}
                           onChange={(event) => {
-                            element.setValue(event.target.value);
+                            element.setValue({
+                              ...user,
+                              [element.name]: event.target.value,
+                            });
                           }}
                           className={`${styles.input} mb-3`}
                           defaultValue={element.value}

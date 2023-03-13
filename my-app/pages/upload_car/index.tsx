@@ -1,28 +1,65 @@
 import styles from "@/styles/upload_car.module.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { stringify } from "querystring";
 import { useState } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Image } from "react-bootstrap";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 export default function UploadCar() {
   const router = useRouter();
 
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
   const [imgFile, setImgFile] = useState<File>();
+
+  const [carName, setCarName] = useState("");
+  const [province, setProvince] = useState("");
+  const [regId, setRegId] = useState("");
+  const [maxSeat, setMaxSeat] = useState("");
+  const [filename, setFilename] = useState("");
 
   const handleSubmit = async () => {
     console.log("send data");
+    return router.push("/");
+    const response2 = await fetch("/api/uploadCar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: stringify({
+        name: carName,
+        registrationId: regId,
+        imagename: filename,
+        province: province,
+        maximumCapacity: maxSeat,
+      }),
+    });
   };
 
-  const uploadImage = async () => {
+  const handleFileInputChange = (event: any) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageSrc(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadImage = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (!imgFile) return;
     let formData = new FormData();
     formData.append("file", imgFile);
     try {
-      const { data }: any = await fetch("/api/image", {
+      const response = await fetch("/api/image", {
         method: "POST",
         body: formData,
       });
+      const data = await response.json();
+      setFilename(data?.files?.file?.newFilenames);
     } catch (error: any) {
       console.log(error.response?.data);
     }
@@ -58,16 +95,49 @@ export default function UploadCar() {
                 className="form-control"
                 type="file"
                 id="carImgFile"
-                onChange={({ target }) => {
-                  if (target.files) {
-                    const file = target.files[0];
+                onChange={(event: any) => {
+                  if (event.target.files) {
+                    handleFileInputChange(event);
+                    const file = event.target.files[0];
                     setImgFile(file);
                   }
                 }}
               />
-              <button className="btn btn-outline-secondary" type="button">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={(e) => uploadImage(e)}
+              >
                 อัปโหลดรูป
               </button>
+            </div>
+            <div className={`${styles.first_col} mt-3`}>
+              {imageSrc ? (
+                <Image
+                  className={`${styles.image}`}
+                  src={imageSrc}
+                  alt="Vehicle Image"
+                  height={400}
+                />
+              ) : (
+                <div className={`${styles.empty_img}`}>
+                  <label htmlFor="image">
+                    <input
+                      type="file"
+                      onChange={(event: any) => {
+                        if (event.target.files) {
+                          handleFileInputChange(event);
+                          const file = event.target.files[0];
+                          setImgFile(file);
+                        }
+                      }}
+                      hidden
+                      className={`${styles.img}`}
+                    />
+                    ไม่มีรูปภาพ
+                  </label>
+                </div>
+              )}
             </div>
           </div>
 
@@ -83,10 +153,11 @@ export default function UploadCar() {
                   className="form-control"
                   id="carName"
                   placeholder="ชื่อรถเช่าของคุณ"
+                  onChange={(e) => setCarName(e.target.value)}
                 />
               </div>
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label htmlFor="carColor" className="form-label">
                   <b>สีของรถ</b>
                 </label>
@@ -96,7 +167,7 @@ export default function UploadCar() {
                   id="carColor"
                   placeholder="ประกันภัยของรถ"
                 />
-              </div>
+              </div> */}
 
               <div className="mb-3">
                 <label htmlFor="regisNum" className="form-label">
@@ -107,12 +178,38 @@ export default function UploadCar() {
                   className="form-control"
                   id="regisNum"
                   placeholder="เลขทะเบียนรถ"
+                  onChange={(e) => setRegId(e.target.value)}
                 />
               </div>
             </Col>
 
             <Col lg={6}>
               <div className="mb-3">
+                <label htmlFor="province" className="form-label">
+                  <b>จังหวัด</b>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="province"
+                  placeholder="จังหวัด"
+                  onChange={(e) => setProvince(e.target.value)}
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="seat" className="form-label">
+                  <b>จำนวนที่นั่ง</b>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="seat"
+                  placeholder="จำนวนที่นั่ง"
+                  onChange={(e) => setMaxSeat(e.target.value)}
+                />
+              </div>
+              {/* <div className="mb-3">
                 <label htmlFor="insurance" className="form-label">
                   <b>ประกันภัยของรถ</b>
                 </label>
@@ -122,9 +219,9 @@ export default function UploadCar() {
                   id="insurance"
                   placeholder="ประกันภัยของรถ"
                 />
-              </div>
+              </div> */}
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label htmlFor="gearType" className="form-label">
                   <b>ประเภทเกียร์ของรถ</b>
                 </label>
@@ -137,7 +234,7 @@ export default function UploadCar() {
                   <option value="mannual">เกียร์กระปุก</option>
                   <option value="auto">เกียร์ออโต้</option>
                 </select>
-              </div>
+              </div> */}
             </Col>
           </Row>
 

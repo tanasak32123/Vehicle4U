@@ -28,7 +28,6 @@ export default async function handler(
     setCookie("role", body.role, {
       req,
       res,
-      maxAge: 60 * 60,
       secure: process.env.NODE_ENV !== "development",
       sameSite: true,
     });

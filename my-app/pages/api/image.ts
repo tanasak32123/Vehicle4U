@@ -14,10 +14,12 @@ const readFile = (
   savedLocally?: boolean
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   const options: formidable.Options = {};
+  let filename = "";
   if (savedLocally) {
     options.uploadDir = path.join(process.cwd(), "/public/images/cars");
     options.filename = (name, ext, path, form) => {
-      return Date.now().toString() + "_" + path.originalFilename;
+      filename = Date.now().toString() + "_" + path.originalFilename;
+      return filename;
     };
   }
   const form = formidable(options);
@@ -30,13 +32,17 @@ const readFile = (
 };
 
 const handler: NextApiHandler = async (req, res) => {
+  if (req.method != "POST") {
+    res.status(405).send("Method not allowed");
+    return;
+  }
   try {
     await fs.readdir(path.join(process.cwd() + "/public", "/images", "cars"));
   } catch (error) {
     await fs.mkdir(path.join(process.cwd() + "/public", "/images", "/cars"));
   }
-  await readFile(req, true);
-  res.json({ done: "ok" });
+  const { fields, files } = await readFile(req, true);
+  res.json({ done: "ok", files });
 };
 
 export default handler;

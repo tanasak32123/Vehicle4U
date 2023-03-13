@@ -76,8 +76,7 @@ export default async function handler(
           endtime: body.endtime,
           info: body.info,
           rent_place: body.location,
-          carid:body.carid,
-          status:body.status,
+          car_id:body.carid,
         }),
       }).then(async (response) => {
         console.log(response.status)
