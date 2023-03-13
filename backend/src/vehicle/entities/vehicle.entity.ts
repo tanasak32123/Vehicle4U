@@ -33,6 +33,12 @@ export class Vehicle {
     type: String,
   })
   @Column()
+  imagename: string;
+
+  @ApiProperty({
+    type: String,
+  })
+  @Column()
   province: string;
 
   @ApiProperty({
