@@ -12,6 +12,10 @@ export default function UploadCar() {
 
   const [imgFile, setImgFile] = useState<File>();
 
+  const [carName, setCarName] = useState("");
+  const [province, setProvince] = useState("");
+  const [regId, setRegId] = useState("");
+
   const handleSubmit = async () => {
     console.log("send data");
   };
@@ -37,6 +41,7 @@ export default function UploadCar() {
         method: "POST",
         body: formData,
       });
+      // console.log(data);
     } catch (error: any) {
       console.log(error.response?.data);
     }
@@ -133,7 +138,7 @@ export default function UploadCar() {
                 />
               </div>
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label htmlFor="carColor" className="form-label">
                   <b>สีของรถ</b>
                 </label>
@@ -143,7 +148,7 @@ export default function UploadCar() {
                   id="carColor"
                   placeholder="ประกันภัยของรถ"
                 />
-              </div>
+              </div> */}
 
               <div className="mb-3">
                 <label htmlFor="regisNum" className="form-label">
@@ -160,6 +165,29 @@ export default function UploadCar() {
 
             <Col lg={6}>
               <div className="mb-3">
+                <label htmlFor="province" className="form-label">
+                  <b>จังหวัด</b>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="province"
+                  placeholder="จังหวัด"
+                />
+              </div>
+
+              <div className="mb-3">
+                <label htmlFor="seat" className="form-label">
+                  <b>จำนวนที่นั่ง</b>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="seat"
+                  placeholder="จำนวนที่นั่ง"
+                />
+              </div>
+              {/* <div className="mb-3">
                 <label htmlFor="insurance" className="form-label">
                   <b>ประกันภัยของรถ</b>
                 </label>
@@ -169,9 +197,9 @@ export default function UploadCar() {
                   id="insurance"
                   placeholder="ประกันภัยของรถ"
                 />
-              </div>
+              </div> */}
 
-              <div className="mb-3">
+              {/* <div className="mb-3">
                 <label htmlFor="gearType" className="form-label">
                   <b>ประเภทเกียร์ของรถ</b>
                 </label>
@@ -184,7 +212,7 @@ export default function UploadCar() {
                   <option value="mannual">เกียร์กระปุก</option>
                   <option value="auto">เกียร์ออโต้</option>
                 </select>
-              </div>
+              </div> */}
             </Col>
           </Row>
 
