@@ -26,6 +26,12 @@ export class Vehicle {
   @ApiProperty({
     type: String,
   })
+  @Column({ unique: true })
+  registrationId: string;
+
+  @ApiProperty({
+    type: String,
+  })
   @Column()
   name: string;
 
