@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Response, Query } from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
+import { Vehicle } from './entities/vehicle.entity';
 
 @Controller('vehicle')
 export class VehicleController {
@@ -12,6 +13,7 @@ export class VehicleController {
     @Query('maxPassenger') maxPassenger: number,
     @Response() res,
   ) {
+    //const pagination_count = 2;
     const vehicles = await this.vehicleService.findByFilter(
       province,
       carName,
@@ -20,9 +22,10 @@ export class VehicleController {
     if (!vehicles) {
       return res.status(404).send({
         statusCode: 404,
-        message: 'user not found',
+        message: 'car not found',
       });
     }
+    //console.log(vehicles);
     return res.status(200).send(vehicles);
   }
 }
