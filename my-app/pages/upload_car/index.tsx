@@ -1,6 +1,7 @@
 import styles from "@/styles/upload_car.module.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { stringify } from "querystring";
 import { useState } from "react";
 import { Col, Row, Image } from "react-bootstrap";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
@@ -15,9 +16,25 @@ export default function UploadCar() {
   const [carName, setCarName] = useState("");
   const [province, setProvince] = useState("");
   const [regId, setRegId] = useState("");
+  const [maxSeat, setMaxSeat] = useState("");
+  const [filename, setFilename] = useState("");
 
   const handleSubmit = async () => {
     console.log("send data");
+    return router.push("/");
+    const response2 = await fetch("/api/uploadCar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: stringify({
+        name: carName,
+        registrationId: regId,
+        imagename: filename,
+        province: province,
+        maximumCapacity: maxSeat,
+      }),
+    });
   };
 
   const handleFileInputChange = (event: any) => {
@@ -37,11 +54,12 @@ export default function UploadCar() {
     let formData = new FormData();
     formData.append("file", imgFile);
     try {
-      const { data }: any = await fetch("/api/image", {
+      const response = await fetch("/api/image", {
         method: "POST",
         body: formData,
       });
-      // console.log(data);
+      const data = await response.json();
+      setFilename(data?.files?.file?.newFilenames);
     } catch (error: any) {
       console.log(error.response?.data);
     }
@@ -135,6 +153,7 @@ export default function UploadCar() {
                   className="form-control"
                   id="carName"
                   placeholder="ชื่อรถเช่าของคุณ"
+                  onChange={(e) => setCarName(e.target.value)}
                 />
               </div>
 
@@ -159,6 +178,7 @@ export default function UploadCar() {
                   className="form-control"
                   id="regisNum"
                   placeholder="เลขทะเบียนรถ"
+                  onChange={(e) => setRegId(e.target.value)}
                 />
               </div>
             </Col>
@@ -173,6 +193,7 @@ export default function UploadCar() {
                   className="form-control"
                   id="province"
                   placeholder="จังหวัด"
+                  onChange={(e) => setProvince(e.target.value)}
                 />
               </div>
 
@@ -185,6 +206,7 @@ export default function UploadCar() {
                   className="form-control"
                   id="seat"
                   placeholder="จำนวนที่นั่ง"
+                  onChange={(e) => setMaxSeat(e.target.value)}
                 />
               </div>
               {/* <div className="mb-3">

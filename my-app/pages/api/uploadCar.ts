@@ -8,19 +8,6 @@ export default async function handler(
     return res.redirect("/404");
   }
   const body = req.body;
-  const type = body.type;
-  const values = body.values;
-  //   const data: EditCar = {};
-
-  if (type == "name") {
-    const car_name = values[0];
-    if (!car_name) {
-      return res
-        .status(400)
-        .json({ message: "**กรุณากรอกชื่อรถยนต์ให้เรียบร้อย" });
-    }
-  }
-
   const token = req.cookies.token;
 
   //   const car = await editCar(token, data);
