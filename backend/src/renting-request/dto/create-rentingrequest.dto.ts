@@ -13,13 +13,25 @@ export class CreateRentingRequestDto {
         type: String,
     })
     @IsNotEmpty()
-    start_rent_date : string ; 
+    startdate : string ;
+
+    @ApiProperty({
+        type: String,
+    })
+    @IsNotEmpty()
+    starttime : string ;
     
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    end_rent_date : string ;
+    enddate : string ;
+
+    @ApiProperty({
+        type: String,
+    })
+    @IsNotEmpty()
+    end_time : string ;
     
     @ApiProperty({
         enum:['pending','accepted','rejected'],
@@ -31,5 +43,12 @@ export class CreateRentingRequestDto {
         type: String,
     })
     @IsNotEmpty()
+    info: string;
+
+    @ApiProperty({
+        type: String,
+    })
+    @IsNotEmpty()
     rent_place: string;
+
 }

@@ -11,6 +11,9 @@ export class RentingRequestController{
     constructor (private readonly rentingRequestService: RentingRequestService) {}
 
     @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'User not found.' })
     @Post()
     async create(@Body() createRentingRequestDto: CreateRentingRequestDto, @Request() req, @Response() res) {
         const id = req.body['id'];
