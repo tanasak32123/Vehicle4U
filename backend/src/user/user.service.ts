@@ -10,18 +10,31 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
 @UseGuards(JwtAuthGuard)
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Vehicle) private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const user = await this.userRepository.create(createUserDto);
     return await this.userRepository.save(user);
+  }
+
+
+  async createVehicle(id:number, createVehicleDto: CreateVehicleDto): Promise<Vehicle> {
+    const ent = await this.vehicleRepository.findOneBy({registrationId : createVehicleDto.registrationId })
+    if (ent){
+      throw new HttpException( "registration number exist", HttpStatus.NOT_ACCEPTABLE)
+    }
+    const vehicle = await this.vehicleRepository.create(createVehicleDto);
+    vehicle.user = await this.findOne(id.toString())
+    return await this.vehicleRepository.save(vehicle);
   }
 
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 

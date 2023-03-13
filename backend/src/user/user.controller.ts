@@ -16,6 +16,9 @@ import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+
 
 // /localhost/username/role?=provider
 @ApiTags('Vehicle4U')
@@ -58,6 +61,13 @@ export class UserController {
   async findUser(@Request() req): Promise<User> {
     const id = req.body['id'];
     return await this.userService.findOne(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('createvehicle')
+  async createVehicle(@Request() req, @Body() createVehicleDto: CreateVehicleDto ): Promise<Vehicle> {
+    const id = req.body['id'];
+    return await this.userService.createVehicle(id, createVehicleDto);
   }
 
   @UseGuards(JwtAuthGuard)

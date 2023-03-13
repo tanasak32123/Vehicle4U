@@ -1,15 +1,11 @@
 import { Body, Controller, Get, Response, Query, Post } from '@nestjs/common';
-import { RegisterVehicleDto } from './dto/register-vehicle.dto';
 import { VehicleService } from './vehicle.service';
 
 @Controller('vehicle')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
 
-  @Post('register')
-  async register(@Body() registerVehicleDto:RegisterVehicleDto, @Response() res ){
-    
-  }
+
 
 
   @Get('search')
