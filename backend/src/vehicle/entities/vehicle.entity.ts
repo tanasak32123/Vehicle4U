@@ -69,6 +69,6 @@ export class Vehicle {
   user_vehicle : UserVehicle[]
 
   @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
-  rentingRequest: RentingRequest;
+  rentingRequests: RentingRequest[];
 
 }

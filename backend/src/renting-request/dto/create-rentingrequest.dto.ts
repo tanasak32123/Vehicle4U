@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { Request_status } from "../entities/renting-request.entity";
 
 export class CreateRentingRequestDto {
     @ApiProperty({
@@ -32,12 +31,6 @@ export class CreateRentingRequestDto {
     })
     @IsNotEmpty()
     end_time : string ;
-    
-    @ApiProperty({
-        enum:['pending','accepted','rejected'],
-    })
-    @IsNotEmpty()
-    status : Request_status;
       
     @ApiProperty({
         type: String,

@@ -23,6 +23,4 @@ export class UpdateRentingRequestDto {
         enum:['pending','accepted','rejected'],
     })
     status : Request_status;
-      
-
 }
