@@ -1,0 +1,70 @@
+.container {
+  background-color: #c7dde7;
+  min-height: 100vh;
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.reg_container {
+  background: #ffffff;
+  box-shadow: 0px 10px 40px 16px rgba(90, 82, 128, 0.22);
+  border-radius: 26px;
+  width: 80%;
+}
+
+.back_btn {
+  color: black;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}
+
+.feedback {
+  margin-top: 4px;
+  color: red;
+  font-size: 13px;
+  height: 13px;
+}
+
+.date_time{
+    padding: 10px;
+    background: rgba(254, 249, 235, 0.7);
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    border-radius: 5.5px;
+    border: 1px solid black;
+  }
+  
+  .input_cal{
+    background: rgba(254, 249, 235, 0.7);
+    box-shadow: none;
+    border: none;
+    color: #545a8b;
+  }
+  
+  .textarea{
+    background: rgba(254, 249, 235, 0.7);
+    border-radius: 5.5px;
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    width: 100%;
+  }
+  
+  .input_tel{
+    background: rgba(254, 249, 235, 0.7);
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    border-radius: 5.5px;
+    border: 1px solid black;
+    padding: 5px;
+  }
+
+  .submit_btn{
+    background-color:black;
+    float:right;
+    border-radius: 10.5px;
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    padding: 10px;
+  }
