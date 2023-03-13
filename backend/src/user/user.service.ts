@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable, Request, UseGuards } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,12 +10,15 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import * as bcrypt from 'bcrypt';
 import { HttpException } from '@nestjs/common/exceptions';
 import { HttpStatus } from '@nestjs/common/enums';
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 @UseGuards(JwtAuthGuard)
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Vehicle) private readonly vehicleRepository: Repository<Vehicle>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -24,6 +27,40 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+
+  async createVehicle(id:number, createVehicleDto: CreateVehicleDto): Promise<Vehicle> {
+    const ent = await this.vehicleRepository.findOneBy({registrationId : createVehicleDto.registrationId })
+    if (ent){
+      throw new HttpException( "registration number exist", HttpStatus.NOT_ACCEPTABLE)
+    }
+    const vehicle = await this.vehicleRepository.create(createVehicleDto);
+    vehicle.user = await this.findOne(id.toString())
+    return await this.vehicleRepository.save(vehicle);
+  }
+
+  async updateVehicle(updateVehicleDto: UpdateVehicleDto)  {
+    const ent = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
+    if (!ent){
+      throw new HttpException( "id dont exist", HttpStatus.NOT_FOUND)
+    }
+    const oldImageName = ent.imagename
+  
+    await this.vehicleRepository.update({id:updateVehicleDto.id} , updateVehicleDto);
+    const vehicle = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
+    return {oldImageName , vehicle}
+  }
+
+  async getVehicles(id : number) : Promise<User[]>{ 
+    const vehicles = await this.userRepository.find({
+      where : {
+        id : id , 
+      }, 
+      relations: {
+        vehicles : true , 
+    },
+    })
+    return vehicles 
+  }
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) {

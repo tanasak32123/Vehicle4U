@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
 import { max } from 'class-validator';
 
+
 @Injectable()
 export class VehicleService {
   constructor(
