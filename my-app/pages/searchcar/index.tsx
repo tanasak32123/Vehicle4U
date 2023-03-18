@@ -90,7 +90,7 @@ export default function SearchCar() {
               className={`${styles.form_container} justify-content-center d-flex align-items-center`}
             >
               <form style={{ width: "90%" }}>
-                <h5 className={`p-2 ${styles.head} mb-1 text-center`}>
+                <h5 className={` ${styles.head} mb-1 text-center`}>
                   บริการเช่ารถ
                 </h5>
 
@@ -102,7 +102,7 @@ export default function SearchCar() {
                     <Row className={`p-3 ${styles.role} mb-1 text-center`}>
                       <Col
                         sm={12}
-                        lg={5}
+                        lg={4}
                         style={{ borderRight: "1px solid black" }}
                       >
                         <h6>จังหวัด</h6>
@@ -114,7 +114,7 @@ export default function SearchCar() {
                             กรุงเทพมหานคร
                           </Dropdown.Toggle>
 
-                          <Dropdown.Menu as={CustomMenu}>
+                          <Dropdown.Menu as={CustomMenu} >
                             <Dropdown.Item eventKey="1">
                               กรุงเทพมหานคร
                             </Dropdown.Item>
@@ -123,29 +123,65 @@ export default function SearchCar() {
                           </Dropdown.Menu>
                         </Dropdown>
                       </Col>
-                      <Col sm={12} lg={7}>
-                        <h6>สถานที่ส่งรับ-รถคืน</h6>
+                      <Col
+                        sm={12}
+                        lg={4}
+                        style={{ borderRight: "1px solid black" }}
+                      >
+                        <h6>ยี่ห้อรถ</h6>
                         <Dropdown>
                           <Dropdown.Toggle
                             as={CustomToggle}
                             id="dropdown-custom-components"
                           >
-                            คณะวิศวกรรมศาสตร์ จุฬาฯ
+                            Toyota Altis
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item eventKey="1">
-                              คณะวิศวกรรมศาสตร์ จุฬาฯ
+                              Toyota Altis
                             </Dropdown.Item>
                             <Dropdown.Item eventKey="2">
-                              คณะอักษรศาสตร์ จุฬาฯ
+                              Toyota Yaris
                             </Dropdown.Item>
                             <Dropdown.Item eventKey="3">
-                              คณะบัญชีศาสตร์ จุฬาฯ
+                              Ford Ranger Raptor
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </Col>
+                      
+
+                      <Col
+                        sm={12}
+                        lg={4}
+                      >
+                        <h6>จำนวนผู้โดยสาร</h6>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            as={CustomToggle}
+                            id="dropdown-custom-components"
+                          >
+                            1
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu as={CustomMenu}>
+                            <Dropdown.Item eventKey="1">
+                              1
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="2">
+                              2
+                            </Dropdown.Item>
+                            <Dropdown.Item eventKey="3">
+                              3
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                      
+
+
+
                     </Row>
                   </Col>
 
@@ -187,8 +223,7 @@ export default function SearchCar() {
                           />{" "}
                         </>
                       )}
-                      <BiSearchAlt  size={60} />
-                      
+                      <BiSearchAlt size={60} />
                     </button>
                   </Col>
                 </Row>
