@@ -34,7 +34,7 @@ const Header = () => {
               {isLoading ? (
                 <>
                   <Skeleton width={90} height={25} className={`me-4`} />
-                  <Skeleton width={90} height={25} />
+                  <Skeleton width={90} height={25} className={`me-4`} />
                   <Skeleton width={90} height={25} />
                 </>
               ) : (
