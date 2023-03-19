@@ -1,18 +1,20 @@
 import { useState } from "react";
-import dynamic from "next/dynamic";
 
 import { useAuth } from "./AuthContext";
 
 //css
 import Skeleton from "react-loading-skeleton";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import {
+  Button,
+  Container,
+  Modal,
+  Nav,
+  Navbar,
+  NavDropdown,
+} from "react-bootstrap";
 import styles from "styles/components/navbar.module.css";
 
-const LogoutModal = dynamic(() => import("./LogoutModal"), {
-  loading: () => <p>Loading...</p>,
-});
-
-export default function Header() {
+const Header = () => {
   const { auth, isLoading, authAction } = useAuth();
   const [showSignout, setShowSignout] = useState(false);
 
@@ -24,10 +26,28 @@ export default function Header() {
             VEHICLE4U
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
+          <Navbar.Collapse
+            id="responsive-navbar-nav"
+            className={`mt-2 mt-lg-0`}
+          >
             <Nav className="me-auto">
-              <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
-              <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+              {isLoading ? (
+                <>
+                  <Skeleton width={90} height={25} className={`me-4`} />
+                  <Skeleton width={90} height={25} className={`me-4`} />
+                  <Skeleton width={90} height={25} />
+                </>
+              ) : (
+                <>
+                  <hr />
+                  <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
+                  <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+                  {auth?.role == "provider" && (
+                    <Nav.Link href="/upload_car">เพิ่มรถเช่า</Nav.Link>
+                  )}
+                  <hr />
+                </>
+              )}
             </Nav>
 
             <Nav>
@@ -73,4 +93,37 @@ export default function Header() {
       )}
     </>
   );
-}
+};
+
+const LogoutModal = ({ show, onHide, authAction }: any) => {
+  const handleLogout = () => {
+    authAction.logout();
+    onHide();
+  };
+
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>ออกจากระบบ</h4>
+        <p className={`text-center`}>คุณยืนยันที่จะออกจากระบบหรือไม่</p>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex`}>
+        <Button className={`me-auto`} onClick={onHide}>
+          ยกเลิก
+        </Button>
+        <Button onClick={handleLogout} variant="danger">
+          ยืนยัน
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
+
+export default Header;

@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { setCookie } from "cookies-next";
-import EditCar from "@/types/EditCar";
+import CatInformation from "@/types/CarInformation";
 
-const editCar = async (token: string | undefined, data: object) => {
+const editCarInformation = async (token: string | undefined, data: object) => {
   try {
-    const response = await fetch(``, {
+    const response = await fetch(`http://localhost:3000/user/updatevehicle`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
     });
@@ -32,7 +33,7 @@ export default async function handler(
     const body = req.body;
     const type = body.type;
     const values = body.values;
-    const data: EditCar = {};
+    const data: CatInformation = {};
 
     if (type == "name") {
       const car_name = values[0];
@@ -41,11 +42,21 @@ export default async function handler(
           .status(400)
           .json({ message: "**กรุณากรอกชื่อรถยนต์ให้เรียบร้อย" });
       }
+      data["name"] = car_name;
+    }
+
+    if (type == "registrationId") {
+    }
+
+    if (type == "maximumCapacity") {
+    }
+
+    if (type == "province") {
     }
 
     const token = req.cookies.token;
 
-    const car = await editCar(token, data);
+    const car = await editCarInformation(token, data);
 
     if (!car) {
       return res.status(400).json({

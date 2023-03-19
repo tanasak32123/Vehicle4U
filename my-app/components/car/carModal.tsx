@@ -13,7 +13,20 @@ export default function CarModal({
   isShowModal,
   setShowModalFunc,
   handleupdateFunc,
-}: any) {
+  car,
+}: {
+  title: string;
+  id: string;
+  type: string;
+  inputs: Array<object>;
+  newData: Array<string>;
+  invalid: string;
+  setInvalid: any;
+  isShowModal: boolean;
+  setShowModalFunc: any;
+  handleupdateFunc: Function;
+  car: object;
+}) {
   async function handleSubmit(
     name: string,
     newData: string[],
@@ -49,7 +62,7 @@ export default function CarModal({
               <Row key={id}>
                 {inputs?.map((element: any) => {
                   return (
-                    <Col key={element.name} lg={(id = 12)}>
+                    <Col key={element.name} lg={12}>
                       <Form.Label className="mb-3" name={element.name}>
                         {element.label}
                       </Form.Label>
