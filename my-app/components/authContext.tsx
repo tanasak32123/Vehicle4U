@@ -8,7 +8,7 @@ import AuthContextValue from "types/AuthContextValue";
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const initValues: AuthContextValue = {
-  auth: { status: "SIGNED_OUT", user: null },
+  auth: { status: "SIGNED_OUT", user: null, role: null },
   isLoading: true,
   authAction: {},
 };
