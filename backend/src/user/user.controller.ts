@@ -43,7 +43,7 @@ export class UserController {
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
-    const id = req.body['id'];
+    const id = req.user['id'];
     const user = await this.userService.update(id, updateuserDto);
     if (!user) {
       return res.status(404).send({
