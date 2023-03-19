@@ -1,123 +1,104 @@
 import Head from "next/head";
-import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import styles from "@/styles/signup.module.css";
-import { Row, Col, Spinner } from "react-bootstrap";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
+import { FaArrowAltCircleLeft, FaCheckCircle } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 
-import UserSignUp from "types/UserSignUp";
-
-const SelectRoleModal = dynamic(
-  () => import("@/components/signup/selectRoleModal"),
-  {
-    loading: () => <p>Loading...</p>,
-  }
-);
-
-const SucessModal = dynamic(() => import("@/components/signup/successModal"), {
-  loading: () => <p>Loading...</p>,
-});
+import Link from "next/link";
 
 export default function Register() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
 
+  const fnameRef = useRef<HTMLInputElement>(null);
+  const lnameRef = useRef<HTMLInputElement>(null);
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const pwdRef = useRef<HTMLInputElement>(null);
+  const telRef = useRef<HTMLInputElement>(null);
+  const cidRef = useRef<HTMLInputElement>(null);
+  const drivenIdRef = useRef<HTMLInputElement>(null);
+  const paymentRef = useRef<HTMLSelectElement>(null);
+
   const [role, setRole] = useState("");
-  const [fName, setFName] = useState("");
-  const [lName, setLName] = useState("");
-  const [username, setUsername] = useState("");
-  const [pw, setPw] = useState("");
-  const [tel, setTel] = useState("");
-  const [citizenID, setCitizenID] = useState("");
-  const [drivenID, setDrivenID] = useState("");
-  const [payment, setPayment] = useState("");
 
-  const [invalid_fName, setInvalid_fName] = useState("");
-  const [invalid_lName, setInvalid_lName] = useState("");
-  const [invalid_username, setInvalid_username] = useState("");
-  const [invalid_pw, setInvalid_pw] = useState("");
-  const [invalid_tel, setInvalid_tel] = useState("");
-  const [invalid_cizitenID, setInvalid_citizenID] = useState("");
-  const [invalid_drivenID, setInvalid_drivenID] = useState("");
-  const [invalid_payment, setInvalid_payment] = useState("");
-
-  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
 
-  const [waitRole, setWaitRole] = useState(true);
-
-  const errors = {
-    invalid_fName,
-    invalid_lName,
-    invalid_username,
-    invalid_pw,
-    invalid_tel,
-    invalid_cizitenID,
-    invalid_drivenID,
-    invalid_payment,
-  };
-
-  const data: UserSignUp = {
-    first_name: fName,
-    last_name: lName,
-    username,
-    password: pw,
-    tel,
-    citizen_id: citizenID,
-    driving_license_id: drivenID,
-    payment_channel: payment,
-    is_renter: role == "renter",
-    is_provider: role == "provider",
-  };
+  const [errors, setErrors] = useState({
+    fname: "",
+    lname: "",
+    username: "",
+    pwd: "",
+    tel: "",
+    cid: "",
+    drivenId: "",
+    payment: "",
+  });
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
     setLoading(true);
-    const response = await signUp(data, role);
-    setLoading(false);
-    if (!response.success) {
-      setInvalid_fName(response.errors.fName);
-      setInvalid_lName(response.errors.lName);
-      setInvalid_username(response.errors.username);
-      setInvalid_pw(response.errors.pw);
-      setInvalid_tel(response.errors.tel);
-      setInvalid_citizenID(response.errors.citizenID);
-      setInvalid_drivenID(response.errors.drivenID);
-      setInvalid_payment(response.errors.payment);
-    } else {
-      setShowAlert(true);
-      setTimeout(() => {
-        setShowAlert(false);
-      }, 3000);
-    }
-  }
-
-  const signUp = async (data: UserSignUp, role: string) => {
-    const response = await fetch(`/api/auth/signup/${role}`, {
+    await fetch(`/api/auth/signup/${role}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
-    });
-    const body = await response.json();
-    setLoading(false);
-    return body;
-  };
+      body: JSON.stringify({
+        first_name: fnameRef.current?.value!,
+        last_name: lnameRef.current?.value!,
+        username: usernameRef.current?.value!,
+        password: pwdRef.current?.value!,
+        tel: telRef.current?.value!,
+        citizen_id: cidRef.current?.value!,
+        driving_license_id: drivenIdRef.current?.value!,
+        payment_channel: paymentRef.current?.value!,
+        is_renter: role == "renter",
+        is_provider: role == "provider",
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        if (!res.success) {
+          setErrors(res.errors);
+        } else {
+          setShowSuccess(true);
+          setTimeout(() => {
+            setShowSuccess(false);
+            router.push("/");
+          }, 3000);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  }
 
   useEffect(() => {
     setShowSelect(true);
-  });
+  }, []);
 
   return (
     <>
       <Head>
         <title>สมัครสมาชิก - VEHICLE4U</title>
       </Head>
+
+      {showSelect && (
+        <SelectRoleModal
+          show={showSelect}
+          onHide={(role: string) => {
+            setRole(role);
+            setShowSelect(false);
+          }}
+        />
+      )}
 
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -131,7 +112,7 @@ export default function Register() {
           </button>
           <h1 className="text-end">สมัครสมาชิก</h1>
           <hr />
-          {!waitRole ? (
+          {role == "renter" || role == "provider" ? (
             <>
               <h5 className={`p-2 ${styles.role} mb-3 text-center`}>
                 {role == "renter" && <b>ผู้เช่า</b>}
@@ -147,7 +128,7 @@ export default function Register() {
 
           <Row className="text-left">
             <Col sm={12} lg={6}>
-              {!waitRole ? (
+              {role == "renter" || role == "provider" ? (
                 <>
                   <div className="mb-2">
                     <label htmlFor="fName">
@@ -155,16 +136,13 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={fnameRef}
                       type="text"
                       id="fName"
                       name="fName"
                       className={styles.input}
-                      value={fName}
-                      onChange={(event) => setFName(event.target.value.trim())}
                     />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_fName}
-                    </div>
+                    <div className={`${styles.feedback}`}>{errors.fname}</div>
                   </div>
 
                   <div className="mb-2">
@@ -173,16 +151,13 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={lnameRef}
                       type="text"
                       id="lName"
                       name="lName"
                       className={styles.input}
-                      value={lName}
-                      onChange={(event) => setLName(event.target.value.trim())}
                     />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_lName}
-                    </div>
+                    <div className={`${styles.feedback}`}>{errors.lname}</div>
                   </div>
 
                   <div className="mb-2">
@@ -191,17 +166,14 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={usernameRef}
                       type="text"
                       id="username"
                       name="username"
                       className={styles.input}
-                      value={username}
-                      onChange={(event) =>
-                        setUsername(event.target.value.trim())
-                      }
                     />
                     <div className={`${styles.feedback}`}>
-                      {errors.invalid_username}
+                      {errors.username}
                     </div>
                   </div>
 
@@ -211,16 +183,13 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={pwdRef}
                       type="password"
                       id="password"
                       name="password"
                       className={styles.input}
-                      value={pw}
-                      onChange={(event) => setPw(event.target.value.trim())}
                     />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_pw}
-                    </div>
+                    <div className={`${styles.feedback}`}>{errors.pwd}</div>
                   </div>
                 </>
               ) : (
@@ -245,7 +214,7 @@ export default function Register() {
             </Col>
 
             <Col sm={12} lg={6}>
-              {!waitRole ? (
+              {role == "renter" || role == "provider" ? (
                 <>
                   <div className="mb-2">
                     <label htmlFor="tel">
@@ -253,18 +222,13 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={telRef}
                       type="text"
                       id="tel"
                       name="tel"
                       className={styles.input}
-                      value={tel}
-                      onChange={(event) =>
-                        setTel(event.target.value.trim().replace("-", ""))
-                      }
                     />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_tel}
-                    </div>
+                    <div className={`${styles.feedback}`}>{errors.tel}</div>
                   </div>
 
                   <div className="mb-2">
@@ -273,18 +237,13 @@ export default function Register() {
                     </label>
                     <br />
                     <input
+                      ref={cidRef}
                       type="text"
                       id="citizenID"
                       name="citizenID"
                       className={styles.input}
-                      value={citizenID}
-                      onChange={(event) =>
-                        setCitizenID(event.target.value.trim().replace("-", ""))
-                      }
                     />
-                    <div className={`${styles.feedback}`}>
-                      {errors.invalid_cizitenID}
-                    </div>
+                    <div className={`${styles.feedback}`}>{errors.cid}</div>
                   </div>
 
                   {role == "renter" && (
@@ -294,17 +253,14 @@ export default function Register() {
                       </label>
                       <br />
                       <input
+                        ref={drivenIdRef}
                         type="text"
                         id="drivenID"
                         name="drivenID"
                         className={styles.input}
-                        value={drivenID}
-                        onChange={(event) =>
-                          setDrivenID(event.target.value.trim())
-                        }
                       />
                       <div className={`${styles.feedback}`}>
-                        {errors.invalid_drivenID}
+                        {errors.drivenId}
                       </div>
                     </div>
                   )}
@@ -316,12 +272,10 @@ export default function Register() {
                       </label>
                       <br />
                       <select
+                        ref={paymentRef}
                         name="payment"
                         id="payment"
                         className={`${styles.select}`}
-                        onChange={(event) =>
-                          setPayment(event.target.value.trim())
-                        }
                       >
                         <option
                           className={`${styles.select}`}
@@ -344,7 +298,7 @@ export default function Register() {
                         </option>
                       </select>
                       <div className={`${styles.feedback}`}>
-                        {errors.invalid_payment}
+                        {errors.payment}
                       </div>
                     </div>
                   )}
@@ -368,13 +322,15 @@ export default function Register() {
                     </button>
                   </div>
 
-                  <SucessModal
-                    show={showAlert}
-                    onHide={() => {
-                      setShowAlert(false);
-                      router.push("/");
-                    }}
-                  />
+                  {showSuccess && (
+                    <SucessModal
+                      show={showSuccess}
+                      onHide={() => {
+                        setShowSuccess(false);
+                        router.push("/");
+                      }}
+                    />
+                  )}
                 </>
               ) : (
                 <>
@@ -385,15 +341,6 @@ export default function Register() {
                   <h6>หมายเลขบัตรประชาชน</h6>
                   <Skeleton width={`100%`} height={50} />
                   <br />
-
-                  <SelectRoleModal
-                    show={showSelect}
-                    onHide={(role: string) => {
-                      setRole(role);
-                      setShowSelect(false);
-                      setWaitRole(false);
-                    }}
-                  />
                 </>
               )}
             </Col>
@@ -403,3 +350,82 @@ export default function Register() {
     </>
   );
 }
+
+const SelectRoleModal = ({ show, onHide }: any) => {
+  const router = useRouter();
+
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      backdrop={`static`}
+      centered
+    >
+      <Modal.Header className={`modal_wo_border`}>
+        <Link
+          href=""
+          onClick={() => router.back()}
+          className={`text-start ${styles.back_link}`}
+        >
+          <small>
+            <FaArrowAltCircleLeft /> ย้อนกลับ
+          </small>
+        </Link>
+      </Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>กรุณาเลือกบทบาทที่คุณต้องการสมัคร</h4>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
+        <Button
+          className={`orange_btn ${styles.role} mx-3`}
+          onClick={() => {
+            onHide("renter");
+          }}
+        >
+          <h6 className="mb-0 text-center">ผู้เช่า</h6>
+        </Button>
+        <Button
+          className={`orange_btn ${styles.role} mx-3`}
+          onClick={() => {
+            onHide("provider");
+          }}
+        >
+          <h6 className="mb-0 text-center">ผู้ปล่อยเช่า</h6>
+        </Button>
+      </Modal.Footer>
+      <br />
+    </Modal>
+  );
+};
+
+const SucessModal = ({ show, onHide }: any) => {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>
+          <FaCheckCircle className={`green_color`} />
+        </h4>
+        <h4 className={`text-center`}>สมัครสมาชิกสำเร็จ</h4>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
+        <Button
+          className={`orange_btn`}
+          onClick={() => {
+            onHide();
+          }}
+        >
+          เข้าสู่ระบบ
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
