@@ -18,10 +18,10 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const user = await response.json();
 
-    // res.setHeader(
-    //   "Cache-Control",
-    //   "public, s-maxage=10, stale-while-revalidate=59"
-    // );
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=10, stale-while-revalidate=59"
+    );
     return res.status(200).json({ status: "SIGNED_IN", user });
   } else {
     return res.status(404).redirect("/404");
