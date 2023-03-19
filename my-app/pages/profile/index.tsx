@@ -110,7 +110,6 @@ export default function EditProfile() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (!res.success) {
           setInvalidInput(res.message);
         } else {
@@ -155,6 +154,10 @@ export default function EditProfile() {
         setAddPaymentShow(true);
       } else {
         setUser({ ...user, role: "provider" });
+        setCookie("role", "provider", {
+          secure: process.env.NODE_ENV !== "development",
+          sameSite: true,
+        });
         popUpChangeRole();
       }
     }
@@ -163,6 +166,10 @@ export default function EditProfile() {
         setAddDlicenseShow(true);
       } else {
         setUser({ ...user, role: "renter" });
+        setCookie("role", "renter", {
+          secure: process.env.NODE_ENV !== "development",
+          sameSite: true,
+        });
         popUpChangeRole();
       }
     }
