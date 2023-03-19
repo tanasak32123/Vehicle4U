@@ -9,10 +9,10 @@ export default async function handler(
   if (req.method == "POST") {
     const body = req.body;
 
-    const start = body.startdate.split('-');
-    const stop = body.enddate.split('-');
-    const start_time = body.starttime.split(':');
-    const stop_time = body.endtime.split(':');
+    const start = body.startdate.split("-");
+    const stop = body.enddate.split("-");
+    const start_time = body.starttime.split(":");
+    const stop_time = body.endtime.split(":");
     const contact = body.contact;
     var accept = body.accept;
 
@@ -26,48 +26,52 @@ export default async function handler(
 
     var death_line_month = start_month + 3;
     var death_line_year = start_year;
-    if ( death_line_month > 12 ){
-        death_line_year = death_line_year + 1;
-        if ( death_line_month == 13 ) {death_line_month = 1;}
-        else if ( death_line_month == 14 ) death_line_month = 2; 
-        else if ( death_line_month == 15 ) death_line_month = 3; 
+    if (death_line_month > 12) {
+      death_line_year = death_line_year + 1;
+      if (death_line_month == 13) {
+        death_line_month = 1;
+      } else if (death_line_month == 14) death_line_month = 2;
+      else if (death_line_month == 15) death_line_month = 3;
     }
 
     var time = true;
-    if ( death_line_year < stop_year){
+    if (death_line_year < stop_year) {
+      time = true;
+    } else if (death_line_year == death_line_year) {
+      if (stop_month == start_month) {
+        time = stop_date < start_date;
+      } else if (stop_month < start_month) {
         time = true;
-    }else if ( death_line_year == death_line_year) {
-        if ( stop_month == start_month ){
-            time = stop_date < start_date;
-        }else if ( stop_month < start_month ){
-            time = true;
-        }else
-            time = stop_month > death_line_month;
-    }else{
-        time = false;
+      } else time = stop_month > death_line_month;
+    } else {
+      time = false;
     }
 
     var cal = /^[0-9]{10}/.test(contact);
-    var empt = body.startdate == "" || body.enddate == "" || body.starttime == "" || body.endtime == "" && body.contact != "";
-
+    var empt =
+      body.startdate == "" ||
+      body.enddate == "" ||
+      body.starttime == "" ||
+      (body.endtime == "" && body.contact != "");
 
     // console.log(cal);
 
-    if ( empt || !cal || time ) {
+    if (empt || !cal || time) {
       return res.status(400).json({
         success: false,
         message: "โปรดตรวจสอบวันและเวลาในการรับ-คืนรถของคุณ",
       });
     }
     // return res.status(200).send('success');
-    const token = req.cookies?.token
+    const token = req.cookies?.token;
 
     try {
-      await fetch("http://localhost:3000/renting-request", { // ถาม path ปลื้ม
+      await fetch("http://localhost:3000/renting-request", {
+        // ถาม path ปลื้ม
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           startdate: body.startdate,
@@ -76,11 +80,11 @@ export default async function handler(
           endtime: body.endtime,
           info: body.info,
           rent_place: body.location,
-          car_id:body.carid,
+          car_id: body.carid,
         }),
       }).then(async (response) => {
-        console.log(response.status)
-      
+        console.log(response.status);
+
         if (!response.ok) {
           res.status(400).json({
             success: false,

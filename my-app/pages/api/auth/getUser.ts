@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     const token = req.cookies?.token;
+    console.log(token);
     if (!token)
       return res.status(200).json({ status: "SIGNED_OUT", user: null });
 
