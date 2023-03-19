@@ -26,10 +26,28 @@ const Header = () => {
             VEHICLE4U
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-          <Navbar.Collapse id="responsive-navbar-nav">
+          <Navbar.Collapse
+            id="responsive-navbar-nav"
+            className={`mt-2 mt-lg-0`}
+          >
             <Nav className="me-auto">
-              <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
-              <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+              {isLoading ? (
+                <>
+                  <Skeleton width={90} height={25} className={`me-4`} />
+                  <Skeleton width={90} height={25} />
+                  <Skeleton width={90} height={25} />
+                </>
+              ) : (
+                <>
+                  <hr />
+                  <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
+                  <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+                  {auth?.role == "provider" && (
+                    <Nav.Link href="/upload_car">เพิ่มรถเช่า</Nav.Link>
+                  )}
+                  <hr />
+                </>
+              )}
             </Nav>
 
             <Nav>

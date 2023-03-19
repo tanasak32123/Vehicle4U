@@ -173,6 +173,7 @@ export default function EditProfile() {
         popUpChangeRole();
       }
     }
+    authAction.mutate();
   };
 
   // Change role pop up
