@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
-import { useAuth } from "@/components/AuthContext";
+import { useAuth } from "@/components/authContext";
 
 export default function Home() {
   const { authAction } = useAuth();
