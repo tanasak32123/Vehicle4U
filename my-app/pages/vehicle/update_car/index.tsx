@@ -37,6 +37,7 @@ export default function UpdateCar() {
 
   const [name, setName] = useState("");
   const [registrationId, setRegistrationId] = useState("");
+  const [imagename, setImagename] = useState("");
   const [maximumCapacity, setMaximumCapacity] = useState("");
   const [province, setProvince] = useState("");
 
@@ -149,31 +150,34 @@ export default function UpdateCar() {
           <Container>
             <br />
             <Row>
-              <Col>
-                <Form onSubmit={handleSubmitImage}>
-                  {/* Image */}
-                  <FormGroup>
-                    <FormControl type="file" onChange={handleFileInputChange} />
-                    <Button className={`${styles.upload_btn}`} type="submit">
-                      Upload
-                    </Button>
-                    <div className={`${styles.first_col}`}>
-                      <br />
-                      {imageSrc && (
-                        <Image
-                          className={`${styles.image}`}
-                          src={imageSrc}
-                          alt="Vehicle Image"
-                          height={"400px"}
-                        />
-                      )}
-                    </div>
-                  </FormGroup>
-                </Form>
-              </Col>
+              <Form onSubmit={handleSubmitImage}>
+                {/* Image */}
+                <FormGroup>
+                  <FormControl type="file" onChange={handleFileInputChange} />
+                  <Button className={`${styles.upload_btn}`} type="submit">
+                    Upload
+                  </Button>
+                  <div className={`${styles.first_col}`}>
+                    <br />
+                    {imageSrc ? (
+                      <Image
+                        className={`${styles.image}`}
+                        src={imageSrc}
+                        alt="Vehicle Image"
+                        height={"400px"}
+                      />
+                    ) : (
+                      <div className={`${styles.empty_img}`}>ไม่มีรูปภาพ</div>
+                    )}
+                  </div>
+                </FormGroup>
+              </Form>
+
               <br />
-              {/* ชื่อรถ */}
-              <Col className={`${styles.col}`}>
+            </Row>
+            {/* ชื่อรถ */}
+            <Row>
+              <Col>
                 <CarForm
                   name="name"
                   label="ชื่อรถ"
@@ -211,8 +215,9 @@ export default function UpdateCar() {
                   handleupdateFunc={handleEditCar}
                   car={car}
                 />
-
-                {/* หมายเลขทะเบียน */}
+              </Col>
+              {/* หมายเลขทะเบียน */}
+              <Col>
                 <CarForm
                   name="registrationId"
                   label="เลขทะเบียนของรถ"
@@ -250,8 +255,11 @@ export default function UpdateCar() {
                   handleupdateFunc={handleEditCar}
                   car={car}
                 />
-
-                {/* ที่นั่ง */}
+              </Col>
+            </Row>
+            {/* ที่นั่ง */}
+            <Row>
+              <Col>
                 <CarForm
                   name="maximumCapacity"
                   label="จำนวนที่นั่ง"
@@ -289,7 +297,9 @@ export default function UpdateCar() {
                   handleupdateFunc={handleEditCar}
                   car={car}
                 />
-                {/* จังหวัด */}
+              </Col>
+              {/* จังหวัด */}
+              <Col>
                 <CarForm
                   name="province"
                   label="จังหวัด"
@@ -327,7 +337,6 @@ export default function UpdateCar() {
                   handleupdateFunc={handleEditCar}
                   car={car}
                 />
-                <br />
               </Col>
             </Row>
           </Container>

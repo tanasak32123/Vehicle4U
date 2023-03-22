@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useAuth } from "./AuthContext";
+import { useAuth } from "./authContext";
 
 //css
 import Skeleton from "react-loading-skeleton";
