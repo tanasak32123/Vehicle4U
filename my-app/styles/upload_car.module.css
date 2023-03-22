@@ -44,3 +44,7 @@
 .upload_btn {
   transition: 0.2s;
 }
+
+.svg {
+  display: none;
+}

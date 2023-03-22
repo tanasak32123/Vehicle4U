@@ -62,7 +62,6 @@ export default function Register() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (!res.success) {
           setErrors(res.errors);
         } else {

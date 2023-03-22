@@ -49,6 +49,10 @@ main {
   border: 0px !important;
 }
 
+.modal-content {
+  padding: 10px;
+}
+
 .modal-footer {
   border: 0px !important;
 }
