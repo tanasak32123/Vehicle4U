@@ -1,12 +1,7 @@
 import Head from "next/head";
-import { useState } from "react";
 import styles from "@/styles/renter.module.css";
-import { Row, Col } from "react-bootstrap";
-import { useRouter } from "next/navigation";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import { useAuth } from "@/components/authContext";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 import router from "next/router";
-import { errors } from "formidable";
 
 export default function Renter_request() {
   return (
