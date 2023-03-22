@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import styles from "@/styles/home.module.css";
@@ -14,9 +14,10 @@ export default function Home() {
 
   const router = useRouter();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const pwdRef = useRef<HTMLInputElement>(null);
+  const roleRef = useRef<HTMLSelectElement>(null);
+
   const [invalid, setInvalid] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -24,27 +25,35 @@ export default function Home() {
   async function handleSubmit(event: Event) {
     event.preventDefault();
     setLoading(true);
-    const response = await fetch("/api/auth/login", {
+    await fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username,
-        password,
-        role,
+        username: usernameRef.current?.value,
+        password: pwdRef.current?.value,
+        role: roleRef.current?.value,
       }),
-    });
-    setLoading(false);
-    if (!response.ok) {
-      const data = await response.json();
-      setInvalid(data.message);
-      setShowAlert(true);
-      return;
-    }
-    setShowAlert(false);
-    authAction.mutate();
-    router.push("/searchcar");
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          setShowAlert(false);
+          authAction.mutate();
+          router.push("/searchcar");
+        } else {
+          setInvalid(res.message);
+          setShowAlert(true);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setInvalid("** ระบบเกิดข้อผิดพลาดโปรดลองใหม่อีกครั้ง");
+        setShowAlert(true);
+        setLoading(false);
+      });
   }
 
   return (
@@ -84,18 +93,20 @@ export default function Home() {
             <div
               className={`${styles.form_container} justify-content-center d-flex align-items-center`}
             >
-              <form className={`${styles.form}`}>
+              <form
+                className={`${styles.form}`}
+                onSubmit={(event: any) => handleSubmit(event)}
+              >
                 <label htmlFor="username" className={`${styles.form_text}`}>
                   <b>ชื่อผู้ใช้</b>
                 </label>
                 <br />
                 <input
+                  ref={usernameRef}
                   type="text"
                   id="username"
                   name="username"
                   className={styles.input}
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value.trim())}
                 />
                 <br />
                 <br />
@@ -104,12 +115,11 @@ export default function Home() {
                 </label>
                 <br />
                 <input
+                  ref={pwdRef}
                   type="password"
                   id="password"
                   name="password"
                   className={styles.input}
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value.trim())}
                 />
                 <br />
                 <br />
@@ -118,11 +128,10 @@ export default function Home() {
                 </label>
                 <br />
                 <select
+                  ref={roleRef}
                   name="role"
                   id="role"
                   className={`${styles.select}`}
-                  onChange={(event) => setRole(event.target.value.trim())}
-                  value={role}
                 >
                   <option
                     className={`${styles.select}`}
@@ -150,11 +159,7 @@ export default function Home() {
                     <FaTimesCircle className={`red_color`} /> {invalid}
                   </Alert>
                 )}
-                <button
-                  type="button"
-                  onClick={(event: any) => handleSubmit(event)}
-                  className={`orange_btn py-2`}
-                >
+                <button type="submit" className={`orange_btn py-2`}>
                   {loading && (
                     <>
                       <Spinner

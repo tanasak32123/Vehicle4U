@@ -4,7 +4,8 @@ import styles from "@/styles/renter.module.css";
 import { Row, Col } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import { useAuth } from "@/components/authContext";
+import { useAuth } from "@/components/AuthContext";
+
 
 export default function Register() {
   const { authAction, loading }: any = useAuth();
@@ -102,8 +103,8 @@ export default function Register() {
                       <Col>
                         <input
                           type="date"
-                          id="birthday"
-                          name="birthday"
+                          id="date"
+                          name="date"
                           onChange={(event) => {
                             console.log(event.target.value.split("-"));
                             setStartdate(event.target.value.trim());
@@ -153,13 +154,13 @@ export default function Register() {
                 </div>
 
                 <div className="mb-2">
-                  <label htmlFor="exampleFormControlTextarea1">
+                  <label htmlFor="exampleFormControlTextarea2">
                     <h6>รายระเอียดจุดนัดพบ (รับ-คืนรถ)</h6>
                   </label>
                   <br />
                   <textarea
                     className={styles.textarea}
-                    id="exampleFormControlTextarea1"
+                    id="exampleFormControlTextarea2"
                     onChange={(event) => setInfo(event.target.value.trim())}
                     rows={3}
                   ></textarea>
