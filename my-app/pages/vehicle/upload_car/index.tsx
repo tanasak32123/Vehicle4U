@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Col, Row, Image } from "react-bootstrap";
+import dynamic from "next/dynamic";
 import {
   FaArrowAltCircleLeft,
   FaFileImage,
@@ -10,6 +11,8 @@ import {
   FaUpload,
 } from "react-icons/fa";
 import useSWR from "swr";
+
+const CustomizeModal = dynamic(import("@/components/Modal/Customize"));
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -40,17 +43,16 @@ export default function UploadCar() {
   const regIdRef = useRef<HTMLInputElement | null>(null);
   const maxSeatRef = useRef<HTMLInputElement | null>(null);
   const imageRef = useRef<HTMLInputElement | null>(null);
-
+  const [isAlert, setIsAlert] = useState<boolean>(false);
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [filename, setFilename] = useState<string>("");
-
   const [feedback, setFeedback] = useState({
     name: "",
     maxSeat: "",
     province: "",
     regId: "",
   });
-
   const [imgFeedback, setImgFeedback] = useState("");
 
   const handleSubmit = async (event: any) => {
@@ -69,16 +71,32 @@ export default function UploadCar() {
         if (res.status == 401) {
           router.push("/");
         }
+        if (res.status == 500) {
+          throw new Error("Something went wrong");
+        }
         return res.json();
       })
       .then((res) => {
-        console.log(res);
         if (res.feedback) {
           setFeedback({ ...res.feedback });
         }
         if (!res.imgFound) {
           setImgFeedback("** โปรดเลือกไฟล์รูปภาพของคุณ");
         }
+        if (res.success) {
+          setIsSuccess(true);
+          setTimeout(() => {
+            setIsSuccess(false);
+            router.push("/");
+          }, 3000);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsAlert(true);
+        setTimeout(() => {
+          setIsAlert(false);
+        }, 3000);
       });
   };
 
@@ -133,6 +151,16 @@ export default function UploadCar() {
         <title>เพิ่มรถเช่า-VEHICLE4U</title>
       </Head>
 
+      <svg xmlns="http://www.w3.org/2000/svg" className={`${styles.svg}`}>
+        <symbol
+          id="exclamation-triangle-fill"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </symbol>
+      </svg>
+
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
@@ -151,7 +179,26 @@ export default function UploadCar() {
                 เพิ่มรถเช่า
               </h1>
               <hr />
-              <br />
+              {isAlert && (
+                <div
+                  className={`alert alert-danger d-flex align-items-center`}
+                  role="alert"
+                >
+                  <svg
+                    className="bi flex-shrink-0 me-2"
+                    width="24"
+                    height="24"
+                    role="img"
+                    aria-label="Danger:"
+                  >
+                    <use xlinkHref="#exclamation-triangle-fill" />
+                  </svg>
+                  <div>
+                    <small>ระบบเกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง</small>
+                  </div>
+                </div>
+              )}
+
               <form id="form" onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="carImgFile" className="form-label">
@@ -321,6 +368,18 @@ export default function UploadCar() {
           )}
         </div>
       </div>
+
+      {isSuccess && (
+        <CustomizeModal
+          status={`success`}
+          show={isSuccess}
+          onHide={() => {
+            router.push("/searchcar");
+          }}
+          desc={`ระบบทำการเพิ่มรถเช่าสำเร็จ`}
+          btn_text={`รถเช่าของคุณ`}
+        />
+      )}
     </>
   );
 }

@@ -128,8 +128,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   await handlePostFormReq(req, res);
-
-  // return res.status(200).json({ success: true });
 };
 
 export default handler;

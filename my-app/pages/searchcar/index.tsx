@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Layout from "../../components/layout";
+import Layout from "../../components/Layout";
 import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 
@@ -187,8 +187,7 @@ export default function SearchCar() {
                           />{" "}
                         </>
                       )}
-                      <BiSearchAlt  size={60} />
-                      
+                      <BiSearchAlt size={60} />
                     </button>
                   </Col>
                 </Row>
