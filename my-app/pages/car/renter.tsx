@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 
+
 export default function Register() {
   const { authAction, loading }: any = useAuth();
 

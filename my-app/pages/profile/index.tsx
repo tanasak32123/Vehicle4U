@@ -10,7 +10,7 @@ import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import { Alert } from "react-bootstrap";
 
-import { useAuth } from "@/components/AuthContext";
+import { useAuth } from "@/components/authContext";
 
 const InputForm = dynamic(() => import("@/components/profile/profileForm"), {
   loading: () => <p>Loading...</p>,
