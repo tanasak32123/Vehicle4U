@@ -107,6 +107,7 @@ const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
   const ok = await fetch("http://localhost:3000/user/createvehicle", {
     method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ ...fields, imagename: filename }),

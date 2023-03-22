@@ -68,7 +68,7 @@ export class UserController {
     @Body() createVehicleDto: CreateVehicleDto,
   ): Promise<Vehicle> {
     const id = req.user['id'];
-    console.log(req);
+    // console.log(req.body);
     return await this.userService.createVehicle(id, createVehicleDto);
   }
 
