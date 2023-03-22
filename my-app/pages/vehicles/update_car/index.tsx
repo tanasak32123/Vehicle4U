@@ -17,7 +17,7 @@ import CarModal from "@/components/car/carModal";
 import GearOption from "@/components/car/gearOption";
 import SizeOption from "@/components/car/sizeOption";
 import CarForm from "@/components/car/carForm";
-// import axios from "axios";
+import axios from "axios";
 
 interface CarData {
   id: number;

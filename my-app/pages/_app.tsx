@@ -15,7 +15,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 import { AuthProvider } from "@/components/AuthContext";
 
-const Layout = dynamic(() => import("@/components/Layout"), {
+const Layout = dynamic(() => import("@/components/layout"), {
   loading: () => <p>Loading...</p>,
 });
 
