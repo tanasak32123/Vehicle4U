@@ -1,38 +1,22 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import isAuthValid from "libs/auth/isAuthValid";
 
-const authPrefixes = ["/profile", "/vehicles/upload_car"];
-const rolePrefixes = ["/vehicles/upload_car"];
+const authPrefixes = ["/user/profile", "/vehicle/upload_car"];
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
-  const role = req.cookies.get("role")?.value;
+  // const token = req.cookies.get("token")?.value;
+  // const role = req.cookies.get("role")?.value;
 
-  const { pathname } = req.nextUrl;
   const url = req.nextUrl;
 
-  if (authPrefixes.includes(pathname) && !token) {
+  if (authPrefixes.includes(url.pathname) && !isAuthValid(req)) {
     url.pathname = `/`;
-    url.search = `?from=${pathname}`;
+    url.search = `?from=${url.pathname}`;
     return NextResponse.redirect(url);
   }
 
-  if (rolePrefixes.includes(pathname) && !token) {
-    if (role != "renter" && role != "provider") {
-      await fetch("/api/auth/logout")
-        .then((res) => {
-          if (res.ok) {
-            url.pathname = `/`;
-            return NextResponse.redirect(url);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }
-
-  if (pathname === "/" && token) {
+  if (url.pathname === "/" && isAuthValid(req)) {
     url.pathname = `/vehicle`;
     return NextResponse.redirect(url);
   }
