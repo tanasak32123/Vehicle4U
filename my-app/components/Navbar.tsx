@@ -65,6 +65,11 @@ const Header = () => {
                     <NavDropdown.Item href={`/user/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
+                    {auth?.role == "provider" && (
+                      <NavDropdown.Item href={`/vehicle/owner`}>
+                        รถเช่าของคุณ
+                      </NavDropdown.Item>
+                    )}
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => setShowSignout(true)}>
                       ออกจากระบบ
