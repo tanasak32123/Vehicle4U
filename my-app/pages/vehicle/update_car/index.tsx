@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "@/styles/updateCar.module.css";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Button,
   Col,
@@ -113,15 +113,15 @@ export default function UpdateCar() {
   };
 
   const handleSubmitImage = async () => {
-    try {
-      if (!selectedFile) return;
-      const formData = new FormData();
-      formData.append("myImage", selectedFile);
-      const { data }: any = await axios.post("/api/editImage", formData);
-      console.log(data);
-    } catch (error: any) {
-      console.log(error.response?.data);
-    }
+    // try {
+    //   if (!selectedFile) return;
+    //   const formData = new FormData();
+    //   formData.append("myImage", selectedFile);
+    //   const { data }: any = await axios.post("/api/editImage", formData);
+    //   console.log(data);
+    // } catch (error: any) {
+    //   console.log(error.response?.data);
+    // }
   };
 
   const router = useRouter();

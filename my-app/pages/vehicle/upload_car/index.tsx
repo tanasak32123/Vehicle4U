@@ -12,7 +12,9 @@ import {
 } from "react-icons/fa";
 import useSWR from "swr";
 
-const CustomizeModal = dynamic(import("@/components/Modal/Customize"));
+const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
+  loading: () => <p>Loading...</p>,
+});
 
 const fetcher = (url: string) =>
   fetch(url)
