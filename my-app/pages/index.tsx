@@ -2,7 +2,7 @@ import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
 import { useState, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
@@ -41,7 +41,10 @@ export default function Home() {
         if (res.success) {
           setShowAlert(false);
           authAction.mutate();
-          router.push("/searchcar");
+          if (router.query.from) {
+            router.push(router.query.from as string);
+          }
+          router.push("/vehicle");
         } else {
           setInvalid(res.message);
           setShowAlert(true);
