@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-const authPrefixes = ["/profile"];
+const authPrefixes = ["/profile", "/vehicles/upload_car"];
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
