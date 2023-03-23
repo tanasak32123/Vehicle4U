@@ -1,4 +1,5 @@
 import Head from "next/head";
+import useSWR from "swr";
 import styles from "@/styles/updateCar.module.css";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
@@ -27,7 +28,43 @@ interface CarData {
   maximumCapacity: number;
 }
 
+const fetcherProvince = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      res.sort((a: any, b: any) => {
+        if (a.name_th < b.name_th) {
+          return -1;
+        }
+        if (a.name_th > b.name_th) {
+          return 1;
+        }
+        return 0;
+      });
+      return res;
+    });
+
+const fetcherVehicle = (url: string) => fetch(url).then((res) => res.json());
+
 export default function UpdateCar() {
+  const {
+    data: provinceData,
+    isLoading: provinceLoading,
+    error: provinceError,
+  } = useSWR(
+    "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json",
+    fetcherProvince
+  );
+
+  const {
+    data: vehicleData,
+    isLoading: vehicleLoading,
+    error: vehicleError,
+  } = useSWR(
+    "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json",
+    fetcherVehicle
+  );
+
   // modal
   const [nameShow, setNameShow] = useState(false);
   const [registrationIdShow, setRegistrationIdShow] = useState(false);
@@ -128,217 +165,228 @@ export default function UpdateCar() {
   return (
     <>
       <Head>
-        <title>ข้อมูลรถยนต์-VEHICLE4U</title>
+        <title>แก้ไขข้อมูลรถยนต์-VEHICLE4U</title>
       </Head>
 
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
         <div className={`p-4 ${styles.reg_container}`}>
-          <button
-            onClick={() => router.back()}
-            className={`${styles.back_btn} d-flex align-items-center`}
-          >
-            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-          </button>
-          <h1 className="align-items-center d-flex justify-content-end">
-            <FaCar />
-            &nbsp; ข้อมูลรถยนต์
-          </h1>
-          <hr />
-          <Container>
-            <br />
-            <Row>
-              <Form onSubmit={handleSubmitImage}>
-                {/* Image */}
-                <FormGroup>
-                  <FormControl type="file" onChange={handleFileInputChange} />
-                  <Button className={`${styles.upload_btn}`} type="submit">
-                    Upload
-                  </Button>
-                  <div className={`${styles.first_col}`}>
-                    <br />
-                    {imageSrc ? (
-                      <Image
-                        className={`${styles.image}`}
-                        src={imageSrc}
-                        alt="Vehicle Image"
-                        height={"400px"}
+          {provinceLoading || vehicleLoading ? (
+            <div>loading...</div>
+          ) : (
+            <>
+              <button
+                onClick={() => router.back()}
+                className={`${styles.back_btn} d-flex align-items-center`}
+              >
+                <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+              </button>
+              <h1 className="align-items-center d-flex justify-content-end">
+                <FaCar />
+                &nbsp; แก้ไขข้อมูลรถยนต์
+              </h1>
+              <hr />
+              <Container>
+                <br />
+                <Row>
+                  <Form onSubmit={handleSubmitImage}>
+                    {/* Image */}
+                    <FormGroup>
+                      <FormControl
+                        type="file"
+                        onChange={handleFileInputChange}
                       />
-                    ) : (
-                      <div className={`${styles.empty_img}`}>ไม่มีรูปภาพ</div>
-                    )}
-                  </div>
-                </FormGroup>
-              </Form>
+                      <Button className={`${styles.upload_btn}`} type="submit">
+                        Upload
+                      </Button>
+                      <div className={`${styles.first_col}`}>
+                        <br />
+                        {imageSrc ? (
+                          <Image
+                            className={`${styles.image}`}
+                            src={imageSrc}
+                            alt="Vehicle Image"
+                            height={"400px"}
+                          />
+                        ) : (
+                          <div className={`${styles.empty_img}`}>
+                            ไม่มีรูปภาพ
+                          </div>
+                        )}
+                      </div>
+                    </FormGroup>
+                  </Form>
 
-              <br />
-            </Row>
-            {/* ชื่อรถ */}
-            <Row>
-              <Col>
-                <CarForm
-                  name="name"
-                  label="ชื่อรถ"
-                  rawData={`car_name`}
-                  inputs={[
-                    {
-                      name: "name",
-                      label: "ชื่อรถ",
-                      value: "car_name",
-                      currentValue: name,
-                      setValue: setName,
-                    },
-                  ]}
-                  setShowModalFunc={setNameShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`name`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "name",
-                      label: "ชื่อของรถ",
-                      value: "car_name",
-                      currentValue: name,
-                      setValue: setName,
-                    },
-                  ]}
-                  newData={[name]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={nameShow}
-                  setShowModalFunc={setNameShow}
-                  handleupdateFunc={handleEditCar}
-                  car={car}
-                />
-              </Col>
-              {/* หมายเลขทะเบียน */}
-              <Col>
-                <CarForm
-                  name="registrationId"
-                  label="เลขทะเบียนของรถ"
-                  rawData={`car_regNum`}
-                  inputs={[
-                    {
-                      name: "registrationId",
-                      label: "เลขทะเบียนของรถ",
-                      value: "car_regNum",
-                      currentValue: registrationId,
-                      setValue: setRegistrationId,
-                    },
-                  ]}
-                  setShowModalFunc={setRegistrationIdShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`registrationId`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "registrationId",
-                      label: "เลขทะเบียนของรถ",
-                      value: "car_regNum",
-                      currentValue: registrationId,
-                      setValue: setRegistrationId,
-                    },
-                  ]}
-                  newData={[registrationId]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={registrationIdShow}
-                  setShowModalFunc={setRegistrationIdShow}
-                  handleupdateFunc={handleEditCar}
-                  car={car}
-                />
-              </Col>
-            </Row>
-            {/* ที่นั่ง */}
-            <Row>
-              <Col>
-                <CarForm
-                  name="maximumCapacity"
-                  label="จำนวนที่นั่ง"
-                  rawData={`maximumCapacity`}
-                  inputs={[
-                    {
-                      name: "maximumCapacity",
-                      label: "จำนวนที่นั่ง",
-                      value: "maximumCapacity",
-                      currentValue: maximumCapacity,
-                      setValue: setMaximumCapacity,
-                    },
-                  ]}
-                  setShowModalFunc={setMaximumCapacityShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`maximumCapacity`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "paseenger",
-                      label: "จำนวนที่นั่ง",
-                      value: "maximumCapacity",
-                      currentValue: maximumCapacity,
-                      setValue: setMaximumCapacity,
-                    },
-                  ]}
-                  newData={[maximumCapacity]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={maximumCapacityShow}
-                  setShowModalFunc={setMaximumCapacityShow}
-                  handleupdateFunc={handleEditCar}
-                  car={car}
-                />
-              </Col>
-              {/* จังหวัด */}
-              <Col>
-                <CarForm
-                  name="province"
-                  label="จังหวัด"
-                  rawData={`car_province`}
-                  inputs={[
-                    {
-                      name: "province",
-                      label: "จังหวัด",
-                      value: "car_province",
-                      currentValue: province,
-                      setValue: setProvince,
-                    },
-                  ]}
-                  setShowModalFunc={setProvinceShow}
-                  isShow={true}
-                />
-                <CarModal
-                  title={`แก้ไขข้อมูลรถยนต์`}
-                  id={`province`}
-                  type={`text`}
-                  inputs={[
-                    {
-                      name: "province",
-                      label: "จังหวัด",
-                      value: "car_province",
-                      currentValue: province,
-                      setValue: setProvince,
-                    },
-                  ]}
-                  newData={[province]}
-                  invalid={invalidInput}
-                  setInvalid={setInvalidInput}
-                  isShowModal={provinceShow}
-                  setShowModalFunc={setProvinceShow}
-                  handleupdateFunc={handleEditCar}
-                  car={car}
-                />
-              </Col>
-            </Row>
-          </Container>
+                  <br />
+                </Row>
+                {/* ชื่อรถ */}
+                <Row>
+                  <Col>
+                    <CarForm
+                      name="name"
+                      label="ชื่อรถ"
+                      rawData={`car_name`}
+                      inputs={[
+                        {
+                          name: "name",
+                          label: "ชื่อรถ",
+                          value: "car_name",
+                          currentValue: name,
+                          setValue: setName,
+                        },
+                      ]}
+                      setShowModalFunc={setNameShow}
+                      isShow={true}
+                    />
+                    <CarModal
+                      title={`แก้ไขข้อมูลรถยนต์`}
+                      id={`name`}
+                      type={`text`}
+                      inputs={[
+                        {
+                          name: "name",
+                          label: "ชื่อของรถ",
+                          value: "car_name",
+                          currentValue: name,
+                          setValue: setName,
+                        },
+                      ]}
+                      newData={[name]}
+                      invalid={invalidInput}
+                      setInvalid={setInvalidInput}
+                      isShowModal={nameShow}
+                      setShowModalFunc={setNameShow}
+                      handleupdateFunc={handleEditCar}
+                      car={car}
+                    />
+                  </Col>
+                  {/* หมายเลขทะเบียน */}
+                  <Col>
+                    <CarForm
+                      name="registrationId"
+                      label="เลขทะเบียนของรถ"
+                      rawData={`car_regNum`}
+                      inputs={[
+                        {
+                          name: "registrationId",
+                          label: "เลขทะเบียนของรถ",
+                          value: "car_regNum",
+                          currentValue: registrationId,
+                          setValue: setRegistrationId,
+                        },
+                      ]}
+                      setShowModalFunc={setRegistrationIdShow}
+                      isShow={true}
+                    />
+                    <CarModal
+                      title={`แก้ไขข้อมูลรถยนต์`}
+                      id={`registrationId`}
+                      type={`text`}
+                      inputs={[
+                        {
+                          name: "registrationId",
+                          label: "เลขทะเบียนของรถ",
+                          value: "car_regNum",
+                          currentValue: registrationId,
+                          setValue: setRegistrationId,
+                        },
+                      ]}
+                      newData={[registrationId]}
+                      invalid={invalidInput}
+                      setInvalid={setInvalidInput}
+                      isShowModal={registrationIdShow}
+                      setShowModalFunc={setRegistrationIdShow}
+                      handleupdateFunc={handleEditCar}
+                      car={car}
+                    />
+                  </Col>
+                </Row>
+                {/* ที่นั่ง */}
+                <Row>
+                  <Col>
+                    <CarForm
+                      name="maximumCapacity"
+                      label="จำนวนที่นั่ง"
+                      rawData={`maximumCapacity`}
+                      inputs={[
+                        {
+                          name: "maximumCapacity",
+                          label: "จำนวนที่นั่ง",
+                          value: "maximumCapacity",
+                          currentValue: maximumCapacity,
+                          setValue: setMaximumCapacity,
+                        },
+                      ]}
+                      setShowModalFunc={setMaximumCapacityShow}
+                      isShow={true}
+                    />
+                    <CarModal
+                      title={`แก้ไขข้อมูลรถยนต์`}
+                      id={`maximumCapacity`}
+                      type={`text`}
+                      inputs={[
+                        {
+                          name: "paseenger",
+                          label: "จำนวนที่นั่ง",
+                          value: "maximumCapacity",
+                          currentValue: maximumCapacity,
+                          setValue: setMaximumCapacity,
+                        },
+                      ]}
+                      newData={[maximumCapacity]}
+                      invalid={invalidInput}
+                      setInvalid={setInvalidInput}
+                      isShowModal={maximumCapacityShow}
+                      setShowModalFunc={setMaximumCapacityShow}
+                      handleupdateFunc={handleEditCar}
+                      car={car}
+                    />
+                  </Col>
+                  {/* จังหวัด */}
+                  <Col>
+                    <CarForm
+                      name="province"
+                      label="จังหวัด"
+                      rawData={`car_province`}
+                      inputs={[
+                        {
+                          name: "province",
+                          label: "จังหวัด",
+                          value: "car_province",
+                          currentValue: province,
+                          setValue: setProvince,
+                        },
+                      ]}
+                      setShowModalFunc={setProvinceShow}
+                      isShow={true}
+                    />
+                    <CarModal
+                      title={`แก้ไขข้อมูลรถยนต์`}
+                      id={`province`}
+                      type={`text`}
+                      inputs={[
+                        {
+                          name: "province",
+                          label: "จังหวัด",
+                          value: "car_province",
+                          currentValue: province,
+                          setValue: setProvince,
+                        },
+                      ]}
+                      newData={[province]}
+                      invalid={invalidInput}
+                      setInvalid={setInvalidInput}
+                      isShowModal={provinceShow}
+                      setShowModalFunc={setProvinceShow}
+                      handleupdateFunc={handleEditCar}
+                      car={car}
+                    />
+                  </Col>
+                </Row>
+              </Container>
+            </>
+          )}
         </div>
       </div>
     </>
