@@ -16,7 +16,7 @@ export default function Footer() {
                 <b>ศูนย์ความช่วยเหลือ</b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#a"
@@ -28,7 +28,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#b"
@@ -40,7 +40,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#c"
@@ -57,15 +57,15 @@ export default function Footer() {
           </Col>
 
           <Col sm={12} lg={4}>
-            <div style={{ paddingLeft: "15px" }}>
+            <div className={`${styles.col}`}>
               <h4>
                 <b>เกี่ยวกับ </b>
                 <b>
-                  <span style={{ color: "#545a8b" }}>VEHICLE4U</span>
+                  <span className={`${styles.brand_title}`}>VEHICLE4U</span>
                 </b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/about"
@@ -80,12 +80,12 @@ export default function Footer() {
             </div>
           </Col>
           <Col sm={12} lg={4}>
-            <div style={{ paddingLeft: "15px" }}>
+            <div className={`${styles.col}`}>
               <h4>
                 <b>ติดต่อเรา</b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ listStyleType: "none" }} className="p-0">
+                <ul className={`${styles.ul_list} p-0`}>
                   <li>
                     <div className="d-flex align-items-center">
                       <Image
