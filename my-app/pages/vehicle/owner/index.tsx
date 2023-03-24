@@ -2,10 +2,55 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect } from "react";
-import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar, FaEdit } from "react-icons/fa";
 import useSWR from "swr";
+import Link from "next/link";
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => {
+      return res.json();
+    })
+    .then((res) => {
+      if (res.statusCode != 200) {
+        return res;
+      }
+      let created_date: Date;
+      let updated_date: Date;
+      let updated_dateFormat: string;
+      let created_dateFormat: string;
+      res.vehicles?.map((e: any) => {
+        created_date = new Date(e.created_at);
+        updated_date = new Date(e.updated_at);
+        updated_dateFormat =
+          updated_date.getDate() +
+          "/" +
+          (updated_date.getMonth() + 1) +
+          "/" +
+          updated_date.getFullYear() +
+          " " +
+          updated_date.getHours() +
+          ":" +
+          updated_date.getMinutes() +
+          ":" +
+          updated_date.getSeconds();
+        created_dateFormat =
+          created_date.getDate() +
+          "/" +
+          (created_date.getMonth() + 1) +
+          "/" +
+          created_date.getFullYear() +
+          " " +
+          created_date.getHours() +
+          ":" +
+          created_date.getMinutes() +
+          ":" +
+          created_date.getSeconds();
+        e.created_at = created_dateFormat;
+        e.updated_at = updated_dateFormat;
+      });
+      return res;
+    });
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/vehicle/getvehicle", fetcher);
@@ -40,7 +85,7 @@ const ProviderOwnerVehicle = () => {
           </h1>
           <hr />
 
-          {data.vehicles.map((e: any) => {
+          {data.vehicles?.map((e: any) => {
             return (
               <div
                 id={`car_${e.id}`}
@@ -58,13 +103,36 @@ const ProviderOwnerVehicle = () => {
                         fill
                         loading="lazy"
                         sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
-                        style={{ objectFit: "contain", borderRadius: "20px" }}
+                        style={{ objectFit: "contain" }}
                       />
                     </div>
                   </div>
-                  <div className={`col-6`}>
-                    <div>
-                      <b>ชื่อรถ</b>: {e?.name}
+                  <div
+                    className={`col-6 d-flex justify-content-left align-items-center`}
+                  >
+                    <div className={`text-start`}>
+                      <div>
+                        <b>ชื่อรถ</b>: {e?.name}
+                      </div>
+                      <div>
+                        <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                      </div>
+                      <div>
+                        <b>จังหวัด</b>: {e?.province}
+                      </div>
+                      <div>
+                        <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                      </div>
+                      <div>
+                        <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                      </div>
+                      <div>
+                        <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
+                      </div>
+                      <Link href={`/vehicle/update/${e?.id}`}>
+                        <FaEdit />
+                        แก้ไขข้อมูล
+                      </Link>
                     </div>
                   </div>
                 </div>
