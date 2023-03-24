@@ -59,7 +59,10 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  const { data, isLoading, error } = useSWR("/api/vehicle/getvehicle", fetcher);
+  const { data, isLoading, error, mutate } = useSWR(
+    "/api/vehicle/getvehicle",
+    fetcher
+  );
   const router = useRouter();
 
   const [showDelete, setShowDelete] = useState<boolean>(false);
@@ -73,6 +76,7 @@ const ProviderOwnerVehicle = () => {
   const handleDeleteVehicle = () => {
     console.log("Delete");
     setShowDelete(false);
+    mutate();
   };
 
   if (error) return router.push("/500");
