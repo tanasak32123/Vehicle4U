@@ -10,7 +10,7 @@ export default function Footer() {
     <div className={`${styles.footer}`}>
       <Container className="py-4">
         <Row>
-          <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
+          <Col sm={12} lg={4}>
             <div>
               <h4>
                 <b>ศูนย์ความช่วยเหลือ</b>
@@ -56,7 +56,7 @@ export default function Footer() {
             </div>
           </Col>
 
-          <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
+          <Col sm={12} lg={4}>
             <div style={{ paddingLeft: "15px" }}>
               <h4>
                 <b>เกี่ยวกับ </b>
