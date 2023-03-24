@@ -1,10 +1,16 @@
 import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect } from "react";
-import { FaArrowAltCircleLeft, FaCar, FaEdit } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import {
+  FaArrowAltCircleLeft,
+  FaCar,
+  FaEdit,
+  FaPrescriptionBottle,
+} from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
+import { Button, Modal } from "react-bootstrap";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -56,11 +62,18 @@ const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/vehicle/getvehicle", fetcher);
   const router = useRouter();
 
+  const [showDelete, setShowDelete] = useState<boolean>(false);
+
   useEffect(() => {
     if (data?.statusCode === 401) {
       router.push("/");
     }
   }, [data]);
+
+  const handleDeleteVehicle = () => {
+    console.log("Delete");
+    setShowDelete(false);
+  };
 
   if (error) return router.push("/500");
 
@@ -107,31 +120,54 @@ const ProviderOwnerVehicle = () => {
                       />
                     </div>
                   </div>
-                  <div
-                    className={`col-6 d-flex justify-content-left align-items-center`}
-                  >
-                    <div className={`text-start`}>
-                      <div>
-                        <b>ชื่อรถ</b>: {e?.name}
+                  <div className={`col-6`}>
+                    <div
+                      className={`d-flex justify-content-left align-items-center`}
+                    >
+                      <div className={`text-start`}>
+                        <div>
+                          <b>ชื่อรถ</b>: {e?.name}
+                        </div>
+                        <div>
+                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                        </div>
+                        <div>
+                          <b>จังหวัด</b>: {e?.province}
+                        </div>
+                        <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                        </div>
+                        <div>
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
+                        </div>
+                        <div>
+                          <b>สถานะ</b>:{" "}
+                          <span className="badge bg-success">ว่าง</span>&nbsp;
+                          <span className="badge bg-warning">รอการยืนยัน</span>
+                          &nbsp;
+                          <span className="badge bg-danger">ถูกจองแล้ว</span>
+                        </div>
                       </div>
-                      <div>
-                        <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                      </div>
-                      <div>
-                        <b>จังหวัด</b>: {e?.province}
-                      </div>
-                      <div>
-                        <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
-                      </div>
-                      <div>
-                        <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
-                      </div>
-                      <div>
-                        <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
-                      </div>
-                      <Link href={`/vehicle/update/${e?.id}`}>
+                    </div>
+                    <div>
+                      <Link
+                        className={`float-start`}
+                        href={`/vehicle/update/${e?.id}`}
+                      >
                         <FaEdit />
                         แก้ไขข้อมูล
+                      </Link>
+
+                      <Link
+                        className={`float-end`}
+                        href={`#car_${e.id}`}
+                        onClick={() => setShowDelete(true)}
+                      >
+                        <FaPrescriptionBottle />
+                        ลบข้อมูล
                       </Link>
                     </div>
                   </div>
@@ -140,8 +176,44 @@ const ProviderOwnerVehicle = () => {
             );
           })}
         </div>
+
+        {showDelete && (
+          <DeleteModal
+            show={showDelete}
+            onHide={() => setShowDelete(false)}
+            handleDelete={handleDeleteVehicle}
+          />
+        )}
       </div>
     );
+};
+
+const DeleteModal = ({ show, onHide, handleDelete }: any) => {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
+        <div className={`text-center`}>
+          <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
+        </div>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex`}>
+        <Button className={`me-auto`} onClick={onHide}>
+          ยกเลิก
+        </Button>
+        <Button onClick={handleDelete} variant="danger">
+          ยืนยัน
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
 
 export default ProviderOwnerVehicle;
