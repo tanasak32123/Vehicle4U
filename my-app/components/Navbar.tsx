@@ -41,7 +41,7 @@ const Header = () => {
                 <>
                   <hr />
                   <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
-                  <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+                  {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.role == "provider" && (
                     <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link>
                   )}
