@@ -7,7 +7,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
 
-  // ยังไม่มี accept เนื่องจากไม่รู้ว่าต้องส่งข้อมูลมายังไง
   let errors: { [index: string]: any } = {
     invalid_datetime: "",
     fill_datetime:"",
@@ -113,13 +112,12 @@ export default async function handler(
           starttime: body.starttime,
           enddate: body.enddate,
           endtime: body.endtime,
+          contact: body.contact,
           info: body.info,
           rent_place: body.location,
           car_id: body.carid,
         }),
       }).then(async (response) => {
-        console.log(response.status);
-
         if (!response.ok) {
           res.status(400).json({
             success: false,

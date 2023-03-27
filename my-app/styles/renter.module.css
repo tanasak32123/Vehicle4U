@@ -95,10 +95,11 @@
   }
 
   .head_info{
-    padding: 10px;
+    padding: 15px;
     background: rgba(254, 249, 235, 0.7);
     border-radius: 30px;
     box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    min-width: 150px;
     width: 30%;
     text-align: center;
   }
@@ -129,4 +130,19 @@
     color: white;
     border: none;
     padding: 10px;
+  }
+
+  .back2_btn {
+    color: black;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    padding: 10px;
+  }
+
+  .default{
+    color:darkgrey;
   }

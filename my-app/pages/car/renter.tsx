@@ -19,29 +19,9 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
+  // ยังระบุ id รถไม่ได้ต้องใส่ใน useState แทน
   const [carid, setCarid] = useState(1);
   const [accept, setAccept] = useState(false);
-
-  const [invalid_fName, setInvalid_fName] = useState("");
-  const [invalid_lName, setInvalid_lName] = useState("");
-  const [invalid_username, setInvalid_username] = useState("");
-  const [invalid_pw, setInvalid_pw] = useState("");
-  const [invalid_tel, setInvalid_tel] = useState("");
-  const [invalid_cizitenID, setInvalid_citizenID] = useState("");
-  const [invalid_drivenID, setInvalid_drivenID] = useState("");
-  const [invalid_payment, setInvalid_payment] = useState("");
-
-
-  // const errors = {
-  //   invalid_datetime,
-  //   invalid_lName,
-  //   invalid_username,
-  //   invalid_pw,
-  //   invalid_tel,
-  //   invalid_cizitenID,
-  //   invalid_drivenID,
-  //   invalid_payment,
-  // };
 
 
   const [errors, setErrors] = useState({
@@ -54,7 +34,6 @@ export default function Register() {
   });
 
   async function handleSubmit(event: Event) {
-    console.log(accept);
     event.preventDefault();
     const response = await fetch("/api/renter_request", {
       method: "POST",
@@ -73,9 +52,6 @@ export default function Register() {
         accept,
       }),
     });
-
-    // setLoading(false);
-    // console.log(response.json())
     if (!response.ok) {
       const data = await response.json();
       setErrors(data.errors)
@@ -109,8 +85,9 @@ export default function Register() {
               <>
                 <div className="mb-2">
                   <label htmlFor="fName">
-                    <h6>วันเวลาในการรับคืนรถ</h6>
+                    วันเวลาในการรับคืนรถ
                   </label>
+                  <small className={'red_color'}>(*จำเป็น)</small>
                   <br />
 
                   <div className={styles.date_time}>
@@ -207,6 +184,7 @@ export default function Register() {
                   <label htmlFor="citizenID">
                     <h6>เบอร์ติดต่อฉุกเฉิน</h6>
                   </label>
+                  <small className={'red_color'}>(*จำเป็น)</small>
                   <br />
 
                   <input
@@ -241,6 +219,7 @@ export default function Register() {
                 <label className="form-check-label" htmlFor="defaultCheck1">
                   ยอมรับ
                 </label>
+                <small className={'red_color'}>(*จำเป็น)</small>
               </div>
             </Col>
             <Col lg={12}>
