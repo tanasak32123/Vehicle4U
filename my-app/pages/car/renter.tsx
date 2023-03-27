@@ -19,28 +19,19 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
+  // ยังระบุ id รถไม่ได้ต้องใส่ใน useState แทน
   const [carid, setCarid] = useState(1);
-  const [accept, setAccept] = useState("");
+  const [accept, setAccept] = useState(false);
 
-  const [invalid_fName, setInvalid_fName] = useState("");
-  const [invalid_lName, setInvalid_lName] = useState("");
-  const [invalid_username, setInvalid_username] = useState("");
-  const [invalid_pw, setInvalid_pw] = useState("");
-  const [invalid_tel, setInvalid_tel] = useState("");
-  const [invalid_cizitenID, setInvalid_citizenID] = useState("");
-  const [invalid_drivenID, setInvalid_drivenID] = useState("");
-  const [invalid_payment, setInvalid_payment] = useState("");
 
-  const errors = {
-    invalid_fName,
-    invalid_lName,
-    invalid_username,
-    invalid_pw,
-    invalid_tel,
-    invalid_cizitenID,
-    invalid_drivenID,
-    invalid_payment,
-  };
+  const [errors, setErrors] = useState({
+    invalid_datetime: "",
+    fill_datetime: "",
+    onlynum_contact: "",
+    invalid_contact: "",
+    fill_contact: "",
+    accept: "",
+  });
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -61,9 +52,10 @@ export default function Register() {
         accept,
       }),
     });
-    // setLoading(false);
     if (!response.ok) {
       const data = await response.json();
+      setErrors(data.errors)
+      console.log(errors)
       return;
     }
     router.push("/car/payment");
@@ -74,7 +66,7 @@ export default function Register() {
       <Head>
         <title>กรอกข้อมูลสำหรับเช่ารถ - VEHICLE4U</title>
       </Head>
-
+-
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
@@ -93,15 +85,17 @@ export default function Register() {
               <>
                 <div className="mb-2">
                   <label htmlFor="fName">
-                    <h6>วันเวลาในการรับคืนรถ</h6>
+                    วันเวลาในการรับคืนรถ
                   </label>
+                  <small className={'red_color'}>(*จำเป็น)</small>
                   <br />
 
                   <div className={styles.date_time}>
                     <Row>
                       <Col>วัน-เวลารับรถ</Col>
                       <Col>
-                        <input
+                        <div>
+                          <input
                           type="date"
                           id="date"
                           name="date"
@@ -110,7 +104,8 @@ export default function Register() {
                             setStartdate(event.target.value.trim());
                           }}
                           className={styles.input_cal}
-                        />
+                          />
+                        </div>
                       </Col>
                       <Col>
                         <input
@@ -147,10 +142,7 @@ export default function Register() {
                       </Col>
                     </Row>
                   </div>
-
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_fName}
-                  </div>
+                  <div className={`${styles.feedback}`}>{errors.fill_datetime || errors.invalid_datetime}</div>
                 </div>
 
                 <div className="mb-2">
@@ -164,9 +156,7 @@ export default function Register() {
                     onChange={(event) => setInfo(event.target.value.trim())}
                     rows={3}
                   ></textarea>
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_lName}
-                  </div>
+                  {/* <div className={`${styles.feedback}`}>{errors.empt}</div> */}
                 </div>
               </>
             </Col>
@@ -187,15 +177,14 @@ export default function Register() {
                     }}
                     rows={3}
                   ></textarea>
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_tel}
-                  </div>
+                  {/* <div className={`${styles.feedback}`}>{errors.datetime}</div> */}
                 </div>
 
                 <div className="mb-2">
                   <label htmlFor="citizenID">
                     <h6>เบอร์ติดต่อฉุกเฉิน</h6>
                   </label>
+                  <small className={'red_color'}>(*จำเป็น)</small>
                   <br />
 
                   <input
@@ -207,10 +196,7 @@ export default function Register() {
                     pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                     required
                   />
-
-                  <div className={`${styles.feedback}`}>
-                    {errors.invalid_cizitenID}
-                  </div>
+                  <div className={`${styles.feedback}`}>{errors.onlynum_contact|| errors.fill_contact || errors.invalid_contact}</div>
                 </div>
               </>
             </Col>
@@ -225,13 +211,15 @@ export default function Register() {
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  onChange={(event) => console.log(event.target.value)}
-                  value="accept"
+                  onChange={(event) => {
+                    setAccept(!accept);
+                    console.log(accept);}}
                   id="defaultCheck1"
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                   ยอมรับ
                 </label>
+                <small className={'red_color'}>(*จำเป็น)</small>
               </div>
             </Col>
             <Col lg={12}>
@@ -243,6 +231,7 @@ export default function Register() {
               >
                 ยืนยันการเช่า
               </button>
+              <div className={`${styles.feedback}`}>{errors.accept}</div>
             </Col>
           </Row>
         </div>
