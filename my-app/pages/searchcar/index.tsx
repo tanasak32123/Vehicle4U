@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import styles from '@/styles/searchcar.module.css';
-import { Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import React, { useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
@@ -57,7 +57,8 @@ const CustomMenu = React.forwardRef(
 );
 
 export default function SearchCar() {
-  const [province, setProvince] = useState('กรุงเทพ');
+  const [name, setName] = useState('Toyota Altis');
+  const [province, setProvince] = useState('กรุงเทพมหานคร');
   const [maximumCapacity, setmaximumCapacity] = useState('1');
   const today = new Date();
 
@@ -69,59 +70,90 @@ export default function SearchCar() {
 
   let [loading, setLoading] = useState(false);
 
-  //f(x) handle click
-  // async function handleSubmit(event: Event) {
-  //   event.preventDefault();
-  //   setLoading(true);
-  //   const response = await fetch(`http://localhost:3000/vehicle/search?car=${e.target.getAttribute('modelCar')}&maximumCapacity=${maxPassanger}`);
-  //   setLoading(false);
-  //   if (!response.ok) {
-  //     const data = await response.json();
-  //     setInvalid(data.message);
-  //     setShowAlert(true);
-  //     return;
-  //   }
-  //   setShowAlert(false);
-  //   authAction.mutate();
-  //   router.push('/searchcar');
-  // }
+  const key = ['vehicles', name || '', maximumCapacity || '', province || ''];
 
-  const { data, status, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    'infiniteCharacters',
-    async ({ pageParam = 1 }) =>
-      await fetch(
-        `https://rickandmortyapi.com/api/character/?page=${pageParam}`
-      ).then((result) => result.json()),
+  const fetchVehicles = async (
+    key,
+    name,
+    maximumCapacity,
+    province,
+    nextPage = 1
+  ) => {
+    const response = await fetch(
+      `http://localhost:3000/vehicles?name=${name}&maximumCapacity=${maximumCapacity}&province=${province}&page=${nextPage}`
+    );
+    const data = await response.json();
+    // console.log(data); // add this line to check the data
+    return {
+      vehicles: data.vehicles,
+      totalPages: data.total_pages,
+      nextPage: data.next_page,
+    };
+  };
+
+  const {
+    data,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    key,
+    ({ pageParam = 1 }) =>
+      fetchVehicles('vehicles', name, maximumCapacity, province, pageParam),
     {
-      getNextPageParam: (lastPage, pages) => {
-        if (lastPage.info.next) {
-          return pages.length + 1;
-        }
-      },
+      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+      enabled: false,
     }
   );
 
-  // const router = useRouter();
-  // const [page, setPage] = useState(1);
-  // const { data } = useQuery(
-  //   ['cars', page],
-  //   async () =>
-  //     await fetch(
-  //       `http://localhost:3000/vehicle/search?province=${e.target.getAttribute('province')&name=${e.target.getAttribute('modelCar')}&maximumCapacity=${e.target.getAttribute('maximumCapacity')}&page=${value}`
-  //     ).then((result) => result.json()),
-  //   {
-  //     keepPreviousData: true,
-  //   }
-  // );
-  // function handlePaginationChange(e, value) {
-  //   setPage(value);
-  //   router.push(`paginationCSR/?page=${value}`, undefined, { shallow: true });
-  // }
-  // useEffect(() => {
-  //   if (router.query.page) {
-  //     setPage(parseInt(router.query.page));
-  //   }
-  // }, [router.query.page]);
+  const handleSearch = () => {
+    // Reset the infinite scroll component to page 1
+    fetchNextPage(1);
+  };
+
+  const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
+
+  const handleDateChange1 = (date: Date) => {
+    if (date > today) {
+      console.log('1');
+      setStartDate1(date);
+
+      if (date >= startDate2) {
+        console.log('2');
+
+        let newStartDate2 = new Date(date.getTime());
+        newStartDate2.setDate(newStartDate2.getDate() + 1);
+        setStartDate2(newStartDate2);
+      }
+      if (startDate2 == tomorrow) {
+        console.log('3');
+        setStartDate2(new Date(tomorrow.getTime() + 86400000));
+      }
+    } else {
+      setStartDate1(today);
+      if (today >= startDate2) {
+        setStartDate2(tomorrow);
+      }
+      if (startDate2 == tomorrow) {
+        setStartDate2(new Date(tomorrow.getTime() + 86400000));
+      }
+    }
+  };
+  const handleDateChange2 = (date: Date) => {
+    if (date > tomorrow) {
+      setStartDate2(date);
+      if (date <= startDate1) {
+        let newStartDate1 = new Date(date.getTime());
+        newStartDate1.setDate(newStartDate1.getDate() - 1);
+        setStartDate1(newStartDate1);
+      }
+    } else {
+      setStartDate2(tomorrow);
+      setStartDate1(today);
+    }
+  };
 
   return (
     <>
@@ -155,7 +187,49 @@ export default function SearchCar() {
                     <Row className={`p-3 ${styles.role} mb-1 text-center`}>
                       <Col
                         sm={12}
-                        lg={5}
+                        lg={4}
+                        style={{ borderRight: '1px solid black' }}
+                      >
+                        <h6>ชื่อรุ่นรถ</h6>
+                        <Dropdown>
+                          <Dropdown.Toggle
+                            as={CustomToggle}
+                            id="dropdown-custom-components"
+                          >
+                            {name}
+                          </Dropdown.Toggle>
+
+                          <Dropdown.Menu as={CustomMenu}>
+                            <Dropdown.Item
+                              onClick={(e: any) =>
+                                setName(e.target.getAttribute('name'))
+                              }
+                              name="Toyota Altis"
+                            >
+                              Toyota Altis
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={(e: any) =>
+                                setName(e.target.getAttribute('name'))
+                              }
+                              name="Ford Ranger"
+                            >
+                              Ford Ranger
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              onClick={(e: any) =>
+                                setName(e.target.getAttribute('name'))
+                              }
+                              name="Toyota Yaris"
+                            >
+                              Toyota Yaris
+                            </Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </Col>
+                      <Col
+                        sm={12}
+                        lg={4}
                         style={{ borderRight: '1px solid black' }}
                       >
                         <h6>จังหวัด</h6>
@@ -170,33 +244,34 @@ export default function SearchCar() {
                           <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('modelCar'))
+                                setProvince(e.target.getAttribute('province'))
                               }
-                              modelCar="กรุงเทพมหานคร"
+                              province="กรุงเทพมหานคร"
                             >
                               กรุงเทพมหานคร
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('modelCar'))
+                                setProvince(e.target.getAttribute('province'))
                               }
-                              modelCar="นนทบุรี"
+                              province="นนทบุรี"
                             >
                               นนทบุรี
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('modelCar'))
+                                setProvince(e.target.getAttribute('province'))
                               }
-                              modelCar="ปทุมธานี"
+                              province="ปทุมธานี"
                             >
                               ปทุมธานี
                             </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </Col>
-                      <Col sm={12} lg={7}>
-                        <h6>สถานที่ส่งรับ-รถคืน</h6>
+
+                      <Col sm={12} lg={4}>
+                        <h6>จำนวนผู้โดยสาร</h6>
                         <Dropdown>
                           <Dropdown.Toggle
                             as={CustomToggle}
@@ -208,7 +283,7 @@ export default function SearchCar() {
                           <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(
+                                setmaximumCapacity(
                                   e.target.getAttribute('maximumCapacity')
                                 )
                               }
@@ -250,7 +325,8 @@ export default function SearchCar() {
                           <DatePicker
                             className={`${styles.picker}`}
                             selected={startDate1}
-                            onChange={(date1) => setStartDate1(date1)}
+                            onChange={handleDateChange1}
+                            minDate={today}
                             dateFormat="dd/MM/yyyy"
                           />
                         </Col>
@@ -261,7 +337,8 @@ export default function SearchCar() {
                           <DatePicker
                             className={`${styles.picker}`}
                             selected={startDate2}
-                            onChange={(date2) => setStartDate2(date2)}
+                            onChange={handleDateChange2}
+                            minDate={tomorrow}
                             dateFormat="dd/MM/yyyy"
                           />
                         </Col>
@@ -270,16 +347,11 @@ export default function SearchCar() {
                   </Col>
 
                   <Col sm={12} lg={2}>
-                    <button type="button" className={`${styles.searchbtn}`}>
-                      {loading && (
-                        <>
-                          <Spinner
-                            className={`${styles.spinner}`}
-                            animation="border"
-                            variant="primary"
-                          />{' '}
-                        </>
-                      )}
+                    <button
+                      type="button"
+                      className={`${styles.searchbtn}`}
+                      onClick={handleSearch}
+                    >
                       <BiSearchAlt size={60} />
                     </button>
                   </Col>
@@ -288,6 +360,22 @@ export default function SearchCar() {
             </div>
           </Col>
         </Row>
+      </div>
+      <div>
+        {searchResults.map((vehicle) => (
+          <div key={vehicle.id}>
+            <h2>{vehicle.name}</h2>
+            <p>Max Passenger: {vehicle.maximumCapacity}</p>
+          </div>
+        ))}
+        {hasNextPage && (
+          <InfiniteScroll
+            dataLength={searchResults.length}
+            next={() => fetchNextPage()}
+            hasMore={!isFetchingNextPage}
+            loader={<h4>Loading...</h4>}
+          ></InfiniteScroll>
+        )}
       </div>
     </>
   );
