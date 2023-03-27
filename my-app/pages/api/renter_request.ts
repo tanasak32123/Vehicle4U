@@ -6,6 +6,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+
+  // ยังไม่มี accept เนื่องจากไม่รู้ว่าต้องส่งข้อมูลมายังไง
+  let errors: { [index: string]: any } = {
+    invalid_datetime: "",
+    fill_datetime:"",
+    invalid_contact:"",
+    onlynum_contact:"",
+    fill_contact: "",
+    accept: "",
+  };
+
+
   if (req.method == "POST") {
     const body = req.body;
 
@@ -47,19 +59,43 @@ export default async function handler(
       time = false;
     }
 
-    var cal = /^[0-9]{10}/.test(contact);
-    var empt =
+    // var cal = /^[0-9]{10}/.test(contact);
+    var cal = contact.length == 10
+    var haschar = /[^0-9]/.test(contact);
+    var date_empt =
       body.startdate == "" ||
       body.enddate == "" ||
       body.starttime == "" ||
-      (body.endtime == "" && body.contact != "");
+      body.endtime == "" ;
+
+    var contact_empt = body.contact == "";
 
     // console.log(cal);
+    if ( time ) {
+      errors.invalid_datetime = "** ระบุวันเวลาไม่สอดคล้องหรือเวลาในการรับคืนรถต้องไม่เกิน 3 เดือน"
+    }
+    if ( !cal ){
+      errors.invalid_contact = "** เบอร์โทรศัพท์มี 10 ตัวเท่านั้น"
+    }
+    if ( date_empt ){
+      errors.fill_datetime = "** กรุณากรอกข้่อมูลวันเวลาให้ครบท้วน"
+    }
+    if ( contact_empt ){
+      errors.fill_contact = "** กรุณากรอกข้อมูลเบอร์โทรศัพท์"
+    }
+    if ( haschar ){
+      errors.onlynum_contact = "** เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น"
+      errors.invalid_contact = ""
+    }
+    if ( !accept ){
+      errors.accept = "** ต้องยอมรับข้อกำหนดของทางบริษัท"
+    }
 
-    if (empt || !cal || time) {
+    if (date_empt || contact_empt || !cal || time || haschar || !accept) {
       return res.status(400).json({
         success: false,
-        message: "โปรดตรวจสอบวันและเวลาในการรับ-คืนรถของคุณ",
+        message: "** โปรดตรวจสอบวันและเวลาในการรับ-คืนรถของคุณ",
+        errors,
       });
     }
     // return res.status(200).send('success');
@@ -67,7 +103,6 @@ export default async function handler(
 
     try {
       await fetch("http://localhost:3000/renting-request", {
-        // ถาม path ปลื้ม
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,6 +124,7 @@ export default async function handler(
           res.status(400).json({
             success: false,
             message: "** can't receive response ok from back-end",
+            errors,
           });
         } else {
           const user = await response.json();

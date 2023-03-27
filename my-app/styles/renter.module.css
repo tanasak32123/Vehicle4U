@@ -69,6 +69,18 @@
     padding: 10px;
   }
 
+  .submit_btn:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
+
+  .feedback {
+    margin-top: 4px;
+    color: red;
+    font-size: 13px;
+    height: 13px;
+  }
+
 
 
 

@@ -44,6 +44,8 @@ export default function Register() {
   });
 
   async function handleSubmit(event: Event) {
+    console.log(errors)
+
     event.preventDefault();
     setLoading(true);
     await fetch(`/api/auth/signup/${role}`, {
