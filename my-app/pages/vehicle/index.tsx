@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Layout from "../../components/layout";
+import Layout from "../../components/Layout";
 import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Spinner } from "react-bootstrap";
 
@@ -13,25 +13,30 @@ import "react-datepicker/dist/react-datepicker.css";
 
 // The forwardRef is important!!
 // Dropdown needs access to the DOM node in order to position the Menu
-const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
-  <a
-    href=""
-    ref={ref}
-    onClick={(e) => {
-      e.preventDefault();
-      onClick(e);
-    }}
-  >
-    {children}
-    &#x25bc;
-  </a>
-));
+const CustomToggle = React.forwardRef(
+  ({ children, onClick }: any, ref: any) => (
+    <a
+      href=""
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+    >
+      {children}
+      &#x25bc;
+    </a>
+  )
+);
 
 // forwardRef again here!
 // Dropdown needs access to the DOM of the Menu to measure it
 
 const CustomMenu = React.forwardRef(
-  ({ children, style, className, "aria-labelledby": labeledBy }, ref) => {
+  (
+    { children, style, className, "aria-labelledby": labeledBy }: any,
+    ref: any
+  ) => {
     const [value, setValue] = useState("");
 
     return (
@@ -50,7 +55,7 @@ const CustomMenu = React.forwardRef(
         />
         <ul className="list-unstyled">
           {React.Children.toArray(children).filter(
-            (child) =>
+            (child: any) =>
               !value || child.props.children.toLowerCase().startsWith(value)
           )}
         </ul>
@@ -65,8 +70,8 @@ export default function SearchCar() {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const [startDate1, setStartDate1] = useState(today);
-  const [startDate2, setStartDate2] = useState(tomorrow);
+  const [startDate1, setStartDate1] = useState<Date>(today);
+  const [startDate2, setStartDate2] = useState<Date>(tomorrow);
 
   let [loading, setLoading] = useState(false);
 
@@ -157,7 +162,7 @@ export default function SearchCar() {
                           <DatePicker
                             className={`${styles.picker}`}
                             selected={startDate1}
-                            onChange={(date1) => setStartDate1(date1)}
+                            onChange={(date1) => setStartDate1(date1!)}
                             dateFormat="dd/MM/yyyy"
                           />
                         </Col>
@@ -168,7 +173,7 @@ export default function SearchCar() {
                           <DatePicker
                             className={`${styles.picker}`}
                             selected={startDate2}
-                            onChange={(date2) => setStartDate2(date2)}
+                            onChange={(date2) => setStartDate2(date2!)}
                             dateFormat="dd/MM/yyyy"
                           />
                         </Col>
@@ -187,8 +192,7 @@ export default function SearchCar() {
                           />{" "}
                         </>
                       )}
-                      <BiSearchAlt  size={60} />
-                      
+                      <BiSearchAlt size={60} />
                     </button>
                   </Col>
                 </Row>

@@ -31,7 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     setCookie("token", data.token.access_token, {
       req,
       res,
-      maxAge: 60 * 60,
+      maxAge: 60 * 60 * 5,
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
       sameSite: true,

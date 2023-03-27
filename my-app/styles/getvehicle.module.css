@@ -3,6 +3,9 @@
   min-height: 100vh;
   padding-top: 70px;
   padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
 }
 
 .reg_container {
@@ -22,29 +25,13 @@
   outline: none;
 }
 
-.back_btn:hover {
-  color: #4d4b4b;
+.vehicle_card {
+  background-color: #fef9eb;
+  border-radius: 20px;
 }
 
-.first_col {
-  height: 400px;
-  border: 1px dashed grey;
-  color: grey;
-}
-
-.image {
-  max-width: 100%;
-  max-height: 400px;
-}
-
-.feedback {
-  font-size: 12px;
-}
-
-.upload_btn {
-  transition: 0.2s;
-}
-
-.svg {
-  display: none;
+.vehicle_image {
+  position: relative;
+  width: 100vw;
+  height: 200px;
 }

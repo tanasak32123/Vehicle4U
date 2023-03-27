@@ -19,5 +19,17 @@
 }
 
 .ul {
-  padding-left: "20px";
+  padding-left: 20px;
+}
+
+.ul_list {
+  list-style-type: none;
+}
+
+.brand_title {
+  color: #545a8b;
+}
+
+.col {
+  padding-left: 15px;
 }

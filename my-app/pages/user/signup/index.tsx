@@ -1,13 +1,17 @@
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 
 import styles from "@/styles/signup.module.css";
 import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
-import { FaArrowAltCircleLeft, FaCheckCircle } from "react-icons/fa";
+import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 
-import Link from "next/link";
+const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function Register() {
   const router = useRouter();
@@ -62,7 +66,6 @@ export default function Register() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         if (!res.success) {
           setErrors(res.errors);
         } else {
@@ -323,12 +326,15 @@ export default function Register() {
                   </div>
 
                   {showSuccess && (
-                    <SucessModal
+                    <CustomizeModal
+                      status="success"
                       show={showSuccess}
                       onHide={() => {
                         setShowSuccess(false);
                         router.push("/");
                       }}
+                      desc={`สมัครสมาชิกสำเร็จ`}
+                      btn_text={`เข้าสู่ระบบ`}
                     />
                   )}
                 </>
@@ -396,36 +402,6 @@ const SelectRoleModal = ({ show, onHide }: any) => {
         </Button>
       </Modal.Footer>
       <br />
-    </Modal>
-  );
-};
-
-const SucessModal = ({ show, onHide }: any) => {
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-      <Modal.Body>
-        <h4 className={`text-center`}>
-          <FaCheckCircle className={`green_color`} />
-        </h4>
-        <h4 className={`text-center`}>สมัครสมาชิกสำเร็จ</h4>
-      </Modal.Body>
-      <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
-        <Button
-          className={`orange_btn`}
-          onClick={() => {
-            onHide();
-          }}
-        >
-          เข้าสู่ระบบ
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };

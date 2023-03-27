@@ -40,10 +40,10 @@ const Header = () => {
               ) : (
                 <>
                   <hr />
-                  <Nav.Link href="/searchcar">ค้นหายานพาหนะ</Nav.Link>
-                  <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link>
+                  <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                  {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.role == "provider" && (
-                    <Nav.Link href="/upload_car">เพิ่มรถเช่า</Nav.Link>
+                    <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link>
                   )}
                   <hr />
                 </>
@@ -62,9 +62,14 @@ const Header = () => {
                     id="collasible-nav-dropdown"
                     align="end"
                   >
-                    <NavDropdown.Item href={`/profile`}>
+                    <NavDropdown.Item href={`/user/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
+                    {auth?.role == "provider" && (
+                      <NavDropdown.Item href={`/vehicle/owner`}>
+                        รถเช่าของคุณ
+                      </NavDropdown.Item>
+                    )}
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => setShowSignout(true)}>
                       ออกจากระบบ
@@ -74,7 +79,7 @@ const Header = () => {
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
-                  <Nav.Link href="/signup" className={`orange_btn px-3`}>
+                  <Nav.Link href="/user/signup" className={`orange_btn px-3`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
