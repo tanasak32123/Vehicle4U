@@ -16,10 +16,12 @@ export default function RoleModal({ show, onHide, role }: any) {
           <FaCheckCircle className={`green_color`} />
         </h4>
         <h4 className={`text-center`}>เปลี่ยนบทบาทสำเร็จ</h4>
-        <p className={`text-center`}>
-          ตอนนี้บทบาทของคุณคือ "
-          {role == "provider" ? "ผู้ปล่อยเช่า" : "ผู้เช่า"}"
-        </p>
+        <div className={`text-center`}>
+          <small>
+            ตอนนี้บทบาทของคุณคือ "
+            {role == "provider" ? "ผู้ปล่อยเช่า" : "ผู้เช่า"}"
+          </small>
+        </div>
       </Modal.Body>
       <Modal.Footer className={`modal_wo_border d-flex justify-content-center`}>
         <Button
