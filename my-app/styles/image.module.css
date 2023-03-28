@@ -1,0 +1,31 @@
+.correctimage{
+    align-items: center;
+}
+
+.home_btn{
+    background-color:black;
+    border-radius: 10.5px;
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    padding: 10px;
+}
+
+.home_btn:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+  }
+
+.container {
+    background-color: #c7dde7;
+    min-height: 100vh;
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+  
+  .reg_container {
+    background: #ffffff;
+    box-shadow: 0px 10px 40px 16px rgba(90, 82, 128, 0.22);
+    border-radius: 26px;
+    width: 80%;
+  }
