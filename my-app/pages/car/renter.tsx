@@ -66,7 +66,6 @@ export default function Register() {
       <Head>
         <title>กรอกข้อมูลสำหรับเช่ารถ - VEHICLE4U</title>
       </Head>
--
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
