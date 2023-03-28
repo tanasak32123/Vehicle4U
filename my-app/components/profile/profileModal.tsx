@@ -1,4 +1,4 @@
-import styles from "@/styles/editProfile.module.css";
+import styles from "styles/editProfile.module.css";
 import { Row, Col, Modal, Form, Button } from "react-bootstrap";
 
 export default function ProfileModal({
@@ -86,27 +86,29 @@ export default function ProfileModal({
                           }}
                         />
                       ) : (
-                        <Form.Select
-                          id={id}
-                          name={id}
-                          aria-label={id}
-                          onChange={(event) => {
-                            element.setValue({
-                              ...user,
-                              [element.name]: event.target.value,
-                            });
-                          }}
-                          className={`${styles.input} mb-3`}
-                          defaultValue={element.value}
-                        >
-                          {element.options.map((option: any) => {
-                            return (
-                              <option key={option.en} value={option.en}>
-                                {option.th}
-                              </option>
-                            );
-                          })}
-                        </Form.Select>
+                        <label htmlFor={element.name}>
+                          <Form.Select
+                            id={element.name}
+                            name={element.name}
+                            aria-label={element.name}
+                            onChange={(event) => {
+                              element.setValue({
+                                ...user,
+                                [element.name]: event.target.value,
+                              });
+                            }}
+                            className={`${styles.input} mb-3`}
+                            defaultValue={element.value}
+                          >
+                            {element.options.map((option: any) => {
+                              return (
+                                <option key={option.en} value={option.en}>
+                                  {option.th}
+                                </option>
+                              );
+                            })}
+                          </Form.Select>
+                        </label>
                       )}
                     </Col>
                   );

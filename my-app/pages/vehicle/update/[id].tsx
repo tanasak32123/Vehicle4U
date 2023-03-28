@@ -2,31 +2,10 @@ import Head from "next/head";
 import useSWR from "swr";
 import styles from "@/styles/updateCar.module.css";
 import { useRouter } from "next/router";
-import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
-import { ChangeEvent, useState } from "react";
-import {
-  Button,
-  Col,
-  Container,
-  Form,
-  FormControl,
-  FormGroup,
-  Image,
-  Row,
-} from "react-bootstrap";
-import CarModal from "@/components/car/carModal";
-import GearOption from "@/components/car/gearOption";
-import SizeOption from "@/components/car/sizeOption";
-import CarForm from "@/components/car/carForm";
-
-interface CarData {
-  id: number;
-  name: string;
-  registrationId: string;
-  imagename: string;
-  province: string;
-  maximumCapacity: number;
-}
+import { FaArrowAltCircleLeft, FaEdit, FaFileImage } from "react-icons/fa";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Button, Col, Image, Modal, Row } from "react-bootstrap";
+import { FiEdit2 } from "react-icons/fi";
 
 const fetcherProvince = (url: string) =>
   fetch(url)
@@ -44,9 +23,45 @@ const fetcherProvince = (url: string) =>
       return res;
     });
 
-const fetcherVehicle = (url: string) => fetch(url).then((res) => res.json());
-
 export default function UpdateCar() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const [isAlert, setIsAlert] = useState<boolean>(false);
+  const [imageSrc, setImageSrc] = useState<string>("");
+  const [filename, setFilename] = useState<string>("");
+  const [imgFeedback, setImgFeedback] = useState("");
+  const [confChange, setConfChange] = useState<boolean>(false);
+
+  const carNameRef = useRef<HTMLInputElement | null>(null);
+  const regidRef = useRef<HTMLInputElement | null>(null);
+  const provinceRef = useRef<HTMLSelectElement | null>(null);
+  const seatRef = useRef<HTMLInputElement | null>(null);
+  const imageRef = useRef<HTMLInputElement | null>(null);
+
+  const [editname, setEditname] = useState<boolean>(false);
+  const [editregid, setEditregid] = useState<boolean>(false);
+  const [editprovince, setEditprovince] = useState<boolean>(false);
+  const [editmaxseat, setEditmaxseat] = useState<boolean>(false);
+
+  const edits: { [index: string]: Dispatch<SetStateAction<boolean>> } = {
+    edit_name: setEditname,
+    editregid: setEditregid,
+    editmaxseat: setEditmaxseat,
+    editprovince: setEditprovince,
+  };
+
+  const fetcherVehicle = (url: string) =>
+    fetch(url)
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        setImageSrc(`/images/vehicles/${res.imagename}`);
+        setFilename(res.imagename);
+        return res;
+      });
+
   const {
     data: provinceData,
     isLoading: provinceLoading,
@@ -61,106 +76,96 @@ export default function UpdateCar() {
     isLoading: vehicleLoading,
     error: vehicleError,
   } = useSWR(
-    "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json",
-    fetcherVehicle
+    id ? `/api/vehicle/getvehicle/${id}` : null,
+    id ? fetcherVehicle : null
   );
 
-  // modal
-  const [nameShow, setNameShow] = useState(false);
-  const [registrationIdShow, setRegistrationIdShow] = useState(false);
-  const [maximumCapacityShow, setMaximumCapacityShow] = useState(false);
-  const [provinceShow, setProvinceShow] = useState(false);
-
-  const [name, setName] = useState("");
-  const [registrationId, setRegistrationId] = useState("");
-  const [imagename, setImagename] = useState("");
-  const [maximumCapacity, setMaximumCapacity] = useState("");
-  const [province, setProvince] = useState("");
-
-  const [invalidInput, setInvalidInput] = useState("");
-
-  const [car, setCar] = useState<CarData>({
-    id: 0,
-    name: "",
-    imagename: "",
-    registrationId: "",
-    province: "",
-    maximumCapacity: 0,
-  });
-
-  // useEffect(() => {
-  //   setCar({
-  //     imageName: car?.imageName,
-  //     name: car?.name,
-  //     registrationId: car?.registrationId,
-  //     maximumCapacity: car?.maximumCapacity,
-  //     province: car?.province,
-  //   });
-  // });
-
   // update car
-  async function handleEditCar(type: string, values: string[]) {
-    try {
-      const data = {
-        id: car?.id,
-        name: car?.name,
-        registrationId: car?.registrationId,
-        imagename: car?.imagename,
-        province: car?.province,
-        maximumCapacity: car?.maximumCapacity,
-      };
-      console.log(data);
-      console.log(type);
-      console.log(values);
-      const response = await fetch(`/api/updateCar`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data, type, values }),
-      });
-      const body = await response.json();
-      if (!body.success) {
-        setInvalidInput(body.message);
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+  };
+
+  const handleChooseFile = () => {
+    return new Promise<boolean>((resolve) => {
+      const file: File | null | undefined = imageRef?.current?.files?.item(0);
+      if (!file) return resolve(false);
+      const validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+      const size = Number((file.size / 1024 / 1024).toFixed(2));
+      const validType = validImageTypes.includes(file?.type);
+      const exceedSize = size > 10;
+      if (validType && !exceedSize) {
+        setFilename(file.name);
+        setImgFeedback("");
+        return resolve(true);
       } else {
-        setInvalidInput("");
+        if (!validType) {
+          setImgFeedback("** ไฟล์ต้องเป็น PNG หรือ JPEG เท่านั้น");
+        } else if (!exceedSize) {
+          setImgFeedback("** ไฟล์ของคุณมีขนาดใหญ่เกิน 10 mb");
+        }
+        return resolve(false);
       }
-      return body.success;
-    } catch (error) {
-      console.error(error);
-      router.push("/500");
-    }
-  }
+    });
+  };
 
-  // image
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File>();
+  const updateImage = async () => {
+    const formData = new FormData();
+    formData.append("image", imageRef.current?.files?.item(0)!);
+    formData.append("id", id as string);
+    formData.append("oldFilename", vehicleData.imagename as string);
+    await fetch("/api/vehicle/updateimg", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => {
+        if (res.status == 401) {
+          router.push("/");
+        }
+        if (res.status == 500) {
+          throw new Error("Something went wrong ...");
+        }
+        return res.json();
+      })
+      .then((res) => {
+        if (res.success) {
+          const file = imageRef?.current?.files?.item(0);
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              setImageSrc(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+          } else {
+            setImgFeedback("** โปรดเลือกไฟล์รูปภาพของคุณ");
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsAlert(true);
+      });
+  };
 
-  const handleFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageSrc(reader.result as string);
-        setSelectedFile(file);
-      };
-      reader.readAsDataURL(file);
+  const choosefile = () => {
+    setConfChange(false);
+    document.getElementById("carImgFile")?.click();
+  };
+
+  const cancelFile = () => {
+    setFilename("");
+    setImageSrc("");
+    (imageRef?.current as HTMLInputElement).value = "";
+  };
+
+  const handleEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    for (let key in edits) {
+      if (key == e.currentTarget.id) {
+        edits[key](true);
+      } else edits[key](false);
     }
   };
 
-  const handleSubmitImage = async () => {
-    // try {
-    //   if (!selectedFile) return;
-    //   const formData = new FormData();
-    //   formData.append("myImage", selectedFile);
-    //   const { data }: any = await axios.post("/api/editImage", formData);
-    //   console.log(data);
-    // } catch (error: any) {
-    //   console.log(error.response?.data);
-    // }
-  };
-
-  const router = useRouter();
+  if (provinceError || vehicleError) return <div>failed to load</div>;
 
   return (
     <>
@@ -183,212 +188,366 @@ export default function UpdateCar() {
                 <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
               </button>
               <h1 className="align-items-center d-flex justify-content-end">
-                <FaCar />
-                &nbsp; แก้ไขข้อมูลรถยนต์
+                <FaEdit /> แก้ไขข้อมูลรถเช่า
               </h1>
               <hr />
-              <Container>
-                <br />
+              {isAlert && (
+                <div
+                  className={`alert alert-danger d-flex align-items-center`}
+                  role="alert"
+                >
+                  <svg
+                    className="bi flex-shrink-0 me-2"
+                    width="24"
+                    height="24"
+                    role="img"
+                    aria-label="Danger:"
+                  >
+                    <use xlinkHref="#exclamation-triangle-fill" />
+                  </svg>
+                  <div>
+                    <small>ระบบเกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง</small>
+                  </div>
+                </div>
+              )}
+
+              <form id="form" onSubmit={handleSubmit}>
+                <div className="mb-3">
+                  <label htmlFor="carImgFile" className="form-label">
+                    <b>รูปรถเช่า</b>
+                  </label>
+                  <small className={`ms-2 red_color ${styles.feedback}`}>
+                    {imgFeedback}
+                  </small>
+                  <div className="input-group">
+                    <button
+                      id="file"
+                      type="button"
+                      onClick={() => setConfChange(true)}
+                      className={`btn d-flex align-items-center btn-primary`}
+                    >
+                      <FaFileImage />
+                      &nbsp;เปลี่ยนรูป
+                    </button>
+                    <input
+                      ref={imageRef}
+                      className="form-control"
+                      type="file"
+                      id="carImgFile"
+                      onChange={async () => {
+                        await handleChooseFile().then((res: boolean) => {
+                          if (res) updateImage();
+                        });
+                      }}
+                      hidden
+                    />
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="โปรดเลือกไฟล์รูปภาพของรถ"
+                      value={filename ? filename : ""}
+                      disabled
+                    />
+                  </div>
+                  <div
+                    className={`${styles.first_col} mt-3 d-flex justify-content-center align-items-center`}
+                  >
+                    {imageSrc ? (
+                      <div>
+                        <Image
+                          className={`${styles.image}`}
+                          src={imageSrc}
+                          alt="Vehicle Image"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className={`d-flex justify-content-center align-items-center w-100 h-100`}
+                      >
+                        ไม่มีรูปภาพ
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 <Row>
-                  <Form onSubmit={handleSubmitImage}>
-                    {/* Image */}
-                    <FormGroup>
-                      <FormControl
-                        type="file"
-                        onChange={handleFileInputChange}
-                      />
-                      <Button className={`${styles.upload_btn}`} type="submit">
-                        Upload
-                      </Button>
-                      <div className={`${styles.first_col}`}>
-                        <br />
-                        {imageSrc ? (
-                          <Image
-                            className={`${styles.image}`}
-                            src={imageSrc}
-                            alt="Vehicle Image"
-                            height={"400px"}
-                          />
+                  <Col lg={12}>
+                    <div className="mb-3">
+                      <label htmlFor="carName" className="form-label">
+                        <b>ชื่อของรถ</b>
+                      </label>{" "}
+                      <div className={`text-start`}>
+                        {!editname ? (
+                          <>
+                            <span>{vehicleData?.name}</span>
+                            <button
+                              id="edit_name"
+                              type="button"
+                              title={`edit_name`}
+                              className={`${styles.edit_button} float-end`}
+                              onClick={(e) => handleEdit(e)}
+                            >
+                              <span>
+                                <FiEdit2 />
+                                &nbsp;แก้ไข
+                              </span>
+                            </button>
+                          </>
                         ) : (
-                          <div className={`${styles.empty_img}`}>
-                            ไม่มีรูปภาพ
-                          </div>
+                          <>
+                            <div className="input-group">
+                              <input
+                                ref={carNameRef}
+                                type="text"
+                                id="carname"
+                                className="form-control"
+                                placeholder="ชื่อรถเช่าของคุณ"
+                                defaultValue={vehicleData?.name}
+                              />
+                              <button
+                                title="submit_editname"
+                                name="submit_editname"
+                                type="button"
+                                className={`btn-success btn`}
+                              >
+                                ยืนยัน
+                              </button>
+                              <button
+                                title="cancel_editname"
+                                name="cancel_editname"
+                                type="button"
+                                className={`btn btn-danger`}
+                                onClick={() => setEditname(false)}
+                              >
+                                ยกเลิก
+                              </button>
+                            </div>
+                          </>
                         )}
                       </div>
-                    </FormGroup>
-                  </Form>
+                    </div>
 
-                  <br />
+                    <div className="mb-3">
+                      <label htmlFor="regisNum" className="form-label">
+                        <b>เลขทะเบียนรถ</b>
+                      </label>
+                      <div className={`text-start`}>
+                        {!editregid ? (
+                          <>
+                            <span>{vehicleData?.registrationId}</span>
+                            <button
+                              id="edit_regisId"
+                              type="button"
+                              title={`edit_regisId`}
+                              className={`${styles.edit_button} float-end`}
+                              onClick={() => setEditregid(true)}
+                            >
+                              <span>
+                                <FiEdit2 />
+                                &nbsp;แก้ไข
+                              </span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="input-group">
+                              <input
+                                ref={regidRef}
+                                type="text"
+                                className="form-control"
+                                id="editregid"
+                                placeholder="เลขทะเบียนรถของคุณ"
+                                defaultValue={vehicleData?.registrationId}
+                              />
+                              <button
+                                title="submit_editregid"
+                                name="submit_editregid"
+                                type="button"
+                                className={`btn btn-success`}
+                              >
+                                ยืนยัน
+                              </button>
+                              <button
+                                title="cancel_editregid"
+                                name="cancel_editregid"
+                                type="button"
+                                className={`btn btn-danger`}
+                                onClick={() => setEditregid(false)}
+                              >
+                                ยกเลิก
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </Col>
+
+                  <Col lg={12}>
+                    <div className="mb-3">
+                      <label htmlFor="province" className="form-label">
+                        <b>จังหวัด</b>
+                      </label>
+                      <div className={`text-start`}>
+                        {!editprovince ? (
+                          <>
+                            <span>{vehicleData?.province}</span>
+                            <button
+                              id="edit_province"
+                              type="button"
+                              title={`edit_province`}
+                              className={`${styles.edit_button} float-end`}
+                              onClick={() => setEditprovince(true)}
+                            >
+                              <span>
+                                <FiEdit2 />
+                                &nbsp;แก้ไข
+                              </span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="input-group">
+                              <select
+                                title="editprovince"
+                                ref={provinceRef}
+                                className="form-select"
+                                id="editprovince"
+                                defaultValue={vehicleData?.province}
+                              >
+                                <option value="">กรุณาเลือกจังหวัด ...</option>
+                                {provinceData.map((e: any) => {
+                                  return (
+                                    <option
+                                      key={e.id}
+                                      id={e.id}
+                                      value={e.name_th}
+                                    >
+                                      {e.name_th}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <button
+                                title="submit_editregid"
+                                name="submit_editregid"
+                                type="button"
+                                className={`btn btn-success`}
+                              >
+                                ยืนยัน
+                              </button>
+                              <button
+                                title="cancel_editregid"
+                                name="cancel_editregid"
+                                type="button"
+                                className={`btn btn-danger`}
+                                onClick={() => setEditprovince(false)}
+                              >
+                                ยกเลิก
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mb-3">
+                      <label htmlFor="seat" className="form-label">
+                        <b>จำนวนที่นั่ง</b>
+                      </label>
+                      <div className={`text-start`}>
+                        {!editmaxseat ? (
+                          <>
+                            <span>{vehicleData?.maximumCapacity}</span>
+                            <button
+                              id="edit_maxCap"
+                              type="button"
+                              title={`edit_maxCap`}
+                              className={`${styles.edit_button} float-end`}
+                              onClick={() => setEditmaxseat(true)}
+                            >
+                              <span>
+                                <FiEdit2 />
+                                &nbsp;แก้ไข
+                              </span>
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="input-group">
+                              <input
+                                ref={seatRef}
+                                type="text"
+                                className="form-control"
+                                id="editseat"
+                                placeholder="จำนวนที่นั่งของคุณ"
+                                defaultValue={vehicleData?.maximumCapacity}
+                              />
+                              <button
+                                title="submit_editseat"
+                                name="submit_editseat"
+                                type="button"
+                                className={`btn btn-success`}
+                              >
+                                ยืนยัน
+                              </button>
+                              <button
+                                title="cancel_editseat"
+                                name="cancel_editseat"
+                                type="button"
+                                className={`btn btn-danger`}
+                                onClick={() => setEditmaxseat(false)}
+                              >
+                                ยกเลิก
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </Col>
                 </Row>
-                {/* ชื่อรถ */}
-                <Row>
-                  <Col>
-                    <CarForm
-                      name="name"
-                      label="ชื่อรถ"
-                      rawData={`car_name`}
-                      inputs={[
-                        {
-                          name: "name",
-                          label: "ชื่อรถ",
-                          value: "car_name",
-                          currentValue: name,
-                          setValue: setName,
-                        },
-                      ]}
-                      setShowModalFunc={setNameShow}
-                      isShow={true}
-                    />
-                    <CarModal
-                      title={`แก้ไขข้อมูลรถยนต์`}
-                      id={`name`}
-                      type={`text`}
-                      inputs={[
-                        {
-                          name: "name",
-                          label: "ชื่อของรถ",
-                          value: "car_name",
-                          currentValue: name,
-                          setValue: setName,
-                        },
-                      ]}
-                      newData={[name]}
-                      invalid={invalidInput}
-                      setInvalid={setInvalidInput}
-                      isShowModal={nameShow}
-                      setShowModalFunc={setNameShow}
-                      handleupdateFunc={handleEditCar}
-                      car={car}
-                    />
-                  </Col>
-                  {/* หมายเลขทะเบียน */}
-                  <Col>
-                    <CarForm
-                      name="registrationId"
-                      label="เลขทะเบียนของรถ"
-                      rawData={`car_regNum`}
-                      inputs={[
-                        {
-                          name: "registrationId",
-                          label: "เลขทะเบียนของรถ",
-                          value: "car_regNum",
-                          currentValue: registrationId,
-                          setValue: setRegistrationId,
-                        },
-                      ]}
-                      setShowModalFunc={setRegistrationIdShow}
-                      isShow={true}
-                    />
-                    <CarModal
-                      title={`แก้ไขข้อมูลรถยนต์`}
-                      id={`registrationId`}
-                      type={`text`}
-                      inputs={[
-                        {
-                          name: "registrationId",
-                          label: "เลขทะเบียนของรถ",
-                          value: "car_regNum",
-                          currentValue: registrationId,
-                          setValue: setRegistrationId,
-                        },
-                      ]}
-                      newData={[registrationId]}
-                      invalid={invalidInput}
-                      setInvalid={setInvalidInput}
-                      isShowModal={registrationIdShow}
-                      setShowModalFunc={setRegistrationIdShow}
-                      handleupdateFunc={handleEditCar}
-                      car={car}
-                    />
-                  </Col>
-                </Row>
-                {/* ที่นั่ง */}
-                <Row>
-                  <Col>
-                    <CarForm
-                      name="maximumCapacity"
-                      label="จำนวนที่นั่ง"
-                      rawData={`maximumCapacity`}
-                      inputs={[
-                        {
-                          name: "maximumCapacity",
-                          label: "จำนวนที่นั่ง",
-                          value: "maximumCapacity",
-                          currentValue: maximumCapacity,
-                          setValue: setMaximumCapacity,
-                        },
-                      ]}
-                      setShowModalFunc={setMaximumCapacityShow}
-                      isShow={true}
-                    />
-                    <CarModal
-                      title={`แก้ไขข้อมูลรถยนต์`}
-                      id={`maximumCapacity`}
-                      type={`text`}
-                      inputs={[
-                        {
-                          name: "paseenger",
-                          label: "จำนวนที่นั่ง",
-                          value: "maximumCapacity",
-                          currentValue: maximumCapacity,
-                          setValue: setMaximumCapacity,
-                        },
-                      ]}
-                      newData={[maximumCapacity]}
-                      invalid={invalidInput}
-                      setInvalid={setInvalidInput}
-                      isShowModal={maximumCapacityShow}
-                      setShowModalFunc={setMaximumCapacityShow}
-                      handleupdateFunc={handleEditCar}
-                      car={car}
-                    />
-                  </Col>
-                  {/* จังหวัด */}
-                  <Col>
-                    <CarForm
-                      name="province"
-                      label="จังหวัด"
-                      rawData={`car_province`}
-                      inputs={[
-                        {
-                          name: "province",
-                          label: "จังหวัด",
-                          value: "car_province",
-                          currentValue: province,
-                          setValue: setProvince,
-                        },
-                      ]}
-                      setShowModalFunc={setProvinceShow}
-                      isShow={true}
-                    />
-                    <CarModal
-                      title={`แก้ไขข้อมูลรถยนต์`}
-                      id={`province`}
-                      type={`text`}
-                      inputs={[
-                        {
-                          name: "province",
-                          label: "จังหวัด",
-                          value: "car_province",
-                          currentValue: province,
-                          setValue: setProvince,
-                        },
-                      ]}
-                      newData={[province]}
-                      invalid={invalidInput}
-                      setInvalid={setInvalidInput}
-                      isShowModal={provinceShow}
-                      setShowModalFunc={setProvinceShow}
-                      handleupdateFunc={handleEditCar}
-                      car={car}
-                    />
-                  </Col>
-                </Row>
-              </Container>
+              </form>
             </>
           )}
         </div>
       </div>
+
+      {confChange && (
+        <ChangeImgModal
+          show={confChange}
+          onHide={() => setConfChange(false)}
+          choosefile={choosefile}
+        />
+      )}
     </>
   );
 }
+
+const ChangeImgModal = ({ show, onHide, choosefile }: any) => {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>เปลี่ยนรูปรถเช่า</h4>
+        <div className={`text-center`}>
+          <small>คุณยืนยันที่จะเปลี่ยนรูปรถเช่าหรือไม่?</small>
+        </div>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex`}>
+        <Button className={`me-auto`} onClick={onHide}>
+          ยกเลิก
+        </Button>
+        <Button onClick={choosefile} variant="danger">
+          ยืนยัน
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};

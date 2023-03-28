@@ -282,7 +282,6 @@ export default function UploadCar() {
                 </div>
 
                 <Row>
-                  <Col lg={12}></Col>
                   <Col lg={6}>
                     <div className="mb-3">
                       <label htmlFor="carName" className="form-label">

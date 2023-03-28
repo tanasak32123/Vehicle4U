@@ -60,7 +60,7 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error, mutate } = useSWR(
-    "/api/vehicle/getvehicle",
+    "/api/vehicle/getvehicles",
     fetcher
   );
   const router = useRouter();
