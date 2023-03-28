@@ -1,25 +1,27 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import isAuthValid from "libs/auth/isAuthValid";
 
-const authPrefixes = ["/profile"];
+const authPrefixes = ["/user/profile", "/vehicle/upload_car"];
 
-export function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
+export async function middleware(req: NextRequest) {
+  // const token = req.cookies.get("token")?.value;
+  // const role = req.cookies.get("role")?.value;
 
-  const { pathname } = req.nextUrl;
   const url = req.nextUrl;
 
-  if (authPrefixes.includes(pathname) && !token) {
-    url.pathname = "/";
-    return NextResponse.rewrite(url);
+  if (authPrefixes.includes(url.pathname) && !isAuthValid(req)) {
+    url.pathname = `/`;
+    url.search = `?from=${url.pathname}`;
+    return NextResponse.redirect(url);
   }
 
-  if (pathname === "/" && token) {
-    url.pathname = "/searchcar";
-    return NextResponse.rewrite(url);
+  if (url.pathname === "/" && isAuthValid(req)) {
+    url.pathname = `/vehicle`;
+    return NextResponse.redirect(url);
   }
 
-  NextResponse.next();
+  return NextResponse.next();
 }
 
 export const config = {
@@ -31,6 +33,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
   ],
 };
