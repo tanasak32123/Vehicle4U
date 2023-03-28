@@ -16,7 +16,20 @@ export class VehicleService {
     pageNumber: number,
   ): Promise<[Vehicle[], any]> {
     const pagination_count = 2;
-    const all_vehicles = await this.vehicleRepository.find();
+    const all_vehicles = await this.vehicleRepository
+      .createQueryBuilder('vehicles')
+      .where(
+        `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
+        {
+          carName: carName,
+        },
+      )
+      .andWhere('vehicles.province = :province', { province: province })
+      .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
+        maxPassenger: maxPassenger,
+      })
+      .printSql()
+      .getMany();
     const datalength = all_vehicles.length;
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
@@ -49,7 +62,9 @@ export class VehicleService {
         pageNumber: pageNumber - 1,
       };
     }
-    paginationData.page_count = Math.ceil(datalength / pagination_count);
+    paginationData.page_count = Math.ceil(
+      all_vehicles.length / pagination_count,
+    );
     // console.log(await this.vehicleRepository.find());
     // const paginated_vehicles = [];
     // let buffer = [];
