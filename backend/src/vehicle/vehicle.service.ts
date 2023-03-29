@@ -1,13 +1,16 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { User } from 'src/user/entities/user.entity';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehicleService {
   constructor(
-    @InjectRepository(Vehicle)
-    private vehicleRepository: Repository<Vehicle>,
+    @InjectRepository(Vehicle) private vehicleRepository: Repository<Vehicle>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async findByFilter(
     province: string,
@@ -81,5 +84,48 @@ export class VehicleService {
     console.log(paginated_vehicles);
     console.log(paginationData);
     return [paginated_vehicles, paginationData];
+  }
+  async createVehicle(
+    id: number,
+    createVehicleDto: CreateVehicleDto,
+  ): Promise<Vehicle> {
+    const ent = await this.vehicleRepository.findOneBy({
+      registrationId: createVehicleDto.registrationId,
+    });
+    if (ent) {
+      throw new HttpException(
+        'registration number exist',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    const vehicle = await this.vehicleRepository.create(createVehicleDto);
+    vehicle.user = await this.userRepository.findOneBy({ id: id });
+    return await this.vehicleRepository.save(vehicle);
+  }
+  async updateVehicle(updateVehicleDto: UpdateVehicleDto) {
+    const ent = await this.vehicleRepository.findOneBy({
+      id: updateVehicleDto.id,
+    });
+    if (!ent) {
+      throw new HttpException('id dont exist', HttpStatus.NOT_FOUND);
+    }
+    const oldImageName = ent.imagename;
+
+    await this.vehicleRepository.update(
+      { id: updateVehicleDto.id },
+      updateVehicleDto,
+    );
+    const vehicle = await this.vehicleRepository.findOneBy({
+      id: updateVehicleDto.id,
+    });
+    return { oldImageName, vehicle };
+  }
+
+  async getVehicleByUserId(userId: number): Promise<Vehicle[]> {
+    
+    const vehicles = await this.vehicleRepository.find({
+      where: { user: { id: userId } },
+    });
+    return vehicles;
   }
 }

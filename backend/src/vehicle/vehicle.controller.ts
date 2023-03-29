@@ -1,8 +1,22 @@
-import { Body, Controller, Get, Response, Query, Post } from '@nestjs/common';
-
+import {
+  Body,
+  Controller,
+  Get,
+  Response,
+  Query,
+  Post,
+  Request,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { VehicleService } from './vehicle.service';
 import { Vehicle } from './entities/vehicle.entity';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
+@ApiTags('Vehicle4U')
 @Controller('vehicle')
 export class VehicleController {
   constructor(private readonly vehicleService: VehicleService) {}
@@ -36,5 +50,36 @@ export class VehicleController {
       page_count: pagination_data.page_count,
       next_page: pagination_data.next.pageNumber,
     });
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('')
+  async createVehicle(
+    @Request() req,
+    @Body() createVehicleDto: CreateVehicleDto,
+  ): Promise<Vehicle> {
+    const id = req.user['id'];
+    return await this.vehicleService.createVehicle(id, createVehicleDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('')
+  async updateVehicle(
+    @Body() updateVehicleDto: UpdateVehicleDto,
+    @Response() res,
+  ) {
+    const { oldImageName, vehicle } = await this.vehicleService.updateVehicle(
+      updateVehicleDto,
+    );
+    return res.status(200).send({
+      oldImageName: oldImageName,
+      vehicle: vehicle,
+    });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('myvehicles')
+  async getVehiclesById(@Request() req): Promise<Vehicle[]> {
+    const id = req.user['id'];
+    return await this.vehicleService.getVehicleByUserId(id);
   }
 }
