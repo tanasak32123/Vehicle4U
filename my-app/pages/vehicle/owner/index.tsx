@@ -126,7 +126,7 @@ const ProviderOwnerVehicle = () => {
                   </div>
                   <div className={`col-6`}>
                     <div
-                      className={`d-flex justify-content-left align-items-center`}
+                      className={`d-flex justify-content-left align-items-center mb-3`}
                     >
                       <div className={`text-start`}>
                         <div>
@@ -165,14 +165,14 @@ const ProviderOwnerVehicle = () => {
                         แก้ไขข้อมูล
                       </Link>
 
-                      <Link
+                      {/* <Link
                         className={`float-end`}
                         href={`#car_${e.id}`}
                         onClick={() => setShowDelete(true)}
                       >
                         <FaPrescriptionBottle />
                         ลบข้อมูล
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 </div>
