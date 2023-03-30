@@ -1,140 +1,66 @@
 .main {
-  background-image: url('../public/images/backgrounds/searchCar.png');
-  object-fit: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-color: #c7dde7;
+  min-height: 100vh;
 }
 
 .form_container {
   background-color: rgba(84, 90, 139, 0.9);
-  border-radius: 70px;
-  padding: 50px 15px;
-  width: 80%;
+  border-radius: 10px;
 }
 
-.input {
-  background-color: transparent;
-  border: 0px;
-  border-bottom: 1px solid white;
-  color: white;
-  width: 100%;
-  outline: none;
-}
-
-.login_btn {
-  background: #48db79;
-  color: white;
-  border-radius: 20px;
-  width: 170px;
-  box-shadow: 5px 5px #dadada;
-  border: 1px solid #48db79;
-  transition: 0.3s;
-}
-
-.login_btn:hover {
-  background: white;
-  color: #48db79;
-  border-color: #48db79;
-}
-
-.borderFont {
-  text-shadow: 5px 5px black;
-}
-
-.spinner {
-  height: 18px;
-  width: 18px;
-}
-
-.invalid {
+.title {
   color: white;
 }
 
-.select {
-  appearance: none;
-  padding: 5px;
+.no_info {
+  height: 300px;
+}
+
+.loading div {
+  background-color: black;
+}
+
+.vehicle_container {
   background-color: white;
-  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
-  border-radius: 5.5px;
-  height: 36px;
-  width: 100%;
-  outline: none;
-  border: 1px solid black;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-  background-repeat: no-repeat;
-  background-position: right 0.7rem top 50%;
-  background-size: 0.65rem auto;
+  border-radius: 10px;
 }
 
-.signup {
-  color: white;
+.card {
+  background-color: #fef9eb;
+  border-radius: 20px;
 }
 
-.signup:hover {
-  color: #cccfcd;
+.vehicle_image {
+  position: relative;
+  height: 200px;
 }
 
-.head {
-  background: rgba(254, 249, 235, 0.7);
-  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
-  border-radius: 5.5px;
-  width: 140px;
-  border: 1px solid black;
-  color: #545a8b;
-}
-
-.role {
-  background: rgba(254, 249, 235, 0.7);
-  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
-  border-radius: 5.5px;
-
-  border: 1px solid black;
-  color: #545a8b;
-}
-
-.searchbtn {
-  background: rgba(254, 249, 235, 0.7);
-  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
-  border-radius: 5.5px;
-  width: 140px;
-  height: 85px;
-  height: 85px;
-  border: 1px solid black;
-  color: #545a8b;
-  border: none;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.App {
-  font-family: sans-serif;
-  text-align: center;
-}
-.react-datepicker__time-list {
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
   padding-left: 0;
+  background-color: #fafafa;
+  padding: 10px 0px;
+  border-radius: 5px;
 }
 
-.picker {
-  grid-column: 5/10;
-  grid-row: 2/4;
-  background: transparent;
-  color: slateblue;
-  width: 80%;
+.pagination a {
+  padding: 10px 13px;
+  border-radius: 5px;
+  color: #6c7ac9;
+}
+
+.pagination__link {
   font-weight: bold;
-  margin: auto;
-
-  border-style: none;
+  text-decoration: none;
 }
 
-.p1 {
-  margin-top: 2.4%;
-  margin-bottom: 1%;
+.pagination__link__disabled a {
+  color: rgb(198, 197, 202);
 }
 
-.p2 {
-  margin-top: 1%;
-  margin-bottom: 2.4%;
+.pagination__link__active a {
+  color: #33e2f5 !important;
 }

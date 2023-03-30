@@ -47,7 +47,7 @@ const Header = () => {
                   {auth?.role == "provider" && (
                     <>
                       <Nav.Link href={`/vehicle/owner`}>รถเช่าของคุณ</Nav.Link>
-                      <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link>
+                      {/* <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link> */}
                     </>
                   )}
                   <hr />

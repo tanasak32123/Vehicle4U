@@ -1,370 +1,255 @@
-import Head from 'next/head';
-import styles from '@/styles/searchcar.module.css';
-import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
-import React, { useState, useEffect } from 'react';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Form from 'react-bootstrap/Form';
-import { BiSearchAlt } from 'react-icons/bi';
-import { useInfiniteQuery } from 'react-query';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import Head from "next/head";
+import styles from "@/styles/searchcar.module.css";
+import { Row, Col, Button } from "react-bootstrap";
+import React, { useRef, useState } from "react";
+import useSWR from "swr";
+import { FaSearch } from "react-icons/fa";
+import ReactPaginate from "react-paginate";
+import Image from "next/image";
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      console.log(res);
+      return res;
+    });
 
-// The forwardRef is important!!
-// Dropdown needs access to the DOM node in order to position the Menu
-const CustomToggle = React.forwardRef(({ children, onClick }: any, ref) => (
-  <a
-    href=""
-    onClick={(e) => {
-      e.preventDefault();
-      onClick(e);
-    }}
-  >
-    {children}
-    &#x25bc;
-  </a>
-));
-
-// forwardRef again here!
-// Dropdown needs access to the DOM of the Menu to measure it
-
-const CustomMenu = React.forwardRef(
-  ({ children, style, className }: any, ref) => {
-    const [value, setValue] = useState('');
-
-    return (
-      <div style={style} className={className}>
-        <Form.Control
-          autoFocus
-          className="mx-3 my-2 w-auto"
-          placeholder="Type to filter..."
-          onChange={(e) => {
-            setValue(e.target.value);
-            console.log(e.target.value);
-          }}
-          value={value}
-        />
-        <ul className="list-unstyled">
-          {React.Children.toArray(children).filter(
-            (child: any) =>
-              !value || child.props.children.toLowerCase().startsWith(value)
-          )}
-        </ul>
-      </div>
-    );
-  }
-);
+const fetcherProvince = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      res.sort((a: any, b: any) => {
+        if (a.name_th < b.name_th) {
+          return -1;
+        }
+        if (a.name_th > b.name_th) {
+          return 1;
+        }
+        return 0;
+      });
+      return res;
+    });
 
 export default function SearchCar() {
-  const [name, setName] = useState('Toyota Altis');
-  const [province, setProvince] = useState('กรุงเทพมหานคร');
-  const [capacity, setCapacity] = useState('1');
-  const today = new Date();
+  const [name, setName] = useState("");
+  const [province, setProvince] = useState("กรุงเทพมหานคร");
+  const [seat, setSeat] = useState("0");
+  const [nextPage, setNextPage] = useState(1);
 
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  const [startDate1, setStartDate1] = useState(today);
-  const [startDate2, setStartDate2] = useState(tomorrow);
-
-  const [pageNumber, setPageNumber] = useState(1);
-
-  const handleDateChange1 = (date: Date) => {
-    if (date > today) {
-      console.log('1');
-      setStartDate1(date);
-
-      if (date >= startDate2) {
-        console.log('2');
-
-        let newStartDate2 = new Date(date.getTime());
-        newStartDate2.setDate(newStartDate2.getDate() + 1);
-        setStartDate2(newStartDate2);
-      }
-      if (startDate2 == tomorrow) {
-        console.log('3');
-        setStartDate2(new Date(tomorrow.getTime() + 86400000));
-      }
-    } else {
-      setStartDate1(today);
-      if (today >= startDate2) {
-        setStartDate2(tomorrow);
-      }
-      if (startDate2 == tomorrow) {
-        setStartDate2(new Date(tomorrow.getTime() + 86400000));
-      }
-    }
-  };
-  const handleDateChange2 = (date: Date) => {
-    if (date > tomorrow) {
-      setStartDate2(date);
-      if (date <= startDate1) {
-        let newStartDate1 = new Date(date.getTime());
-        newStartDate1.setDate(newStartDate1.getDate() - 1);
-        setStartDate1(newStartDate1);
-      }
-    } else {
-      setStartDate2(tomorrow);
-      setStartDate1(today);
-    }
-  };
-
-  const key = ['vehicles', name ?? '', capacity ?? '', province ?? ''];
-
-  const fetchVehicles = async (key, name, capacity, province, nextPage = 1) => {
-    const response = await fetch(
-      `http://localhost:3000/vehicle?name=${name}&maxPassenger=${capacity}&province=${province}&page=${nextPage}`
-    );
-    const data = await response.json();
-
-    return {
-      vehicles: data.vehicles,
-      totalPages: data.page_count,
-      nextPage: data.next_page,
-    };
-  };
+  const nameRef = useRef<HTMLInputElement | null>(null);
+  const provinceRef = useRef<HTMLSelectElement | null>(null);
+  const seatRef = useRef<HTMLInputElement | null>(null);
+  const pageRef = useRef<HTMLInputElement | null>(null);
 
   const {
-    data,
-    isLoading,
-    isError,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    key,
-    ({ pageParam = 1 }) =>
-      fetchVehicles('vehicles', name, capacity, province, pageParam),
-    {
-      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
-      enabled: false,
-    }
+    data: paginationData,
+    isLoading: paginationLoading,
+    error: paginationError,
+  } = useSWR(
+    `http://localhost:3000/vehicle/search?name=${name}&maxPassenger=${seat}&province=${province}&page=${nextPage}`,
+    fetcher
   );
 
-  const handleSearch = () => {
-    // Reset the infinite scroll component to page 1
-    fetchNextPage(1);
+  const {
+    data: provinceData,
+    isLoading: provinceLoading,
+    error: provinceError,
+  } = useSWR(
+    "https://raw.githubusercontent.com/kongvut/thai-province-data/master/api_province.json",
+    fetcherProvince
+  );
+
+  const handlePagination = (e: any) => {
+    setNextPage(e.selected + 1);
   };
 
-  const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    setName(nameRef.current?.value!);
+    setProvince(provinceRef.current?.value!);
+    setSeat(seatRef.current?.value! == "" ? "0" : seatRef.current?.value!);
+  };
 
-  return (
-    <>
-      <Head>
-        <title>หน้าหลัก-VEHICLE4U</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+  if (provinceError) return <div>Failed to load.</div>;
+  if (provinceLoading) return <div>Loading...</div>;
 
-      <div className={`${styles.main}`}>
-        <Row style={{ height: '100vh', width: '100%' }}>
-          <Col
-            sm={12}
-            lg={20}
-            className="d-flex justify-content-center align-items-center"
-          >
-            <div
-              className={`${styles.form_container} justify-content-center d-flex align-items-center`}
-            >
-              <form style={{ width: '90%' }}>
-                <h5 className={`p-2 ${styles.head} mb-1 text-center`}>
-                  บริการเช่ารถ
-                </h5>
+  if (provinceData)
+    return (
+      <>
+        <Head>
+          <title>ค้นหายานพาหนะ-VEHICLE4U</title>
+          <meta name="description" content="search vehicle" />
+        </Head>
 
-                <br />
-                <br />
-
-                <Row>
-                  <Col sm={12} lg={6}>
-                    <Row className={`p-3 ${styles.role} mb-1 text-center`}>
-                      <Col
-                        sm={12}
-                        lg={4}
-                        style={{ borderRight: '1px solid black' }}
-                      >
-                        <h6>ชื่อรุ่นรถ</h6>
-                        <Dropdown>
-                          <Dropdown.Toggle
-                            as={CustomToggle}
-                            id="dropdown-custom-components"
-                          >
-                            {name}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu as={CustomMenu}>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setName(e.target.getAttribute('name'))
-                              }
-                              name="Toyota Altis"
-                            >
-                              Toyota Altis
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setName(e.target.getAttribute('name'))
-                              }
-                              name="Ford Ranger"
-                            >
-                              Ford Ranger
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setName(e.target.getAttribute('name'))
-                              }
-                              name="Toyota Yaris"
-                            >
-                              Toyota Yaris
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </Col>
-                      <Col
-                        sm={12}
-                        lg={4}
-                        style={{ borderRight: '1px solid black' }}
-                      >
-                        <h6>จังหวัด</h6>
-                        <Dropdown>
-                          <Dropdown.Toggle
-                            as={CustomToggle}
-                            id="dropdown-custom-components"
-                          >
-                            {province}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu as={CustomMenu}>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('province'))
-                              }
-                              province="กรุงเทพมหานคร"
-                            >
-                              กรุงเทพมหานคร
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('province'))
-                              }
-                              province="นนทบุรี"
-                            >
-                              นนทบุรี
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setProvince(e.target.getAttribute('province'))
-                              }
-                              province="ปทุมธานี"
-                            >
-                              ปทุมธานี
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </Col>
-
-                      <Col sm={12} lg={4}>
-                        <h6>จำนวนผู้โดยสาร</h6>
-                        <Dropdown>
-                          <Dropdown.Toggle
-                            as={CustomToggle}
-                            id="dropdown-custom-components"
-                          >
-                            {capacity}
-                          </Dropdown.Toggle>
-
-                          <Dropdown.Menu as={CustomMenu}>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setCapacity(e.target.getAttribute('capacity'))
-                              }
-                              capacity="1"
-                            >
-                              1
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setCapacity(e.target.getAttribute('capacity'))
-                              }
-                              capacity="2"
-                            >
-                              2
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={(e: any) =>
-                                setCapacity(e.target.getAttribute('capacity'))
-                              }
-                              capacity="3"
-                            >
-                              3
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </Col>
-                    </Row>
-                  </Col>
-
-                  <Col sm={12} lg={4}>
-                    <div className={`p-2 ${styles.role} mb-3 text-center`}>
-                      <Row className={`${styles.p1}`}>
-                        <Col>วัน-เวลารับรถ</Col>
-                        <Col>
-                          <DatePicker
-                            className={`${styles.picker}`}
-                            selected={startDate1}
-                            onChange={handleDateChange1}
-                            minDate={today}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                        </Col>
-                      </Row>
-                      <Row className={`${styles.p2}`}>
-                        <Col>วัน-เวลาส่งรถ</Col>
-                        <Col>
-                          <DatePicker
-                            className={`${styles.picker}`}
-                            selected={startDate2}
-                            onChange={handleDateChange2}
-                            minDate={tomorrow}
-                            dateFormat="dd/MM/yyyy"
-                          />
-                        </Col>
-                      </Row>
+        <div
+          className={`${styles.main} d-flex justify-content-center align-items-center`}
+        >
+          <div className="container mt-4">
+            <div className={`${styles.form_container} p-4 mb-3`}>
+              <h1 className={`${styles.title} mb-3`}>ค้นหายานพาหนะ</h1>
+              <Row>
+                <Col lg={3} sm={12}>
+                  <div className="form-floating">
+                    <input
+                      ref={nameRef}
+                      type="text"
+                      className="form-control"
+                      id="name"
+                      placeholder="ชื่อยานพาหนะ"
+                    />
+                    <label htmlFor="name">ชื่อยานพาหนะ</label>
+                  </div>
+                </Col>
+                <Col lg={3} sm={12}>
+                  <div className="form-floating">
+                    <select
+                      ref={provinceRef}
+                      title={`query province`}
+                      className="form-select"
+                      id="province"
+                      placeholder="จังหวัด"
+                      defaultValue={`กรุงเทพมหานคร`}
+                    >
+                      {provinceData?.map((e: any) => {
+                        return (
+                          <option key={e.id} id={e.id} value={e.name_th}>
+                            {e.name_th}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <label htmlFor="brand">จังหวัด</label>
+                  </div>
+                </Col>
+                <Col lg={4} sm={12}>
+                  <div className="form-floating">
+                    <input
+                      ref={seatRef}
+                      type="text"
+                      className="form-control"
+                      id="seat"
+                      placeholder="จำนวนที่นั่ง"
+                    />
+                    <div id="validationSeat" className="invalid-feedback">
+                      Please provide a valid city.
                     </div>
-                  </Col>
-
-                  <Col sm={12} lg={2}>
-                    <button
+                    <label htmlFor="brand">จำนวนที่นั่ง</label>
+                  </div>
+                </Col>
+                <Col
+                  lg={2}
+                  sm={12}
+                  className={`d-flex justify-content-center align-items-center`}
+                >
+                  <div>
+                    <Button
                       type="button"
-                      className={`${styles.searchbtn}`}
+                      id="search_btn"
+                      className={`btn-success`}
                       onClick={handleSearch}
                     >
-                      <BiSearchAlt size={60} />
-                    </button>
-                  </Col>
-                </Row>
-              </form>
+                      <FaSearch /> ค้นหา
+                    </Button>
+                  </div>
+                </Col>
+              </Row>
             </div>
-          </Col>
-        </Row>
-        <div>
-          {searchResults.map((vehicle) => (
-            <div key={vehicle.id}>
-              <h2>{vehicle.name}</h2>
-              <p>Max Passenger: {vehicle.maximumCapacity}</p>
+
+            <div className={`${styles.vehicle_container} mb-3 p-4`}>
+              {paginationLoading && (
+                <div
+                  className={`d-flex justify-content-center align-items-center ${styles.no_info}`}
+                >
+                  <div className={`lds-facebook ${styles.loading}`}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              )}
+
+              {paginationError && (
+                <div
+                  className={`d-flex justify-content-center align-items-center ${styles.no_info}`}
+                >
+                  เกิดข้อผิดพลาดโปรดลองใหม่อีกครั้ง
+                </div>
+              )}
+
+              {paginationData?.vehicles && (
+                <>
+                  {paginationData?.vehicles?.length == 0 && (
+                    <div
+                      className={`d-flex justify-content-center align-items-center ${styles.no_info}`}
+                    >
+                      ไม่พบยานพาหนะ
+                    </div>
+                  )}
+
+                  {paginationData?.vehicles?.length != 0 && (
+                    <>
+                      {paginationData?.vehicles.map((e: any) => {
+                        return (
+                          <div key={e.id} className={`${styles.card} mb-4 p-4`}>
+                            <Row>
+                              <Col lg={6}>
+                                <div className={`${styles.vehicle_image}`}>
+                                  <Image
+                                    src={`/images/vehicles/${e?.imagename}`}
+                                    alt="Picture of car renter"
+                                    fill
+                                    loading="lazy"
+                                    sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
+                                    style={{ objectFit: "contain" }}
+                                  />
+                                </div>
+                              </Col>
+                              <Col lg={6}>
+                                <div
+                                  className={`d-flex justify-content-left align-items-center mb-3`}
+                                >
+                                  <div className={`text-start`}>
+                                    <div>
+                                      <b>ชื่อรถ</b>: {e?.name}
+                                    </div>
+                                    <div>
+                                      <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                                    </div>
+                                    <div>
+                                      <b>จังหวัด</b>: {e?.province}
+                                    </div>
+                                    <div>
+                                      <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                                    </div>
+                                  </div>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
+                        );
+                      })}
+                      <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="ถัดไป >"
+                        onPageChange={handlePagination}
+                        containerClassName={`${styles.pagination}`}
+                        previousLinkClassName={`${styles.pagination__link}`}
+                        nextLinkClassName={`${styles.pagination__link}`}
+                        disabledClassName={`${styles.pagination__link__disabled}`}
+                        activeClassName={`${styles.pagination__link__active}`}
+                        pageRangeDisplayed={3}
+                        pageCount={paginationData?.page_count}
+                        previousLabel="< ก่อนหน้า"
+                        renderOnZeroPageCount={null || undefined}
+                      />
+                    </>
+                  )}
+                </>
+              )}
             </div>
-          ))}
-          {hasNextPage && (
-            <InfiniteScroll
-              dataLength={searchResults.length}
-              next={() => fetchNextPage()}
-              hasMore={!isFetchingNextPage}
-              loader={<h4>Loading...</h4>}
-            ></InfiniteScroll>
-          )}
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
 }
