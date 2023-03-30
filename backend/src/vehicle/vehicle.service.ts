@@ -1,22 +1,25 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Vehicle } from './entities/vehicle.entity';
-
+import { CreateVehicleDto } from './dto/create-vehicle.dto';
+import { User } from 'src/user/entities/user.entity';
+import { UpdateVehicleDto } from './dto/update-vehicle.dto';
 
 @Injectable()
 export class VehicleService {
   constructor(
-    @InjectRepository(Vehicle)
-    private vehicleRepository: Repository<Vehicle>,
+    @InjectRepository(Vehicle) private vehicleRepository: Repository<Vehicle>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async findByFilter(
     province: string,
     carName: string,
     maxPassenger: number,
-  ): Promise<Vehicle[]> {
+    pageNumber: number,
+  ): Promise<[Vehicle[], any]> {
     const pagination_count = 2;
-    const x = await this.vehicleRepository
+    const all_vehicles = await this.vehicleRepository
       .createQueryBuilder('vehicles')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
@@ -30,19 +33,99 @@ export class VehicleService {
       })
       .printSql()
       .getMany();
-    const paginated_vehicles = [];
-    let buffer = [];
-    for (const vehicle of x) {
-      console.log(vehicle);
-      if (buffer.length == pagination_count) {
-        paginated_vehicles.push(buffer);
-        buffer = [];
-      }
-      buffer.push(vehicle);
-      console.log(buffer);
+    const datalength = all_vehicles.length;
+    const x = await this.vehicleRepository
+      .createQueryBuilder('vehicles')
+      .where(
+        `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
+        {
+          carName: carName,
+        },
+      )
+      .andWhere('vehicles.province = :province', { province: province })
+      .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
+        maxPassenger: maxPassenger,
+      })
+      .limit(pagination_count)
+      .offset((pageNumber - 1) * pagination_count)
+      .printSql()
+      .getMany();
+    const paginated_vehicles = x;
+    //console.log(pageNumber - 0 * pagination_count < datalength);
+    const paginationData = { next: {}, prev: {}, page_count: {} };
+    if ((pageNumber - 0) * pagination_count < datalength) {
+      //console.log('there is next page');
+      paginationData.next = {
+        pageNumber: pageNumber - 0 + 1,
+      };
     }
-    if (buffer.length != 0) paginated_vehicles.push(buffer);
+    //console.log(typeof (pageNumber - 0));
+    if ((pageNumber - 1) * pagination_count > 0) {
+      paginationData.prev = {
+        pageNumber: pageNumber - 1,
+      };
+    }
+    paginationData.page_count = Math.ceil(
+      all_vehicles.length / pagination_count,
+    );
+    // console.log(await this.vehicleRepository.find());
+    // const paginated_vehicles = [];
+    // let buffer = [];
+    // for (const vehicle of x) {
+    //   console.log(vehicle);
+    //   if (buffer.length == pagination_count) {
+    //     paginated_vehicles.push(buffer);
+    //     buffer = [];
+    //   }
+    //   buffer.push(vehicle);
+    //   console.log(buffer);
+    // }
+    // if (buffer.length != 0) paginated_vehicles.push(buffer);
     console.log(paginated_vehicles);
-    return paginated_vehicles;
+    console.log(paginationData);
+    return [paginated_vehicles, paginationData];
+  }
+  async createVehicle(
+    id: number,
+    createVehicleDto: CreateVehicleDto,
+  ): Promise<Vehicle> {
+    const ent = await this.vehicleRepository.findOneBy({
+      registrationId: createVehicleDto.registrationId,
+    });
+    if (ent) {
+      throw new HttpException(
+        'registration number exist',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    const vehicle = await this.vehicleRepository.create(createVehicleDto);
+    vehicle.user = await this.userRepository.findOneBy({ id: id });
+    return await this.vehicleRepository.save(vehicle);
+  }
+  async updateVehicle(updateVehicleDto: UpdateVehicleDto) {
+    const ent = await this.vehicleRepository.findOneBy({
+      id: updateVehicleDto.id,
+    });
+    if (!ent) {
+      throw new HttpException('id dont exist', HttpStatus.NOT_FOUND);
+    }
+    const oldImageName = ent.imagename;
+
+    await this.vehicleRepository.update(
+      { id: updateVehicleDto.id },
+      updateVehicleDto,
+    );
+    const vehicle = await this.vehicleRepository.findOneBy({
+      id: updateVehicleDto.id,
+    });
+    return { oldImageName, vehicle };
+  }
+
+  async getVehicleByUserId(userId: number): Promise<Vehicle[]> {
+    
+    const vehicles = await this.vehicleRepository.find({
+      where: { user: { id: userId } },
+    });
+    return vehicles;
   }
 }

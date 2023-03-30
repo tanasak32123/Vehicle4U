@@ -89,69 +89,75 @@ export default function EditProfile() {
   }, [auth]);
 
   // update user profile
-  async function handleUpdateProfile(type: string, values: string[]) {
-    try {
-      const data = {
-        username: user?.username,
-        password: user?.password,
-        first_name: user?.first_name,
-        last_name: user?.last_name,
-        tel: user?.tel,
-        citizen_id: user?.citizen_id,
-        payment_channel: user?.payment_channel,
-        driving_license_id: user?.driving_license_id,
-      };
+  const handleUpdateProfile = async (type: string, values: string[]) => {
+    const data = {
+      username: user?.username,
+      password: user?.password,
+      first_name: user?.first_name,
+      last_name: user?.last_name,
+      tel: user?.tel,
+      citizen_id: user?.citizen_id,
+      payment_channel: user?.payment_channel,
+      driving_license_id: user?.driving_license_id,
+    };
 
-      const response = await fetch(`/api/auth/updateProfile/${user?.role}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ data, type, values }),
-      });
-      const body = await response.json();
-
-      if (!body.success) {
-        setInvalidInput(body.message);
-      } else {
-        setInvalidInput("");
-        authAction.mutate({ ...auth, user: { ...body.user } });
-        if (type == "add_payment_channel") {
-          setUser({ ...body.user, role: "provider" });
-          setCookie("role", "provider", {
-            secure: process.env.NODE_ENV !== "development",
-            sameSite: true,
-          });
-          popUpChangeRole();
-        } else if (type == "add_driving_license_id") {
-          setUser({ ...body.user, role: "renter" });
-          setCookie("role", "renter", {
-            secure: process.env.NODE_ENV !== "development",
-            sameSite: true,
-          });
-          popUpChangeRole();
+    const success = await fetch(`/api/auth/updateProfile/${user?.role}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data, type, values }),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (!res.success) {
+          setInvalidInput(res.message);
         } else {
-          setUser({ ...body.user, role: user.role });
-          setCookie("role", user.role, {
-            secure: process.env.NODE_ENV !== "development",
-            sameSite: true,
-          });
-          popUpAlert();
+          setInvalidInput("");
+          if (type == "add_payment_channel") {
+            setUser({ ...res.user, role: "provider" });
+            setCookie("role", "provider", {
+              secure: process.env.NODE_ENV !== "development",
+              sameSite: true,
+            });
+            popUpChangeRole();
+          } else if (type == "add_driving_license_id") {
+            setUser({ ...res.user, role: "renter" });
+            setCookie("role", "renter", {
+              secure: process.env.NODE_ENV !== "development",
+              sameSite: true,
+            });
+            popUpChangeRole();
+          } else {
+            setUser({ ...res.user, role: user.role });
+            setCookie("role", user.role, {
+              secure: process.env.NODE_ENV !== "development",
+              sameSite: true,
+            });
+            popUpAlert();
+          }
+          authAction.mutate();
         }
-      }
-      return body.success;
-    } catch (error) {
-      router.push("/500");
-    }
-  }
+        return res.success;
+      })
+      .catch((err) => {
+        console.log(err);
+        router.push("/500");
+      });
+    return success;
+  };
 
   // handle change role button
-  function handleChangeRole() {
+  const handleChangeRole = () => {
     if (user?.role == "renter") {
       if (!user.payment_channel) {
         setAddPaymentShow(true);
       } else {
         setUser({ ...user, role: "provider" });
+        setCookie("role", "provider", {
+          secure: process.env.NODE_ENV !== "development",
+          sameSite: true,
+        });
         popUpChangeRole();
       }
     }
@@ -160,10 +166,15 @@ export default function EditProfile() {
         setAddDlicenseShow(true);
       } else {
         setUser({ ...user, role: "renter" });
+        setCookie("role", "renter", {
+          secure: process.env.NODE_ENV !== "development",
+          sameSite: true,
+        });
         popUpChangeRole();
       }
     }
-  }
+    authAction.mutate();
+  };
 
   // Change role pop up
   const popUpChangeRole = () => {

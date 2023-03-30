@@ -16,19 +16,15 @@ import { User } from './entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UserStatusDto } from './dto/user-status.dto';
 import { ApiTags, ApiResponse } from '@nestjs/swagger';
-import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
+import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-
-
 
 // /localhost/username/role?=provider
 @ApiTags('Vehicle4U')
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto, @Response() res) {
@@ -47,7 +43,7 @@ export class UserController {
     @Body() updateuserDto: UpdateUserDto,
     @Response() res,
   ) {
-    const id = req.body['id'];
+    const id = req.user['id'];
     const user = await this.userService.update(id, updateuserDto);
     if (!user) {
       return res.status(404).send({
@@ -61,34 +57,42 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('')
   async findUser(@Request() req): Promise<User> {
-    const id = req.body['id'];
+    const id = req.user['id'];
     return await this.userService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('/createvehicle')
-  async createVehicle(@Request() req, @Body() createVehicleDto: CreateVehicleDto ): Promise<Vehicle> {
+  async createVehicle(
+    @Request() req,
+    @Body() createVehicleDto: CreateVehicleDto,
+  ): Promise<Vehicle> {
     const id = req.user['id'];
-    console.log(req)
+    // console.log(req.body);
     return await this.userService.createVehicle(id, createVehicleDto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Patch('/updatevehicle')
-  async updateVehicle(@Body() updateVehicleDto : UpdateVehicleDto, @Response() res ) {
-    const {oldImageName, vehicle} = await this.userService.updateVehicle(updateVehicleDto);
+  async updateVehicle(
+    @Body() updateVehicleDto: UpdateVehicleDto,
+    @Response() res,
+  ) {
+    const { oldImageName, vehicle } = await this.userService.updateVehicle(
+      updateVehicleDto,
+    );
     return res.status(200).send({
       oldImageName: oldImageName,
-      vehicle : vehicle,
+      vehicle: vehicle,
     });
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('/vehicles')
-  async getVehicles(@Request() req) : Promise<User[]> {
-    const id = req.user['id']
-    const vehicles = await this.userService.getVehicles(id)
-    return vehicles 
+  async getVehicles(@Request() req): Promise<User[]> {
+    const id = req.user['id'];
+    const vehicles = await this.userService.getVehicles(id);
+    return vehicles;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -96,12 +100,9 @@ export class UserController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 404, description: 'User not found.' })
   @Get('/getroles')
-  async getRoles(
-  @Request() req,
-  @Response() res,
-  ): Promise<UserStatusDto> {
-    const id = req.body['id']
-    console.log(id)
+  async getRoles(@Request() req, @Response() res): Promise<UserStatusDto> {
+    const id = req.body['id'];
+    console.log(id);
     const x = await this.userService.checkState(id);
     if (x == null) {
       return res.status(404).send({

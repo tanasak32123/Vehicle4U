@@ -16,7 +16,7 @@ const readFile = (
   const options: formidable.Options = {};
   let filename = "";
   if (savedLocally) {
-    options.uploadDir = path.join(process.cwd(), "/public/images/cars");
+    options.uploadDir = path.join(process.cwd(), "/public/images/vehicles");
     options.filename = (name, ext, path, form) => {
       filename = Date.now().toString() + "_" + path.originalFilename;
       return filename;
@@ -37,10 +37,15 @@ const handler: NextApiHandler = async (req, res) => {
     return;
   }
   try {
-    await fs.readdir(path.join(process.cwd() + "/public", "/images", "cars"));
+    await fs.readdir(
+      path.join(process.cwd() + "/public", "/images", "/vehicles")
+    );
   } catch (error) {
-    await fs.mkdir(path.join(process.cwd() + "/public", "/images", "/cars"));
+    await fs.mkdir(
+      path.join(process.cwd() + "/public", "/images", "/vehicles")
+    );
   }
+
   const { fields, files } = await readFile(req, true);
   res.json({ done: "ok", files });
 };

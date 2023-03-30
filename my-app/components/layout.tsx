@@ -21,7 +21,7 @@ export default function Layout({ children }: any) {
 
       <Navbar />
       <main>
-        <div className="position-relative">{children}</div>
+        <div className={`position-relative`}>{children}</div>
       </main>
       <Footer />
     </>

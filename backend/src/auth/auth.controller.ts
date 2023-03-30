@@ -29,7 +29,7 @@ export class AuthController {
     @ApiResponse({ status: 403, description: 'Forbidden.'})
     @ApiResponse({ status: 500, description: 'Invalid register information.'})
     async register(@Body() registerDto : RegisterDto, @Response() res) {
-        await this.authService.validateRegister(registerDto);
+        //await this.authService.validateRegister(registerDto);
         const user = await this.authService.register(registerDto)
         return res.status(200).send(user);
     }
