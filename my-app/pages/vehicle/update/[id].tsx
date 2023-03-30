@@ -505,6 +505,16 @@ export default function UpdateCar() {
                         )}
                       </div>
                     </div>
+
+                    <div className="mb-3">
+                      <button
+                        title="delete a vehicle"
+                        type="button"
+                        className={`btn btn-danger`}
+                      >
+                        ลบรถเช่า
+                      </button>
+                    </div>
                   </Col>
                 </Row>
               </form>
