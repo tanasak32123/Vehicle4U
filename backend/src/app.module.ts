@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { TokenMiddleware } from './middleware/token.decode.middleware';
 import { RentingRequestModule } from './renting-request/renting-request.module';
+import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,7 +34,8 @@ import { RentingRequestModule } from './renting-request/renting-request.module';
     UserModule,
     AuthModule,
     VehicleModule,
-    RentingRequestModule
+    RentingRequestModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
