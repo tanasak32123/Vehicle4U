@@ -119,7 +119,7 @@ export default function SearchCar() {
     const data = await response.json();
 
     return {
-      vehicle: data.vehicles,
+      vehicles: data.vehicles,
       totalPages: data.page_count,
       nextPage: data.next_page,
     };
@@ -147,7 +147,7 @@ export default function SearchCar() {
     fetchNextPage(1);
   };
 
-  const searchResults = data?.pages.flatMap((page) => page.vehicle) ?? [];
+  const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
 
   return (
     <>
