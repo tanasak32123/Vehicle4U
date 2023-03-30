@@ -89,7 +89,7 @@ export default function UploadCar() {
           setIsSuccess(true);
           setTimeout(() => {
             setIsSuccess(false);
-            router.push("/");
+            router.push("/vehicle/owner");
           }, 3000);
         }
       })
@@ -375,7 +375,7 @@ export default function UploadCar() {
           status={`success`}
           show={isSuccess}
           onHide={() => {
-            router.push("/searchcar");
+            router.push("/vehicle/owner");
           }}
           desc={`ระบบทำการเพิ่มรถเช่าสำเร็จ`}
           btn_text={`รถเช่าของคุณ`}
