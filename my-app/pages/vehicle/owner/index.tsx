@@ -2,12 +2,7 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import {
-  FaArrowAltCircleLeft,
-  FaCar,
-  FaEdit,
-  FaPrescriptionBottle,
-} from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar, FaEdit } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
@@ -96,11 +91,25 @@ const ProviderOwnerVehicle = () => {
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
-          <h1 className="align-items-center d-flex justify-content-end">
+          <br />
+          {/* <h1 className="align-items-center d-flex justify-content-end">
             <FaCar />
             &nbsp;รถเช่าของคุณ
           </h1>
-          <hr />
+          <hr /> */}
+
+          {/* <div className={`text-start`}> */}
+          <h1 className={`text-start`}>
+            รถเช่าของคุณ <FaCar />{" "}
+            <div className={`float-end`}>
+              <button title="add vehicle" className={`btn btn-success`}>
+                + เพิ่มรถเช่า
+              </button>
+            </div>
+          </h1>
+
+          {/* </div> */}
+          <br />
 
           {data.vehicles?.map((e: any) => {
             return (

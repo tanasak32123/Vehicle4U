@@ -40,10 +40,15 @@ const Header = () => {
               ) : (
                 <>
                   <hr />
-                  <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                  {auth?.role == "renter" && (
+                    <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                  )}
                   {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.role == "provider" && (
-                    <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link>
+                    <>
+                      <Nav.Link href={`/vehicle/owner`}>รถเช่าของคุณ</Nav.Link>
+                      <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link>
+                    </>
                   )}
                   <hr />
                 </>
@@ -65,11 +70,6 @@ const Header = () => {
                     <NavDropdown.Item href={`/user/profile`}>
                       โปรไฟล์ของฉัน
                     </NavDropdown.Item>
-                    {auth?.role == "provider" && (
-                      <NavDropdown.Item href={`/vehicle/owner`}>
-                        รถเช่าของคุณ
-                      </NavDropdown.Item>
-                    )}
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => setShowSignout(true)}>
                       ออกจากระบบ
