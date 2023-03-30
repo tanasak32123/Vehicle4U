@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import styles from '@/styles/searchcar.module.css';
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import React, { useState } from 'react';
+import { Container, Row, Col, Card, Spinner } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
 import { BiSearchAlt } from 'react-icons/bi';
@@ -59,7 +59,7 @@ const CustomMenu = React.forwardRef(
 export default function SearchCar() {
   const [name, setName] = useState('Toyota Altis');
   const [province, setProvince] = useState('กรุงเทพมหานคร');
-  const [maximumCapacity, setmaximumCapacity] = useState('1');
+  const [capacity, setCapacity] = useState('1');
   const today = new Date();
 
   const tomorrow = new Date();
@@ -68,52 +68,7 @@ export default function SearchCar() {
   const [startDate1, setStartDate1] = useState(today);
   const [startDate2, setStartDate2] = useState(tomorrow);
 
-  let [loading, setLoading] = useState(false);
-
-  const key = ['vehicles', name || '', maximumCapacity || '', province || ''];
-
-  const fetchVehicles = async (
-    key,
-    name,
-    maximumCapacity,
-    province,
-    nextPage = 1
-  ) => {
-    const response = await fetch(
-      `http://localhost:3000/vehicles?name=${name}&maximumCapacity=${maximumCapacity}&province=${province}&page=${nextPage}`
-    );
-    const data = await response.json();
-    // console.log(data); // add this line to check the data
-    return {
-      vehicles: data.vehicles,
-      totalPages: data.total_pages,
-      nextPage: data.next_page,
-    };
-  };
-
-  const {
-    data,
-    isLoading,
-    isError,
-    hasNextPage,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery(
-    key,
-    ({ pageParam = 1 }) =>
-      fetchVehicles('vehicles', name, maximumCapacity, province, pageParam),
-    {
-      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
-      enabled: false,
-    }
-  );
-
-  const handleSearch = () => {
-    // Reset the infinite scroll component to page 1
-    fetchNextPage(1);
-  };
-
-  const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
+  const [pageNumber, setPageNumber] = useState(1);
 
   const handleDateChange1 = (date: Date) => {
     if (date > today) {
@@ -154,6 +109,45 @@ export default function SearchCar() {
       setStartDate1(today);
     }
   };
+
+  const key = ['vehicles', name ?? '', capacity ?? '', province ?? ''];
+
+  const fetchVehicles = async (key, name, capacity, province, nextPage = 1) => {
+    const response = await fetch(
+      `http://localhost:3000/vehicle?name=${name}&maxPassenger=${capacity}&province=${province}&page=${nextPage}`
+    );
+    const data = await response.json();
+
+    return {
+      vehicle: data.vehicles,
+      totalPages: data.page_count,
+      nextPage: data.next_page,
+    };
+  };
+
+  const {
+    data,
+    isLoading,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    key,
+    ({ pageParam = 1 }) =>
+      fetchVehicles('vehicles', name, capacity, province, pageParam),
+    {
+      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+      enabled: false,
+    }
+  );
+
+  const handleSearch = () => {
+    // Reset the infinite scroll component to page 1
+    fetchNextPage(1);
+  };
+
+  const searchResults = data?.pages.flatMap((page) => page.vehicle) ?? [];
 
   return (
     <>
@@ -277,37 +271,31 @@ export default function SearchCar() {
                             as={CustomToggle}
                             id="dropdown-custom-components"
                           >
-                            {maximumCapacity}
+                            {capacity}
                           </Dropdown.Toggle>
 
                           <Dropdown.Menu as={CustomMenu}>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setmaximumCapacity(
-                                  e.target.getAttribute('maximumCapacity')
-                                )
+                                setCapacity(e.target.getAttribute('capacity'))
                               }
-                              maximumCapacity="1"
+                              capacity="1"
                             >
                               1
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(
-                                  e.target.getAttribute('maximumCapacity')
-                                )
+                                setCapacity(e.target.getAttribute('capacity'))
                               }
-                              maximumCapacity="2"
+                              capacity="2"
                             >
                               2
                             </Dropdown.Item>
                             <Dropdown.Item
                               onClick={(e: any) =>
-                                setProvince(
-                                  e.target.getAttribute('maximumCapacity')
-                                )
+                                setCapacity(e.target.getAttribute('capacity'))
                               }
-                              maximumCapacity="3"
+                              capacity="3"
                             >
                               3
                             </Dropdown.Item>
@@ -360,22 +348,22 @@ export default function SearchCar() {
             </div>
           </Col>
         </Row>
-      </div>
-      <div>
-        {searchResults.map((vehicle) => (
-          <div key={vehicle.id}>
-            <h2>{vehicle.name}</h2>
-            <p>Max Passenger: {vehicle.maximumCapacity}</p>
-          </div>
-        ))}
-        {hasNextPage && (
-          <InfiniteScroll
-            dataLength={searchResults.length}
-            next={() => fetchNextPage()}
-            hasMore={!isFetchingNextPage}
-            loader={<h4>Loading...</h4>}
-          ></InfiniteScroll>
-        )}
+        <div>
+          {searchResults.map((vehicle) => (
+            <div key={vehicle.id}>
+              <h2>{vehicle.name}</h2>
+              <p>Max Passenger: {vehicle.maximumCapacity}</p>
+            </div>
+          ))}
+          {hasNextPage && (
+            <InfiniteScroll
+              dataLength={searchResults.length}
+              next={() => fetchNextPage()}
+              hasMore={!isFetchingNextPage}
+              loader={<h4>Loading...</h4>}
+            ></InfiniteScroll>
+          )}
+        </div>
       </div>
     </>
   );
