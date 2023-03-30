@@ -35,7 +35,7 @@ export default function Renter_request() {
       console.log(errors)
       return;
     }
-    router.push("/car/sucess");
+    router.push("/vehicle/rent/sucess");
   }
 
   return (
