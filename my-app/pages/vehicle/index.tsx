@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { FaSearch } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
+import validation from "@/libs/validation";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -64,14 +65,36 @@ export default function SearchCar() {
 
   const handleSearch = (e: any) => {
     e.preventDefault();
-    setName(nameRef.current?.value!);
-    setProvince(provinceRef.current?.value!);
-    setSeat(seatRef.current?.value! == "" ? "0" : seatRef.current?.value!);
-    setNextPage(1);
+    if (
+      seatRef.current?.value! &&
+      (!validation.numberOnly(seatRef.current?.value!) ||
+        Number(seatRef.current?.value!) <= 0)
+    ) {
+      seatRef.current?.classList.add("is-invalid");
+    } else {
+      if (seatRef.current?.classList.contains("is-invalid")) {
+        seatRef.current?.classList.remove("is-invalid");
+      }
+      setName(nameRef.current?.value!);
+      setProvince(provinceRef.current?.value!);
+      setSeat(seatRef.current?.value! == "" ? "0" : seatRef.current?.value!);
+      setNextPage(1);
+    }
   };
 
   if (provinceError) return <div>Failed to load.</div>;
-  if (provinceLoading) return <div>Loading...</div>;
+  if (provinceLoading)
+    return (
+      <div
+        className={`d-flex justify-content-center align-items-center ${styles.main}`}
+      >
+        <div className={`lds-facebook ${styles.loading}`}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    );
 
   if (provinceData)
     return (
@@ -130,8 +153,11 @@ export default function SearchCar() {
                       id="seat"
                       placeholder="จำนวนที่นั่ง"
                     />
-                    <div id="validationSeat" className="invalid-feedback">
-                      Please provide a valid city.
+                    <div
+                      id="validationSeat"
+                      className={`invalid-feedback ${styles.invalid_feedback}`}
+                    >
+                      ** โปรดใส่จำนวนที่นั่งให้ถูกต้อง
                     </div>
                     <label htmlFor="brand">จำนวนที่นั่ง</label>
                   </div>
@@ -158,7 +184,7 @@ export default function SearchCar() {
             <div className={`${styles.vehicle_container} mb-3 p-4`}>
               {paginationLoading && (
                 <div
-                  className={`d-flex justify-content-center align-items-center ${styles.no_info}`}
+                  className={`d-flex justify-content-center align-items-center`}
                 >
                   <div className={`lds-facebook ${styles.loading}`}>
                     <div></div>
