@@ -41,7 +41,7 @@ const Header = () => {
                 <>
                   <hr />
                   {auth?.role == "renter" && (
-                    <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                    <><Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link><Nav.Link href="/vehicle/renter">ประวัติการเช่ารถ</Nav.Link></>
                   )}
                   {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.role == "provider" && (

@@ -11,6 +11,7 @@ import {
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
+import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -59,32 +60,35 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  //path ต้องขอ back-end
+  //   const { auth, isLoading, authAction }: any = useAuth();
+
+  const { auth, isload, authAction }: any = useAuth();
+  console.log(auth);
+
   const { data, isLoading, error, mutate } = useSWR(
-    "/api/vehicle/getvehicles",
+        "/api/renter/getvehicle",
     fetcher
   );
+
+//   const status = 'pending';
   const router = useRouter();
 
-  const [showDelete, setShowDelete] = useState<boolean>(false);
 
-//   useEffect(() => {
-//     if (data?.statusCode === 401) {
-//       router.push("/");
-//     }
-//   }, [data]);
+  useEffect(() => {
+    if (data?.statusCode === 401) {
+      router.push("/");
+    }
+  }, [data]);
 
-//   const handleDeleteVehicle = () => {
-//     console.log("Delete");
-//     setShowDelete(false);
-//     mutate();
-//   };
 
   if (error) return router.push("/500");
 
   if (isLoading) return <>Loading ...</>;
 
   if (data)
+    // console.log('data');
+    // console.log(data);
+    
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -104,12 +108,12 @@ const ProviderOwnerVehicle = () => {
           <hr />
 
         {/* ใส่ field ใน data ให้ถูกต้อง */}
-
-          {data.vehicles?.map((e: any) => {
+          {data.response?.map((e: any) => {
+            // console.log(e);
             return (
               <div
-                id={`car_${e.id}`}
-                key={`car_${e.id}`}
+                id={`car_${e.car_id}`}
+                key={`car_${e.car_id}`}
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>
@@ -133,73 +137,55 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`text-start`}>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.name}
-                        </div>
-                        <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.name}
-                        </div>
-                        <div>
-                          <b>ชื่อรถ</b>: {e?.name}
+                          <b>ชื่อรถ</b>: {e?.car_name}
                         </div>
                         <div>
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
                         </div>
                         <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.province}
+                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname} {e?.provider_lastname}
                         </div>
                         <div>
-                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.maximumCapacity}
-                        </div>
-                        {/* <div>
-                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
-                        </div> */}
-                        {/* <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        <div>
                           <b>สถานะ</b>:{" "}
-                          <span className="badge bg-success">ว่าง</span>&nbsp;
-                          <span className="badge bg-warning">รอการยืนยัน</span>
-                          &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div> */}
+                          {e?.status === "pending" ? (<>
+                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
+                          </>) : e?.status === "confirm" ? (<>
+                            <span className="badge bg-success">ว่าง</span>&nbsp;
+                          </>) : e?.status === "reject" ? (<>
+                            <span className="badge bg-danger">ถูกจองแล้ว</span>
+                          </>) : (<>
+                            <span>-</span>
+                          </>)}
+                        </div>
                       </div>
                     </div>
-                    {/* <div>
-                      <Link
-                        className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
-                      >
-                        <FaEdit />
-                        แก้ไขข้อมูล
-                      </Link>
-
-                      <Link
-                        className={`float-end`}
-                        href={`#car_${e.id}`}
-                        onClick={() => setShowDelete(true)}
-                      >
-                        <FaPrescriptionBottle />
-                        ลบข้อมูล
-                      </Link>
-                    </div> */}
+                    <div className={styles.chat_div}>
+                        <button className={styles.chat_btn} 
+                        onClick={(event: any) => { router.push("/vehicle") }}>แชท</button>
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {/* {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )} */}
       </div>
     );
 };
+
+  
 
 // const DeleteModal = ({ show, onHide, handleDelete }: any) => {
 //   return (

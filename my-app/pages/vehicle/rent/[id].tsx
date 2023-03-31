@@ -21,7 +21,8 @@ export default function Register() {
   const [location, setLocation] = useState("");
   // ยังระบุ id รถไม่ได้ต้องใส่ใน useState แทน
   // const [carid, setCarid] = useState(1);
-  const { carid } = router.query;
+  const car  = router.query;
+  const carid = car.id;
   const [accept, setAccept] = useState(false);
 
 
@@ -62,6 +63,7 @@ export default function Register() {
     router.push("/vehicle/rent/payment");
   }
 
+  console.log(carid);
   return (
     <>
       <Head>
