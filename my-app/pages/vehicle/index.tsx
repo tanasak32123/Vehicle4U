@@ -68,6 +68,7 @@ export default function SearchCar() {
     setName(nameRef.current?.value!);
     setProvince(provinceRef.current?.value!);
     setSeat(seatRef.current?.value! == "" ? "0" : seatRef.current?.value!);
+    setNextPage(1);
   };
 
   if (provinceError) return <div>Failed to load.</div>;
