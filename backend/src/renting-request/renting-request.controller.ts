@@ -28,7 +28,7 @@ export class RentingRequestController{
     @ApiResponse({ status: 406, description: 'No Access Rights'})
     @Get('/provider')
     async providerGetRequest(@Request() req,@Response() res) {
-    const request = await this.rentingRequestService.providergetrequest(req.body['id']);
+    const request = await this.rentingRequestService.providergetrequest(req.user['id']);
         return res.status(200).send(request);
     }
 
@@ -39,7 +39,7 @@ export class RentingRequestController{
     @ApiResponse({ status: 406, description: 'No Access Rights'})
     @Get('/renter')
     async renterGetRequest(@Request() req,@Response() res) {
-    const request = await this.rentingRequestService.rentergetrequest(req.body['id']);
+    const request = await this.rentingRequestService.rentergetrequest(req.user['id']);
         return res.status(200).send(request);
     }
 
