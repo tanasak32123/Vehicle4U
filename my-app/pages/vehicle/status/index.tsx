@@ -2,16 +2,10 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import {
-  FaArrowAltCircleLeft,
-  FaCar,
-  FaEdit,
-  FaPrescriptionBottle,
-} from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
-import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -60,17 +54,13 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  //path ต้องขอ back-end
-  //   const { auth, isLoading, authAction }: any = useAuth();
   const { data, isLoading, error, mutate } = useSWR(
-    // "/api/vehicle/getvehicles",
-        "/api/renter/getvehicle/1",
+    "/api/vehicle/getvehicles",
     fetcher
   );
-
-//   const status = 'pending';
   const router = useRouter();
 
+  const [showDelete, setShowDelete] = useState<boolean>(false);
 
   useEffect(() => {
     if (data?.statusCode === 401) {
@@ -78,15 +68,18 @@ const ProviderOwnerVehicle = () => {
     }
   }, [data]);
 
+  const handleDeleteVehicle = () => {
+    console.log("Delete");
+    setShowDelete(false);
+    mutate();
+  };
 
   if (error) return router.push("/500");
 
   if (isLoading) return <>Loading ...</>;
 
   if (data)
-    console.log('data');
     console.log(data);
-    
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -99,19 +92,36 @@ const ProviderOwnerVehicle = () => {
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
-          <h1 className="align-items-center d-flex justify-content-end">
+          <br />
+          {/* <h1 className="align-items-center d-flex justify-content-end">
             <FaCar />
-            &nbsp;รายการเช่าของคุณ
+            &nbsp;รถเช่าของคุณ
           </h1>
-          <hr />
+          <hr /> */}
 
-        {/* ใส่ field ใน data ให้ถูกต้อง */}
-          {data.response?.map((e: any) => {
-            console.log(e);
+          {/* <div className={`text-start`}> */}
+          <h1 className={`text-start`}>
+            รถเช่าของคุณ <FaCar />{" "}
+            <div className={`float-end`}>
+              <button
+                title="add vehicle"
+                className={`btn btn-success`}
+                onClick={() => router.push("/vehicle/create")}
+              >
+                + เพิ่มรถเช่า
+              </button>
+            </div>
+          </h1>
+
+          {/* </div> */}
+          <br />
+
+          {data.vehicles?.map((e: any) => {
+            console.log(e?.imagename);
             return (
               <div
-                id={`car_${e.car_id}`}
-                key={`car_${e.car_id}`}x
+                id={`car_${e.id}`}
+                key={`car_${e.id}`}
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>
@@ -131,47 +141,53 @@ const ProviderOwnerVehicle = () => {
                   </div>
                   <div className={`col-6`}>
                     <div
-                      className={`d-flex justify-content-left align-items-center`}
+                      className={`d-flex justify-content-left align-items-center mb-3`}
                     >
                       <div className={`text-start`}>
                         <div>
-                          <b>ชื่อรถ</b>: {e?.car_name}
+                          <b>ชื่อรถ</b>: {e?.name}
                         </div>
                         <div>
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
                         </div>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname} {e?.provider_lastname}
-                        </div>
-                        <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
+                          <b>จังหวัด</b>: {e?.province}
                         </div>
                         <div>
                           <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
                         </div>
                         <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
                         </div>
                         <div>
-                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        <div>
+                        {/* <div>
                           <b>สถานะ</b>:{" "}
-                          {e?.status === "pending" ? (<>
-                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : e?.status === "confirm" ? (<>
-                            <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : e?.status === "reject" ? (<>
-                            <span className="badge bg-danger">ถูกจองแล้ว</span>
-                          </>) : (<>
-                            <span>-</span>
-                          </>)}
-                        </div>
+                          <span className="badge bg-success">ว่าง</span>&nbsp;
+                          <span className="badge bg-warning">รอการยืนยัน</span>
+                          &nbsp;
+                          <span className="badge bg-danger">ถูกจองแล้ว</span>
+                        </div> */}
                       </div>
                     </div>
-                    <div className={styles.chat_div}>
-                        <button className={styles.chat_btn} 
-                        onClick={(event: any) => { router.push("/vehicle") }}>แชท</button>
+                    <div>
+                      <Link
+                        className={`float-start`}
+                        href={`/vehicle/update/${e?.id}`}
+                      >
+                        <FaEdit />
+                        แก้ไขข้อมูล
+                      </Link>
+
+                      <Link
+                        className={`float-end`}
+                        href={`#car_${e.id}`}
+                        onClick={() => setShowDelete(true)}
+                      >
+                        <FaPrescriptionBottle />
+                        ลบข้อมูล
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -179,38 +195,44 @@ const ProviderOwnerVehicle = () => {
             );
           })}
         </div>
+
+        {showDelete && (
+          <DeleteModal
+            show={showDelete}
+            onHide={() => setShowDelete(false)}
+            handleDelete={handleDeleteVehicle}
+          />
+        )}
       </div>
     );
 };
 
-  
-
-// const DeleteModal = ({ show, onHide, handleDelete }: any) => {
-//   return (
-//     <Modal
-//       show={show}
-//       onHide={onHide}
-//       size="sm"
-//       aria-labelledby="contained-modal-title-vcenter"
-//       centered
-//     >
-//       <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-//       <Modal.Body>
-//         <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
-//         <div className={`text-center`}>
-//           <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
-//         </div>
-//       </Modal.Body>
-//       <Modal.Footer className={`modal_wo_border d-flex`}>
-//         <Button className={`me-auto`} onClick={onHide}>
-//           ยกเลิก
-//         </Button>
-//         <Button onClick={handleDelete} variant="danger">
-//           ยืนยัน
-//         </Button>
-//       </Modal.Footer>
-//     </Modal>
-//   );
-// };
+const DeleteModal = ({ show, onHide, handleDelete }: any) => {
+  return (
+    <Modal
+      show={show}
+      onHide={onHide}
+      size="sm"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+      <Modal.Body>
+        <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
+        <div className={`text-center`}>
+          <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
+        </div>
+      </Modal.Body>
+      <Modal.Footer className={`modal_wo_border d-flex`}>
+        <Button className={`me-auto`} onClick={onHide}>
+          ยกเลิก
+        </Button>
+        <Button onClick={handleDelete} variant="danger">
+          ยืนยัน
+        </Button>
+      </Modal.Footer>
+    </Modal>
+  );
+};
 
 export default ProviderOwnerVehicle;
