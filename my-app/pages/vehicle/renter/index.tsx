@@ -60,11 +60,13 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  //path ต้องขอ back-end
   //   const { auth, isLoading, authAction }: any = useAuth();
+
+  const { auth, isload, authAction }: any = useAuth();
+  console.log(auth);
+
   const { data, isLoading, error, mutate } = useSWR(
-    // "/api/vehicle/getvehicles",
-        "/api/renter/getvehicle/1",
+        "/api/renter/getvehicle",
     fetcher
   );
 
@@ -84,8 +86,8 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
-    console.log('data');
-    console.log(data);
+    // console.log('data');
+    // console.log(data);
     
     return (
       <div
@@ -107,11 +109,11 @@ const ProviderOwnerVehicle = () => {
 
         {/* ใส่ field ใน data ให้ถูกต้อง */}
           {data.response?.map((e: any) => {
-            console.log(e);
+            // console.log(e);
             return (
               <div
                 id={`car_${e.car_id}`}
-                key={`car_${e.car_id}`}x
+                key={`car_${e.car_id}`}
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>

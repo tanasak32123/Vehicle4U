@@ -42,6 +42,8 @@ export default function EditProfile() {
   // useContext from authContext
   const { auth, isLoading, authAction }: any = useAuth();
 
+  // console.log(auth);
+
   // modal
   const [nmShow, setNmShow] = useState(false);
   const [unShow, setUnShow] = useState(false);
