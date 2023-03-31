@@ -46,7 +46,6 @@ export class RentingRequestService {
         });
         if(!user)throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
         if(!user.is_provider)throw new HttpException("no access rights", HttpStatus.NOT_ACCEPTABLE);
-        //console.log(user);
 
         let rentingRequests = [];
         for (let i = 0; i < user.vehicles.length; i++){
@@ -61,6 +60,7 @@ export class RentingRequestService {
         let providerrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let providerrequest= new OutputProviderPageDto;
+            providerrequest.car_id          = rentingRequests[i].vehicle.id;
             providerrequest.imagename       = rentingRequests[i].vehicle.imagename;
             providerrequest.car_name        = rentingRequests[i].vehicle.name;
             providerrequest.registrationId  = rentingRequests[i].vehicle.registrationId;
@@ -91,6 +91,7 @@ export class RentingRequestService {
         renterrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let renterrequest = new OutputRenterPageDto;
+            renterrequest.car_id             = rentingRequests[i].vehicle.id;
             renterrequest.imagename          = rentingRequests[i].vehicle.imagename;
             renterrequest.car_name           = rentingRequests[i].vehicle.name;
             renterrequest.tel                = rentingRequests[i].vehicle.user.tel;
