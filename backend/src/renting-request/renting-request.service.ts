@@ -55,7 +55,6 @@ export class RentingRequestService {
             });
             for(let j = 0; j < request.length; j++)rentingRequests.push(request[j]);
         }
-        console.log(rentingRequests);
 
         let providerrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
