@@ -40,7 +40,6 @@ export default function SearchCar() {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const provinceRef = useRef<HTMLSelectElement | null>(null);
   const seatRef = useRef<HTMLInputElement | null>(null);
-  const pageRef = useRef<HTMLInputElement | null>(null);
 
   const {
     data: paginationData,
