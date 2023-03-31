@@ -16,7 +16,7 @@ export class RentingRequestController{
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @Post()
     async create(@Body() createRentingRequestDto: CreateRentingRequestDto, @Request() req, @Response() res) {
-        const id = req.body['id'];
+        const id = req.user['id'];
         const renreq = await this.rentingRequestService.create(id, createRentingRequestDto);
         return res.status(200).send(renreq);
     }
