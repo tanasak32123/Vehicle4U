@@ -6,7 +6,7 @@ import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { Repository } from 'typeorm';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { OutputRenterPageDto } from './dto/outputrenterpage.dto';
-import { OutputProviderPageDto } from './dto/putputproviderpage.dto';
+import { OutputProviderPageDto } from './dto/outputproviderpage.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequest, Request_status } from './entities/renting-request.entity';
 

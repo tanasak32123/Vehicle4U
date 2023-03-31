@@ -75,6 +75,15 @@ export class VehicleController {
       vehicle: vehicle,
     });
   }
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('')
+  async getVehiclesByVehicleId(
+  @Query('vehicleId') vehicleId: number,
+  @Request() req): Promise<Vehicle> {
+    console.log(vehicleId);
+    return await this.vehicleService.getVehicleByVehicleId(vehicleId);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('myvehicles')

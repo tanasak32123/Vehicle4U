@@ -128,4 +128,10 @@ export class VehicleService {
     });
     return vehicles;
   }
+
+  async getVehicleByVehicleId(vehicleId: number): Promise<Vehicle> {
+    const vehicle = await this.vehicleRepository.findOneBy({'id': vehicleId });
+    if(!vehicle)throw new HttpException( "vehicle not found", HttpStatus.NOT_FOUND);
+    return vehicle;
+  }
 }
