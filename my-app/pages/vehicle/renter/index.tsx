@@ -66,10 +66,9 @@ const ProviderOwnerVehicle = () => {
     fetcher
   );
 
-  const status = 'confirm';
+  const status = 'pending';
   const router = useRouter();
 
-//   const [showDelete, setShowDelete] = useState<boolean>(false);
 
   useEffect(() => {
     if (data?.statusCode === 401) {
@@ -77,23 +76,6 @@ const ProviderOwnerVehicle = () => {
     }
   }, [data]);
 
-    function isConfirmStatus(status: string): status is 'confirm' {
-        return status === 'confirm';
-    }
-
-    function isPendingStatus(status: string): status is 'pending' {
-        return status === 'pending';
-    }
-
-    function isRejectStatus(status: string): status is 'pending' {
-        return status === 'reject';
-    }
-
-//   const handleDeleteVehicle = () => {
-//     console.log("Delete");
-//     setShowDelete(false);
-//     mutate();
-//   };
 
   if (error) return router.push("/500");
 
@@ -173,19 +155,15 @@ const ProviderOwnerVehicle = () => {
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
-                          {isPendingStatus(status) ? (<>
+                          {status === "pending" ? (<>
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : isRejectStatus(status) ? (<>
+                          </>) : status === "confirm" ? (<>
                             <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : isConfirmStatus(status) ? (<>
+                          </>) : status === "reject" ? (<>
                             <span className="badge bg-danger">ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
                           </>)}
-                          {/* <span className="badge bg-success">ว่าง</span>&nbsp;
-                          <span className="badge bg-warning">รอการยืนยัน</span>
-                          &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span> */}
                         </div>
                       </div>
                     </div>

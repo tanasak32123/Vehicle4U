@@ -14,7 +14,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .json({ success: false, statusCode: 401, msg: "Unauthorized." });
   }
 
-  if (!role || role !== "provider") {
+  if (!role || role !== "renter") {
     return res.status(401).json({
       success: false,
       statusCode: 401,
@@ -22,7 +22,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   }
 
-  if (token && role === "provider") {
+  if (token && role === "renter") {
     return res.status(200).json([{
       id: 23,
       registrationId: "กถ 3210",
