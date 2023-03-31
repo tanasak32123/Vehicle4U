@@ -103,7 +103,11 @@ const ProviderOwnerVehicle = () => {
           <h1 className={`text-start`}>
             รถเช่าของคุณ <FaCar />{" "}
             <div className={`float-end`}>
-              <button title="add vehicle" className={`btn btn-success`}>
+              <button
+                title="add vehicle"
+                className={`btn btn-success`}
+                onClick={() => router.push("/vehicle/create")}
+              >
                 + เพิ่มรถเช่า
               </button>
             </div>
@@ -158,13 +162,13 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        <div>
+                        {/* <div>
                           <b>สถานะ</b>:{" "}
                           <span className="badge bg-success">ว่าง</span>&nbsp;
                           <span className="badge bg-warning">รอการยืนยัน</span>
                           &nbsp;
                           <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div>

@@ -1,58 +1,56 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
+import { Request_status } from "../entities/renting-request.entity";
 
-export class CreateRentingRequestDto {
+export class OutputProviderPageDto {
     @ApiProperty({
-        type: Number,
+        type: String,
     })
     @IsNotEmpty()
-    car_id : number;
+    imagename: string;
+
+    @ApiProperty({
+        type: String,
+      })
+    @IsNotEmpty()
+    car_name: string;
     
     @ApiProperty({
         type: String,
-    })
+      })
     @IsNotEmpty()
-    startdate : string ;
-
-    @ApiProperty({
-        type: String,
-    })
-    @IsNotEmpty()
-    starttime : string ;
+    registrationId: string;
     
     @ApiProperty({
         type: String,
-    })
-    @IsNotEmpty()
-    enddate : string ;
-
-    @ApiProperty({
-        type: String,
-    })
-    @IsNotEmpty()
-    end_time : string ;
-      
-    @ApiProperty({
-        type: String,
-    })
-    @IsNotEmpty()
-    info: string;
-
-    @ApiProperty({
-        type: String,
-    })
+      })
     @IsNotEmpty()
     rent_place: string;
 
     @ApiProperty({
+        type: Number,
+      })
+    @IsNotEmpty()
+    maximumCapacity: number;
+
+    @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    contact: string;
+    created_at: string;
 
-    // @ApiProperty({
-    //     type: Boolean,
-    // })
-    // @IsNotEmpty()
-    // accept: boolean;
+    @ApiProperty({
+        type: String,
+      })
+    @IsNotEmpty()
+    updated_at: string;
+
+    @ApiProperty({
+        enum :["pending","accepted","rejected"]
+    })
+    @IsNotEmpty()
+    status : Request_status;
+
+    
+    
 }

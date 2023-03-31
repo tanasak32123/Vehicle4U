@@ -83,7 +83,7 @@ status(enum), rent_place*/
   //   type: Boolean,
   // })
   // @Column({default : true})
-  // accepted: boolean;
+  // accept: boolean;
   
   @DeleteDateColumn()
   deleted_at: string;
