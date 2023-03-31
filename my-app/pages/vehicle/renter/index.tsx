@@ -61,18 +61,14 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   //path ต้องขอ back-end
-
-//   const { auth, isLoading, authAction }: any = useAuth();
-
-
-
+  //   const { auth, isLoading, authAction }: any = useAuth();
   const { data, isLoading, error, mutate } = useSWR(
     // "/api/vehicle/getvehicles",
         "/api/renter/getvehicle/1",
     fetcher
   );
 
-  const status = 'pending';
+//   const status = 'pending';
   const router = useRouter();
 
 
@@ -88,6 +84,7 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
+    console.log('data');
     console.log(data);
     
     return (
@@ -109,13 +106,12 @@ const ProviderOwnerVehicle = () => {
           <hr />
 
         {/* ใส่ field ใน data ให้ถูกต้อง */}
-        {/* เดิม data.vehicles?.map(e:any) */}
-          {data.map((e: any) => {
-            // console.log(e);
+          {data.response?.map((e: any) => {
+            console.log(e);
             return (
               <div
-                id={`car_${e.id}`}
-                key={`car_${e.id}`}
+                id={`car_${e.car_id}`}
+                key={`car_${e.car_id}`}x
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>
@@ -139,33 +135,33 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`text-start`}>
                         <div>
-                          <b>ชื่อรถ</b>: {e?.name}
+                          <b>ชื่อรถ</b>: {e?.car_name}
                         </div>
                         <div>
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
                         </div>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.providerName}
+                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname} {e?.provider_lastname}
                         </div>
                         <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.providerContact}
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
                         </div>
                         <div>
                           <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
                         </div>
                         <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.startDate} {e?.startTime}
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
                         </div>
                         <div>
-                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.endDate} {e?.endTime}
+                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
-                          {status === "pending" ? (<>
+                          {e?.status === "pending" ? (<>
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : status === "confirm" ? (<>
+                          </>) : e?.status === "confirm" ? (<>
                             <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : status === "reject" ? (<>
+                          </>) : e?.status === "reject" ? (<>
                             <span className="badge bg-danger">ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
