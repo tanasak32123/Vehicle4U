@@ -20,10 +20,13 @@ export const AuthProvider = (props: any) => {
   const router = useRouter();
 
   const logout = async () => {
-    await fetch("/api/auth/logout").then(() => {
-      mutate();
-      router.push("/");
-    });
+    await fetch("/api/auth/logout")
+      .then(() => {
+        router.push("/");
+      })
+      .then(() => {
+        mutate();
+      });
   };
 
   const value: AuthContextValue = {

@@ -4,6 +4,7 @@ import Image from "next/image";
 //css
 import styles from "styles/components/Footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
+import { FaFacebook, FaInstagram, FaLine, FaPhoneAlt } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -88,50 +89,19 @@ export default function Footer() {
                 <ul className={`${styles.ul_list} p-0`}>
                   <li>
                     <div className="d-flex align-items-center">
-                      <Image
-                        src={`/images/phone.webp`}
-                        alt="Picture of the author"
-                        width={30}
-                        height={30}
-                      />
+                      <FaPhoneAlt size={18} />
                       <small>&nbsp;&nbsp;: 081-831-8928</small>
                     </div>
 
                     <div className="mt-3">
-                      <Link
-                        rel="preload"
-                        href="/"
-                        className="me-3"
-                        prefetch={false}
-                      >
-                        <Image
-                          src={`/images/facebook.webp`}
-                          alt="Picture of the author"
-                          width={42}
-                          height={42}
-                        />
+                      <Link href="/" className={`me-3`}>
+                        <FaFacebook size={40} />
                       </Link>
-                      <Link
-                        rel="preload"
-                        href="/"
-                        className="me-3"
-                        prefetch={false}
-                      >
-                        <Image
-                          src={`/images/instragram.webp`}
-                          alt="Picture of the author"
-                          width={40}
-                          height={40}
-                        />
+                      <Link href="/" className={`me-3 ${styles.ig}`}>
+                        <FaInstagram size={40} />
                       </Link>
-
-                      <Link rel="preload" href="/" prefetch={false}>
-                        <Image
-                          src={`/images/line.webp`}
-                          alt="Picture of the author"
-                          width={43}
-                          height={43}
-                        />
+                      <Link href="/" className={`${styles.line}`}>
+                        <FaLine size={40} />
                       </Link>
                     </div>
                   </li>

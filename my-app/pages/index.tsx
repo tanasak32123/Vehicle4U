@@ -44,7 +44,12 @@ export default function Home() {
           if (router.query.from) {
             router.push(router.query.from as string);
           }
-          router.push("/vehicle");
+          if (res.role == "renter") {
+            router.push("/vehicle");
+          }
+          if (res.role == "provider") {
+            router.push("provider/vehicle");
+          }
         } else {
           setInvalid(res.message);
           setShowAlert(true);

@@ -39,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res
       .status(200)
-      .json({ success: true, message: "Login successfully!" });
+      .json({ success: true, role: body.role, message: "Login successfully!" });
   } else {
     return res.status(404).redirect("/404");
   }

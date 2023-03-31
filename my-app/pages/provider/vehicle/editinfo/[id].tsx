@@ -60,8 +60,8 @@ export default function UpdateCar() {
   const edits: { [index: string]: Dispatch<SetStateAction<boolean>> } = {
     name: setEditname,
     registrationId: setEditregid,
-    invalidProvince: setEditmaxseat,
-    maximumCapacity: setEditprovince,
+    province: setEditprovince,
+    maximumCapacity: setEditmaxseat,
   };
 
   const fetcherVehicle = (url: string) =>
@@ -137,7 +137,7 @@ export default function UpdateCar() {
           document
             .querySelector(`#input-group-${res.field}`)
             ?.classList.remove("is-invalid");
-          toast.success("อัปเดตรูปรถสำเร็จ", {
+          toast.success("อัปเดตข้อมูลรถสำเร็จ", {
             position: "top-right",
             autoClose: 4000,
             hideProgressBar: false,
@@ -197,7 +197,7 @@ export default function UpdateCar() {
           vehicleMutate();
           setImageSrc(`/images/vehicles/${res.vehicle.imagename}`);
           setFilename(res.vehicle.imagename);
-          toast.success("อัปเดตรูปรถสำเร็จ", {
+          toast.success("อัปเดตข้อมูลรถสำเร็จ", {
             position: "top-right",
             autoClose: 4000,
             hideProgressBar: false,
@@ -222,9 +222,9 @@ export default function UpdateCar() {
     document.getElementById("carImgFile")?.click();
   };
 
-  const handleEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSwitchEdit = (field: string) => {
     for (let key in edits) {
-      if (key == e.currentTarget.id) {
+      if (key == field) {
         edits[key](true);
       } else edits[key](false);
     }
@@ -253,7 +253,13 @@ export default function UpdateCar() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           {provinceLoading || vehicleLoading ? (
-            <div>loading...</div>
+            <div className={`d-flex justify-content-center align-items-center`}>
+              <div className={`lds-facebook`}>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
           ) : (
             <>
               <button
@@ -359,7 +365,7 @@ export default function UpdateCar() {
                             type="button"
                             title={`edit_name`}
                             className={`${styles.edit_button} float-end`}
-                            onClick={() => setEditname(true)}
+                            onClick={() => handleSwitchEdit("name")}
                           >
                             <span>
                               <FiEdit2 />
@@ -421,7 +427,7 @@ export default function UpdateCar() {
                             type="button"
                             title={`edit_regisId`}
                             className={`${styles.edit_button} float-end`}
-                            onClick={() => setEditregid(true)}
+                            onClick={() => handleSwitchEdit("registrationId")}
                           >
                             <span>
                               <FiEdit2 />
@@ -488,7 +494,7 @@ export default function UpdateCar() {
                             type="button"
                             title={`edit_province`}
                             className={`${styles.edit_button} float-end`}
-                            onClick={() => setEditprovince(true)}
+                            onClick={() => handleSwitchEdit("province")}
                           >
                             <span>
                               <FiEdit2 />
@@ -565,7 +571,7 @@ export default function UpdateCar() {
                             type="button"
                             title={`edit_maxCap`}
                             className={`${styles.edit_button} float-end`}
-                            onClick={() => setEditmaxseat(true)}
+                            onClick={() => handleSwitchEdit("maximumCapacity")}
                           >
                             <span>
                               <FiEdit2 />
