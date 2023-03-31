@@ -77,22 +77,25 @@ const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json({ success: false });
     });
 
-  const ok = await fetch("http://localhost:3000/user/updatevehicle", {
+  const vehicle = await fetch("http://localhost:3000/user/updatevehicle", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({ id: fields.id, imagename: filename }),
-  }).then((res) => {
-    return res.ok;
-  });
+  })
+    .then((response) => {
+      if (!response.ok) {
+        return res.status(500).json({ success: false });
+      }
+      return response.json();
+    })
+    .then((response) => {
+      return response.vehicle;
+    });
 
-  if (!ok) {
-    return res.status(500).json({ success: false });
-  }
-
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, vehicle });
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -2,7 +2,12 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
+import {
+  FaArrowAltCircleLeft,
+  FaCar,
+  FaEdit,
+  FaPrescriptionBottle,
+} from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
@@ -78,133 +83,132 @@ const ProviderOwnerVehicle = () => {
 
   if (isLoading) return <>Loading ...</>;
 
-  if (data)
-    console.log(data);
-    return (
-      <div
-        className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
-      >
-        <div className={`p-4 ${styles.reg_container}`}>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className={`${styles.back_btn} d-flex align-items-center`}
-          >
-            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-          </button>
-          <br />
-          {/* <h1 className="align-items-center d-flex justify-content-end">
+  if (data) console.log(data);
+  return (
+    <div
+      className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
+    >
+      <div className={`p-4 ${styles.reg_container}`}>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className={`${styles.back_btn} d-flex align-items-center`}
+        >
+          <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+        </button>
+        <br />
+        {/* <h1 className="align-items-center d-flex justify-content-end">
             <FaCar />
             &nbsp;รถเช่าของคุณ
           </h1>
           <hr /> */}
 
-          {/* <div className={`text-start`}> */}
-          <h1 className={`text-start`}>
-            รถเช่าของคุณ <FaCar />{" "}
-            <div className={`float-end`}>
-              <button
-                title="add vehicle"
-                className={`btn btn-success`}
-                onClick={() => router.push("/vehicle/create")}
-              >
-                + เพิ่มรถเช่า
-              </button>
-            </div>
-          </h1>
+        {/* <div className={`text-start`}> */}
+        <h1 className={`text-start`}>
+          รถเช่าของคุณ <FaCar />{" "}
+          <div className={`float-end`}>
+            <button
+              title="add vehicle"
+              className={`btn btn-success`}
+              onClick={() => router.push("/vehicle/create")}
+            >
+              + เพิ่มรถเช่า
+            </button>
+          </div>
+        </h1>
 
-          {/* </div> */}
-          <br />
+        {/* </div> */}
+        <br />
 
-          {data.vehicles?.map((e: any) => {
-            console.log(e?.imagename);
-            return (
-              <div
-                id={`car_${e.id}`}
-                key={`car_${e.id}`}
-                className={`${styles.vehicle_card} p-3 mb-3`}
-              >
-                <div className={`row`}>
-                  <div
-                    className={`col-6 d-flex justify-content-center align-items-center`}
-                  >
-                    <div className={`${styles.vehicle_image}`}>
-                      <Image
-                        src={`/images/vehicles/${e?.imagename}`}
-                        alt="Picture of car renter"
-                        fill
-                        loading="lazy"
-                        sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
+        {data.vehicles?.map((e: any) => {
+          console.log(e?.imagename);
+          return (
+            <div
+              id={`car_${e.id}`}
+              key={`car_${e.id}`}
+              className={`${styles.vehicle_card} p-3 mb-3`}
+            >
+              <div className={`row`}>
+                <div
+                  className={`col-6 d-flex justify-content-center align-items-center`}
+                >
+                  <div className={`${styles.vehicle_image}`}>
+                    <Image
+                      src={`/images/vehicles/${e?.imagename}`}
+                      alt="Picture of car renter"
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
+                      style={{ objectFit: "contain" }}
+                    />
                   </div>
-                  <div className={`col-6`}>
-                    <div
-                      className={`d-flex justify-content-left align-items-center mb-3`}
-                    >
-                      <div className={`text-start`}>
-                        <div>
-                          <b>ชื่อรถ</b>: {e?.name}
-                        </div>
-                        <div>
-                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                        </div>
-                        <div>
-                          <b>จังหวัด</b>: {e?.province}
-                        </div>
-                        <div>
-                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
-                        </div>
-                        <div>
-                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
-                        </div>
-                        <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
-                        </div>
-                        {/* <div>
+                </div>
+                <div className={`col-6`}>
+                  <div
+                    className={`d-flex justify-content-left align-items-center mb-3`}
+                  >
+                    <div className={`text-start`}>
+                      <div>
+                        <b>ชื่อรถ</b>: {e?.name}
+                      </div>
+                      <div>
+                        <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                      </div>
+                      <div>
+                        <b>จังหวัด</b>: {e?.province}
+                      </div>
+                      <div>
+                        <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                      </div>
+                      <div>
+                        <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                      </div>
+                      <div>
+                        <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
+                      </div>
+                      {/* <div>
                           <b>สถานะ</b>:{" "}
                           <span className="badge bg-success">ว่าง</span>&nbsp;
                           <span className="badge bg-warning">รอการยืนยัน</span>
                           &nbsp;
                           <span className="badge bg-danger">ถูกจองแล้ว</span>
                         </div> */}
-                      </div>
                     </div>
-                    <div>
-                      <Link
-                        className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
-                      >
-                        <FaEdit />
-                        แก้ไขข้อมูล
-                      </Link>
+                  </div>
+                  <div>
+                    <Link
+                      className={`float-start`}
+                      href={`/vehicle/update/${e?.id}`}
+                    >
+                      <FaEdit />
+                      แก้ไขข้อมูล
+                    </Link>
 
-                      <Link
+                    {/* <Link
                         className={`float-end`}
                         href={`#car_${e.id}`}
                         onClick={() => setShowDelete(true)}
                       >
                         <FaPrescriptionBottle />
                         ลบข้อมูล
-                      </Link>
-                    </div>
+                      </Link> */}
                   </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-
-        {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )}
+            </div>
+          );
+        })}
       </div>
-    );
+
+      {showDelete && (
+        <DeleteModal
+          show={showDelete}
+          onHide={() => setShowDelete(false)}
+          handleDelete={handleDeleteVehicle}
+        />
+      )}
+    </div>
+  );
 };
 
 const DeleteModal = ({ show, onHide, handleDelete }: any) => {

@@ -6,6 +6,7 @@ import { FaArrowAltCircleLeft, FaEdit, FaFileImage } from "react-icons/fa";
 import { Dispatch, SetStateAction, useRef, useState } from "react";
 import { Button, Col, Image, Modal, Row } from "react-bootstrap";
 import { FiEdit2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const fetcherProvince = (url: string) =>
   fetch(url)
@@ -44,11 +45,23 @@ export default function UpdateCar() {
   const [editprovince, setEditprovince] = useState<boolean>(false);
   const [editmaxseat, setEditmaxseat] = useState<boolean>(false);
 
+  const [invalidName, setInvalidName] = useState("");
+  const [invalidRegId, setInvalidRegId] = useState("");
+  const [invalidProvince, setInvalidProvince] = useState("");
+  const [invalidCap, setInvalidCap] = useState("");
+
+  const setInvalids: { [index: string]: Dispatch<SetStateAction<string>> } = {
+    name: setInvalidName,
+    registrationId: setInvalidRegId,
+    invalidProvince: setInvalidProvince,
+    maximumCapacity: setInvalidCap,
+  };
+
   const edits: { [index: string]: Dispatch<SetStateAction<boolean>> } = {
-    edit_name: setEditname,
-    editregid: setEditregid,
-    editmaxseat: setEditmaxseat,
-    editprovince: setEditprovince,
+    name: setEditname,
+    registrationId: setEditregid,
+    invalidProvince: setEditmaxseat,
+    maximumCapacity: setEditprovince,
   };
 
   const fetcherVehicle = (url: string) =>
@@ -57,9 +70,15 @@ export default function UpdateCar() {
         return res.json();
       })
       .then((res) => {
-        setImageSrc(`/images/vehicles/${res.imagename}`);
-        setFilename(res.imagename);
-        return res;
+        if (res.statusCode == 200) {
+          setImageSrc(`/images/vehicles/${res.vehicle.imagename}`);
+          setFilename(res.vehicle.imagename);
+          return res.vehicle;
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        router.push("/500");
       });
 
   const {
@@ -75,14 +94,61 @@ export default function UpdateCar() {
     data: vehicleData,
     isLoading: vehicleLoading,
     error: vehicleError,
+    mutate: vehicleMutate,
   } = useSWR(
     id ? `/api/vehicle/getvehicle/${id}` : null,
     id ? fetcherVehicle : null
   );
 
   // update car
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
+    await fetch("/api/vehicle/updatevehicle", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        field: `${e.currentTarget.name}`,
+        value: `${
+          (
+            document.querySelector(
+              `#${e.currentTarget.name}`
+            ) as HTMLInputElement
+          )?.value
+        }`,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        if (!res.success) {
+          document
+            .querySelector(`#input-group-${res.field}`)
+            ?.classList.add("is-invalid");
+          setInvalids[`${res.field}`](res.message);
+        } else {
+          vehicleMutate();
+          edits[`${res.field}`](false);
+          document
+            .querySelector(`#input-group-${res.field}`)
+            ?.classList.remove("is-invalid");
+          toast.success("อัปเดตรูปรถสำเร็จ", {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      });
   };
 
   const handleChooseFile = () => {
@@ -128,16 +194,21 @@ export default function UpdateCar() {
       })
       .then((res) => {
         if (res.success) {
-          const file = imageRef?.current?.files?.item(0);
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-              setImageSrc(reader.result as string);
-            };
-            reader.readAsDataURL(file);
-          } else {
-            setImgFeedback("** โปรดเลือกไฟล์รูปภาพของคุณ");
-          }
+          vehicleMutate();
+          setImageSrc(`/images/vehicles/${res.vehicle.imagename}`);
+          setFilename(res.vehicle.imagename);
+          toast.success("อัปเดตรูปรถสำเร็จ", {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        } else {
+          setImgFeedback("** โปรดเลือกไฟล์รูปภาพของคุณ");
         }
       })
       .catch((err) => {
@@ -149,12 +220,6 @@ export default function UpdateCar() {
   const choosefile = () => {
     setConfChange(false);
     document.getElementById("carImgFile")?.click();
-  };
-
-  const cancelFile = () => {
-    setFilename("");
-    setImageSrc("");
-    (imageRef?.current as HTMLInputElement).value = "";
   };
 
   const handleEdit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -172,6 +237,16 @@ export default function UpdateCar() {
       <Head>
         <title>แก้ไขข้อมูลรถยนต์-VEHICLE4U</title>
       </Head>
+
+      <svg xmlns="http://www.w3.org/2000/svg" className={`${styles.svg}`}>
+        <symbol
+          id="exclamation-triangle-fill"
+          fill="currentColor"
+          viewBox="0 0 16 16"
+        >
+          <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+        </symbol>
+      </svg>
 
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -211,302 +286,338 @@ export default function UpdateCar() {
                 </div>
               )}
 
-              <form id="form" onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="carImgFile" className="form-label">
-                    <b>รูปรถเช่า</b>
-                  </label>
-                  <small className={`ms-2 red_color ${styles.feedback}`}>
-                    {imgFeedback}
-                  </small>
-                  <div className="input-group">
-                    <button
-                      id="file"
-                      type="button"
-                      onClick={() => setConfChange(true)}
-                      className={`btn d-flex align-items-center btn-primary`}
-                    >
-                      <FaFileImage />
-                      &nbsp;เปลี่ยนรูป
-                    </button>
-                    <input
-                      ref={imageRef}
-                      className="form-control"
-                      type="file"
-                      id="carImgFile"
-                      onChange={async () => {
-                        await handleChooseFile().then((res: boolean) => {
-                          if (res) updateImage();
-                        });
-                      }}
-                      hidden
-                    />
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="โปรดเลือกไฟล์รูปภาพของรถ"
-                      value={filename ? filename : ""}
-                      disabled
-                    />
-                  </div>
-                  <div
-                    className={`${styles.first_col} mt-3 d-flex justify-content-center align-items-center`}
+              <div className="mb-3">
+                <label htmlFor="carImgFile" className="form-label">
+                  <b>รูปรถเช่า</b>
+                </label>
+                <small className={`ms-2 red_color ${styles.feedback}`}>
+                  {imgFeedback}
+                </small>
+                <div className="input-group">
+                  <button
+                    id="file"
+                    type="button"
+                    onClick={() => setConfChange(true)}
+                    className={`btn d-flex align-items-center btn-primary`}
                   >
-                    {imageSrc ? (
-                      <div>
-                        <Image
-                          className={`${styles.image}`}
-                          src={imageSrc}
-                          alt="Vehicle Image"
-                        />
-                      </div>
-                    ) : (
-                      <div
-                        className={`d-flex justify-content-center align-items-center w-100 h-100`}
-                      >
-                        ไม่มีรูปภาพ
-                      </div>
-                    )}
-                  </div>
+                    <FaFileImage />
+                    &nbsp;เปลี่ยนรูป
+                  </button>
+                  <input
+                    ref={imageRef}
+                    className="form-control"
+                    type="file"
+                    id="carImgFile"
+                    onChange={async () => {
+                      await handleChooseFile().then((res: boolean) => {
+                        if (res) updateImage();
+                      });
+                    }}
+                    hidden
+                  />
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="โปรดเลือกไฟล์รูปภาพของรถ"
+                    value={filename ? filename : ""}
+                    disabled
+                  />
                 </div>
-
-                <Row>
-                  <Col lg={12}>
-                    <div className="mb-3">
-                      <label htmlFor="carName" className="form-label">
-                        <b>ชื่อของรถ</b>
-                      </label>{" "}
-                      <div className={`text-start`}>
-                        {!editname ? (
-                          <>
-                            <span>{vehicleData?.name}</span>
-                            <button
-                              id="edit_name"
-                              type="button"
-                              title={`edit_name`}
-                              className={`${styles.edit_button} float-end`}
-                              onClick={(e) => handleEdit(e)}
-                            >
-                              <span>
-                                <FiEdit2 />
-                                &nbsp;แก้ไข
-                              </span>
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="input-group">
-                              <input
-                                ref={carNameRef}
-                                type="text"
-                                id="carname"
-                                className="form-control"
-                                placeholder="ชื่อรถเช่าของคุณ"
-                                defaultValue={vehicleData?.name}
-                              />
-                              <button
-                                title="submit_editname"
-                                name="submit_editname"
-                                type="button"
-                                className={`btn-success btn`}
-                              >
-                                ยืนยัน
-                              </button>
-                              <button
-                                title="cancel_editname"
-                                name="cancel_editname"
-                                type="button"
-                                className={`btn btn-danger`}
-                                onClick={() => setEditname(false)}
-                              >
-                                ยกเลิก
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                <div
+                  className={`${styles.first_col} mt-3 d-flex justify-content-center align-items-center`}
+                >
+                  {imageSrc ? (
+                    <div>
+                      <Image
+                        className={`${styles.image}`}
+                        src={imageSrc}
+                        alt="Vehicle Image"
+                      />
                     </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="regisNum" className="form-label">
-                        <b>เลขทะเบียนรถ</b>
-                      </label>
-                      <div className={`text-start`}>
-                        {!editregid ? (
-                          <>
-                            <span>{vehicleData?.registrationId}</span>
-                            <button
-                              id="edit_regisId"
-                              type="button"
-                              title={`edit_regisId`}
-                              className={`${styles.edit_button} float-end`}
-                              onClick={() => setEditregid(true)}
-                            >
-                              <span>
-                                <FiEdit2 />
-                                &nbsp;แก้ไข
-                              </span>
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="input-group">
-                              <input
-                                ref={regidRef}
-                                type="text"
-                                className="form-control"
-                                id="editregid"
-                                placeholder="เลขทะเบียนรถของคุณ"
-                                defaultValue={vehicleData?.registrationId}
-                              />
-                              <button
-                                title="submit_editregid"
-                                name="submit_editregid"
-                                type="button"
-                                className={`btn btn-success`}
-                              >
-                                ยืนยัน
-                              </button>
-                              <button
-                                title="cancel_editregid"
-                                name="cancel_editregid"
-                                type="button"
-                                className={`btn btn-danger`}
-                                onClick={() => setEditregid(false)}
-                              >
-                                ยกเลิก
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                  ) : (
+                    <div
+                      className={`d-flex justify-content-center align-items-center w-100 h-100`}
+                    >
+                      ไม่มีรูปภาพ
                     </div>
-                  </Col>
+                  )}
+                </div>
+              </div>
 
-                  <Col lg={12}>
-                    <div className="mb-3">
-                      <label htmlFor="province" className="form-label">
-                        <b>จังหวัด</b>
-                      </label>
-                      <div className={`text-start`}>
-                        {!editprovince ? (
-                          <>
-                            <span>{vehicleData?.province}</span>
+              <Row>
+                <Col lg={12}>
+                  <div className="mb-3">
+                    <label htmlFor="carName" className="form-label">
+                      <b>ชื่อของรถ</b>
+                    </label>{" "}
+                    <div className={`text-start`}>
+                      {!editname ? (
+                        <>
+                          <span>{vehicleData?.name}</span>
+                          <button
+                            id="edit_name"
+                            type="button"
+                            title={`edit_name`}
+                            className={`${styles.edit_button} float-end`}
+                            onClick={() => setEditname(true)}
+                          >
+                            <span>
+                              <FiEdit2 />
+                              &nbsp;แก้ไข
+                            </span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div className="input-group" id={`input-group-name`}>
+                            <input
+                              ref={carNameRef}
+                              type="text"
+                              id="name"
+                              className="form-control"
+                              placeholder="ชื่อรถเช่าของคุณ"
+                              defaultValue={vehicleData?.name}
+                            />
                             <button
-                              id="edit_province"
+                              title="submit_editname"
+                              name="name"
                               type="button"
-                              title={`edit_province`}
-                              className={`${styles.edit_button} float-end`}
-                              onClick={() => setEditprovince(true)}
+                              className={`btn-success btn`}
+                              onClick={(e) => handleSubmit(e)}
                             >
-                              <span>
-                                <FiEdit2 />
-                                &nbsp;แก้ไข
-                              </span>
+                              ยืนยัน
                             </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="input-group">
-                              <select
-                                title="editprovince"
-                                ref={provinceRef}
-                                className="form-select"
-                                id="editprovince"
-                                defaultValue={vehicleData?.province}
-                              >
-                                <option value="">กรุณาเลือกจังหวัด ...</option>
-                                {provinceData.map((e: any) => {
-                                  return (
-                                    <option
-                                      key={e.id}
-                                      id={e.id}
-                                      value={e.name_th}
-                                    >
-                                      {e.name_th}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <button
-                                title="submit_editregid"
-                                name="submit_editregid"
-                                type="button"
-                                className={`btn btn-success`}
-                              >
-                                ยืนยัน
-                              </button>
-                              <button
-                                title="cancel_editregid"
-                                name="cancel_editregid"
-                                type="button"
-                                className={`btn btn-danger`}
-                                onClick={() => setEditprovince(false)}
-                              >
-                                ยกเลิก
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-3">
-                      <label htmlFor="seat" className="form-label">
-                        <b>จำนวนที่นั่ง</b>
-                      </label>
-                      <div className={`text-start`}>
-                        {!editmaxseat ? (
-                          <>
-                            <span>{vehicleData?.maximumCapacity}</span>
                             <button
-                              id="edit_maxCap"
+                              title="cancel_editname"
+                              name="cancel_editname"
                               type="button"
-                              title={`edit_maxCap`}
-                              className={`${styles.edit_button} float-end`}
-                              onClick={() => setEditmaxseat(true)}
+                              className={`btn btn-danger`}
+                              onClick={() => setEditname(false)}
                             >
-                              <span>
-                                <FiEdit2 />
-                                &nbsp;แก้ไข
-                              </span>
+                              ยกเลิก
                             </button>
-                          </>
-                        ) : (
-                          <>
-                            <div className="input-group">
-                              <input
-                                ref={seatRef}
-                                type="text"
-                                className="form-control"
-                                id="editseat"
-                                placeholder="จำนวนที่นั่งของคุณ"
-                                defaultValue={vehicleData?.maximumCapacity}
-                              />
-                              <button
-                                title="submit_editseat"
-                                name="submit_editseat"
-                                type="button"
-                                className={`btn btn-success`}
-                              >
-                                ยืนยัน
-                              </button>
-                              <button
-                                title="cancel_editseat"
-                                name="cancel_editseat"
-                                type="button"
-                                className={`btn btn-danger`}
-                                onClick={() => setEditmaxseat(false)}
-                              >
-                                ยกเลิก
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                          <div
+                            id="validationName"
+                            className={`invalid-feedback`}
+                          >
+                            {invalidName}
+                          </div>
+                        </>
+                      )}
                     </div>
+                  </div>
 
-                    <div className="mb-3">
+                  <div className="mb-3">
+                    <label htmlFor="regisNum" className="form-label">
+                      <b>เลขทะเบียนรถ</b>
+                    </label>
+                    <div className={`text-start`}>
+                      {!editregid ? (
+                        <>
+                          <span>{vehicleData?.registrationId}</span>
+                          <button
+                            id="edit_regisId"
+                            type="button"
+                            title={`edit_regisId`}
+                            className={`${styles.edit_button} float-end`}
+                            onClick={() => setEditregid(true)}
+                          >
+                            <span>
+                              <FiEdit2 />
+                              &nbsp;แก้ไข
+                            </span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div
+                            className="input-group"
+                            id={`input-group-registrationId`}
+                          >
+                            <input
+                              ref={regidRef}
+                              type="text"
+                              className="form-control"
+                              id="registrationId"
+                              placeholder="เลขทะเบียนรถของคุณ"
+                              defaultValue={vehicleData?.registrationId}
+                            />
+                            <button
+                              title="submit_editregid"
+                              name="registrationId"
+                              type="button"
+                              className={`btn btn-success`}
+                              onClick={(e) => handleSubmit(e)}
+                            >
+                              ยืนยัน
+                            </button>
+                            <button
+                              title="cancel_editregid"
+                              name="cancel_editregid"
+                              type="button"
+                              className={`btn btn-danger`}
+                              onClick={() => setEditregid(false)}
+                            >
+                              ยกเลิก
+                            </button>
+                          </div>
+                          <div
+                            id="validationRegId"
+                            className={`invalid-feedback`}
+                          >
+                            {invalidRegId}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </Col>
+
+                <Col lg={12}>
+                  <div className="mb-3">
+                    <label htmlFor="province" className="form-label">
+                      <b>จังหวัด</b>
+                    </label>
+                    <div className={`text-start`}>
+                      {!editprovince ? (
+                        <>
+                          <span>{vehicleData?.province}</span>
+                          <button
+                            id="edit_province"
+                            type="button"
+                            title={`edit_province`}
+                            className={`${styles.edit_button} float-end`}
+                            onClick={() => setEditprovince(true)}
+                          >
+                            <span>
+                              <FiEdit2 />
+                              &nbsp;แก้ไข
+                            </span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div
+                            className="input-group"
+                            id={`input-group-province`}
+                          >
+                            <select
+                              title="editprovince"
+                              ref={provinceRef}
+                              className="form-select"
+                              id="province"
+                              defaultValue={vehicleData?.province}
+                            >
+                              <option value="">กรุณาเลือกจังหวัด ...</option>
+                              {provinceData.map((e: any) => {
+                                return (
+                                  <option
+                                    key={e.id}
+                                    id={e.id}
+                                    value={e.name_th}
+                                  >
+                                    {e.name_th}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <button
+                              title="submit to update province"
+                              name="province"
+                              type="button"
+                              className={`btn btn-success`}
+                              onClick={(e) => handleSubmit(e)}
+                            >
+                              ยืนยัน
+                            </button>
+                            <button
+                              title="cancel_editregid"
+                              name="cancel_editregid"
+                              type="button"
+                              className={`btn btn-danger`}
+                              onClick={() => setEditprovince(false)}
+                            >
+                              ยกเลิก
+                            </button>
+                          </div>
+                          <div
+                            id="validationProvince"
+                            className={`invalid-feedback`}
+                          >
+                            {invalidProvince}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="seat" className="form-label">
+                      <b>จำนวนที่นั่ง</b>
+                    </label>
+                    <div className={`text-start`}>
+                      {!editmaxseat ? (
+                        <>
+                          <span>{vehicleData?.maximumCapacity}</span>
+                          <button
+                            id="edit_maxCap"
+                            type="button"
+                            title={`edit_maxCap`}
+                            className={`${styles.edit_button} float-end`}
+                            onClick={() => setEditmaxseat(true)}
+                          >
+                            <span>
+                              <FiEdit2 />
+                              &nbsp;แก้ไข
+                            </span>
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <div
+                            className="input-group"
+                            id={`input-group-maximumCapacity`}
+                          >
+                            <input
+                              ref={seatRef}
+                              type="text"
+                              className="form-control"
+                              id="maximumCapacity"
+                              placeholder="จำนวนที่นั่งของคุณ"
+                              defaultValue={vehicleData?.maximumCapacity}
+                            />
+                            <button
+                              title="submit to edit seat"
+                              name="maximumCapacity"
+                              type="button"
+                              className={`btn btn-success`}
+                              onClick={(e) => handleSubmit(e)}
+                            >
+                              ยืนยัน
+                            </button>
+                            <button
+                              title="cancel_editseat"
+                              name="cancel_editseat"
+                              type="button"
+                              className={`btn btn-danger`}
+                              onClick={() => setEditmaxseat(false)}
+                            >
+                              ยกเลิก
+                            </button>
+                          </div>
+                          <div
+                            id="validationSeat"
+                            className={`invalid-feedback`}
+                          >
+                            {invalidCap}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* <div className="mb-3">
                       <button
                         title="delete a vehicle"
                         type="button"
@@ -514,10 +625,9 @@ export default function UpdateCar() {
                       >
                         ลบรถเช่า
                       </button>
-                    </div>
-                  </Col>
-                </Row>
-              </form>
+                    </div> */}
+                </Col>
+              </Row>
             </>
           )}
         </div>
@@ -561,3 +671,9 @@ const ChangeImgModal = ({ show, onHide, choosefile }: any) => {
     </Modal>
   );
 };
+
+// const cancelFile = () => {
+//   setFilename("");
+//   setImageSrc("");
+//   (imageRef?.current as HTMLInputElement).value = "";
+// };
