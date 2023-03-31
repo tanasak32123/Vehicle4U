@@ -4,6 +4,12 @@ import { Request_status } from "../entities/renting-request.entity";
 
 export class OutputProviderPageDto {
     @ApiProperty({
+      type: Number,
+    })
+    @IsNotEmpty()
+    car_id: number;  
+
+    @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
