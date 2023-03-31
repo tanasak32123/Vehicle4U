@@ -137,7 +137,7 @@ export default function SearchCar() {
     ({ pageParam = 1 }) =>
       fetchVehicles('vehicles', name, capacity, province, pageParam),
     {
-      getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
+      // getNextPageParam: (lastPage, allPages) => lastPage.nextPage,
       enabled: false,
     }
   );
@@ -147,7 +147,7 @@ export default function SearchCar() {
     fetchNextPage(1);
   };
 
-  const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
+  // const searchResults = data?.pages.flatMap((page) => page.vehicles) ?? [];
 
   return (
     <>

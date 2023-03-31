@@ -2,7 +2,7 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaArrowAltCircleLeft, FaCar, FaEdit } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
@@ -79,6 +79,7 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
+    console.log(data);
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -112,6 +113,7 @@ const ProviderOwnerVehicle = () => {
           <br />
 
           {data.vehicles?.map((e: any) => {
+            console.log(e?.imagename);
             return (
               <div
                 id={`car_${e.id}`}
@@ -154,7 +156,7 @@ const ProviderOwnerVehicle = () => {
                           <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
@@ -174,14 +176,14 @@ const ProviderOwnerVehicle = () => {
                         แก้ไขข้อมูล
                       </Link>
 
-                      {/* <Link
+                      <Link
                         className={`float-end`}
                         href={`#car_${e.id}`}
                         onClick={() => setShowDelete(true)}
                       >
                         <FaPrescriptionBottle />
                         ลบข้อมูล
-                      </Link> */}
+                      </Link>
                     </div>
                   </div>
                 </div>

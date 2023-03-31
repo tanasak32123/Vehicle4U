@@ -61,18 +61,33 @@ const fetcher = (url: string) =>
 const ProviderOwnerVehicle = () => {
   //path ต้องขอ back-end
   const { data, isLoading, error, mutate } = useSWR(
-    "/api/vehicle/getvehicles",
+    // "/api/vehicle/getvehicles",
+        "/api/renter/getvehicle/1",
     fetcher
   );
+
+  const status = 'confirm';
   const router = useRouter();
 
-  const [showDelete, setShowDelete] = useState<boolean>(false);
+//   const [showDelete, setShowDelete] = useState<boolean>(false);
 
-//   useEffect(() => {
-//     if (data?.statusCode === 401) {
-//       router.push("/");
-//     }
-//   }, [data]);
+  useEffect(() => {
+    if (data?.statusCode === 401) {
+      router.push("/");
+    }
+  }, [data]);
+
+    function isConfirmStatus(status: string): status is 'confirm' {
+        return status === 'confirm';
+    }
+
+    function isPendingStatus(status: string): status is 'pending' {
+        return status === 'pending';
+    }
+
+    function isRejectStatus(status: string): status is 'pending' {
+        return status === 'reject';
+    }
 
 //   const handleDeleteVehicle = () => {
 //     console.log("Delete");
@@ -85,6 +100,8 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
+    console.log(data);
+    
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -104,8 +121,9 @@ const ProviderOwnerVehicle = () => {
           <hr />
 
         {/* ใส่ field ใน data ให้ถูกต้อง */}
-
-          {data.vehicles?.map((e: any) => {
+        {/* เดิม data.vehicles?.map(e:any) */}
+          {data.map((e: any) => {
+            // console.log(e);
             return (
               <div
                 id={`car_${e.id}`}
@@ -133,73 +151,59 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`text-start`}>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.name}
-                        </div>
-                        <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.name}
-                        </div>
-                        <div>
                           <b>ชื่อรถ</b>: {e?.name}
                         </div>
                         <div>
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
                         </div>
                         <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.province}
+                          <b>ชื่อเจ้าของรถ</b>: {e?.providerName}
                         </div>
                         <div>
-                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.maximumCapacity}
-                        </div>
-                        {/* <div>
-                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.providerContact}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
-                        </div> */}
-                        {/* <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startDate} {e?.startTime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.endDate} {e?.endTime}
+                        </div>
+                        <div>
                           <b>สถานะ</b>:{" "}
-                          <span className="badge bg-success">ว่าง</span>&nbsp;
+                          {isPendingStatus(status) ? (<>
+                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
+                          </>) : isRejectStatus(status) ? (<>
+                            <span className="badge bg-success">ว่าง</span>&nbsp;
+                          </>) : isConfirmStatus(status) ? (<>
+                            <span className="badge bg-danger">ถูกจองแล้ว</span>
+                          </>) : (<>
+                            <span>-</span>
+                          </>)}
+                          {/* <span className="badge bg-success">ว่าง</span>&nbsp;
                           <span className="badge bg-warning">รอการยืนยัน</span>
                           &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div> */}
+                          <span className="badge bg-danger">ถูกจองแล้ว</span> */}
+                        </div>
                       </div>
                     </div>
-                    {/* <div>
-                      <Link
-                        className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
-                      >
-                        <FaEdit />
-                        แก้ไขข้อมูล
-                      </Link>
-
-                      <Link
-                        className={`float-end`}
-                        href={`#car_${e.id}`}
-                        onClick={() => setShowDelete(true)}
-                      >
-                        <FaPrescriptionBottle />
-                        ลบข้อมูล
-                      </Link>
-                    </div> */}
+                    <div className={styles.chat_div}>
+                        <button className={styles.chat_btn} 
+                        onClick={(event: any) => { router.push("/vehicle") }}>แชท</button>
+                    </div>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-
-        {/* {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )} */}
       </div>
     );
 };
+
+  
 
 // const DeleteModal = ({ show, onHide, handleDelete }: any) => {
 //   return (
