@@ -62,6 +62,7 @@ export class RentingRequestService {
         let providerrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let providerrequest= new OutputProviderPageDto;
+            providerrequest.request_id       = rentingRequests[i].id;
             providerrequest.car_id           = rentingRequests[i].vehicle.id;
             providerrequest.imagename        = rentingRequests[i].vehicle.imagename;
             providerrequest.car_name         = rentingRequests[i].vehicle.name;
@@ -97,6 +98,7 @@ export class RentingRequestService {
         renterrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let renterrequest = new OutputRenterPageDto;
+            renterrequest.request_id         = rentingRequests[i].id;
             renterrequest.car_id             = rentingRequests[i].vehicle.id;
             renterrequest.imagename          = rentingRequests[i].vehicle.imagename;
             renterrequest.car_name           = rentingRequests[i].vehicle.name;
