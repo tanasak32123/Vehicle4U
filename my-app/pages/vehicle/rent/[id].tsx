@@ -4,11 +4,11 @@ import styles from "@/styles/renter.module.css";
 import { Row, Col } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import { useAuth } from "@/components/AuthContext";
+// import { useAuth } from "@/components/AuthContext";
 
 
 export default function Register() {
-  const { authAction, loading }: any = useAuth();
+  // const { authAction, loading }: any = useAuth();
 
   const router = useRouter();
 

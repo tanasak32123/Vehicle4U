@@ -11,7 +11,7 @@ import {
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
-import { useAuth } from "@/components/AuthContext";
+// import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)

@@ -62,7 +62,8 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [confirm,setConfirm] = useState(false);
-  const [req_id,setReq_id] = useState(0);
+  const [req_id,setReq_id] = useState(1);
+  const [car_id,setCar_id] = useState(1);
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -114,7 +115,8 @@ const ProviderOwnerVehicle = () => {
 
 
           {/* data.vehicle?.map */}
-          {data.map((e: any) => {
+          {data.response?.map((e: any) => {
+            console.log(e);
             return (
               <div
                 id={`car_${e.id}`}
@@ -181,20 +183,24 @@ const ProviderOwnerVehicle = () => {
                             <Col><button className={styles.confirm_btn} 
                             onChange={(event) => {
                             setConfirm(true);
-                            setReq_id(e?.req_id);}}>
+                            setReq_id(e?.req_id);
+                            setCar_id(e?.car_id);}}>
                               ยีนยัน</button></Col>
                             <Col><button className={styles.cancel_btn} 
                             onChange={(event) => {
                             setConfirm(false);
-                            setReq_id(e?.req_id);}}>
+                            setReq_id(e?.req_id);
+                            setCar_id(e?.car_id);}}>
                               ปฏิเสธ</button></Col>
                           </Row>
                         </div> 
                       </>) : e?.status === "reserve" ? (<>
                         {/* เก็บตัวแปรของผู้เช่าและเบอร์โทรติดต่อกลับด้วย */}
-                        <b>ชื่อของผู้เช่า</b>: {e?.registrationId}
+                        <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname} {e?.renter_lastname}
                         <br></br>
-                        <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.registrationId}
+                        <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                        <br></br>
+                        <b>สถานที่เช่ารถ</b>: {e?.renter_place}
                       </>) : (<>
                       </>)}
                     </div>
