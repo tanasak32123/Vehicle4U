@@ -49,25 +49,32 @@ export class RentingRequestService {
 
         let rentingRequests = [];
         for (let i = 0; i < user.vehicles.length; i++){
-            let request = await this.rentingRequestRepository.find({
-                relations:{vehicle:true},
+            let requests = await this.rentingRequestRepository.find({
+                relations:{
+                    vehicle:true,
+                    user:true
+                },
                 where:{'vehicle':{'id':user.vehicles[i].id}}
             });
-            for(let j = 0; j < request.length; j++)rentingRequests.push(request[j]);
+            for(let j = 0; j < requests.length; j++)rentingRequests.push(requests[j]);
         }
 
         let providerrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let providerrequest= new OutputProviderPageDto;
-            providerrequest.car_id          = rentingRequests[i].vehicle.id;
-            providerrequest.imagename       = rentingRequests[i].vehicle.imagename;
-            providerrequest.car_name        = rentingRequests[i].vehicle.name;
-            providerrequest.registrationId  = rentingRequests[i].vehicle.registrationId;
-            providerrequest.rent_place      = rentingRequests[i].rent_place;
-            providerrequest.maximumCapacity = rentingRequests[i].vehicle.maximumCapacity
-            providerrequest.created_at      = rentingRequests[i].created_at;
-            providerrequest.updated_at      = rentingRequests[i].updated_at;
-            providerrequest.status          = rentingRequests[i].status;
+            providerrequest.car_id           = rentingRequests[i].vehicle.id;
+            providerrequest.imagename        = rentingRequests[i].vehicle.imagename;
+            providerrequest.car_name         = rentingRequests[i].vehicle.name;
+            providerrequest.registrationId   = rentingRequests[i].vehicle.registrationId;
+            providerrequest.renter_firstname = rentingRequests[i].user.first_name;
+            providerrequest.renter_lastname  = rentingRequests[i].user.last_name;
+            providerrequest.tel              = rentingRequests[i].user.tel;
+            providerrequest.contact          = rentingRequests[i].contact;
+            providerrequest.rent_place       = rentingRequests[i].rent_place;
+            providerrequest.maximumCapacity  = rentingRequests[i].vehicle.maximumCapacity
+            providerrequest.created_at       = rentingRequests[i].created_at;
+            providerrequest.updated_at       = rentingRequests[i].updated_at;
+            providerrequest.status           = rentingRequests[i].status;
             providerrequests.push(providerrequest);
         }
         return providerrequests;
