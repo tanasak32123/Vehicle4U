@@ -6,7 +6,7 @@ import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequestService } from './renting-request.service';
 
-@ApiTags('Vehicle4U')
+@ApiTags('renting-request')
 @Controller('renting-request')
 export class RentingRequestController{
     constructor (private readonly rentingRequestService: RentingRequestService) {}
