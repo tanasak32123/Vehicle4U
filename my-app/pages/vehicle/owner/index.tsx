@@ -62,11 +62,11 @@ const ProviderOwnerVehicle = () => {
 
   const [showDelete, setShowDelete] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (data?.statusCode === 401) {
-      router.push("/");
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.statusCode === 401) {
+  //     router.push("/");
+  //   }
+  // }, [data]);
 
   const handleDeleteVehicle = () => {
     console.log("Delete");
@@ -162,13 +162,13 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        {/* <div>
+                        <div>
                           <b>สถานะ</b>:{" "}
                           <span className="badge bg-success">ว่าง</span>&nbsp;
                           <span className="badge bg-warning">รอการยืนยัน</span>
                           &nbsp;
                           <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                     <div>

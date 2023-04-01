@@ -1,11 +1,11 @@
-import styles from "@/styles/getvehicle.module.css";
+import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
-import { Button, Modal } from "react-bootstrap";
+import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -55,24 +55,34 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error, mutate } = useSWR(
-    "/api/vehicle/getvehicles",
+    // "/api/vehicle/getvehicle",
+      "/api/provider/getvehicle",
     fetcher
   );
   const router = useRouter();
 
-  const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [confirm,setConfirm] = useState(false);
+  const [req_id,setReq_id] = useState(0);
 
-  useEffect(() => {
-    if (data?.statusCode === 401) {
-      router.push("/");
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
+    // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
+    const response = await fetch("/api/renter_request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        confirm,
+        req_id,
+      }),
+    });
+    if (!response.ok) {
+      const data = await response.json();
+      return;
     }
-  }, [data]);
-
-  const handleDeleteVehicle = () => {
-    console.log("Delete");
-    setShowDelete(false);
-    mutate();
-  };
+    router.push("/vehicle/rent/payment");
+  }
 
   if (error) return router.push("/500");
 
@@ -93,31 +103,18 @@ const ProviderOwnerVehicle = () => {
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
           <br />
-          {/* <h1 className="align-items-center d-flex justify-content-end">
-            <FaCar />
-            &nbsp;รถเช่าของคุณ
-          </h1>
-          <hr /> */}
 
           {/* <div className={`text-start`}> */}
           <h1 className={`text-start`}>
-            รถเช่าของคุณ <FaCar />{" "}
-            <div className={`float-end`}>
-              <button
-                title="add vehicle"
-                className={`btn btn-success`}
-                onClick={() => router.push("/vehicle/create")}
-              >
-                + เพิ่มรถเช่า
-              </button>
-            </div>
+            รายการรถเช่าของคุณ <FaCar />{" "}
           </h1>
 
           {/* </div> */}
           <br />
 
-          {data.vehicles?.map((e: any) => {
-            console.log(e?.imagename);
+
+          {/* data.vehicle?.map */}
+          {data.map((e: any) => {
             return (
               <div
                 id={`car_${e.id}`}
@@ -162,32 +159,44 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        {/* <div>
+                        <div>
                           <b>สถานะ</b>:{" "}
-                          <span className="badge bg-success">ว่าง</span>&nbsp;
-                          <span className="badge bg-warning">รอการยืนยัน</span>
-                          &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div> */}
+                          {e?.status === "pending" ? (<>
+                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
+                          </>) : e?.status === "confirm" ? (<>
+                            <span className="badge bg-success">ว่าง</span>&nbsp;
+                          </>) : e?.status === "reserve" ? (<>
+                            <span className="badge bg-danger">ถูกจองแล้ว</span>
+                          </>) : (<>
+                            <span>-</span>
+                          </>)}
+                        </div>
                       </div>
                     </div>
                     <div>
-                      <Link
-                        className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
-                      >
-                        <FaEdit />
-                        แก้ไขข้อมูล
-                      </Link>
-
-                      <Link
-                        className={`float-end`}
-                        href={`#car_${e.id}`}
-                        onClick={() => setShowDelete(true)}
-                      >
-                        <FaPrescriptionBottle />
-                        ลบข้อมูล
-                      </Link>
+                      {e?.status === "pending" ? (<>
+                        <div>
+                          <Row>
+                            <Col><b>กดยืนยันการจอง</b>:{" "}</Col>
+                            <Col><button className={styles.confirm_btn} 
+                            onChange={(event) => {
+                            setConfirm(true);
+                            setReq_id(e?.req_id);}}>
+                              ยีนยัน</button></Col>
+                            <Col><button className={styles.cancel_btn} 
+                            onChange={(event) => {
+                            setConfirm(false);
+                            setReq_id(e?.req_id);}}>
+                              ปฏิเสธ</button></Col>
+                          </Row>
+                        </div> 
+                      </>) : e?.status === "reserve" ? (<>
+                        {/* เก็บตัวแปรของผู้เช่าและเบอร์โทรติดต่อกลับด้วย */}
+                        <b>ชื่อของผู้เช่า</b>: {e?.registrationId}
+                        <br></br>
+                        <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.registrationId}
+                      </>) : (<>
+                      </>)}
                     </div>
                   </div>
                 </div>
@@ -196,13 +205,13 @@ const ProviderOwnerVehicle = () => {
           })}
         </div>
 
-        {showDelete && (
+        {/* {showDelete && (
           <DeleteModal
             show={showDelete}
             onHide={() => setShowDelete(false)}
             handleDelete={handleDeleteVehicle}
           />
-        )}
+        )} */}
       </div>
     );
 };

@@ -60,17 +60,11 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  //   const { auth, isLoading, authAction }: any = useAuth();
-
-  const { auth, isload, authAction }: any = useAuth();
-  console.log(auth);
-
   const { data, isLoading, error, mutate } = useSWR(
         "/api/renter/getvehicle",
     fetcher
   );
 
-//   const status = 'pending';
   const router = useRouter();
 
 
@@ -86,9 +80,6 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
-    // console.log('data');
-    // console.log(data);
-    
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -109,7 +100,6 @@ const ProviderOwnerVehicle = () => {
 
         {/* ใส่ field ใน data ให้ถูกต้อง */}
           {data.response?.map((e: any) => {
-            // console.log(e);
             return (
               <div
                 id={`car_${e.car_id}`}
@@ -163,7 +153,7 @@ const ProviderOwnerVehicle = () => {
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
                           </>) : e?.status === "confirm" ? (<>
                             <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : e?.status === "reject" ? (<>
+                          </>) : e?.status === "reserve" ? (<>
                             <span className="badge bg-danger">ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
