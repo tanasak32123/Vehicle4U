@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +9,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const initValues: AuthContextValue = {
   auth: { status: "SIGNED_OUT", user: null, role: null },
+  isLogout: false,
   isLoading: true,
   authAction: {},
 };
@@ -17,6 +18,7 @@ const AuthContext = createContext(initValues);
 
 export const AuthProvider = (props: any) => {
   const { data, mutate, isLoading } = useSWR("/api/auth/getUser", fetcher);
+  const [isLogout, setIsLogout] = useState(false);
   const router = useRouter();
 
   const logout = async () => {
@@ -31,10 +33,12 @@ export const AuthProvider = (props: any) => {
 
   const value: AuthContextValue = {
     auth: data,
+    isLogout,
     isLoading,
     authAction: {
       logout,
       mutate,
+      setIsLogout,
     },
   };
 

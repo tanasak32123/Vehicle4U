@@ -88,7 +88,7 @@ const Header = () => {
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
-                  <Nav.Link href="/user/signup" className={`orange_btn px-3`}>
+                  <Nav.Link href="/signup" className={`orange_btn px-3`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
@@ -110,8 +110,11 @@ const Header = () => {
 };
 
 const LogoutModal = ({ show, onHide, authAction }: any) => {
-  const handleLogout = () => {
-    authAction.logout();
+  const handleLogout = async () => {
+    authAction.setIsLogout(true);
+    await authAction.logout().then(() => {
+      authAction.setIsLogout(false);
+    });
     onHide();
   };
 
