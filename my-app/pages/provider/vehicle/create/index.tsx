@@ -13,7 +13,15 @@ import {
 import useSWR from "swr";
 
 const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
-  loading: () => <p>Loading...</p>,
+  loading: () => (
+    <div className={`d-flex justify-content-center align-items-center`}>
+      <div className={`lds-facebook`}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  ),
 });
 
 const fetcher = (url: string) =>
@@ -168,7 +176,13 @@ export default function UploadCar() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           {isLoading ? (
-            <div>loading...</div>
+            <div className={`d-flex justify-content-center align-items-center`}>
+              <div className={`lds-facebook`}>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
           ) : (
             <>
               <button

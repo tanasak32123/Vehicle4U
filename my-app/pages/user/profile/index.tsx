@@ -6,7 +6,7 @@ import { getCookie, setCookie } from "cookies-next";
 
 //css
 import styles from "styles/editProfile.module.css";
-import { FaArrowAltCircleLeft, FaCheckCircle, FaUserAlt } from "react-icons/fa";
+import { FaCheckCircle, FaUserAlt } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import { Alert } from "react-bootstrap";
 
@@ -212,12 +212,12 @@ export default function EditProfile() {
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
         <div className={`p-4 ${styles.reg_container}`}>
-          <button
+          {/* <button
             onClick={() => router.back()}
             className={`${styles.back_btn} d-flex align-items-center`}
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-          </button>
+          </button> */}
           <h1 className="align-items-center d-flex justify-content-end">
             <FaUserAlt />
             &nbsp; โปรไฟล์ของฉัน

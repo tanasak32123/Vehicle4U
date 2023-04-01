@@ -2,10 +2,11 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
-import { Button, Modal } from "react-bootstrap";
+import formatDate from "@/libs/formatDate";
+// import { Button, Modal } from "react-bootstrap";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -16,39 +17,9 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      let created_date: Date;
-      let updated_date: Date;
-      let updated_dateFormat: string;
-      let created_dateFormat: string;
       res.vehicles?.map((e: any) => {
-        created_date = new Date(e.created_at);
-        updated_date = new Date(e.updated_at);
-        updated_dateFormat =
-          updated_date.getDate() +
-          "/" +
-          (updated_date.getMonth() + 1) +
-          "/" +
-          updated_date.getFullYear() +
-          " " +
-          updated_date.getHours() +
-          ":" +
-          updated_date.getMinutes() +
-          ":" +
-          updated_date.getSeconds();
-        created_dateFormat =
-          created_date.getDate() +
-          "/" +
-          (created_date.getMonth() + 1) +
-          "/" +
-          created_date.getFullYear() +
-          " " +
-          created_date.getHours() +
-          ":" +
-          created_date.getMinutes() +
-          ":" +
-          created_date.getSeconds();
-        e.created_at = created_dateFormat;
-        e.updated_at = updated_dateFormat;
+        e.created_at = formatDate(new Date(e.created_at));
+        e.updated_at = formatDate(new Date(e.updated_at));
       });
       return res;
     });
@@ -60,7 +31,7 @@ const ProviderOwnerVehicle = () => {
   );
   const router = useRouter();
 
-  const [showDelete, setShowDelete] = useState<boolean>(false);
+  // const [showDelete, setShowDelete] = useState<boolean>(false);
 
   // useEffect(() => {
   //   if (data?.statusCode === 401) {
@@ -68,56 +39,53 @@ const ProviderOwnerVehicle = () => {
   //   }
   // }, [data]);
 
-  const handleDeleteVehicle = () => {
-    console.log("Delete");
-    setShowDelete(false);
-    mutate();
-  };
+  // const handleDeleteVehicle = () => {
+  //   console.log("Delete");
+  //   setShowDelete(false);
+  //   mutate();
+  // };
 
   if (error) return router.push("/500");
 
-  if (isLoading) return <>Loading ...</>;
+  if (isLoading)
+    return (
+      <div className={`d-flex justify-content-center align-items-center`}>
+        <div className={`lds-facebook`}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    );
 
   if (data)
-    console.log(data);
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
         <div className={`p-4 ${styles.reg_container}`}>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className={`${styles.back_btn} d-flex align-items-center`}
-          >
-            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-          </button>
-          <br />
-          {/* <h1 className="align-items-center d-flex justify-content-end">
-            <FaCar />
-            &nbsp;รถเช่าของคุณ
-          </h1>
-          <hr /> */}
-
-          {/* <div className={`text-start`}> */}
-          <h1 className={`text-start`}>
-            รถเช่าของคุณ <FaCar />{" "}
+          <h1 className={`text-start ps-3`}>
+            รถเช่าของคุณ
             <div className={`float-end`}>
               <button
                 title="add vehicle"
                 className={`btn btn-success`}
-                onClick={() => router.push("/vehicle/create")}
+                onClick={() => router.push("vehicle/create")}
               >
                 + เพิ่มรถเช่า
               </button>
             </div>
           </h1>
-
-          {/* </div> */}
+          <hr />
           <br />
 
+          {data.vehicles?.length == 0 && (
+            <div className={`d-flex justify-content-center align-items-center`}>
+              ไม่มีข้อมูล
+            </div>
+          )}
+
           {data.vehicles?.map((e: any) => {
-            console.log(e?.imagename);
             return (
               <div
                 id={`car_${e.id}`}
@@ -160,7 +128,7 @@ const ProviderOwnerVehicle = () => {
                           <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
@@ -174,20 +142,20 @@ const ProviderOwnerVehicle = () => {
                     <div>
                       <Link
                         className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
+                        href={`/provider/vehicle/editinfo/${e?.id}`}
                       >
                         <FaEdit />
                         แก้ไขข้อมูล
                       </Link>
 
-                      <Link
+                      {/* <Link
                         className={`float-end`}
                         href={`#car_${e.id}`}
                         onClick={() => setShowDelete(true)}
                       >
                         <FaPrescriptionBottle />
                         ลบข้อมูล
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 </div>
@@ -196,43 +164,43 @@ const ProviderOwnerVehicle = () => {
           })}
         </div>
 
-        {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )}
+        {/* {showDelete && (
+        <DeleteModal
+          show={showDelete}
+          onHide={() => setShowDelete(false)}
+          handleDelete={handleDeleteVehicle}
+        />
+      )} */}
       </div>
     );
 };
 
-const DeleteModal = ({ show, onHide, handleDelete }: any) => {
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-      <Modal.Body>
-        <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
-        <div className={`text-center`}>
-          <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
-        </div>
-      </Modal.Body>
-      <Modal.Footer className={`modal_wo_border d-flex`}>
-        <Button className={`me-auto`} onClick={onHide}>
-          ยกเลิก
-        </Button>
-        <Button onClick={handleDelete} variant="danger">
-          ยืนยัน
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
-};
+// const DeleteModal = ({ show, onHide, handleDelete }: any) => {
+//   return (
+//     <Modal
+//       show={show}
+//       onHide={onHide}
+//       size="sm"
+//       aria-labelledby="contained-modal-title-vcenter"
+//       centered
+//     >
+//       <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
+//       <Modal.Body>
+//         <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
+//         <div className={`text-center`}>
+//           <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
+//         </div>
+//       </Modal.Body>
+//       <Modal.Footer className={`modal_wo_border d-flex`}>
+//         <Button className={`me-auto`} onClick={onHide}>
+//           ยกเลิก
+//         </Button>
+//         <Button onClick={handleDelete} variant="danger">
+//           ยืนยัน
+//         </Button>
+//       </Modal.Footer>
+//     </Modal>
+//   );
+// };
 
 export default ProviderOwnerVehicle;

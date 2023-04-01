@@ -23,41 +23,43 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (token && role === "provider") {
-    return res.status(200).json({
-      id: 23,
-      registrationId: "กถ 3210",
-      name: "car02",
-      imagename: "1679823192406_class_diagram.png",
-      province: "กระบี่",
-      maximumCapacity: 3,
-      deleted_at: null,
-      updated_at: "2023-03-22T07:40:28.601Z",
-      created_at: "2023-03-22T07:40:28.601Z",
-    });
-    // await fetch("http://localhost:3000/user/vehicles", {
-    //   headers: {
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    // })
-    //   .then((response) => {
-    //     if (response.ok) {
-    //       return response.json();
-    //     }
-    //     throw new Error("Something went wrong ...");
-    //   })
-    //   .then((response) => {
-    //     return res.status(200).json({
-    //       success: true,
-    //       statusCode: 200,
-    //       vehicles: response[0].vehicles,
-    //     });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     return res
-    //       .status(500)
-    //       .json({ success: false, statusCode: 500, err: err });
-    //   });
+    const { id } = req.query;
+    // console.log(id);
+    // return res.status(200).json({
+    //   id: 23,
+    //   registrationId: "กถ 3210",
+    //   name: "car02",
+    //   imagename: "1679823192406_class_diagram.png",
+    //   province: "กระบี่",
+    //   maximumCapacity: 3,
+    //   deleted_at: null,
+    //   updated_at: "2023-03-22T07:40:28.601Z",
+    //   created_at: "2023-03-22T07:40:28.601Z",
+    // });
+    await fetch(`http://localhost:3000/vehicle?vehicleId=${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error("Something went wrong ...");
+      })
+      .then((response) => {
+        return res.status(200).json({
+          success: true,
+          statusCode: 200,
+          vehicle: response,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        return res
+          .status(500)
+          .json({ success: false, statusCode: 500, err: err });
+      });
   }
 };
 

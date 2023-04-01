@@ -28,6 +28,30 @@ export class OutputProviderPageDto {
     registrationId: string;
     
     @ApiProperty({
+      type: String,
+    })
+    @IsNotEmpty()
+    renter_firstname: string;
+
+    @ApiProperty({
+      type: String,
+    })
+    @IsNotEmpty()
+    renter_lastname: string;
+
+    @ApiProperty({
+      type: String,
+    })
+    @IsNotEmpty()
+    tel: string;
+
+    @ApiProperty({
+      type: String,
+    })
+    @IsNotEmpty()
+    contact: string;
+
+    @ApiProperty({
         type: String,
       })
     @IsNotEmpty()
@@ -56,7 +80,4 @@ export class OutputProviderPageDto {
     })
     @IsNotEmpty()
     status : Request_status;
-
-    
-    
 }

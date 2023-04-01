@@ -6,6 +6,7 @@ export default interface AuthContextValue {
     user: UserModel | null;
     role: string | null;
   };
+  isLogout: boolean;
   isLoading: boolean;
   authAction: any;
 }

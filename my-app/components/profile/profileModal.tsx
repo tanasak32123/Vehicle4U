@@ -86,11 +86,10 @@ export default function ProfileModal({
                           }}
                         />
                       ) : (
-                        <label htmlFor={element.name}>
-                          <Form.Select
-                            id={element.name}
+                        <>
+                          <select
+                            title={element.name}
                             name={element.name}
-                            aria-label={element.name}
                             onChange={(event) => {
                               element.setValue({
                                 ...user,
@@ -102,13 +101,17 @@ export default function ProfileModal({
                           >
                             {element.options.map((option: any) => {
                               return (
-                                <option key={option.en} value={option.en}>
+                                <option
+                                  id={option.en}
+                                  key={option.en}
+                                  value={option.en}
+                                >
                                   {option.th}
                                 </option>
                               );
                             })}
-                          </Form.Select>
-                        </label>
+                          </select>
+                        </>
                       )}
                     </Col>
                   );

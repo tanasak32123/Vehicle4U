@@ -22,7 +22,10 @@ const Header = () => {
     <>
       <Navbar collapseOnSelect expand="lg" className={`${styles.nav}`}>
         <Container>
-          <Navbar.Brand className={`px-3 ${styles.brand}`} href="/">
+          <Navbar.Brand
+            className={`px-3 ${styles.brand}`}
+            href={`${auth?.role == "renter" ? "/" : "/provider/vehicle"}`}
+          >
             VEHICLE4U
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -41,13 +44,19 @@ const Header = () => {
                 <>
                   <hr />
                   {auth?.role == "renter" && (
-                    <><Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link><Nav.Link href="/vehicle/renter">ประวัติการเช่ารถ</Nav.Link></>
+                    <>
+                      <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                      <Nav.Link href="/vehicle/renter">
+                        ประวัติการเช่ารถ
+                      </Nav.Link>
+                    </>
                   )}
                   {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.role == "provider" && (
                     <>
-                      <Nav.Link href={`/vehicle/owner`}>รถเช่าของคุณ</Nav.Link>
-                      {/* <Nav.Link href="/vehicle/create">เพิ่มรถเช่า</Nav.Link> */}
+                      <Nav.Link href={`/provider/vehicle`}>
+                        รถเช่าของคุณ
+                      </Nav.Link>
                     </>
                   )}
                   <hr />
@@ -79,7 +88,7 @@ const Header = () => {
               ) : (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
-                  <Nav.Link href="/user/signup" className={`orange_btn px-3`}>
+                  <Nav.Link href="/signup" className={`orange_btn px-3`}>
                     สมัครสมาชิก
                   </Nav.Link>
                 </>
@@ -101,8 +110,11 @@ const Header = () => {
 };
 
 const LogoutModal = ({ show, onHide, authAction }: any) => {
-  const handleLogout = () => {
-    authAction.logout();
+  const handleLogout = async () => {
+    authAction.setIsLogout(true);
+    await authAction.logout().then(() => {
+      authAction.setIsLogout(false);
+    });
     onHide();
   };
 
