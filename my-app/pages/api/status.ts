@@ -16,7 +16,7 @@ export default async function handler(
     try {
     // ให้ปลื้มสร้าง path เพิ่ม
       await fetch("http://localhost:3000/renting-request/updatestatus", {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

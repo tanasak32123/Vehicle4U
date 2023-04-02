@@ -62,14 +62,13 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [confirm,setConfirm] = useState(false);
-  const [req_id,setReq_id] = useState(1);
+  const [req_id,setReq_id] = useState();
 
-  async function handleSubmit(event: Event) {
-    console.log(req_id);
-    console.log(confirm);
+  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>,confirm: boolean) {
+    const req_id = event.currentTarget.id;
     event.preventDefault();
     // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
-    const response = await fetch("/api/renter_request", {
+    const response = await fetch("/api/status", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -167,9 +166,9 @@ const ProviderOwnerVehicle = () => {
                           {e?.status === "pending" ? (<>
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
                           </>) : e?.status === "rejected" ? (<>
-                            <span className="badge bg-success">ว่าง</span>&nbsp;
+                            <span className="badge bg-danger">ปฏิเสธ</span>&nbsp;
                           </>) : e?.status === "accepted" ? (<>
-                            <span className="badge bg-danger">ถูกจองแล้ว</span>
+                            <span className="badge bg-success" >ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
                           </>)}
@@ -190,31 +189,44 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <Row>
                             <Col><b>กดยืนยันการจอง</b>:{" "}</Col>
-                            <Col><button className={styles.confirm_btn} 
+                            <Col><button id={e?.request_id} className={styles.confirm_btn} 
                             onClick={(event) => {
-                            setConfirm(true);
-                            setReq_id(e?.request_id);
-                            handleSubmit(event);}}>
+                            handleSubmit(event,true);}}>
                               ยีนยัน</button></Col>
                             <Col><button className={styles.cancel_btn} 
                             onClick={(event) => {
-                            setConfirm(false);
-                            setReq_id(e?.request_id);
-                            handleSubmit(event);}}>
+                            handleSubmit(event,false);}}>
                               ปฏิเสธ</button></Col>
                           </Row>
                         </div> 
                       </>) : e?.status === "accepted" ? (<>
-                        <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname} {e?.renter_lastname}
-                        <br></br>
-                        <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
-                        <br></br>
-                        {e?.rent_place === "" ? (<>
-                          <b>สถานที่เช่ารถ</b>: -
-                        </>) : (<>
-                          <b>สถานที่เช่ารถ</b>: {e?.rent_place}
-                        </>)}
-                        {/* <b>สถานที่เช่ารถ</b>: {e?.rent_place} */}
+                        <div>
+                          <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname} {e?.renter_lastname}
+                        </div>
+                        <div>
+                          <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        {/* <div>
+                          {e?.rent_place === "" ? (<>
+                            <b>สถานที่เช่ารถ</b>: -
+                          </>) : (<>
+                            <b>สถานที่เช่ารถ</b>: {e?.rent_place}
+                          </>)}
+                        </div>
+                        <div>
+                          {e?.info === "" ? (<>
+                            <b>ข้อมูลเพิ่มเติม</b>: -
+                          </>) : (<>
+                            <b>ข้อมูลเพิ่มเติม</b>: {e?.info}
+                          </>)}
+                        </div> */}
+                        <b></b>
                       </>) : (<>
                       </>)}
                     </div>
