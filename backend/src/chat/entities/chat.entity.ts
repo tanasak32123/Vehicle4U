@@ -22,6 +22,9 @@ export class Chat {
   @Column()
   receiverLastName: string;
 
+  @Column()
+  message: string;
+
   @CreateDateColumn()
   createdAt: Date;
 }
