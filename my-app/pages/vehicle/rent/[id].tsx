@@ -4,6 +4,7 @@ import styles from "@/styles/renter.module.css";
 import { Row, Col } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 // import { useAuth } from "@/components/AuthContext";
 
 
@@ -55,10 +56,24 @@ export default function Register() {
       }),
     });
     if (!response.ok) {
-      const data = await response.json();
-      setErrors(data.errors)
-      console.log(errors)
-      return;
+      if (response.status == 404){
+        toast.error('รถคันนี้ถูกจองแล้วในช่วงเวลานี้แล้ว', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          });
+        router.push("/vehicle");
+        return;
+      }else{
+        const data = await response.json();
+        setErrors(data.errors)
+        return;
+      }
     }
     router.push("/vehicle/rent/payment");
   }
