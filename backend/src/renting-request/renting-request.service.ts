@@ -76,6 +76,11 @@ export class RentingRequestService {
             providerrequest.created_at       = rentingRequests[i].created_at;
             providerrequest.updated_at       = rentingRequests[i].updated_at;
             providerrequest.status           = rentingRequests[i].status;
+            providerrequest.province         = rentingRequests[i].vehicle.province;
+            providerrequest.startdate        = rentingRequests[i].startdate;
+            providerrequest.starttime        = rentingRequests[i].starttime;
+            providerrequest.enddate          = rentingRequests[i].enddate;
+            providerrequest.endtime          = rentingRequests[i].endtime;
             providerrequests.push(providerrequest);
         }
         return providerrequests;
@@ -118,10 +123,41 @@ export class RentingRequestService {
     }
 
     async updatestatus(updateRentingRequestDto: UpdateRentingRequestDto): Promise<RentingRequest>{
-        const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': updateRentingRequestDto.id});
+        const rentingRequest = await this.rentingRequestRepository.findOne({
+            relations:{vehicle: true},
+            where:{'id': updateRentingRequestDto.id}
+        });
         if(!rentingRequest) throw new HttpException( "rentingrequest not found", HttpStatus.NOT_FOUND);
 
-        await this.rentingRequestRepository.update({'id': updateRentingRequestDto.id}, {"status": updateRentingRequestDto.status});
+        let newstatus;
+        if(updateRentingRequestDto.confirm) {
+            newstatus = Request_status.ACCEPTED;
+
+            //automate rejected other_request that intercept_time
+            //------------------------------
+            const starttime = rentingRequest.startdate+'_'+rentingRequest.starttime;
+            const endtime = rentingRequest.enddate+'_'+rentingRequest.endtime;
+            const vehicle = rentingRequest.vehicle;
+            const rentingRequests = await this.rentingRequestRepository.findBy({vehicle:{'id':vehicle.id}});
+            
+            //date : yyyy/mm/dd 2000/01/04
+            //time : xx:xx
+            for(let i = 0; i< rentingRequests.length; i++){
+                if(rentingRequests[i].id != updateRentingRequestDto.id){
+                    const otherstarttime = rentingRequests[i].startdate+'_'+rentingRequests[i].starttime;
+                    const otherendtime   = rentingRequests[i].enddate+'_'+rentingRequests[i].endtime;
+
+                    let checkexisttime =false;
+                    if(starttime < otherendtime && endtime > otherstarttime) checkexisttime = true;
+                    
+                    if(checkexisttime)await this.rentingRequestRepository.update({'id':rentingRequests[i].id},{"status": Request_status.REJECTED});
+                }
+            }
+            
+            //------------------------------
+        }
+        else newstatus = Request_status.REJECTED;
+        await this.rentingRequestRepository.update({'id': updateRentingRequestDto.id}, {"status": Request_status.PENDING});
         return await this.rentingRequestRepository.findOneBy({'id': updateRentingRequestDto.id});
     }
     
