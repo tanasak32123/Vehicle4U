@@ -30,26 +30,22 @@ export default function chat() {
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
+    
+    const chatText = (document.getElementById('chat-text')as HTMLInputElement).value
     setMessage({
         senderFirstName : 'a' ,
         senderLastName : 'b',
         receiverFirstName : 'c',
         receiverLastName : 'd',
-        message : 'eeeeeeeeee'
+        message : chatText
     })
-    console.log(message)
     socket.emit('sendMessage', message);
-    setMessage({
-        senderFirstName : 'a' ,
-        senderLastName : 'b',
-        receiverFirstName : 'c',
-        receiverLastName : 'd',
-        message : ''
-    })
   };
+  
   useEffect(() => {
     socket.on('recMessage', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message])
+      console.log(messages)
+      setMessages([...messages,message])
   })})
   
   
@@ -65,7 +61,7 @@ export default function chat() {
 
      })}
     <div className="mb-3 mt-4">
-     <input  className="form-control" id="exampleFormControlTextarea1"  placeholder="Say something..." />
+     <input className="form-control" id="chat-text"  placeholder="Say something..." />
    </div>
    
      <button onClick={handleSendMessage}/>
