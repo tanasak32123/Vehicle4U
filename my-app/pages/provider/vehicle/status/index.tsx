@@ -61,11 +61,11 @@ const ProviderOwnerVehicle = () => {
   );
   const router = useRouter();
 
-  const [confirm,setConfirm] = useState(false);
-  const [req_id,setReq_id] = useState();
 
   async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>,confirm: boolean) {
     const req_id = event.currentTarget.id;
+    console.log(req_id);
+    console.log(confirm);
     event.preventDefault();
     // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
     const response = await fetch("/api/status", {
@@ -83,6 +83,7 @@ const ProviderOwnerVehicle = () => {
       const data = await response.json();
       return;
     }
+    mutate();
     // ต้อง route ไป path ไหนมั้ย
     router.push("/provider/vehicle/status");
   }
@@ -117,6 +118,7 @@ const ProviderOwnerVehicle = () => {
 
           {/* data.response?.map */}
           {data.response?.map((e: any) => {
+            // setStatus(e?.status);
             return (
               <div
                 id={`car_${e.request_id}`}
@@ -193,7 +195,7 @@ const ProviderOwnerVehicle = () => {
                             onClick={(event) => {
                             handleSubmit(event,true);}}>
                               ยีนยัน</button></Col>
-                            <Col><button className={styles.cancel_btn} 
+                            <Col><button id={e?.request_id} className={styles.cancel_btn} 
                             onClick={(event) => {
                             handleSubmit(event,false);}}>
                               ปฏิเสธ</button></Col>
