@@ -63,7 +63,6 @@ export default function Register() {
     router.push("/vehicle/rent/payment");
   }
 
-  console.log(carid);
   return (
     <>
       <Head>
@@ -103,6 +102,7 @@ export default function Register() {
                           name="date"
                           onChange={(event) => {
                             console.log(event.target.value.split("-"));
+                            console.log(event.target.value);
                             setStartdate(event.target.value.trim());
                           }}
                           className={styles.input_cal}
@@ -114,6 +114,7 @@ export default function Register() {
                           type="time"
                           onChange={(event) => {
                             console.log(event.target.value.split(":"));
+                            console.log(event.target.value);
                             setStarttime(event.target.value.trim());
                           }}
                           className={styles.input_cal}

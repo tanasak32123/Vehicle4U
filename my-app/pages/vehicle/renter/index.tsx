@@ -151,9 +151,9 @@ const ProviderOwnerVehicle = () => {
                           <b>สถานะ</b>:{" "}
                           {e?.status === "pending" ? (<>
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : e?.status === "confirm" ? (<>
+                          </>) : e?.status === "rejected" ? (<>
                             <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : e?.status === "reserve" ? (<>
+                          </>) : e?.status === "accepted" ? (<>
                             <span className="badge bg-danger">ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
