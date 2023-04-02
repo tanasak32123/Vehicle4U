@@ -6,7 +6,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const token = req.cookies?.token;
-  const role = req.cookies?.role;
+  const role = req.cookies?.currentRole;
 
   if (!token) {
     return res
@@ -23,52 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (token && role === "provider") {
-    // return res.status(200).json([{
-    //     request_id: 53,
-    //     car_id: 3,
-    //     imagename: '1680237481746_Screenshot 2566-03-31 at 11.37.46.png',
-    //     car_name: 'suzuki',
-    //     registrationId: 'ฟน 1234',
-    //     renter_firstname: 'โชติพัฒน์',
-    //     renter_lastname: 'อัศวปยุกต์กุล',
-    //     tel: '0618526887',
-    //     contact: '0618526887',
-    //     rent_place: '',
-    //     maximumCapacity: 2,
-    //     created_at: '2023-04-02T03:35:07.013Z',
-    //     updated_at: '2023-04-02T03:35:07.013Z',
-    //     status: 'accepted'
-    //   },{
-    //     request_id: 53,
-    //     car_id: 3,
-    //     imagename: '1680237481746_Screenshot 2566-03-31 at 11.37.46.png',
-    //     car_name: 'suzuki',
-    //     registrationId: 'ฟน 1234',
-    //     renter_firstname: 'โชติพัฒน์',
-    //     renter_lastname: 'อัศวปยุกต์กุล',
-    //     tel: '0618526887',
-    //     contact: '0618526887',
-    //     rent_place: '',
-    //     maximumCapacity: 2,
-    //     created_at: '2023-04-02T03:35:07.013Z',
-    //     updated_at: '2023-04-02T03:35:07.013Z',
-    //     status: 'pending'
-    //   },{
-    //     request_id: 53,
-    //     car_id: 3,
-    //     imagename: '1680237481746_Screenshot 2566-03-31 at 11.37.46.png',
-    //     car_name: 'suzuki',
-    //     registrationId: 'ฟน 1234',
-    //     renter_firstname: 'โชติพัฒน์',
-    //     renter_lastname: 'อัศวปยุกต์กุล',
-    //     tel: '0618526887',
-    //     contact: '0618526887',
-    //     rent_place: '',
-    //     maximumCapacity: 2,
-    //     created_at: '2023-04-02T03:35:07.013Z',
-    //     updated_at: '2023-04-02T03:35:07.013Z',
-    //     status: 'rejected'
-    //   }]);
     await fetch("http://localhost:3000/renting-request/provider", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -85,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({
           success: true,
           statusCode: 200,
-        //   vehicles: response[0].vehicles,
+          //   vehicles: response[0].vehicles,
           response,
         });
       })
