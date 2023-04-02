@@ -57,6 +57,9 @@ const Header = () => {
                       <Nav.Link href={`/provider/vehicle`}>
                         รถเช่าของคุณ
                       </Nav.Link>
+                      <Nav.Link href={`/provider/vehicle/status`}>
+                        รายการรถเช่าของคุณ
+                      </Nav.Link>
                     </>
                   )}
                   <hr />
