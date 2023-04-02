@@ -157,7 +157,7 @@ export class RentingRequestService {
             //------------------------------
         }
         else newstatus = Request_status.REJECTED;
-        await this.rentingRequestRepository.update({'id': updateRentingRequestDto.id}, {"status": Request_status.PENDING});
+        await this.rentingRequestRepository.update({'id': updateRentingRequestDto.id}, {"status": newstatus});
         return await this.rentingRequestRepository.findOneBy({'id': updateRentingRequestDto.id});
     }
     
