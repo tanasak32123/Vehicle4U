@@ -132,7 +132,7 @@ export default function SearchCar() {
                       className="form-select"
                       id="province"
                       placeholder="จังหวัด"
-                      defaultValue={`กรุงเทพมหานคร`}
+                      defaultValue={``}
                     >
                       <option value={""}>กรุณาเลือกจังหวัด</option>
                       {provinceData?.map((e: any) => {
