@@ -34,7 +34,7 @@ const fetcherProvince = (url: string) =>
 
 export default function SearchCar() {
   const [name, setName] = useState("");
-  const [province, setProvince] = useState("กรุงเทพมหานคร");
+  const [province, setProvince] = useState("");
   const [seat, setSeat] = useState("0");
   const [nextPage, setNextPage] = useState(1);
 
@@ -134,6 +134,7 @@ export default function SearchCar() {
                       placeholder="จังหวัด"
                       defaultValue={`กรุงเทพมหานคร`}
                     >
+                      <option value={""}>กรุณาเลือกจังหวัด</option>
                       {provinceData?.map((e: any) => {
                         return (
                           <option key={e.id} id={e.id} value={e.name_th}>
