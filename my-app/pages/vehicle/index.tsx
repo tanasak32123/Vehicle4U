@@ -218,13 +218,11 @@ export default function SearchCar() {
                       {paginationData?.vehicles.map((e: any) => {
                         return (
                           <Link
+                            key={e.id}
                             href={`/vehicle/rent/${e?.id}`}
                             className={`${styles.card_link}`}
                           >
-                            <div
-                              key={e.id}
-                              className={`${styles.card} mb-4 p-4`}
-                            >
+                            <div className={`${styles.card} mb-4 p-4`}>
                               <Row>
                                 <Col lg={6}>
                                   <div className={`${styles.vehicle_image}`}>
