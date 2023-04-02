@@ -54,5 +54,5 @@ export class CreateRentingRequestDto {
     //     type: Boolean,
     // })
     // @IsNotEmpty()
-    // accepted: boolean;
+    // accept: boolean;
 }

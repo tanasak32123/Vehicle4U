@@ -6,7 +6,7 @@ import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequestService } from './renting-request.service';
 
-@ApiTags('Vehicle4U')
+@ApiTags('renting-request')
 @Controller('renting-request')
 export class RentingRequestController{
     constructor (private readonly rentingRequestService: RentingRequestService) {}
@@ -16,39 +16,39 @@ export class RentingRequestController{
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @Post()
     async create(@Body() createRentingRequestDto: CreateRentingRequestDto, @Request() req, @Response() res) {
-        const id = req.body['id'];
+        const id = req.user['id'];
         const renreq = await this.rentingRequestService.create(id, createRentingRequestDto);
         return res.status(200).send(renreq);
     }
-
-    // @UseGuards(JwtAuthGuard)
-    // @ApiResponse({ status: 200, description: 'Successful.' })
-    // @ApiResponse({ status: 401, description: 'Unauthorized' })
-    // @ApiResponse({ status: 404, description: 'User not found.' })
-    // @ApiResponse({ status: 406, description: 'No Access Rights'})
-    // @Get('/provider')
-    // async providerGetRequest(@Request() req,@Response() res) {
-    // const request = await this.rentingRequestService.providergetrequest(req.body['id']);
-    //     return res.status(200).send(request);
-    // }
-
-    // @UseGuards(JwtAuthGuard)
-    // @ApiResponse({ status: 200, description: 'Successful.' })
-    // @ApiResponse({ status: 401, description: 'Unauthorized' })
-    // @ApiResponse({ status: 404, description: 'User not found.' })
-    // @ApiResponse({ status: 406, description: 'No Access Rights'})
-    // @Get('/renter')
-    // async renterGetRequest(@Request() req,@Response() res) {
-    // const request = await this.rentingRequestService.rentergetrequest(req.body['id']);
-    //     return res.status(200).send(request);
-    // }
 
     @UseGuards(JwtAuthGuard)
     @ApiResponse({ status: 200, description: 'Successful.' })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found.' })
     @ApiResponse({ status: 406, description: 'No Access Rights'})
-    @Patch('/provider')
+    @Get('/provider')
+    async providerGetRequest(@Request() req,@Response() res) {
+    const request = await this.rentingRequestService.providergetrequest(req.user['id']);
+        return res.status(200).send(request);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'User not found.' })
+    @ApiResponse({ status: 406, description: 'No Access Rights'})
+    @Get('/renter')
+    async renterGetRequest(@Request() req,@Response() res) {
+    const request = await this.rentingRequestService.rentergetrequest(req.user['id']);
+        return res.status(200).send(request);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiResponse({ status: 200, description: 'Successful.' })
+    @ApiResponse({ status: 401, description: 'Unauthorized' })
+    @ApiResponse({ status: 404, description: 'User not found.' })
+    @ApiResponse({ status: 406, description: 'No Access Rights'})
+    @Patch('/updatestatus')
     async updateStatus(@Body() updateRentingRequestDto: UpdateRentingRequestDto, @Request() req,@Response() res) {
         const rentingrequest = await this.rentingRequestService.updatestatus(updateRentingRequestDto);
         return res.status(200).send(rentingrequest);

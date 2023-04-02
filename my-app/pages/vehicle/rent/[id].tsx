@@ -2,7 +2,7 @@ import Head from "next/head";
 import { useState } from "react";
 import styles from "@/styles/renter.module.css";
 import { Row, Col } from "react-bootstrap";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 
@@ -20,7 +20,9 @@ export default function Register() {
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
   // ยังระบุ id รถไม่ได้ต้องใส่ใน useState แทน
-  const [carid, setCarid] = useState(1);
+  // const [carid, setCarid] = useState(1);
+  const car  = router.query;
+  const carid = car.id;
   const [accept, setAccept] = useState(false);
 
 
@@ -58,9 +60,10 @@ export default function Register() {
       console.log(errors)
       return;
     }
-    router.push("/car/payment");
+    router.push("/vehicle/rent/payment");
   }
 
+  console.log(carid);
   return (
     <>
       <Head>

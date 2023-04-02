@@ -118,6 +118,7 @@ export default async function handler(
           car_id: body.carid,
         }),
       }).then(async (response) => {
+        // ถ้าเวลาทับกันจะจองไม่ได้ต้องขึ้นแจ้งเตือน
         if (!response.ok) {
           res.status(400).json({
             success: false,

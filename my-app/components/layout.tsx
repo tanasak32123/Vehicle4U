@@ -1,5 +1,6 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
+import { useAuth } from "./AuthContext";
 
 const Navbar = dynamic(() => import("./Navbar"), {
   loading: () => <p>Loading...</p>,
@@ -10,6 +11,8 @@ const Footer = dynamic(() => import("./Footer"), {
 });
 
 export default function Layout({ children }: any) {
+  const { isLogout } = useAuth();
+
   return (
     <>
       <Head>
@@ -21,7 +24,16 @@ export default function Layout({ children }: any) {
 
       <Navbar />
       <main>
-        <div className={`position-relative`}>{children}</div>
+        {!isLogout && <div className={`position-relative`}>{children}</div>}
+        {isLogout && (
+          <div className={`d-flex justify-content-center align-items-center`}>
+            <div className={`lds-facebook`}>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        )}
       </main>
       <Footer />
     </>

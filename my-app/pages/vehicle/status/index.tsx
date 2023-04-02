@@ -2,12 +2,7 @@ import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import {
-  FaArrowAltCircleLeft,
-  FaCar,
-  FaEdit,
-  FaPrescriptionBottle,
-} from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
@@ -84,6 +79,7 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
+    console.log(data);
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -96,13 +92,32 @@ const ProviderOwnerVehicle = () => {
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
-          <h1 className="align-items-center d-flex justify-content-end">
+          <br />
+          {/* <h1 className="align-items-center d-flex justify-content-end">
             <FaCar />
             &nbsp;รถเช่าของคุณ
           </h1>
-          <hr />
+          <hr /> */}
+
+          {/* <div className={`text-start`}> */}
+          <h1 className={`text-start`}>
+            รถเช่าของคุณ <FaCar />{" "}
+            <div className={`float-end`}>
+              <button
+                title="add vehicle"
+                className={`btn btn-success`}
+                onClick={() => router.push("/vehicle/create")}
+              >
+                + เพิ่มรถเช่า
+              </button>
+            </div>
+          </h1>
+
+          {/* </div> */}
+          <br />
 
           {data.vehicles?.map((e: any) => {
+            console.log(e?.imagename);
             return (
               <div
                 id={`car_${e.id}`}
@@ -126,7 +141,7 @@ const ProviderOwnerVehicle = () => {
                   </div>
                   <div className={`col-6`}>
                     <div
-                      className={`d-flex justify-content-left align-items-center`}
+                      className={`d-flex justify-content-left align-items-center mb-3`}
                     >
                       <div className={`text-start`}>
                         <div>
@@ -145,15 +160,15 @@ const ProviderOwnerVehicle = () => {
                           <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        <div>
+                        {/* <div>
                           <b>สถานะ</b>:{" "}
                           <span className="badge bg-success">ว่าง</span>&nbsp;
                           <span className="badge bg-warning">รอการยืนยัน</span>
                           &nbsp;
                           <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                     <div>

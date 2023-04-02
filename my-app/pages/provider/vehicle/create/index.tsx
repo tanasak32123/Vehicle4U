@@ -13,7 +13,15 @@ import {
 import useSWR from "swr";
 
 const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
-  loading: () => <p>Loading...</p>,
+  loading: () => (
+    <div className={`d-flex justify-content-center align-items-center`}>
+      <div className={`lds-facebook`}>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  ),
 });
 
 const fetcher = (url: string) =>
@@ -89,7 +97,7 @@ export default function UploadCar() {
           setIsSuccess(true);
           setTimeout(() => {
             setIsSuccess(false);
-            router.push("/");
+            router.push("/vehicle/owner");
           }, 3000);
         }
       })
@@ -168,7 +176,13 @@ export default function UploadCar() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           {isLoading ? (
-            <div>loading...</div>
+            <div className={`d-flex justify-content-center align-items-center`}>
+              <div className={`lds-facebook`}>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
           ) : (
             <>
               <button
@@ -375,7 +389,7 @@ export default function UploadCar() {
           status={`success`}
           show={isSuccess}
           onHide={() => {
-            router.push("/searchcar");
+            router.push("/vehicle/owner");
           }}
           desc={`ระบบทำการเพิ่มรถเช่าสำเร็จ`}
           btn_text={`รถเช่าของคุณ`}

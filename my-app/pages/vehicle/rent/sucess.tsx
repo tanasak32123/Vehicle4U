@@ -24,7 +24,7 @@ export default function Sucess(){
                         <h4>สำเร็จ</h4>
                         <p>เมื่อผู้ปล่อยเช่ายืนยันการเช่า ระบบจะส่งแจ้งเตือนให้ท่านอีกครั้งเพื่อทำการชำระเงิน</p>
                     </div>
-                    <button className={styles.home_btn} onClick={(event: any) => { router.push("/car") }}>กลับสู่หน้าหลัก</button></div>
+                    <button className={styles.home_btn} onClick={(event: any) => { router.push("/vehicle") }}>กลับสู่หน้าหลัก</button></div>
                 </div>
             </div>
         </>
