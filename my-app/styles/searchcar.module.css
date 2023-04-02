@@ -25,9 +25,22 @@
   border-radius: 10px;
 }
 
+.card_link {
+  color: black;
+  text-decoration: none;
+}
+
+.card_link:hover {
+  color: inherit;
+}
+
 .card {
   background-color: #fef9eb;
   border-radius: 20px;
+}
+
+.card:hover {
+  background-color: #e1ddd0;
 }
 
 .vehicle_image {
