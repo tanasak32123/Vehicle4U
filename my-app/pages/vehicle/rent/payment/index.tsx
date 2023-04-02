@@ -2,12 +2,9 @@ import Head from "next/head";
 import styles from "@/styles/payment.module.css";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import router from "next/router";
-import { useAuth } from "@/components/AuthContext";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Renter_request() {
-
   const [errors, setErrors] = useState({
     choose_payment: "",
   });
@@ -16,7 +13,7 @@ export default function Renter_request() {
   const [mobile, setMobile] = useState(false);
 
   async function handleSubmit(event: Event) {
-    console.log(card,mobile);
+    console.log(card, mobile);
 
     event.preventDefault();
     const response = await fetch("/api/payment", {
@@ -31,8 +28,8 @@ export default function Renter_request() {
     });
     if (!response.ok) {
       const data = await response.json();
-      setErrors(data.errors)
-      console.log(errors)
+      setErrors(data.errors);
+      console.log(errors);
       return;
     }
     router.push("/vehicle/rent/sucess");
@@ -59,7 +56,7 @@ export default function Renter_request() {
               <h4>เลือกวิธีการชำระเงิน</h4>
             </div>
           </div>
-          <div className={`${'red_color'}`}>{errors.choose_payment}</div>
+          <div className={`${"red_color"}`}>{errors.choose_payment}</div>
 
           <div className={styles.type_container}>
             <div className="form-check">
@@ -69,7 +66,7 @@ export default function Renter_request() {
                 name="flexRadioDefault"
                 id="flexRadioDefault1"
                 value="card"
-                onChange={(event)=>{
+                onChange={(event) => {
                   setCard(true);
                   setMobile(false);
                 }}
@@ -86,7 +83,7 @@ export default function Renter_request() {
                 name="flexRadioDefault"
                 id="flexRadioDefault2"
                 value="moblie_banking"
-                onChange={(event)=>{
+                onChange={(event) => {
                   setMobile(true);
                   setCard(false);
                 }}
@@ -98,9 +95,15 @@ export default function Renter_request() {
           </div>
 
           <div>
-            <button className={styles.pay_btn} onClick={(event: any) => {handleSubmit(event);}}>ชำระเงิน</button>
+            <button
+              className={styles.pay_btn}
+              onClick={(event: any) => {
+                handleSubmit(event);
+              }}
+            >
+              ชำระเงิน
+            </button>
           </div>
-
         </div>
       </div>
     </>
