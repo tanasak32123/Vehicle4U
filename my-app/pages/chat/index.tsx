@@ -3,7 +3,6 @@ import styles from "@/styles/helpcenter.module.css";
 import io from 'socket.io-client';
 import { useEffect, useState } from "react";
 
-
 export default function chat() {
     const socket = io('http://localhost:3000');
     const [message, setMessage] = useState({
@@ -32,14 +31,12 @@ export default function chat() {
     e.preventDefault();
     
     const chatText = (document.getElementById('chat-text')as HTMLInputElement).value
-    setMessage({
-        senderFirstName : 'a' ,
-        senderLastName : 'b',
-        receiverFirstName : 'c',
-        receiverLastName : 'd',
-        message : chatText
-    })
-    socket.emit('sendMessage', message);
+    const msg = {senderFirstName : 'a' ,
+    senderLastName : 'b',
+    receiverFirstName : 'c',
+    receiverLastName : 'd',
+    message : chatText}
+    socket.emit('sendMessage', msg);
   };
   
   useEffect(() => {
