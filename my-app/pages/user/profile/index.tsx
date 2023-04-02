@@ -234,7 +234,7 @@ export default function EditProfile() {
           <hr />
           <br />
 
-          {!auth && (
+          {isLoading && (
             <div className={`d-flex justify-content-center align-items-center`}>
               <div className={`lds-facebook`}>
                 <div></div>
@@ -244,7 +244,7 @@ export default function EditProfile() {
             </div>
           )}
 
-          {auth && (
+          {!isLoading && (
             <>
               <Row>
                 <Col lg={6}>
@@ -632,7 +632,7 @@ export default function EditProfile() {
                         className="form-control"
                         id="role"
                         placeholder="บทบาท"
-                        value={role}
+                        value={role == "renter" ? "ผู้เช่า" : "ผู้ปล่อยเช่า"}
                         disabled
                       />
 

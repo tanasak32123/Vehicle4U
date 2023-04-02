@@ -45,7 +45,7 @@ const Header = () => {
                   <hr />
                   {auth?.status == "SIGNED_IN" && auth?.role == "renter" && (
                     <>
-                      <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link>
+                      {/* <Nav.Link href="/vehicle">ค้นหายานพาหนะ</Nav.Link> */}
                       <Nav.Link href="/vehicle/renter">
                         ประวัติการเช่ารถ
                       </Nav.Link>
@@ -54,9 +54,9 @@ const Header = () => {
                   {/* <Nav.Link href="/about_us">เกี่ยวกับเรา</Nav.Link> */}
                   {auth?.status == "SIGNED_IN" && auth?.role == "provider" && (
                     <>
-                      <Nav.Link href={`/provider/vehicle`}>
+                      {/* <Nav.Link href={`/provider/vehicle`}>
                         รถเช่าของคุณ
-                      </Nav.Link>
+                      </Nav.Link> */}
                       <Nav.Link href={`/provider/vehicle/status`}>
                         รายการรถเช่าของคุณ
                       </Nav.Link>

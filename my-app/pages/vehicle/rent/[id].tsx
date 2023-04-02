@@ -83,7 +83,7 @@ export default function Register() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           <button
-            onClick={() => router.push("/car/info")}
+            onClick={() => router.back()}
             className={`${styles.back_btn} d-flex align-items-center`}
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ

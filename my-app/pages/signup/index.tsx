@@ -2,17 +2,12 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
 import styles from "@/styles/signup.module.css";
 import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
 import { toast } from "react-toastify";
-
-const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
-  loading: () => <p>Loading...</p>,
-});
 
 export default function Register() {
   const router = useRouter();
@@ -30,7 +25,6 @@ export default function Register() {
 
   const [role, setRole] = useState("");
 
-  const [showSuccess, setShowSuccess] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
 
   const [errors, setErrors] = useState({
