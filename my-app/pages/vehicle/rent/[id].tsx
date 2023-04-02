@@ -4,11 +4,11 @@ import styles from "@/styles/renter.module.css";
 import { Row, Col } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
-import { useAuth } from "@/components/AuthContext";
+// import { useAuth } from "@/components/AuthContext";
 
 
 export default function Register() {
-  const { authAction, loading }: any = useAuth();
+  // const { authAction, loading }: any = useAuth();
 
   const router = useRouter();
 
@@ -63,7 +63,6 @@ export default function Register() {
     router.push("/vehicle/rent/payment");
   }
 
-  console.log(carid);
   return (
     <>
       <Head>
@@ -103,6 +102,7 @@ export default function Register() {
                           name="date"
                           onChange={(event) => {
                             console.log(event.target.value.split("-"));
+                            console.log(event.target.value);
                             setStartdate(event.target.value.trim());
                           }}
                           className={styles.input_cal}
@@ -114,6 +114,7 @@ export default function Register() {
                           type="time"
                           onChange={(event) => {
                             console.log(event.target.value.split(":"));
+                            console.log(event.target.value);
                             setStarttime(event.target.value.trim());
                           }}
                           className={styles.input_cal}
