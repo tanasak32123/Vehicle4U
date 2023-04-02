@@ -48,7 +48,7 @@ export class RentingRequestController{
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @ApiResponse({ status: 404, description: 'User not found.' })
     @ApiResponse({ status: 406, description: 'No Access Rights'})
-    @Patch('/provider')
+    @Patch('/updatestatus')
     async updateStatus(@Body() updateRentingRequestDto: UpdateRentingRequestDto, @Request() req,@Response() res) {
         const rentingrequest = await this.rentingRequestService.updatestatus(updateRentingRequestDto);
         return res.status(200).send(rentingrequest);
