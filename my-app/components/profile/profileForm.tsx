@@ -1,19 +1,19 @@
 import styles from "@/styles/editProfile.module.css";
-import { FiEdit2 } from "react-icons/fi";
 import { Row, Col, Container } from "react-bootstrap";
-import { FaUndoAlt } from "react-icons/fa";
 
 export default function InputForm({
   name,
   label,
   rawData,
-  setShowModalFunc,
+  inputs,
   handleupdateFunc,
-  isShow,
+  isShow = true,
+  edit = false,
+  setEdit,
 }: any) {
-  return (
-    <>
-      {isShow ? (
+  if (isShow)
+    return (
+      <>
         <Container>
           <div className="mb-2">
             <Row>
@@ -22,60 +22,119 @@ export default function InputForm({
               </label>
             </Row>
             <Row>
-              <Col>
-                <p>
-                  {!rawData && "ไม่มีข้อมูล"}
-                  {rawData && (
-                    <>
-                      {name == "payment_channel" ? (
+              {!edit && (
+                <>
+                  <Col className={`my-auto`}>
+                    <div>
+                      {!rawData && "ไม่มีข้อมูล"}
+                      {rawData && (
                         <>
-                          {rawData == "cash" && "เงินสด"}
-                          {rawData == "promptpay" && "พร้อมเพย์"}
-                          {rawData == "credit" && "บัตรเครดิต"}
-                        </>
-                      ) : (
-                        <>
-                          {name == "role" ? (
+                          {name == "payment_channel" ? (
                             <>
-                              {rawData == "renter" && `ผู้เช่า`}
-                              {rawData == "provider" && `ผู้ปล่อยเช่า`}
+                              {rawData == "cash" && "เงินสด"}
+                              {rawData == "promptpay" && "พร้อมเพย์"}
+                              {rawData == "credit" && "บัตรเครดิต"}
                             </>
                           ) : (
-                            <>{rawData && `${rawData}`}</>
+                            <>
+                              {name == "role" ? (
+                                <>
+                                  {rawData == "renter" && `ผู้เช่า`}
+                                  {rawData == "provider" && `ผู้ปล่อยเช่า`}
+                                </>
+                              ) : (
+                                <>{rawData && `${rawData}`}</>
+                              )}
+                            </>
                           )}
                         </>
                       )}
-                    </>
-                  )}
-                </p>
-              </Col>
-              <Col key={2}>
-                <button
-                  className={`${styles.edit_button}`}
-                  onClick={() => {
-                    name != "role"
-                      ? setShowModalFunc(true)
-                      : handleupdateFunc.handleChangeRole();
-                  }}
-                >
-                  {name != "role" && (
-                    <>
-                      <FiEdit2 /> &nbsp; แก้ไข
-                    </>
-                  )}
-                  {name == "role" && (
-                    <>
-                      <FaUndoAlt /> &nbsp; เปลี่ยน
-                    </>
-                  )}
-                </button>
-              </Col>
-              <br />
+                    </div>
+                  </Col>
+                  <Col key={2}>
+                    <button
+                      className={`btn btn-link float-end`}
+                      onClick={() => {
+                        if (name != "role") setEdit(true);
+                        else handleupdateFunc.handleChangeRole();
+                      }}
+                    >
+                      {name != "role" && <>แก้ไข</>}
+                      {name == "role" && <>เปลี่ยน</>}
+                    </button>
+                  </Col>
+                  <br />
+                </>
+              )}
+
+              {edit && (
+                <>
+                  <div className="input-group" id={`input-group-${name}`}>
+                    {inputs.map((e: any) => {
+                      return (
+                        <>
+                          {name != "payment_channel" && (
+                            <input
+                              ref={e.ref}
+                              id={`${e.name}`}
+                              type="text"
+                              placeholder={`${e.label}`}
+                              className="form-control"
+                              defaultValue={`${e.value}`}
+                            />
+                          )}
+                          {name == "payment_channel" && (
+                            <select
+                              ref={e.ref}
+                              id={`${e.name}`}
+                              title="select payment channel"
+                              className="form-select"
+                              defaultValue={rawData}
+                            >
+                              {e.options.map((e: any) => {
+                                return (
+                                  <>
+                                    <option key={e.en} id={e.en} value={e.en}>
+                                      {e.th}
+                                    </option>
+                                  </>
+                                );
+                              })}
+                            </select>
+                          )}
+                        </>
+                      );
+                    })}
+
+                    <button
+                      title="submit_editname"
+                      name="name"
+                      type="button"
+                      className={`btn-success btn`}
+                      onClick={(e) => handleupdateFunc(name, ...inputs.name)}
+                    >
+                      ยืนยัน
+                    </button>
+                    <button
+                      title="cancel_editname"
+                      name="cancel_editname"
+                      type="button"
+                      className={`btn btn-danger`}
+                      onClick={() => setEdit(false)}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
+                  <div id={`validation-${name}`} className={`invalid-feedback`}>
+                    {/* {invalid_feedback} */}**
+                  </div>
+                </>
+              )}
             </Row>
           </div>
           <br />
         </Container>
-      ) : null}
-    </>
-  );
+      </>
+    );
+  else return <></>;
 }

@@ -120,6 +120,11 @@ export default async function handler(
       }).then(async (response) => {
         // ถ้าเวลาทับกันจะจองไม่ได้ต้องขึ้นแจ้งเตือน
         if (!response.ok) {
+          if (response.status == 404){
+            res.status(404).json({
+              success: false,
+            })
+          }
           res.status(400).json({
             success: false,
             message: "** can't receive response ok from back-end",

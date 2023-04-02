@@ -21,20 +21,32 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
+    const expires = new Date(
+      new Date(Date.now() + 5 * 60 * 60 * 1000).toUTCString()
+    );
+
     setCookie("role", body.role, {
       req,
       res,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: true,
+      expires: expires,
+      sameSite: "strict",
     });
 
     setCookie("token", data.token.access_token, {
       req,
       res,
-      maxAge: 60 * 60 * 5,
+      expires: expires,
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: true,
+      sameSite: "strict",
+    });
+
+    setCookie("currentRole", body.role, {
+      req,
+      res,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
     });
 
     return res

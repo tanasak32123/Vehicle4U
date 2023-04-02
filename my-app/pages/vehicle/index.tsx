@@ -7,6 +7,7 @@ import { FaSearch } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
+import Link from "next/link";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -216,42 +217,51 @@ export default function SearchCar() {
                     <>
                       {paginationData?.vehicles.map((e: any) => {
                         return (
-                          <div key={e.id} className={`${styles.card} mb-4 p-4`}>
-                            <Row>
-                              <Col lg={6}>
-                                <div className={`${styles.vehicle_image}`}>
-                                  <Image
-                                    src={`/images/vehicles/${e?.imagename}`}
-                                    alt="Picture of car renter"
-                                    fill
-                                    loading="lazy"
-                                    sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
-                                    style={{ objectFit: "contain" }}
-                                  />
-                                </div>
-                              </Col>
-                              <Col lg={6}>
-                                <div
-                                  className={`d-flex justify-content-left align-items-center mb-3`}
-                                >
-                                  <div className={`text-start`}>
-                                    <div>
-                                      <b>ชื่อรถ</b>: {e?.name}
-                                    </div>
-                                    <div>
-                                      <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                                    </div>
-                                    <div>
-                                      <b>จังหวัด</b>: {e?.province}
-                                    </div>
-                                    <div>
-                                      <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                          <Link
+                            href={`/vehicle/rent/${e?.id}`}
+                            className={`${styles.card_link}`}
+                          >
+                            <div
+                              key={e.id}
+                              className={`${styles.card} mb-4 p-4`}
+                            >
+                              <Row>
+                                <Col lg={6}>
+                                  <div className={`${styles.vehicle_image}`}>
+                                    <Image
+                                      src={`/images/vehicles/${e?.imagename}`}
+                                      alt="Picture of car renter"
+                                      fill
+                                      loading="lazy"
+                                      sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
+                                      style={{ objectFit: "contain" }}
+                                    />
+                                  </div>
+                                </Col>
+                                <Col lg={6}>
+                                  <div
+                                    className={`d-flex justify-content-left align-items-center mb-3`}
+                                  >
+                                    <div className={`text-start`}>
+                                      <div>
+                                        <b>ชื่อรถ</b>: {e?.name}
+                                      </div>
+                                      <div>
+                                        <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                                      </div>
+                                      <div>
+                                        <b>จังหวัด</b>: {e?.province}
+                                      </div>
+                                      <div>
+                                        <b>จำนวนที่นั่ง</b>:{" "}
+                                        {e?.maximumCapacity}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              </Col>
-                            </Row>
-                          </div>
+                                </Col>
+                              </Row>
+                            </div>
+                          </Link>
                         );
                       })}
                       <ReactPaginate

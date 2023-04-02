@@ -7,8 +7,21 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method == "GET") {
-    deleteCookie("token", { res, req });
-    deleteCookie("role", { res, req });
+    deleteCookie("token", {
+      res,
+      req,
+      sameSite: true,
+    });
+    deleteCookie("role", {
+      res,
+      req,
+      sameSite: true,
+    });
+    deleteCookie("currentRole", {
+      res,
+      req,
+      sameSite: true,
+    });
     res.status(200).json({ message: "Logout successfully" });
   } else {
     res.status(404).redirect("/404");

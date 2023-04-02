@@ -1,11 +1,11 @@
-import styles from "@/styles/getvehicle.module.css";
+import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
-import { Button, Modal } from "react-bootstrap";
+import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -55,31 +55,44 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error, mutate } = useSWR(
-    "/api/vehicle/getvehicles",
+    // "/api/vehicle/getvehicle",
+      "/api/provider/getvehicle",
     fetcher
   );
   const router = useRouter();
 
-  const [showDelete, setShowDelete] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (data?.statusCode === 401) {
-      router.push("/");
+  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>,confirm: boolean) {
+    const req_id = event.currentTarget.id;
+    console.log(req_id);
+    console.log(confirm);
+    event.preventDefault();
+    // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
+    const response = await fetch("/api/status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        confirm,
+        req_id,
+      }),
+    });
+    console.log(response);
+    if (!response.ok) {
+      const data = await response.json();
+      return;
     }
-  }, [data]);
-
-  const handleDeleteVehicle = () => {
-    console.log("Delete");
-    setShowDelete(false);
     mutate();
-  };
+    // ต้อง route ไป path ไหนมั้ย
+    router.push("/provider/vehicle/status");
+  }
 
   if (error) return router.push("/500");
 
   if (isLoading) return <>Loading ...</>;
 
   if (data)
-    console.log(data);
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -93,35 +106,23 @@ const ProviderOwnerVehicle = () => {
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
           </button>
           <br />
-          {/* <h1 className="align-items-center d-flex justify-content-end">
-            <FaCar />
-            &nbsp;รถเช่าของคุณ
-          </h1>
-          <hr /> */}
 
           {/* <div className={`text-start`}> */}
           <h1 className={`text-start`}>
-            รถเช่าของคุณ <FaCar />{" "}
-            <div className={`float-end`}>
-              <button
-                title="add vehicle"
-                className={`btn btn-success`}
-                onClick={() => router.push("/vehicle/create")}
-              >
-                + เพิ่มรถเช่า
-              </button>
-            </div>
+            รายการรถเช่าของคุณ <FaCar />{" "}
           </h1>
 
           {/* </div> */}
           <br />
 
-          {data.vehicles?.map((e: any) => {
-            console.log(e?.imagename);
+
+          {/* data.response?.map */}
+          {data.response?.map((e: any) => {
+            // setStatus(e?.status);
             return (
               <div
-                id={`car_${e.id}`}
-                key={`car_${e.id}`}
+                id={`car_${e.request_id}`}
+                key={`car_${e.request_id}`}
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>
@@ -145,7 +146,7 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`text-start`}>
                         <div>
-                          <b>ชื่อรถ</b>: {e?.name}
+                          <b>ชื่อรถ</b>: {e?.car_name}
                         </div>
                         <div>
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
@@ -162,32 +163,74 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
                         </div>
-                        {/* <div>
+                        <div>
                           <b>สถานะ</b>:{" "}
-                          <span className="badge bg-success">ว่าง</span>&nbsp;
-                          <span className="badge bg-warning">รอการยืนยัน</span>
-                          &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span>
-                        </div> */}
+                          {e?.status === "pending" ? (<>
+                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
+                          </>) : e?.status === "rejected" ? (<>
+                            <span className="badge bg-danger">ปฏิเสธ</span>&nbsp;
+                          </>) : e?.status === "accepted" ? (<>
+                            <span className="badge bg-success" >ถูกจองแล้ว</span>
+                          </>) : (<>
+                            <span>-</span>
+                          </>)}
+                        </div>
                       </div>
                     </div>
                     <div>
-                      <Link
-                        className={`float-start`}
-                        href={`/vehicle/update/${e?.id}`}
-                      >
-                        <FaEdit />
-                        แก้ไขข้อมูล
-                      </Link>
-
-                      <Link
-                        className={`float-end`}
-                        href={`#car_${e.id}`}
-                        onClick={() => setShowDelete(true)}
-                      >
-                        <FaPrescriptionBottle />
-                        ลบข้อมูล
-                      </Link>
+                      {e?.status === "pending" ? (<>
+                        <div>
+                          <b>ชื่อผู้เช่ารถ</b>: {e?.renter_firstname} {e?.renter_lastname}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        <div>
+                          <Row>
+                            <Col><b>กดยืนยันการจอง</b>:{" "}</Col>
+                            <Col><button id={e?.request_id} className={styles.confirm_btn} 
+                            onClick={(event) => {
+                            handleSubmit(event,true);}}>
+                              ยีนยัน</button></Col>
+                            <Col><button id={e?.request_id} className={styles.cancel_btn} 
+                            onClick={(event) => {
+                            handleSubmit(event,false);}}>
+                              ปฏิเสธ</button></Col>
+                          </Row>
+                        </div> 
+                      </>) : e?.status === "accepted" ? (<>
+                        <div>
+                          <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname} {e?.renter_lastname}
+                        </div>
+                        <div>
+                          <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        {/* <div>
+                          {e?.rent_place === "" ? (<>
+                            <b>สถานที่เช่ารถ</b>: -
+                          </>) : (<>
+                            <b>สถานที่เช่ารถ</b>: {e?.rent_place}
+                          </>)}
+                        </div>
+                        <div>
+                          {e?.info === "" ? (<>
+                            <b>ข้อมูลเพิ่มเติม</b>: -
+                          </>) : (<>
+                            <b>ข้อมูลเพิ่มเติม</b>: {e?.info}
+                          </>)}
+                        </div> */}
+                        <b></b>
+                      </>) : (<>
+                      </>)}
                     </div>
                   </div>
                 </div>
@@ -196,13 +239,13 @@ const ProviderOwnerVehicle = () => {
           })}
         </div>
 
-        {showDelete && (
+        {/* {showDelete && (
           <DeleteModal
             show={showDelete}
             onHide={() => setShowDelete(false)}
             handleDelete={handleDeleteVehicle}
           />
-        )}
+        )} */}
       </div>
     );
 };

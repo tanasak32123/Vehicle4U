@@ -7,6 +7,12 @@ export class OutputRenterPageDto {
         type: Number,
     })
     @IsNotEmpty()
+    request_id: number;
+
+    @ApiProperty({
+        type: Number,
+    })
+    @IsNotEmpty()
     car_id: number;
 
     @ApiProperty({
@@ -80,5 +86,4 @@ export class OutputRenterPageDto {
     })
     @IsNotEmpty()
     endtime : string ;
-
 }

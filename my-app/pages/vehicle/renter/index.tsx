@@ -11,7 +11,7 @@ import {
 import useSWR from "swr";
 import Link from "next/link";
 import { Button, Modal } from "react-bootstrap";
-import { useAuth } from "@/components/AuthContext";
+// import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -60,17 +60,11 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  //   const { auth, isLoading, authAction }: any = useAuth();
-
-  const { auth, isload, authAction }: any = useAuth();
-  console.log(auth);
-
   const { data, isLoading, error, mutate } = useSWR(
         "/api/renter/getvehicle",
     fetcher
   );
 
-//   const status = 'pending';
   const router = useRouter();
 
 
@@ -86,9 +80,6 @@ const ProviderOwnerVehicle = () => {
   if (isLoading) return <>Loading ...</>;
 
   if (data)
-    // console.log('data');
-    // console.log(data);
-    
     return (
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -107,13 +98,12 @@ const ProviderOwnerVehicle = () => {
           </h1>
           <hr />
 
-        {/* ใส่ field ใน data ให้ถูกต้อง */}
+        {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
           {data.response?.map((e: any) => {
-            // console.log(e);
             return (
               <div
-                id={`car_${e.car_id}`}
-                key={`car_${e.car_id}`}
+                id={`car_${e.request_id}`}
+                key={`car_${e.request_id}`}
                 className={`${styles.vehicle_card} p-3 mb-3`}
               >
                 <div className={`row`}>
@@ -161,9 +151,9 @@ const ProviderOwnerVehicle = () => {
                           <b>สถานะ</b>:{" "}
                           {e?.status === "pending" ? (<>
                             <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : e?.status === "confirm" ? (<>
-                            <span className="badge bg-success">ว่าง</span>&nbsp;
-                          </>) : e?.status === "reject" ? (<>
+                          </>) : e?.status === "accepted" ? (<>
+                            <span className="badge bg-success">จองสำเร็จ</span>&nbsp;
+                          </>) : e?.status === "rejected" ? (<>
                             <span className="badge bg-danger">ถูกจองแล้ว</span>
                           </>) : (<>
                             <span>-</span>
