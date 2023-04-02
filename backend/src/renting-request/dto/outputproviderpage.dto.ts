@@ -86,4 +86,34 @@ export class OutputProviderPageDto {
   })
   @IsNotEmpty()
   status : Request_status;
+
+  @ApiProperty({
+    type: String
+  })
+  @IsNotEmpty()
+  province : string;
+  
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  startdate : string ;
+
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  starttime : string ;
+
+  @ApiProperty({
+    type: String,
+  })
+  @IsNotEmpty()
+  enddate : string ;
+
+@ApiProperty({
+    type: String,
+})
+@IsNotEmpty()
+endtime : string ;
 }
