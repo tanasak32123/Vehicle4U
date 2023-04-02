@@ -1,7 +1,6 @@
 import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
@@ -25,25 +24,11 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-  const { data, isLoading, error, mutate } = useSWR(
+  const { data, isLoading, error } = useSWR(
     "/api/vehicle/getvehicles",
     fetcher
   );
   const router = useRouter();
-
-  // const [showDelete, setShowDelete] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   if (data?.statusCode === 401) {
-  //     router.push("/");
-  //   }
-  // }, [data]);
-
-  // const handleDeleteVehicle = () => {
-  //   console.log("Delete");
-  //   setShowDelete(false);
-  //   mutate();
-  // };
 
   if (error) return router.push("/500");
 

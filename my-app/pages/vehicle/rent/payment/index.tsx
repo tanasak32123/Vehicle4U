@@ -2,12 +2,10 @@ import Head from "next/head";
 import styles from "@/styles/payment.module.css";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import router from "next/router";
-import { useAuth } from "@/components/AuthContext";
-import { getCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Renter_request() {
-
   const [errors, setErrors] = useState({
     choose_payment: "",
   });
@@ -16,8 +14,6 @@ export default function Renter_request() {
   const [mobile, setMobile] = useState(false);
 
   async function handleSubmit(event: Event) {
-    console.log(card,mobile);
-
     event.preventDefault();
     const response = await fetch("/api/payment", {
       method: "POST",
@@ -31,10 +27,23 @@ export default function Renter_request() {
     });
     if (!response.ok) {
       const data = await response.json();
-      setErrors(data.errors)
-      console.log(errors)
+      setErrors(data.errors);
+      console.log(errors);
       return;
     }
+    toast.success(
+      "เมื่อผู้ปล่อยเช่ายืนยันการเช่า ระบบจะส่งแจ้งเตือนให้ท่านอีกครั้งเพื่อทำการชำระเงิน",
+      {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      }
+    );
     router.push("/vehicle/rent/sucess");
   }
 
@@ -49,7 +58,7 @@ export default function Renter_request() {
       >
         <div className={`p-4 ${styles.base_container}`}>
           <button
-            onClick={() => router.push("/car/renter")}
+            onClick={() => router.back()}
             className={`${styles.back2_btn} d-flex align-items-center`}
           >
             <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
@@ -59,7 +68,6 @@ export default function Renter_request() {
               <h4>เลือกวิธีการชำระเงิน</h4>
             </div>
           </div>
-          <div className={`${'red_color'}`}>{errors.choose_payment}</div>
 
           <div className={styles.type_container}>
             <div className="form-check">
@@ -69,7 +77,7 @@ export default function Renter_request() {
                 name="flexRadioDefault"
                 id="flexRadioDefault1"
                 value="card"
-                onChange={(event)=>{
+                onChange={() => {
                   setCard(true);
                   setMobile(false);
                 }}
@@ -86,7 +94,7 @@ export default function Renter_request() {
                 name="flexRadioDefault"
                 id="flexRadioDefault2"
                 value="moblie_banking"
-                onChange={(event)=>{
+                onChange={(event) => {
                   setMobile(true);
                   setCard(false);
                 }}
@@ -97,10 +105,19 @@ export default function Renter_request() {
             </div>
           </div>
 
-          <div>
-            <button className={styles.pay_btn} onClick={(event: any) => {handleSubmit(event);}}>ชำระเงิน</button>
+          <div className="d-flex justify-content-end align-items-center">
+            <small className={`${"red_color"} me-2`}>
+              {errors.choose_payment}
+            </small>
+            <button
+              className={styles.pay_btn}
+              onClick={(event: any) => {
+                handleSubmit(event);
+              }}
+            >
+              ชำระเงิน
+            </button>
           </div>
-
         </div>
       </div>
     </>

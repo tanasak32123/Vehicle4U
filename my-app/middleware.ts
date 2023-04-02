@@ -5,8 +5,7 @@ import isAuthValid from "libs/auth/isAuthValid";
 const authPrefixes = ["/vehicle", "/user", "/provider"];
 
 export async function middleware(req: NextRequest) {
-  const token = req.cookies.get("token")?.value;
-  const role = req.cookies.get("role")?.value;
+  const currentRole = req.cookies.get("currentRole")?.value;
 
   const url = req.nextUrl;
 
@@ -25,8 +24,22 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  if (url.pathname.startsWith("/provider") && currentRole != "provider") {
+    url.pathname = `/`;
+    return NextResponse.redirect(url);
+  }
+
+  if (url.pathname.startsWith("/vehicle") && currentRole != "renter") {
+    url.pathname = `/`;
+    return NextResponse.redirect(url);
+  }
+
   if (url.pathname === "/" && isAuthValid(req)) {
-    url.pathname = `/vehicle`;
+    if (currentRole == "renter") {
+      url.pathname = `/vehicle`;
+    } else {
+      url.pathname = `/provider/vehicle`;
+    }
     return NextResponse.redirect(url);
   }
 
