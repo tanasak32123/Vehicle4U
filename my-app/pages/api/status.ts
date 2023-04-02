@@ -15,7 +15,7 @@ export default async function handler(
 
     try {
     // ให้ปลื้มสร้าง path เพิ่ม
-      await fetch("http://localhost:3000/renting-request", {
+      await fetch("http://localhost:3000/renting-request/updatestatus", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -23,7 +23,7 @@ export default async function handler(
         },
         body: JSON.stringify({
           confirm: body.confirm,
-          req_id: body.req_id,
+          id: body.req_id,
         }),
       }).then(async (response) => {
         if (!response.ok) {

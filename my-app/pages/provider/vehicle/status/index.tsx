@@ -63,9 +63,10 @@ const ProviderOwnerVehicle = () => {
 
   const [confirm,setConfirm] = useState(false);
   const [req_id,setReq_id] = useState(1);
-  const [car_id,setCar_id] = useState(1);
 
   async function handleSubmit(event: Event) {
+    console.log(req_id);
+    console.log(confirm);
     event.preventDefault();
     // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
     const response = await fetch("/api/renter_request", {
@@ -78,6 +79,7 @@ const ProviderOwnerVehicle = () => {
         req_id,
       }),
     });
+    console.log(response);
     if (!response.ok) {
       const data = await response.json();
       return;
@@ -192,14 +194,12 @@ const ProviderOwnerVehicle = () => {
                             onClick={(event) => {
                             setConfirm(true);
                             setReq_id(e?.request_id);
-                            setCar_id(e?.car_id);
                             handleSubmit(event);}}>
                               ยีนยัน</button></Col>
                             <Col><button className={styles.cancel_btn} 
                             onClick={(event) => {
                             setConfirm(false);
                             setReq_id(e?.request_id);
-                            setCar_id(e?.car_id);
                             handleSubmit(event);}}>
                               ปฏิเสธ</button></Col>
                           </Row>
