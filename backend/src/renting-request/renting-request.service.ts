@@ -25,6 +25,22 @@ export class RentingRequestService {
     async create(id: number, createRentingRequestDto: CreateRentingRequestDto): Promise<RentingRequest> {
         const renreq = await this.rentingRequestRepository.create(createRentingRequestDto);
         
+        //detect request is exist in this time
+        const research = await this.rentingRequestRepository.find({
+            where:{
+                vehicle: {'id': createRentingRequestDto.car_id},
+                status: Request_status.ACCEPTED
+            }
+        });
+        const starttime = createRentingRequestDto.startdate+'_'+createRentingRequestDto.starttime;
+        const endtime = createRentingRequestDto.enddate+'_'+createRentingRequestDto.end_time;
+        for(let i = 0; i< research.length; i++){
+            const otherstarttime = research[i].startdate+'_'+research[i].starttime;
+            const otherendtime   = research[i].enddate+'_'+research[i].endtime;
+
+            if(starttime < otherendtime && endtime > otherstarttime) throw new HttpException( "request is exist in this time", HttpStatus.NOT_FOUND);
+        }
+
         //update renreq.user
         renreq.user = await this.userRepository.findOneBy({'id':id});
         
@@ -140,8 +156,6 @@ export class RentingRequestService {
             const vehicle = rentingRequest.vehicle;
             const rentingRequests = await this.rentingRequestRepository.findBy({vehicle:{'id':vehicle.id}});
             
-            //date : yyyy/mm/dd 2000/01/04
-            //time : xx:xx
             for(let i = 0; i< rentingRequests.length; i++){
                 if(rentingRequests[i].id != updateRentingRequestDto.id){
                     const otherstarttime = rentingRequests[i].startdate+'_'+rentingRequests[i].starttime;
