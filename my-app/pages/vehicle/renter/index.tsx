@@ -1,16 +1,11 @@
 import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import {
-  FaArrowAltCircleLeft,
-  FaCar,
-  FaEdit,
-  FaPrescriptionBottle,
-} from "react-icons/fa";
+import { useEffect } from "react";
+import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
-import Link from "next/link";
-import { Button, Modal } from "react-bootstrap";
+import formatDate from "@/libs/formatDate";
+
 // import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
@@ -22,51 +17,17 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      let created_date: Date;
-      let updated_date: Date;
-      let updated_dateFormat: string;
-      let created_dateFormat: string;
       res.vehicles?.map((e: any) => {
-        created_date = new Date(e.created_at);
-        updated_date = new Date(e.updated_at);
-        updated_dateFormat =
-          updated_date.getDate() +
-          "/" +
-          (updated_date.getMonth() + 1) +
-          "/" +
-          updated_date.getFullYear() +
-          " " +
-          updated_date.getHours() +
-          ":" +
-          updated_date.getMinutes() +
-          ":" +
-          updated_date.getSeconds();
-        created_dateFormat =
-          created_date.getDate() +
-          "/" +
-          (created_date.getMonth() + 1) +
-          "/" +
-          created_date.getFullYear() +
-          " " +
-          created_date.getHours() +
-          ":" +
-          created_date.getMinutes() +
-          ":" +
-          created_date.getSeconds();
-        e.created_at = created_dateFormat;
-        e.updated_at = updated_dateFormat;
+        e.created_at = formatDate(new Date(e.created_at));
+        e.updated_at = formatDate(new Date(e.updated_at));
       });
       return res;
     });
 
 const ProviderOwnerVehicle = () => {
-  const { data, isLoading, error, mutate } = useSWR(
-        "/api/renter/getvehicle",
-    fetcher
-  );
+  const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
-
 
   useEffect(() => {
     if (data?.statusCode === 401) {
@@ -74,10 +35,18 @@ const ProviderOwnerVehicle = () => {
     }
   }, [data]);
 
-
   if (error) return router.push("/500");
 
-  if (isLoading) return <>Loading ...</>;
+  if (isLoading)
+    return (
+      <div className={`d-flex justify-content-center align-items-center`}>
+        <div className={`lds-facebook`}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    );
 
   if (data)
     return (
@@ -98,7 +67,7 @@ const ProviderOwnerVehicle = () => {
           </h1>
           <hr />
 
-        {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
+          {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
           {data.response?.map((e: any) => {
             return (
               <div
@@ -133,7 +102,8 @@ const ProviderOwnerVehicle = () => {
                           <b>เลขทะเบียนรถ</b>: {e?.registrationId}
                         </div>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname} {e?.provider_lastname}
+                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
+                          {e?.provider_lastname}
                         </div>
                         <div>
                           <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
@@ -142,28 +112,51 @@ const ProviderOwnerVehicle = () => {
                           <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
                         </div>
                         <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                          {e?.starttime}
                         </div>
                         <div>
                           <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
-                          {e?.status === "pending" ? (<>
-                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : e?.status === "accepted" ? (<>
-                            <span className="badge bg-success">จองสำเร็จ</span>&nbsp;
-                          </>) : e?.status === "rejected" ? (<>
-                            <span className="badge bg-danger">ถูกจองแล้ว</span>
-                          </>) : (<>
-                            <span>-</span>
-                          </>)}
+                          {e?.status === "pending" ? (
+                            <>
+                              <span className="badge bg-warning">
+                                รอการยืนยัน
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "accepted" ? (
+                            <>
+                              <span className="badge bg-success">
+                                จองสำเร็จ
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "rejected" ? (
+                            <>
+                              <span className="badge bg-danger">
+                                ถูกจองแล้ว
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span>-</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div className={styles.chat_div}>
-                        <button className={styles.chat_btn} 
-                        onClick={(event: any) => { router.push("/vehicle") }}>แชท</button>
+                      <button
+                        className={styles.chat_btn}
+                        onClick={(event: any) => {
+                          router.push("/vehicle");
+                        }}
+                      >
+                        แชท
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -174,8 +167,6 @@ const ProviderOwnerVehicle = () => {
       </div>
     );
 };
-
-  
 
 // const DeleteModal = ({ show, onHide, handleDelete }: any) => {
 //   return (

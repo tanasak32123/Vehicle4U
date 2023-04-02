@@ -2,16 +2,12 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
 import styles from "@/styles/signup.module.css";
 import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import Skeleton from "react-loading-skeleton";
-
-const CustomizeModal = dynamic(import("@/components/Modal/Customize"), {
-  loading: () => <p>Loading...</p>,
-});
+import { toast } from "react-toastify";
 
 export default function Register() {
   const router = useRouter();
@@ -29,7 +25,6 @@ export default function Register() {
 
   const [role, setRole] = useState("");
 
-  const [showSuccess, setShowSuccess] = useState(false);
   const [showSelect, setShowSelect] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -44,8 +39,6 @@ export default function Register() {
   });
 
   async function handleSubmit(event: Event) {
-    console.log(errors)
-
     event.preventDefault();
     setLoading(true);
     await fetch(`/api/auth/signup/${role}`, {
@@ -71,16 +64,32 @@ export default function Register() {
         if (!res.success) {
           setErrors(res.errors);
         } else {
-          setShowSuccess(true);
-          setTimeout(() => {
-            setShowSuccess(false);
-            router.push("/");
-          }, 3000);
+          toast.success("สมัครสมาชิกสำเร็จ", {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          router.push("/");
         }
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error("ระบบเกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        console.error(err);
         setLoading(false);
       });
   }
@@ -94,16 +103,6 @@ export default function Register() {
       <Head>
         <title>สมัครสมาชิก - VEHICLE4U</title>
       </Head>
-
-      {showSelect && (
-        <SelectRoleModal
-          show={showSelect}
-          onHide={(role: string) => {
-            setRole(role);
-            setShowSelect(false);
-          }}
-        />
-      )}
 
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
@@ -326,19 +325,6 @@ export default function Register() {
                       <b>สร้างบัญชี</b>
                     </button>
                   </div>
-
-                  {showSuccess && (
-                    <CustomizeModal
-                      status="success"
-                      show={showSuccess}
-                      onHide={() => {
-                        setShowSuccess(false);
-                        router.push("/");
-                      }}
-                      desc={`สมัครสมาชิกสำเร็จ`}
-                      btn_text={`เข้าสู่ระบบ`}
-                    />
-                  )}
                 </>
               ) : (
                 <>
@@ -355,6 +341,16 @@ export default function Register() {
           </Row>
         </div>
       </div>
+
+      {showSelect && (
+        <SelectRoleModal
+          show={showSelect}
+          onHide={(role: string) => {
+            setRole(role);
+            setShowSelect(false);
+          }}
+        />
+      )}
     </>
   );
 }

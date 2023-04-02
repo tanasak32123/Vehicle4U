@@ -1,3 +1,4 @@
+import { setCookie } from "cookies-next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,7 +10,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!token)
     return res
-      .status(200)
+      .status(401)
       .json({ status: "SIGNED_OUT", user: null, role: null });
 
   const user = await fetch(`http://localhost:3000/user`, {
@@ -34,12 +35,29 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!user)
     return res
-      .status(200)
+      .status(401)
       .json({ status: "SIGNED_OUT", user: null, role: null });
+
+  const currentRole = req.cookies?.currentRole;
+
+  if (currentRole)
+    return res
+      .status(200)
+      .json({ status: "SIGNED_IN", user, role: currentRole });
 
   const role = req.cookies?.role;
 
-  return res.status(200).json({ status: "SIGNED_IN", user, role });
+  if (role) {
+    setCookie("currentRole", role, {
+      req,
+      res,
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+    });
+    return res.status(200).json({ status: "SIGNED_IN", user, role });
+  }
+
+  return res.status(401).json({ status: "SIGNED_OUT", user: null, role: null });
 };
 
 export default handler;
