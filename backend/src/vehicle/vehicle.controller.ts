@@ -51,6 +51,9 @@ export class VehicleController {
       next_page: pagination_data.next.pageNumber,
     });
   }
+
+
+  
   @UseGuards(JwtAuthGuard)
   @Post('')
   async createVehicle(
