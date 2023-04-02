@@ -18,7 +18,7 @@ export default function ProfileModal({
   id: string;
   type: string;
   inputs: Array<object>;
-  newData: Array<string>;
+  newData: string;
   invalid: string;
   setInvalid: any;
   isShowModal: boolean;
@@ -28,7 +28,7 @@ export default function ProfileModal({
 }) {
   async function handleSubmit(
     name: string,
-    newData: string[],
+    newData: string,
     handleupdateFunc: any,
     setShowModalFunc: any
   ) {
