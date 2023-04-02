@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { updateUserProfile } from "libs/auth/updateUserProfile";
-import UserProfile from "types/UserProfile";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method != "POST") {
@@ -8,155 +7,172 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const body = req.body;
-  const type = body.type;
-  const values = body.values;
-  const data: UserProfile = {};
+  const field = body.field;
 
-  if (type == "name") {
-    const first_name = values["0"];
-    const last_name = values["1"];
-    if (!first_name && !last_name) {
+  const data: { [index: string]: any } = {};
+
+  if (!field)
+    return res
+      .status(400)
+      .json({ success: false, message: "Not have field body" });
+
+  if (field == "first_name") {
+    const first_name = body.first_name;
+    if (!first_name) {
       return res
         .status(400)
-        .json({ message: "** กรุณากรอกชื่อและนามสกุลของคุณให้เรียบร้อย" });
-    } else if (!last_name) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกนามสกุลให้เรียบร้อย" });
-    } else if (!first_name) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกชื่อจริงให้เรียบร้อย" });
+        .json({ success: false, message: "** กรุณากรอกชื่อจริงให้เรียบร้อย" });
     } else if (
       containsSpecialChars(first_name) ||
       containsNumbers(first_name)
     ) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น" });
-    } else if (containsSpecialChars(last_name) || containsNumbers(last_name)) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกชื่อเป็นตัวอักษรเท่านั้น",
+      });
     }
-
-    data["first_name"] = first_name;
-    data["last_name"] = last_name;
   }
 
-  if (type == "username") {
-    const username = values["0"];
-    if (!username) {
+  if (field == "last_name") {
+    const last_name = body.last_name;
+    if (!last_name) {
       return res
         .status(400)
-        .json({ message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย" });
+        .json({ success: false, message: "** กรุณากรอกนามสกุลให้เรียบร้อย" });
+    } else if (containsSpecialChars(last_name) || containsNumbers(last_name)) {
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกนามสกุลเป็นตัวอักษรเท่านั้น",
+      });
+    }
+  }
+
+  if (field == "username") {
+    const username = body.username;
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกชื่อผู้ใช้ให้เรียบร้อย",
+      });
     } else if (validateUsername(username)) {
       return res.status(400).json({
+        success: false,
         message:
           "** กรุณาเปลี่ยนชื่อผู้ใช้ เนื่องจากสามารถมีเพียงตัวอักษรและตัวเลขเท่านั้น",
       });
     }
-
-    data["username"] = username;
   }
 
-  if (type == "password") {
-    const password = values["0"];
+  if (field == "password") {
+    const password = field.password;
     if (!password) {
       return res
         .status(400)
-        .json({ message: "** กรุณากรอกรหัสผ่านให้เรียบร้อย" });
+        .json({ success: false, message: "** กรุณากรอกรหัสผ่านให้เรียบร้อย" });
     } else if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "** password ของคุณมีความยาวน้อยกว่า 6 ตัว" });
+      return res.status(400).json({
+        success: false,
+        message: "** password ของคุณมีความยาวน้อยกว่า 6 ตัว",
+      });
     }
-
-    data["password"] = password;
   }
 
-  if (type == "tel") {
-    const tel = values["0"];
+  if (field == "tel") {
+    const tel = body.tel;
     if (!tel) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกเบอร์โทรศัพท์ให้เรียบร้อย",
+      });
     } else if (!containsOnlyNumbers(tel)) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขโทรศัพท์เป็นหมายเลขเท่านั้น",
+      });
     } else if (tel.length != 10) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขโทรศัพท์ให้ครบถ้วน",
+      });
     }
-
-    data["tel"] = tel;
   }
 
-  if (type == "citizen_id") {
-    const cid = values["0"];
+  if (field == "citizen_id") {
+    const cid = body.citizen_id;
     if (!cid) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขบัตรประชาชนให้เรียบร้อย",
+      });
     } else if (!containsOnlyNumbers(cid)) {
       return res.status(400).json({
+        success: false,
         message: "** กรุณากรอกหมายเลขบัตรประชาชนเป็นหมายเลขเท่านั้น",
       });
     } else if (cid.length != 13) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขบัตรประชาชนให้ครบถ้วน",
+      });
     }
-
-    data["citizen_id"] = cid;
   }
 
-  if (type == "driving_license_id" || type == "add_driving_license_id") {
-    const d_license_id = values["0"];
+  if (field == "driving_license_id" || field == "add_driving_license_id") {
+    const d_license_id = body.driving_license_id
+      ? body.driving_license_id
+      : body.add_driving_license_id;
     if (!d_license_id) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขใบขับขี่ให้เรียบร้อย",
+      });
     } else if (!containsOnlyNumbers(d_license_id)) {
       return res.status(400).json({
+        success: false,
         message: "** กรุณากรอกหมายเลขใบชับชี่เป็นหมายเลขเท่านั้น",
       });
     } else if (d_license_id.length != 8) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณากรอกหมายเลขใบขับขี่ให้ครบถ้วน",
+      });
     }
-
-    data["driving_license_id"] = d_license_id;
-
-    if (type == "add_driving_license_id") {
-      data["is_renter"] = true;
+    if (field == "add_driving_license_id") {
+      body.field = "driving_license_id";
+      data.is_renter = true;
     }
   }
 
-  if (type == "payment_channel" || type == "add_payment_channel") {
-    const payment = values["0"];
+  if (field == "payment_channel" || field == "add_payment_channel") {
+    const payment = body.payment_channel
+      ? body.payment_channel
+      : body.add_payment_channel;
     if (!payment) {
-      return res
-        .status(400)
-        .json({ message: "** กรุณาเลือกช่องทางการรับเงินให้เรียบร้อย" });
+      return res.status(400).json({
+        success: false,
+        message: "** กรุณาเลือกช่องทางการรับเงินให้เรียบร้อย",
+      });
     }
-
-    data["payment_channel"] = payment;
-
-    if (type == "add_payment_channel") {
-      data["is_provider"] = true;
+    if (field == "add_payment_channel") {
+      body.field = "payment_channel";
+      data.is_provider = true;
     }
   }
 
-  const token = req.cookies.token;
+  data[`${body.field}`] = body[`${field}`];
+
+  const token = req.cookies?.token;
+
+  if (!token)
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized",
+    });
 
   const user = await updateUserProfile(token, data);
 
   if (!user!) {
-    return res.status(400).json({
+    return res.status(500).json({
       success: false,
       message: "** เกิดข้อผิดหลาดขึ้น โปรดลองใหม่อีกครั้ง",
     });
