@@ -18,6 +18,9 @@ export async function middleware(req: NextRequest) {
     return false;
   };
 
+  console.log(isAuthValid(req));
+  console.log(url.pathname);
+
   if (startwithsAuth() && !isAuthValid(req)) {
     url.search = `?from=${url.pathname}`;
     url.pathname = `/`;
