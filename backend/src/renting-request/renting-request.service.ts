@@ -83,6 +83,7 @@ export class RentingRequestService {
             providerrequest.imagename        = rentingRequests[i].vehicle.imagename;
             providerrequest.car_name         = rentingRequests[i].vehicle.name;
             providerrequest.registrationId   = rentingRequests[i].vehicle.registrationId;
+            providerrequest.renter_id        = rentingRequests[i].user.id;
             providerrequest.renter_firstname = rentingRequests[i].user.first_name;
             providerrequest.renter_lastname  = rentingRequests[i].user.last_name;
             providerrequest.tel              = rentingRequests[i].user.tel;
@@ -124,6 +125,7 @@ export class RentingRequestService {
             renterrequest.imagename          = rentingRequests[i].vehicle.imagename;
             renterrequest.car_name           = rentingRequests[i].vehicle.name;
             renterrequest.tel                = rentingRequests[i].vehicle.user.tel;
+            renterrequest.provider_id        = rentingRequests[i].vehicle.user.id;
             renterrequest.provider_firstname = rentingRequests[i].vehicle.user.first_name;
             renterrequest.provider_lastname  = rentingRequests[i].vehicle.user.last_name;
             renterrequest.registrationId     = rentingRequests[i].vehicle.registrationId;
