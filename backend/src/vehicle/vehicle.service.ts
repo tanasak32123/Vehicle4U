@@ -5,12 +5,14 @@ import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
+import { RentingRequest, Request_status } from 'src/renting-request/entities/renting-request.entity';
 
 @Injectable()
 export class VehicleService {
   constructor(
     @InjectRepository(Vehicle) private vehicleRepository: Repository<Vehicle>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(RentingRequest) private rentingRequestRepository: Repository<RentingRequest>
   ) {}
   async findByFilter(
     province: string,
@@ -116,17 +118,46 @@ export class VehicleService {
     return { oldImageName, vehicle };
   }
 
-  async getVehicleByUserId(userId: number): Promise<Vehicle[]> {
+  async getVehicleByUserId(userId: number){
     
     const vehicles = await this.vehicleRepository.find({
+      relations:{user:true},
       where: { user: { id: userId } },
     });
-    return vehicles;
+    let vehicleandstatus = [];
+    for(let i = 0; i < vehicles.length; i++){
+      const rentingrequests = await this.rentingRequestRepository.find({
+        where:{
+          status:Request_status.ACCEPTED,
+          vehicle:{'id':vehicles[i].id}
+        }
+      });
+      let carstatus = "Available";
+      if(rentingrequests.length!=0) carstatus = "Not available";
+      
+      vehicleandstatus.push(vehicles[i]);
+      vehicleandstatus[i].status = carstatus;
+    }
+    return vehicleandstatus;
   }
 
-  async getVehicleByVehicleId(vehicleId: number): Promise<Vehicle> {
-    const vehicle = await this.vehicleRepository.findOneBy({'id': vehicleId });
+  async getVehicleByVehicleId(vehicleId: number){
+    const vehicle = await this.vehicleRepository.findOne({
+      relations:{user:true},
+      where:{'id': vehicleId }
+    });
     if(!vehicle)throw new HttpException( "vehicle not found", HttpStatus.NOT_FOUND);
-    return vehicle;
+    const rentingrequests = await this.rentingRequestRepository.find({
+      where:{
+        status:Request_status.ACCEPTED,
+        vehicle:{'id':vehicle.id}
+      }
+    });
+    let carstatus = "Available";
+    if(rentingrequests.length!=0) carstatus = "Not available";
+    let vehicleandstatus = [];
+    vehicleandstatus.push(vehicle);
+    vehicleandstatus[0].status = carstatus;
+    return vehicleandstatus;
   }
 }
