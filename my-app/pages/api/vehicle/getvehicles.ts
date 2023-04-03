@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (token && role === "provider") {
-    await fetch("http://localhost:3000/user/vehicles", {
+    await fetch("http://localhost:3000/vehicle/myvehicles", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -38,7 +38,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         return res.status(200).json({
           success: true,
           statusCode: 200,
-          vehicles: response[0].vehicles,
+          response,
         });
       })
       .catch((err) => {
