@@ -158,6 +158,12 @@ export default function chat() {
                     id="typing_text"
                     placeholder="พิมพ์ข้อความ..."
                     onChange={(e) => handleTyping(e)}
+                    onKeyDown={(e) => {
+                      console.log(e.key == 'Enter')
+                      if (e.key == 'Enter') {
+                        handleSendMessage(e)
+                      }
+                    }}
                   />
                   {/* <a className="ms-1 text-muted" href="#!">
                   <FaPaperclip />
