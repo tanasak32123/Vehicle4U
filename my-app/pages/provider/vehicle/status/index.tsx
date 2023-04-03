@@ -214,23 +214,19 @@ const ProviderOwnerVehicle = () => {
                         <div>
                           <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
                         </div>
-                        {/* <div>
-                          {e?.rent_place === "" ? (<>
-                            <b>สถานที่เช่ารถ</b>: -
-                          </>) : (<>
-                            <b>สถานที่เช่ารถ</b>: {e?.rent_place}
-                          </>)}
-                        </div>
-                        <div>
-                          {e?.info === "" ? (<>
-                            <b>ข้อมูลเพิ่มเติม</b>: -
-                          </>) : (<>
-                            <b>ข้อมูลเพิ่มเติม</b>: {e?.info}
-                          </>)}
-                        </div> */}
                         <b></b>
                       </>) : (<>
                       </>)}
+                      <div className={styles.chat_div}>
+                      <button
+                        className={styles.chat_btn}
+                        onClick={(event: any) => {
+                          router.push("/vehicle");
+                        }}
+                      >
+                        แชท
+                      </button>
+                    </div>
                     </div>
                   </div>
                 </div>
