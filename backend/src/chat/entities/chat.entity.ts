@@ -5,25 +5,42 @@ import {
   CreateDateColumn,
 } from 'typeorm';
 
+export enum Sender {
+  RENTER = 'renter',
+  PROVIDER = 'provider'
+}
+
+
 @Entity()
 export class Chat {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column()
-  senderFirstName: string;
+  renterFirstName: string;
 
   @Column()
-  senderLastName: string;
+  renterLastName: string;
 
   @Column()
-  receiverFirstName: string;
+  providerFirstName: string;
 
   @Column()
-  receiverLastName: string;
+  providerLastName: string;
 
   @Column()
   message: string;
+
+  @Column()
+  sender: string;
+
+  // @Column({
+  //   type: 'enum',
+  //   enum: Sender,
+  //   default: Sender.RENTER
+  // })
+  // sender: Sender
+
 
   @CreateDateColumn()
   createdAt: Date;

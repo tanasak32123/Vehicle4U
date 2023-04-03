@@ -17,10 +17,10 @@ export class ChatService {
   async getMessages(getMessagesDto: GetMessagesDto): Promise<Chat[]> {
     return await this.chatRepository.find({
       where: {
-        senderFirstName: getMessagesDto.senderFirstName,
-        senderLastName: getMessagesDto.senderLastName,
-        receiverFirstName: getMessagesDto.receiverFirstName,
-        receiverLastName: getMessagesDto.receiverLastName,
+        renterFirstName: getMessagesDto.renterFirstName,
+        renterLastName: getMessagesDto.renterLastName,
+        providerFirstName: getMessagesDto.providerFirstName,
+        providerLastName: getMessagesDto.providerLastName,
       },
     });
   }

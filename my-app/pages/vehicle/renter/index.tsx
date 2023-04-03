@@ -23,8 +23,38 @@ const fetcher = (url: string) =>
       });
       return res;
     });
+ 
 
 const ProviderOwnerVehicle = () => {
+
+
+  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>, providerFirstName: string, providerLastName: string ) {
+    const renterFirstName = 'a'
+    const renterLastName = 'b'
+    const sender = 'renter'
+    event.preventDefault();
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        
+      },
+      body: JSON.stringify({
+        renterFirstName,
+        renterLastName,
+        providerFirstName,
+        providerLastName,
+        sender
+      }),
+    });
+    
+    if (!response.ok) {
+      const data = await response.json();
+      return;
+    }
+    // ต้อง route ไป path ไหนมั้ย
+    router.push("/chat");
+  }
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
@@ -151,9 +181,7 @@ const ProviderOwnerVehicle = () => {
                     <div className={styles.chat_div}>
                       <button
                         className={styles.chat_btn}
-                        onClick={(event: any) => {
-                          router.push("/vehicle");
-                        }}
+                        onClick={(event) => handleSubmit(event,e?.provider_firstname, e?.provider_lastname)}
                       >
                         แชท
                       </button>

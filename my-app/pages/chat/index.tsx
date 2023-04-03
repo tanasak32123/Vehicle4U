@@ -2,17 +2,22 @@ import Head from "next/head";
 import styles from "@/styles/helpcenter.module.css";
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
+import useSWR from 'swr'
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then((res) => {
+      return res;
+    });
 
 export default function chat() {
   const socket = io("http://localhost:3000");
-  const [message, setMessage] = useState({
-    senderFirstName: "",
-    senderLastName: "",
-    receiverFirstName: "",
-    receiverLastName: "",
-    message: "",
-  });
+  const { data, isLoading, error, mutate } = useSWR(
+      "/api/chat",
+    fetcher
+  );
 
+  console.log(data)
   const [messages, setMessages] = useState([
     {
       senderFirstName: "a",
@@ -67,3 +72,5 @@ export default function chat() {
     </>
   );
 }
+
+

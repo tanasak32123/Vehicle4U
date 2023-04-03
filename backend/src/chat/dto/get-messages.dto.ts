@@ -1,29 +1,48 @@
 /* eslint-disable prettier/prettier */
-import { IsNotEmpty } from "class-validator";
+import { IsEnum, IsNotEmpty } from "class-validator";
 import { ApiProperty } from '@nestjs/swagger';
+
+enum Sender {
+    Renter = 'renter',
+    Provider = 'provider'
+}
 export class GetMessagesDto {
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    senderFirstName : string;
+    renterFirstName : string;
 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    senderLastName : string;
+    renterLastName : string;
 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    receiverFirstName : string;
+    providerFirstName : string;
 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    receiverLastName : string;
+    providerLastName : string;
+
+    @ApiProperty({
+        type: String,
+    })
+    @IsNotEmpty()
+    sender : string ; 
+
+    // @ApiProperty({
+    //     enum: Sender,
+    //     enumName: 'Role',
+    //     example: Sender.Renter,
+    // })
+    // @IsEnum(Sender)
+    // sender: Sender;  
 
 }
