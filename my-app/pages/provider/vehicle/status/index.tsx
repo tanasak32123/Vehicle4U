@@ -1,16 +1,10 @@
 import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import {
-  FaArrowAltCircleLeft,
-  FaCar,
-  FaEdit,
-  FaPrescriptionBottle,
-} from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
-import Link from "next/link";
-import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+import formatDate from "@/libs/formatDate";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -21,46 +15,15 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      let created_date: Date;
-      let updated_date: Date;
-      let updated_dateFormat: string;
-      let created_dateFormat: string;
       res.vehicles?.map((e: any) => {
-        created_date = new Date(e.created_at);
-        updated_date = new Date(e.updated_at);
-        updated_dateFormat =
-          updated_date.getDate() +
-          "/" +
-          (updated_date.getMonth() + 1) +
-          "/" +
-          updated_date.getFullYear() +
-          " " +
-          updated_date.getHours() +
-          ":" +
-          updated_date.getMinutes() +
-          ":" +
-          updated_date.getSeconds();
-        created_dateFormat =
-          created_date.getDate() +
-          "/" +
-          (created_date.getMonth() + 1) +
-          "/" +
-          created_date.getFullYear() +
-          " " +
-          created_date.getHours() +
-          ":" +
-          created_date.getMinutes() +
-          ":" +
-          created_date.getSeconds();
-        e.created_at = created_dateFormat;
-        e.updated_at = updated_dateFormat;
+        e.created_at = formatDate(new Date(e.created_at));
+        e.updated_at = formatDate(new Date(e.updated_at));
       });
       return res;
     });
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error, mutate } = useSWR(
-    // "/api/vehicle/getvehicle",
     "/api/provider/getvehicle",
     fetcher
   );
@@ -114,17 +77,13 @@ const ProviderOwnerVehicle = () => {
           </button>
           <br />
 
-          {/* <div className={`text-start`}> */}
           <h1 className={`text-start`}>
             รายการรถเช่าของคุณ <FaCar />{" "}
           </h1>
 
-          {/* </div> */}
           <br />
 
-          {/* data.response?.map */}
           {data.response?.map((e: any) => {
-            // setStatus(e?.status);
             return (
               <div
                 id={`car_${e.request_id}`}
@@ -259,20 +218,6 @@ const ProviderOwnerVehicle = () => {
                             <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
                             {e?.endtime}
                           </div>
-                          {/* <div>
-                          {e?.rent_place === "" ? (<>
-                            <b>สถานที่เช่ารถ</b>: -
-                          </>) : (<>
-                            <b>สถานที่เช่ารถ</b>: {e?.rent_place}
-                          </>)}
-                        </div>
-                        <div>
-                          {e?.info === "" ? (<>
-                            <b>ข้อมูลเพิ่มเติม</b>: -
-                          </>) : (<>
-                            <b>ข้อมูลเพิ่มเติม</b>: {e?.info}
-                          </>)}
-                        </div> */}
                           <b></b>
                         </>
                       ) : (
@@ -285,44 +230,8 @@ const ProviderOwnerVehicle = () => {
             );
           })}
         </div>
-
-        {/* {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )} */}
       </div>
     );
-};
-
-const DeleteModal = ({ show, onHide, handleDelete }: any) => {
-  return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="sm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-      <Modal.Body>
-        <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
-        <div className={`text-center`}>
-          <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
-        </div>
-      </Modal.Body>
-      <Modal.Footer className={`modal_wo_border d-flex`}>
-        <Button className={`me-auto`} onClick={onHide}>
-          ยกเลิก
-        </Button>
-        <Button onClick={handleDelete} variant="danger">
-          ยืนยัน
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
 };
 
 export default ProviderOwnerVehicle;
