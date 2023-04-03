@@ -5,6 +5,7 @@ import { FaEdit } from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import formatDate from "@/libs/formatDate";
+import Head from "next/head";
 // import { Button, Modal } from "react-bootstrap";
 
 const fetcher = (url: string) =>
@@ -45,6 +46,8 @@ const ProviderOwnerVehicle = () => {
 
   if (data)
     return (
+      <>
+      <Head><title>รถเช่าของคุณ-VEHICLE4U</title></Head>
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
@@ -144,15 +147,6 @@ const ProviderOwnerVehicle = () => {
                         <FaEdit />
                         แก้ไขข้อมูล
                       </Link>
-
-                      {/* <Link
-                        className={`float-end`}
-                        href={`#car_${e.id}`}
-                        onClick={() => setShowDelete(true)}
-                      >
-                        <FaPrescriptionBottle />
-                        ลบข้อมูล
-                      </Link> */}
                     </div>
                   </div>
                 </div>
@@ -160,44 +154,10 @@ const ProviderOwnerVehicle = () => {
             );
           })}
         </div>
-
-        {/* {showDelete && (
-        <DeleteModal
-          show={showDelete}
-          onHide={() => setShowDelete(false)}
-          handleDelete={handleDeleteVehicle}
-        />
-      )} */}
       </div>
+      </>
     );
 };
 
-// const DeleteModal = ({ show, onHide, handleDelete }: any) => {
-//   return (
-//     <Modal
-//       show={show}
-//       onHide={onHide}
-//       size="sm"
-//       aria-labelledby="contained-modal-title-vcenter"
-//       centered
-//     >
-//       <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-//       <Modal.Body>
-//         <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
-//         <div className={`text-center`}>
-//           <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
-//         </div>
-//       </Modal.Body>
-//       <Modal.Footer className={`modal_wo_border d-flex`}>
-//         <Button className={`me-auto`} onClick={onHide}>
-//           ยกเลิก
-//         </Button>
-//         <Button onClick={handleDelete} variant="danger">
-//           ยืนยัน
-//         </Button>
-//       </Modal.Footer>
-//     </Modal>
-//   );
-// };
 
 export default ProviderOwnerVehicle;
