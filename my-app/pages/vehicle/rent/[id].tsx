@@ -70,7 +70,7 @@ export default function Register() {
         return;
       }
     }
-    toast.success("เช่ารถสำเร็จ โปรดรอผู้ปล่อยเช่าทำการยืนยัน", {
+    toast.success("คุณทำการเช่ารถสำเร็จ", {
       position: "top-right",
       autoClose: 5000,
       hideProgressBar: false,
@@ -93,6 +93,7 @@ export default function Register() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           <button
+            type="button"
             onClick={() => router.back()}
             className={`${styles.back_btn} d-flex align-items-center`}
           >
