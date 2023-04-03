@@ -246,32 +246,24 @@ export default function SearchCar() {
                                         {e?.name.toUpperCase()}
                                       </div>
                                       <div className={styles.details}>
-                                        <div>
+                                        <ul>
                                           <li>
                                             <b>เลขทะเบียนรถ</b>:{" "}
                                             {e?.registrationId}
                                           </li>
-                                        </div>
-                                        <div>
                                           <li>
                                             <b>จังหวัด</b>: {e?.province}
                                           </li>
-                                        </div>
-                                        <div>
                                           <li>
                                             <b>จำนวนที่นั่ง</b>:{" "}
                                             {e?.maximumCapacity}
                                           </li>
-                                        </div>
 
-                                        <div>
                                           <li>
                                             <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
                                             {e?.user.first_name} &nbsp;
                                             {e?.user.last_name}
                                           </li>
-                                        </div>
-                                        <div>
                                           <li>
                                             <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
                                             {e?.user.tel.slice(0, 3) +
@@ -280,7 +272,7 @@ export default function SearchCar() {
                                               "-" +
                                               e?.user.tel.slice(6)}
                                           </li>
-                                        </div>
+                                        </ul>
                                       </div>
                                     </div>
                                   </div>
