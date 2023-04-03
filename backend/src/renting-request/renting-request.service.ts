@@ -34,8 +34,13 @@ export class RentingRequestService {
     id: number,
     createRentingRequestDto: CreateRentingRequestDto,
   ): Promise<RentingRequest> {
-    const renreq = await this.rentingRequestRepository.create(
-      createRentingRequestDto,
+    //detect must be not request vehicle myself
+    const checkprovider = await this.vehicleRepository.find({
+      where:{user:{'id':id}}
+    });
+    if(checkprovider)throw new HttpException(
+      'This is your vehicle',
+      HttpStatus.NOT_FOUND,
     );
 
     //detect request is exist in this time
@@ -62,6 +67,9 @@ export class RentingRequestService {
           HttpStatus.NOT_FOUND,
         );
     }
+    const renreq = await this.rentingRequestRepository.create(
+      createRentingRequestDto,
+    );
 
     //update renreq.user
     renreq.user = await this.userRepository.findOneBy({ id: id });
