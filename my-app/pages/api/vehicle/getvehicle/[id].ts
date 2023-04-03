@@ -6,7 +6,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const token = req.cookies?.token;
-  const role = req.cookies?.role;
+  const role = req.cookies?.currentRole;
 
   if (!token) {
     return res
@@ -24,18 +24,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (token && role === "provider") {
     const { id } = req.query;
-    // console.log(id);
-    // return res.status(200).json({
-    //   id: 23,
-    //   registrationId: "กถ 3210",
-    //   name: "car02",
-    //   imagename: "1679823192406_class_diagram.png",
-    //   province: "กระบี่",
-    //   maximumCapacity: 3,
-    //   deleted_at: null,
-    //   updated_at: "2023-03-22T07:40:28.601Z",
-    //   created_at: "2023-03-22T07:40:28.601Z",
-    // });
     await fetch(`http://localhost:3000/vehicle?vehicleId=${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
