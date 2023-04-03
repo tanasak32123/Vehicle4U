@@ -11,20 +11,15 @@ export default async function handler(
 
     const token = req.cookies?.token;
 
-    try {
-      // ให้ปลื้มสร้าง path เพิ่ม
+    //try {
       await fetch("http://localhost:3000/chat/api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          //Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          renterFirstName: body.renterFirstName,
-          renterLastName: body.renterLastName,
-          providerFirstName: body.providerFirstName,
-          providerLastName: body.providerLastName,
-          sender: body.sender,
+            receiverId: body.receiverId
         }),
       }).then(async (response) => {
         if (!response.ok) {
@@ -33,14 +28,13 @@ export default async function handler(
             message: "** can't receive response ok from back-end",
           });
         } else {
-          const user = await response.json();
-          console.log("user =", user);
-          return res.status(200).json({ success: true, ...user });
+          const chat = await response.json();
+          return res.status(200).json({ success: true, ...chat });
         }
       });
-    } catch (error) {
-      console.error(error);
-    }
+    // } catch (error) {
+    //   console.error(error);
+    // }
   } else {
     res.status(404).redirect("/404");
   }

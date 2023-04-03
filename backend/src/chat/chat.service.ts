@@ -10,15 +10,17 @@ import { Chat } from './entities/chat.entity';
 export class ChatService {
   constructor(
     @InjectRepository(Chat) private chatRepository: Repository<Chat>,
-    @InjectRepository(Chat) private userRepository: Repository<User>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async createMessage(createChatDto: CreateChatDto): Promise<Chat> {
     const senderId = createChatDto.senderId;
     const receiverId = createChatDto.receiverId;
     const chat = await this.chatRepository.create(createChatDto);
-    chat.sender = await this.userRepository.findOneBy({ id: senderId });
-    chat.receiver = await this.userRepository.findOneBy({ id: receiverId });
-    return await this.chatRepository.save(createChatDto);
+    chat.sender = await this.userRepository.findOneBy({ id: Number(senderId) });
+    chat.receiver = await this.userRepository.findOneBy({
+      id: Number(receiverId),
+    });
+    return await this.chatRepository.save(chat);
   }
 
   async getMessages(
@@ -29,10 +31,10 @@ export class ChatService {
       where: [
         {
           sender: { id: senderId },
-          receiver: { id: getMessagesDto.receiverId },
+          receiver: { id: Number(getMessagesDto.receiverId) },
         },
         {
-          sender: { id: getMessagesDto.receiverId },
+          sender: { id: Number(getMessagesDto.receiverId) },
           receiver: { id: senderId },
         },
       ],

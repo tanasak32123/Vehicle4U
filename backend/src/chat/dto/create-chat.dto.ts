@@ -7,13 +7,13 @@ export class CreateChatDto {
         type: String,
     })
     @IsNotEmpty()
-    senderId : number
+    senderId : string
 
     @ApiProperty({
         type: String,
     })
     @IsNotEmpty()
-    receiverId : number
+    receiverId : string
 
     @ApiProperty({
         type: String,
