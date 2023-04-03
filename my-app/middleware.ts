@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import isAuthValid from "libs/auth/isAuthValid";
 
-const authPrefixes = ["/vehicle", "/user", "/provider"];
+const authPrefixes = ["/vehicle", "/user", "/provider", "/chat"];
 
 export async function middleware(req: NextRequest) {
   const currentRole = req.cookies.get("currentRole")?.value;
