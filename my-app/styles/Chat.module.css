@@ -1,8 +1,6 @@
 .container {
   background-color: #c7dde7;
   min-height: 100vh;
-  padding-top: 70px;
-  padding-bottom: 70px;
 }
 
 .chat_box {
@@ -15,4 +13,17 @@
 .chat_container {
   border: 1px solid black;
   border-radius: 10px;
+}
+
+.chat_text {
+  border-radius: 0.375rem !important;
+}
+
+.comment {
+  color: #bcb7b7;
+}
+
+.msg_text {
+  border-radius: 10px;
+  background-color: rgb(77, 181, 255);
 }

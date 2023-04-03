@@ -73,7 +73,7 @@ const ProviderOwnerVehicle = () => {
             </div>
           )}
 
-          {data.response?.map((e: any) => {
+          {data.vehicles?.map((e: any) => {
             return (
               <div
                 id={`car_${e.id}`}
