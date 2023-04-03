@@ -6,7 +6,6 @@ import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 
-// import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -28,12 +27,6 @@ const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (data?.statusCode === 401) {
-  //     router.push("/");
-  //   }
-  // }, [data]);
 
   if (error) return router.push("/500");
 
@@ -168,32 +161,5 @@ const ProviderOwnerVehicle = () => {
     );
 };
 
-// const DeleteModal = ({ show, onHide, handleDelete }: any) => {
-//   return (
-//     <Modal
-//       show={show}
-//       onHide={onHide}
-//       size="sm"
-//       aria-labelledby="contained-modal-title-vcenter"
-//       centered
-//     >
-//       <Modal.Header closeButton className={`modal_wo_border`}></Modal.Header>
-//       <Modal.Body>
-//         <h4 className={`text-center`}>ลบข้อมูลรถเช่า</h4>
-//         <div className={`text-center`}>
-//           <small>คุณยืนยันที่จะลบข้อมูลรถเช่าหรือไม่?</small>
-//         </div>
-//       </Modal.Body>
-//       <Modal.Footer className={`modal_wo_border d-flex`}>
-//         <Button className={`me-auto`} onClick={onHide}>
-//           ยกเลิก
-//         </Button>
-//         <Button onClick={handleDelete} variant="danger">
-//           ยืนยัน
-//         </Button>
-//       </Modal.Footer>
-//     </Modal>
-//   );
-// };
 
 export default ProviderOwnerVehicle;
