@@ -29,11 +29,11 @@ const ProviderOwnerVehicle = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (data?.statusCode === 401) {
-      router.push("/");
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data?.statusCode === 401) {
+  //     router.push("/");
+  //   }
+  // }, [data]);
 
   if (error) return router.push("/500");
 
