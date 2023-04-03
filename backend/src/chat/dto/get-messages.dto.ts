@@ -7,5 +7,5 @@ export class GetMessagesDto {
         type: String,
     })
     @IsNotEmpty()
-    receiverId : number;
+    receiverId : string;
 }

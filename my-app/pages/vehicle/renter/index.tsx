@@ -23,6 +23,7 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
+
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
@@ -142,7 +143,7 @@ const ProviderOwnerVehicle = () => {
                         <button
                           type="button"
                           className={styles.chat_btn}
-                          onClick={() => router.push("/chat")}
+                          onClick={() => router.push(`/chat/${e?.provider_id}`)}
                         >
                           แชท
                         </button>

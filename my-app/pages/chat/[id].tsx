@@ -4,52 +4,43 @@ import io from "socket.io-client";
 import styles from "styles/Chat.module.css";
 import { useEffect, useState } from "react";
 import { FaChevronCircleRight, FaCommentAlt } from "react-icons/fa";
+import { useRouter } from "next/router";
+import { send } from "process";
 
-const fetcher = (url: string) =>
-  fetch(url, {
+const fetcher = (obj : any) =>
+  {console.log(obj) ;return fetch(obj.url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      renterFirstName: "a",
-      renterLastName: "b",
-      providerFirstName: "c",
-      providerLastName: "d",
-      sender: "5555",
-    }),
+      receiverId : obj.receiverId
+    })
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
+      console.log('res =',res);
       return res;
-    });
+    });}
 
 export default function chat() {
   const socket = io("http://localhost:3000");
 
-  const { data, isLoading, error, mutate } = useSWR(
-    "http://localhost:3000/chat/api",
+  const router = useRouter()
+  const {id} = router.query
+  
+  const { data, isLoading, error, mutate } = useSWR( 
+    {url : "/api/chat",
+    receiverId : id},
     fetcher
   );
-
-  // console.log(data);
-  const [messages, setMessages] = useState([
-    {
-      senderFirstName: "a",
-      senderLastName: "b",
-      receiverFirstName: "c",
-      receiverLastName: "d",
-      message: "waaaaaa",
-    },
-    {
-      senderFirstName: "c",
-      senderLastName: "d",
-      receiverFirstName: "a",
-      receiverLastName: "b",
-      message: "baaaaaaa",
-    },
-  ]);
+  const [messages , setMessages] = useState([''])
+  let senderId = '0'
+  if (data){
+    setMessages(data.messages)
+    senderId = data.senderId
+  }
+  console.log('data =', messages)
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
@@ -57,19 +48,16 @@ export default function chat() {
     const chatText = (document.getElementById("chat-text") as HTMLInputElement)
       .value;
     const msg = {
-      senderFirstName: "a",
-      senderLastName: "b",
-      receiverFirstName: "c",
-      receiverLastName: "d",
+      senderId : senderId,
+      receiverId : id,
       message: chatText,
     };
+    console.log('messages =', msg)
     socket.emit("sendMessage", msg);
   };
-
   useEffect(() => {
     socket.on("recMessage", (message) => {
-      console.log(messages);
-      setMessages([...messages, message]);
+      setMessages([...messages , message])
     });
   });
 
@@ -88,7 +76,7 @@ export default function chat() {
           </h1>
 
           <div className={`mb-3 ${styles.chat_container} p-2`}>
-            {messages.map((e: any) => {
+            {messages?.map((e: any) => {
               return <div> {e?.message}</div>;
             })}
           </div>
