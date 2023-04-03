@@ -70,7 +70,7 @@ const ProviderOwnerVehicle = () => {
             </div>
           )}
 
-          {data.vehicles?.map((e: any) => {
+          {data.response?.map((e: any) => {
             return (
               <div
                 id={`car_${e.id}`}
@@ -117,10 +117,22 @@ const ProviderOwnerVehicle = () => {
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
-                          <span className="badge bg-success">ว่าง</span>&nbsp;
-                          <span className="badge bg-warning">รอการยืนยัน</span>
+                          {/* <span className="badge bg-warning">รอการยืนยัน</span> */}
                           &nbsp;
-                          <span className="badge bg-danger">ถูกจองแล้ว</span>
+                          {e?.status === "Available" ? (
+                            <>
+                              <span className="badge bg-success">ว่าง</span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "Not available" ? (
+                            <>
+                              <span className="badge bg-danger">
+                                ถูกจองแล้ว
+                              </span>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                       </div>
                     </div>
