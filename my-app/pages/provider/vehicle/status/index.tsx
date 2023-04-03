@@ -54,12 +54,21 @@ const ProviderOwnerVehicle = () => {
     mutate();
     // ต้อง route ไป path ไหนมั้ย
     router.push("/provider/vehicle/status");
-    console.log('data =',data.response);
+    console.log("data =", data.response);
   }
 
   if (error) return router.push("/500");
 
-  if (isLoading) return <>Loading ...</>;
+  if (isLoading)
+    return (
+      <div className={`d-flex justify-content-center align-items-center`}>
+        <div className={`lds-facebook`}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    );
 
   if (data)
     return (
