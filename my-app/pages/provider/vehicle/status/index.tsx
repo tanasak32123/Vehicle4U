@@ -5,6 +5,7 @@ import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import { Row, Col } from "react-bootstrap";
 import formatDate from "@/libs/formatDate";
+import Head from "next/head";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -63,6 +64,8 @@ const ProviderOwnerVehicle = () => {
 
   if (data)
     return (
+      <>
+      <Head><title>รายการเช่ารถทั้งหมดของคุณ-VEHICLE4U</title></Head>
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
@@ -77,9 +80,8 @@ const ProviderOwnerVehicle = () => {
           <br />
 
           <h1 className={`text-start`}>
-            รายการรถเช่าของคุณ <FaCar />{" "}
+          รายการเช่ารถทั้งหมดของคุณ <FaCar />{" "}
           </h1>
-
           <br />
           {data.response?.map((e: any) => {
             return (
@@ -229,6 +231,7 @@ const ProviderOwnerVehicle = () => {
           })}
         </div>
       </div>
+      </>
     );
 };
 

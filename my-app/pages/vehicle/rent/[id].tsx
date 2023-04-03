@@ -16,8 +16,6 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [info, setInfo] = useState("");
   const [location, setLocation] = useState("");
-  // ยังระบุ id รถไม่ได้ต้องใส่ใน useState แทน
-  // const [carid, setCarid] = useState(1);
   const car = router.query;
   const carid = car.id;
   const [accept, setAccept] = useState(false);
@@ -183,7 +181,6 @@ export default function Register() {
                     onChange={(event) => setInfo(event.target.value.trim())}
                     rows={3}
                   ></textarea>
-                  {/* <div className={`${styles.feedback}`}>{errors.empt}</div> */}
                 </div>
               </>
             </Col>
@@ -203,7 +200,6 @@ export default function Register() {
                     }}
                     rows={3}
                   ></textarea>
-                  {/* <div className={`${styles.feedback}`}>{errors.datetime}</div> */}
                 </div>
 
                 <div className="mb-2">
