@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Render, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Render,
+  Res,
+  Request,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { GetMessagesDto } from './dto/get-messages.dto';
 
@@ -13,14 +21,21 @@ export class ChatController {
   }
 
   @Post('/api')
-  async Chat(@Res() res, @Body() getMessagesDto: GetMessagesDto) {
-    const messages = await this.chatService.getMessages(getMessagesDto);
-    console.log(messages);
+  async Chat(
+    @Res() res,
+    @Body() getMessagesDto: GetMessagesDto,
+    @Request() req,
+  ) {
+    const senderId = req.user['id'];
+    const messages = await this.chatService.getMessages(
+      getMessagesDto,
+      senderId,
+    );
+    const name = await this.chatService.getName(getMessagesDto.receiverId);
     return res.status(200).send({
-      renterFirstName: getMessagesDto.renterFirstName,
-      renterLastName: getMessagesDto.renterLastName,
-      providerFirstName: getMessagesDto.providerFirstName,
-      providerLastName: getMessagesDto.providerLastName,
+      senderId: senderId,
+      ReceiverFirstName: name.first_name,
+      ReceiverLastName: name.last_name,
       messages: messages,
     });
   }
