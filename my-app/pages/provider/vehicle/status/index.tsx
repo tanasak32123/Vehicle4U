@@ -15,7 +15,8 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      res.vehicles?.map((e: any) => {
+      console.log(res);
+      res.response?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
       });
@@ -34,8 +35,6 @@ const ProviderOwnerVehicle = () => {
     confirm: boolean
   ) {
     const req_id = event.currentTarget.id;
-    console.log(req_id);
-    console.log(confirm);
     event.preventDefault();
     // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
     const response = await fetch("/api/status", {
@@ -48,9 +47,8 @@ const ProviderOwnerVehicle = () => {
         req_id,
       }),
     });
-    console.log(response);
     if (!response.ok) {
-      const data = await response.json();
+      // const data = await response.json();
       return;
     }
     mutate();
