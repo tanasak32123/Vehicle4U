@@ -68,7 +68,17 @@ export default function Register() {
         return;
       }
     }
-    router.push("/vehicle/rent/payment");
+    toast.success("คุณทำการเช่ารถสำเร็จ", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+    router.push("/vehicle/renter");
   }
 
   return (
@@ -81,6 +91,7 @@ export default function Register() {
       >
         <div className={`p-4 ${styles.reg_container}`}>
           <button
+            type="button"
             onClick={() => router.back()}
             className={`${styles.back_btn} d-flex align-items-center`}
           >
@@ -109,8 +120,6 @@ export default function Register() {
                             id="date"
                             name="date"
                             onChange={(event) => {
-                              console.log(event.target.value.split("-"));
-                              console.log(event.target.value);
                               setStartdate(event.target.value.trim());
                             }}
                             className={styles.input_cal}
@@ -123,8 +132,6 @@ export default function Register() {
                           id="time1"
                           type="time"
                           onChange={(event) => {
-                            console.log(event.target.value.split(":"));
-                            console.log(event.target.value);
                             setStarttime(event.target.value.trim());
                           }}
                           className={styles.input_cal}
@@ -189,7 +196,6 @@ export default function Register() {
                     className={styles.textarea}
                     id="exampleFormControlTextarea1"
                     onChange={(event) => {
-                      console.log(event.target.value);
                       setInfo(event.target.value.trim());
                     }}
                     rows={3}
@@ -233,7 +239,6 @@ export default function Register() {
                   type="checkbox"
                   onChange={(event) => {
                     setAccept(!accept);
-                    console.log(accept);
                   }}
                   id="defaultCheck1"
                 />

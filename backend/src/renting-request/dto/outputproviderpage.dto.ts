@@ -32,7 +32,13 @@ export class OutputProviderPageDto {
   })
   @IsNotEmpty()
   registrationId: string;
-    
+  
+  @ApiProperty({
+    type: Number,
+  })
+  @IsNotEmpty()
+  renter_id: number;
+
   @ApiProperty({
     type: String,
   })

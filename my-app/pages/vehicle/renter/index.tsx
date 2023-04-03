@@ -1,12 +1,10 @@
 import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useEffect } from "react";
 import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
-
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -45,31 +43,32 @@ const ProviderOwnerVehicle = () => {
   if (data)
     return (
       <>
-      <div
-        className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
-      >
-        <div className={`p-4 ${styles.reg_container}`}>
-          <button
-            type="button"
-            onClick={() => router.back()}
-            className={`${styles.back_btn} d-flex align-items-center`}
-          >
-            <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-          </button>
-          <h1 className="align-items-center d-flex justify-content-end">
-            <FaCar />
-            &nbsp;ประวัติการเช่าของคุณ
-          </h1>
-          <hr />
+        <Head>
+          <title>ประวัติการเช่าของคุณ-VEHICLE4U</title>
+        </Head>
 
-          {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
-          {data.response?.map((e: any) => {
-            return (
-              <>
-              <Head><title>ประวัติการเช่าของคุณ-VEHICLE4U</title></Head>
+        <div
+          className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
+        >
+          <div className={`p-4 ${styles.reg_container}`}>
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className={`${styles.back_btn} d-flex align-items-center`}
+            >
+              <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
+            </button>
+            <h1 className="align-items-center d-flex justify-content-end">
+              <FaCar />
+              &nbsp;ประวัติการเช่าของคุณ
+            </h1>
+            <hr />
+
+            {data.response?.map((e: any) => {
+              return (
                 <div
-                  id={`car_${e.request_id}`}
-                  key={`car_${e.request_id}`}
+                  id={`${e.request_id}`}
+                  key={`${e.request_id}`}
                   className={`${styles.vehicle_card} p-3 mb-3`}
                 >
                   <div className={`row`}>
@@ -88,68 +87,69 @@ const ProviderOwnerVehicle = () => {
                       </div>
                     </div>
                     <div className={`col-6`}>
-                      <div
-                        className={`d-flex justify-content-left align-items-center`}
-                      >
-                        <div className={`text-start`}>
-                          <div>
-                            <b>ชื่อรถ</b>: {e?.car_name}
-                          </div>
-                          <div>
-                            <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                          </div>
-                          <div>
-                            <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
-                            {e?.provider_lastname}
-                          </div>
-                          <div>
-                            <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
-                          </div>
-                          <div>
-                            <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
-                          </div>
-                          <div>
-                            <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
-                            {e?.starttime}
-                          </div>
-                          <div>
-                            <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
-                          </div>
-                          <div>
-                            <b>สถานะ</b>:{" "}
-                            {e?.status === "pending" ? (
-                              <>
-                                <span className="badge bg-warning">
-                                  รอการยืนยัน
-                                </span>
-                                &nbsp;
-                              </>
-                            ) : e?.status === "accepted" ? (
-                              <>
-                                <span className="badge bg-success">
-                                  จองสำเร็จ
-                                </span>
-                                &nbsp;
-                              </>
-                            ) : e?.status === "rejected" ? (
-                              <>
-                                <span className="badge bg-danger">
-                                  ถูกจองแล้ว
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <span>-</span>
-                              </>
-                            )}
-                          </div>
+                      <div>
+                        <div>
+                          <b>ชื่อรถ</b>: {e?.car_name}
                         </div>
+                        <div>
+                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                        </div>
+                        <div>
+                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
+                          {e?.provider_lastname}
+                        </div>
+                        <div>
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
+                        </div>
+                        <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                          {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        <div>
+                          <b>สถานะ</b>:{" "}
+                          {e?.status === "pending" ? (
+                            <>
+                              <span className="badge bg-warning">
+                                รอการยืนยัน
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "accepted" ? (
+                            <>
+                              <span className="badge bg-success">
+                                จองสำเร็จ
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "rejected" ? (
+                            <>
+                              <span className="badge bg-danger">
+                                ถูกจองแล้ว
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span>-</span>
+                            </>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.chat_btn}
+                          onClick={() => router.push("/chat")}
+                        >
+                          แชท
+                        </button>
                       </div>
-                      
                     </div>
                   </div>
                 </div>
-              </>
               );
             })}
           </div>
@@ -157,6 +157,5 @@ const ProviderOwnerVehicle = () => {
       </>
     );
 };
-
 
 export default ProviderOwnerVehicle;

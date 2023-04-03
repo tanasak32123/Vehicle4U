@@ -81,3 +81,12 @@
 .invalid_feedback {
   color: white;
 }
+
+.car_name {
+  font-size: 30px;
+  font-weight: bolder;
+}
+
+.details {
+  padding-left: 10px;
+}

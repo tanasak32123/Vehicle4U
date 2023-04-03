@@ -34,6 +34,12 @@ export class OutputRenterPageDto {
     tel: string;
 
     @ApiProperty({
+        type: Number,
+    })
+    @IsNotEmpty()
+    provider_id: number;
+
+    @ApiProperty({
         type: String,
       })
     @IsNotEmpty()

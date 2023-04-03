@@ -6,15 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
-
   if (req.method == "POST") {
     const body = req.body;
 
     const token = req.cookies?.token;
 
     try {
-    // ให้ปลื้มสร้าง path เพิ่ม
+      // ให้ปลื้มสร้าง path เพิ่ม
       await fetch("http://localhost:3000/renting-request/updatestatus", {
         method: "PATCH",
         headers: {
