@@ -10,12 +10,13 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl;
 
   const startwithsAuth = (): boolean => {
+    let result = false;
     authPrefixes.forEach((e: string) => {
       if (url.pathname.startsWith(e)) {
-        return true;
+        result = true;
       }
     });
-    return false;
+    return result;
   };
 
   if (startwithsAuth() && !isAuthValid(req)) {

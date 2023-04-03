@@ -83,14 +83,14 @@ export class VehicleController {
   @Get('')
   async getVehiclesByVehicleId(
   @Query('vehicleId') vehicleId: number,
-  @Request() req): Promise<Vehicle> {
+  @Request() req){
     console.log(vehicleId);
     return await this.vehicleService.getVehicleByVehicleId(vehicleId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('myvehicles')
-  async getVehiclesById(@Request() req): Promise<Vehicle[]> {
+  async getVehiclesById(@Request() req){
     const id = req.user['id'];
     return await this.vehicleService.getVehicleByUserId(id);
   }
