@@ -54,6 +54,7 @@ const ProviderOwnerVehicle = () => {
     mutate();
     // ต้อง route ไป path ไหนมั้ย
     router.push("/provider/vehicle/status");
+    console.log('data =',data.response);
   }
 
   if (error) return router.push("/500");

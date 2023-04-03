@@ -64,7 +64,6 @@ const ProviderOwnerVehicle = () => {
             </h1>
             <hr />
 
-            {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
             {data.response?.map((e: any) => {
               return (
                 <div
@@ -88,83 +87,65 @@ const ProviderOwnerVehicle = () => {
                       </div>
                     </div>
                     <div className={`col-6`}>
-                      <div
-                        className={`d-flex justify-content-left align-items-center`}
-                      >
-                        <div className={`text-start`}>
-                          <div>
-                            <b>ชื่อรถ</b>: {e?.car_name}
-                          </div>
-                          <div>
-                            <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                          </div>
-                          <div>
-                            <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
-                            {e?.provider_lastname}
-                          </div>
-                          <div>
-                            <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
-                          </div>
-                          <div>
-                            <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
-                          </div>
-                          <div>
-                            <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
-                            {e?.starttime}
-                          </div>
-                          <div>
-                            <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate}{" "}
-                            {e?.endtime}
-                          </div>
-                          <div>
-                            <b>สถานะ</b>:{" "}
-                            {e?.status === "pending" ? (
-                              <>
-                                <span className="badge bg-warning">
-                                  รอการยืนยัน
-                                </span>
-                                &nbsp;
-                              </>
-                            ) : e?.status === "accepted" ? (
-                              <>
-                                <span className="badge bg-success">
-                                  จองสำเร็จ
-                                </span>
-                                &nbsp;
-                              </>
-                            ) : e?.status === "rejected" ? (
-                              <>
-                                <span className="badge bg-danger">
-                                  ถูกจองแล้ว
-                                </span>
-                              </>
-                            ) : (
-                              <>
-                                <span>-</span>
-                              </>
-                            )}
-                          </div>
-                          <button
-                            type="button"
-                            className={styles.chat_btn}
-                            onClick={() => router.push("/chat")}
-                          >
-                            แชท
-                          </button>
-                          {/* <button
-                            type="button"
-                            className={styles.chat_btn}
-                            onClick={(event) =>
-                              handleSubmit(
-                                event,
-                                e?.provider_firstname,
-                                e?.provider_lastname
-                              )
-                            }
-                          >
-                            แชท
-                          </button> */}
+                      <div>
+                        <div>
+                          <b>ชื่อรถ</b>: {e?.car_name}
                         </div>
+                        <div>
+                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                        </div>
+                        <div>
+                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
+                          {e?.provider_lastname}
+                        </div>
+                        <div>
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
+                        </div>
+                        <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                          {e?.starttime}
+                        </div>
+                        <div>
+                          <b>วันเวลาในการส่งคืนรถ</b>: {e?.enddate} {e?.endtime}
+                        </div>
+                        <div>
+                          <b>สถานะ</b>:{" "}
+                          {e?.status === "pending" ? (
+                            <>
+                              <span className="badge bg-warning">
+                                รอการยืนยัน
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "accepted" ? (
+                            <>
+                              <span className="badge bg-success">
+                                จองสำเร็จ
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "rejected" ? (
+                            <>
+                              <span className="badge bg-danger">
+                                ถูกจองแล้ว
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span>-</span>
+                            </>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.chat_btn}
+                          onClick={() => router.push("/chat")}
+                        >
+                          แชท
+                        </button>
                       </div>
                     </div>
                   </div>
