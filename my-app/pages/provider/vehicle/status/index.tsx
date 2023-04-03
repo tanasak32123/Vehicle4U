@@ -80,7 +80,6 @@ const ProviderOwnerVehicle = () => {
           </h1>
 
           <br />
-
           {data.response?.map((e: any) => {
             return (
               <div
