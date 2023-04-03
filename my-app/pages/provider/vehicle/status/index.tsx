@@ -6,6 +6,7 @@ import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react
 import useSWR from "swr";
 import Link from "next/link";
 import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
+import Head from "next/head";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -94,6 +95,8 @@ const ProviderOwnerVehicle = () => {
 
   if (data)
     return (
+      <>
+      <Head><title>รายการเช่ารถทั้งหมดของคุณ-VEHICLE4U</title></Head>
       <div
         className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
       >
@@ -107,12 +110,9 @@ const ProviderOwnerVehicle = () => {
           </button>
           <br />
 
-          {/* <div className={`text-start`}> */}
           <h1 className={`text-start`}>
-            รายการรถเช่าของคุณ <FaCar />{" "}
+          รายการเช่ารถทั้งหมดของคุณ <FaCar />{" "}
           </h1>
-
-          {/* </div> */}
           <br />
 
 
@@ -234,15 +234,8 @@ const ProviderOwnerVehicle = () => {
             );
           })}
         </div>
-
-        {/* {showDelete && (
-          <DeleteModal
-            show={showDelete}
-            onHide={() => setShowDelete(false)}
-            handleDelete={handleDeleteVehicle}
-          />
-        )} */}
       </div>
+      </>
     );
 };
 
