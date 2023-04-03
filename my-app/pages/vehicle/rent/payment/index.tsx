@@ -3,7 +3,6 @@ import styles from "@/styles/payment.module.css";
 import { FaArrowAltCircleLeft } from "react-icons/fa";
 import router from "next/router";
 import { useState } from "react";
-import { toast } from "react-toastify";
 
 export default function Renter_request() {
   const [errors, setErrors] = useState({
@@ -28,22 +27,8 @@ export default function Renter_request() {
     if (!response.ok) {
       const data = await response.json();
       setErrors(data.errors);
-      console.log(errors);
       return;
     }
-    toast.success(
-      "เมื่อผู้ปล่อยเช่ายืนยันการเช่า ระบบจะส่งแจ้งเตือนให้ท่านอีกครั้งเพื่อทำการชำระเงิน",
-      {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      }
-    );
     router.push("/vehicle/rent/sucess");
   }
 

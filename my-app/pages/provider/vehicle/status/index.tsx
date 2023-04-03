@@ -2,7 +2,12 @@ import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaArrowAltCircleLeft, FaCar, FaEdit, FaPrescriptionBottle } from "react-icons/fa";
+import {
+  FaArrowAltCircleLeft,
+  FaCar,
+  FaEdit,
+  FaPrescriptionBottle,
+} from "react-icons/fa";
 import useSWR from "swr";
 import Link from "next/link";
 import { Row, Col, Spinner, Modal, Button } from "react-bootstrap";
@@ -56,13 +61,15 @@ const fetcher = (url: string) =>
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error, mutate } = useSWR(
     // "/api/vehicle/getvehicle",
-      "/api/provider/getvehicle",
+    "/api/provider/getvehicle",
     fetcher
   );
   const router = useRouter();
 
-
-  async function handleSubmit(event: React.MouseEvent<HTMLButtonElement>,confirm: boolean) {
+  async function handleSubmit(
+    event: React.MouseEvent<HTMLButtonElement>,
+    confirm: boolean
+  ) {
     const req_id = event.currentTarget.id;
     console.log(req_id);
     console.log(confirm);
@@ -115,7 +122,6 @@ const ProviderOwnerVehicle = () => {
           {/* </div> */}
           <br />
 
-
           {/* data.response?.map */}
           {data.response?.map((e: any) => {
             // setStatus(e?.status);
@@ -161,60 +167,99 @@ const ProviderOwnerVehicle = () => {
                           <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
                         </div>
                         <div>
-                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at} 
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
                         </div>
                         <div>
                           <b>สถานะ</b>:{" "}
-                          {e?.status === "pending" ? (<>
-                            <span className="badge bg-warning">รอการยืนยัน</span>&nbsp;
-                          </>) : e?.status === "rejected" ? (<>
-                            <span className="badge bg-danger">ปฏิเสธ</span>&nbsp;
-                          </>) : e?.status === "accepted" ? (<>
-                            <span className="badge bg-success" >ถูกจองแล้ว</span>
-                          </>) : (<>
-                            <span>-</span>
-                          </>)}
+                          {e?.status === "pending" ? (
+                            <>
+                              <span className="badge bg-warning">
+                                รอการยืนยัน
+                              </span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "rejected" ? (
+                            <>
+                              <span className="badge bg-danger">ปฏิเสธ</span>
+                              &nbsp;
+                            </>
+                          ) : e?.status === "accepted" ? (
+                            <>
+                              <span className="badge bg-success">
+                                ถูกจองแล้ว
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span>-</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
                     <div>
-                      {e?.status === "pending" ? (<>
-                        <div>
-                          <b>ชื่อผู้เช่ารถ</b>: {e?.renter_firstname} {e?.renter_lastname}
-                        </div>
-                        <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
-                        </div>
-                        <div>
-                          <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
-                        </div>
-                        <div>
-                          <Row>
-                            <Col><b>กดยืนยันการจอง</b>:{" "}</Col>
-                            <Col><button id={e?.request_id} className={styles.confirm_btn} 
-                            onClick={(event) => {
-                            handleSubmit(event,true);}}>
-                              ยีนยัน</button></Col>
-                            <Col><button id={e?.request_id} className={styles.cancel_btn} 
-                            onClick={(event) => {
-                            handleSubmit(event,false);}}>
-                              ปฏิเสธ</button></Col>
-                          </Row>
-                        </div> 
-                      </>) : e?.status === "accepted" ? (<>
-                        <div>
-                          <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname} {e?.renter_lastname}
-                        </div>
-                        <div>
-                          <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
-                        </div>
-                        <div>
-                          <b>วันเวลาในการรับรถ</b>: {e?.startdate} {e?.starttime}
-                        </div>
-                        <div>
-                          <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate} {e?.endtime}
-                        </div>
-                        {/* <div>
+                      {e?.status === "pending" ? (
+                        <>
+                          <div>
+                            <b>ชื่อผู้เช่ารถ</b>: {e?.renter_firstname}{" "}
+                            {e?.renter_lastname}
+                          </div>
+                          <div>
+                            <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                            {e?.starttime}
+                          </div>
+                          <div>
+                            <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
+                            {e?.endtime}
+                          </div>
+                          <div>
+                            <Row>
+                              <Col>
+                                <b>กดยืนยันการจอง</b>:{" "}
+                              </Col>
+                              <Col>
+                                <button
+                                  id={e?.request_id}
+                                  className={styles.confirm_btn}
+                                  onClick={(event) => {
+                                    handleSubmit(event, true);
+                                  }}
+                                >
+                                  ยีนยัน
+                                </button>
+                              </Col>
+                              <Col>
+                                <button
+                                  id={e?.request_id}
+                                  className={styles.cancel_btn}
+                                  onClick={(event) => {
+                                    handleSubmit(event, false);
+                                  }}
+                                >
+                                  ปฏิเสธ
+                                </button>
+                              </Col>
+                            </Row>
+                          </div>
+                        </>
+                      ) : e?.status === "accepted" ? (
+                        <>
+                          <div>
+                            <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname}{" "}
+                            {e?.renter_lastname}
+                          </div>
+                          <div>
+                            <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                          </div>
+                          <div>
+                            <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                            {e?.starttime}
+                          </div>
+                          <div>
+                            <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
+                            {e?.endtime}
+                          </div>
+                          {/* <div>
                           {e?.rent_place === "" ? (<>
                             <b>สถานที่เช่ารถ</b>: -
                           </>) : (<>
@@ -228,9 +273,11 @@ const ProviderOwnerVehicle = () => {
                             <b>ข้อมูลเพิ่มเติม</b>: {e?.info}
                           </>)}
                         </div> */}
-                        <b></b>
-                      </>) : (<>
-                      </>)}
+                          <b></b>
+                        </>
+                      ) : (
+                        <></>
+                      )}
                     </div>
                   </div>
                 </div>
