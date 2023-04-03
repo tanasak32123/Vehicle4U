@@ -23,11 +23,16 @@ export class ChatService {
     return await this.chatRepository.save(chat);
   }
 
-  async getMessages(
-    getMessagesDto: GetMessagesDto,
-    senderId: number,
-  ): Promise<Chat[]> {
+  async getMessages(getMessagesDto: GetMessagesDto, senderId: number) {
     return await this.chatRepository.find({
+      relations: {
+        sender: true,
+        receiver: true,
+      },
+      select: {
+        sender: { id: true },
+        receiver: { id: true },
+      },
       where: [
         {
           sender: { id: senderId },
@@ -38,6 +43,9 @@ export class ChatService {
           receiver: { id: senderId },
         },
       ],
+      order: {
+        createdAt: 'ASC',
+      },
     });
   }
 
