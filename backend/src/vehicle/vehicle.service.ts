@@ -40,6 +40,7 @@ export class VehicleService {
     const datalength = all_vehicles.length;
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
+      .innerJoinAndSelect('vehicles.user', 'user')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {
