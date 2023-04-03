@@ -64,7 +64,6 @@ const ProviderOwnerVehicle = () => {
             </h1>
             <hr />
 
-            {/* ใส่ field ใน data ให้ถูกต้อง request id*/}
             {data.response?.map((e: any) => {
               return (
                 <div
@@ -147,19 +146,6 @@ const ProviderOwnerVehicle = () => {
                         >
                           แชท
                         </button>
-                        {/* <button
-                            type="button"
-                            className={styles.chat_btn}
-                            onClick={(event) =>
-                              handleSubmit(
-                                event,
-                                e?.provider_firstname,
-                                e?.provider_lastname
-                              )
-                            }
-                          >
-                            แชท
-                          </button> */}
                       </div>
                     </div>
                   </div>

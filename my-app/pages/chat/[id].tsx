@@ -1,6 +1,10 @@
-import io from "socket.io-client";
-import { useEffect, useState } from "react";
+import Head from "next/head";
 import useSWR from "swr";
+import io from "socket.io-client";
+import styles from "styles/Chat.module.css";
+import { useEffect, useState } from "react";
+import { FaChevronCircleRight, FaCommentAlt } from "react-icons/fa";
+
 const fetcher = (url: string) =>
   fetch(url, {
     method: "POST",
@@ -17,17 +21,19 @@ const fetcher = (url: string) =>
   })
     .then((res) => res.json())
     .then((res) => {
+      console.log(res);
       return res;
     });
 
 export default function chat() {
   const socket = io("http://localhost:3000");
+
   const { data, isLoading, error, mutate } = useSWR(
     "http://localhost:3000/chat/api",
     fetcher
   );
 
-  console.log(data);
+  // console.log(data);
   const [messages, setMessages] = useState([
     {
       senderFirstName: "a",
@@ -69,19 +75,37 @@ export default function chat() {
 
   return (
     <>
-      {messages.map((e: any) => {
-        // setStatus(e?.status);
-        return <div> {e?.message}</div>;
-      })}
-      <div className="mb-3 mt-4">
-        <input
-          className="form-control"
-          id="chat-text"
-          placeholder="Say something..."
-        />
-      </div>
+      <Head>
+        <title>ติดต่อผู้ปล่อยเช่า-VEHICLE4U</title>
+      </Head>
 
-      <button onClick={handleSendMessage}>Click</button>
+      <div
+        className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
+      >
+        <div className={`p-4 ${styles.chat_box}`}>
+          <h1>
+            <FaCommentAlt /> ช่องแชท
+          </h1>
+
+          <div className={`mb-3 ${styles.chat_container} p-2`}>
+            {messages.map((e: any) => {
+              return <div> {e?.message}</div>;
+            })}
+          </div>
+
+          <div className="input-group">
+            <input
+              className="form-control"
+              id="chat-text"
+              placeholder="พิมพ์ข้อความ ..."
+            />
+            <button className="btn btn-primary" onClick={handleSendMessage}>
+              {""}
+              <FaChevronCircleRight />
+            </button>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
