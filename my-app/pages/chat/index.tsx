@@ -1,8 +1,6 @@
-import Head from "next/head";
-import styles from "@/styles/helpcenter.module.css";
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
-import useSWR from 'swr'
+import useSWR from "swr";
 const fetcher = (url: string) =>
   fetch(url)
     .then((res) => res.json())
@@ -12,12 +10,9 @@ const fetcher = (url: string) =>
 
 export default function chat() {
   const socket = io("http://localhost:3000");
-  const { data, isLoading, error, mutate } = useSWR(
-      "/api/chat",
-    fetcher
-  );
+  const { data, isLoading, error, mutate } = useSWR("/api/chat", fetcher);
 
-  console.log(data)
+  console.log(data);
   const [messages, setMessages] = useState([
     {
       senderFirstName: "a",
@@ -37,14 +32,17 @@ export default function chat() {
 
   const handleSendMessage = (e: any) => {
     e.preventDefault();
-    
-    const chatText = (document.getElementById('chat-text')as HTMLInputElement).value
-    const msg = {senderFirstName : 'a' ,
-    senderLastName : 'b',
-    receiverFirstName : 'c',
-    receiverLastName : 'd',
-    message : chatText}
-    socket.emit('sendMessage', msg);
+
+    const chatText = (document.getElementById("chat-text") as HTMLInputElement)
+      .value;
+    const msg = {
+      senderFirstName: "a",
+      senderLastName: "b",
+      receiverFirstName: "c",
+      receiverLastName: "d",
+      message: chatText,
+    };
+    socket.emit("sendMessage", msg);
   };
 
   useEffect(() => {
@@ -72,5 +70,3 @@ export default function chat() {
     </>
   );
 }
-
-
