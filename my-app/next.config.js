@@ -9,6 +9,14 @@ const nextConfig = {
   images: {
     minimumCacheTTL: 60,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "mdbcdn.b-cdn.net",
+      },
+    ],
+  },
 };
 
 const withBundleAnalyzer = require("@next/bundle-analyzer")({

@@ -220,7 +220,7 @@ export default function EditProfile() {
   return (
     <>
       <Head>
-        <title>การตั้งค่า-VEHICLE4U</title>
+        <title>โปรไฟล์ของฉัน-VEHICLE4U</title>
       </Head>
 
       <div

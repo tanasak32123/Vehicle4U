@@ -6,12 +6,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
-
   if (req.method == "POST") {
     const body = req.body;
 
     const token = req.cookies?.token;
+
     //try {
       await fetch("http://localhost:3000/chat/api", {
         method: "POST",

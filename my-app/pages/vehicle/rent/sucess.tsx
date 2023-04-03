@@ -9,7 +9,7 @@ export default function Sucess(){
 
     return (
         <>
-            <Head><title>Sucess</title></Head>
+            <Head><title>Sucess-VEHICLE4U</title></Head>
             <div className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}>
                 <div className={`p-4 ${styles.reg_container}`}>
                     <div className={`text-center`}>
