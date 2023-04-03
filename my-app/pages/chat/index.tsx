@@ -2,7 +2,19 @@ import io from "socket.io-client";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 const fetcher = (url: string) =>
-  fetch(url)
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      renterFirstName: "a",
+      renterLastName: "b",
+      providerFirstName: "c",
+      providerLastName: "d",
+      sender: "5555",
+    }),
+  })
     .then((res) => res.json())
     .then((res) => {
       return res;
@@ -10,7 +22,10 @@ const fetcher = (url: string) =>
 
 export default function chat() {
   const socket = io("http://localhost:3000");
-  const { data, isLoading, error, mutate } = useSWR("/api/chat", fetcher);
+  const { data, isLoading, error, mutate } = useSWR(
+    "http://localhost:3000/chat/api",
+    fetcher
+  );
 
   console.log(data);
   const [messages, setMessages] = useState([

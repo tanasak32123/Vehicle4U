@@ -15,7 +15,7 @@ export class ChatController {
   @Post('/api')
   async Chat(@Res() res, @Body() getMessagesDto: GetMessagesDto) {
     const messages = await this.chatService.getMessages(getMessagesDto);
-    console.log(messages)
+    console.log(messages);
     return res.status(200).send({
       renterFirstName: getMessagesDto.renterFirstName,
       renterLastName: getMessagesDto.renterLastName,
