@@ -5,14 +5,18 @@ import { Vehicle } from './entities/vehicle.entity';
 import { CreateVehicleDto } from './dto/create-vehicle.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UpdateVehicleDto } from './dto/update-vehicle.dto';
-import { RentingRequest, Request_status } from 'src/renting-request/entities/renting-request.entity';
+import {
+  RentingRequest,
+  Request_status,
+} from 'src/renting-request/entities/renting-request.entity';
 
 @Injectable()
 export class VehicleService {
   constructor(
     @InjectRepository(Vehicle) private vehicleRepository: Repository<Vehicle>,
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(RentingRequest) private rentingRequestRepository: Repository<RentingRequest>
+    @InjectRepository(RentingRequest)
+    private rentingRequestRepository: Repository<RentingRequest>,
   ) {}
   async findByFilter(
     province: string,
@@ -21,33 +25,49 @@ export class VehicleService {
     pageNumber: number,
   ): Promise<[Vehicle[], any]> {
     pageNumber = pageNumber - 0;
-    console.log(pageNumber)
+    console.log(pageNumber);
     const pagination_count = 2;
     const all_vehicles = await this.vehicleRepository
       .createQueryBuilder('vehicles')
+      .innerJoinAndSelect('vehicles.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.first_name')
+      .addSelect('user.last_name')
+      .addSelect('user.tel')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {
           carName: carName,
         },
       )
-      .andWhere(`vehicles.province ILIKE concat('%',CAST(:province AS varchar(256)),'%')`, { province: province })
+      .andWhere(
+        `vehicles.province ILIKE concat('%',CAST(:province AS varchar(256)),'%')`,
+        { province: province },
+      )
       .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
         maxPassenger: maxPassenger,
       })
       .printSql()
       .getMany();
     const datalength = all_vehicles.length;
+    console.log(datalength);
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
-      .innerJoinAndSelect('vehicles.user', 'user')
+      .innerJoin('vehicles.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.first_name')
+      .addSelect('user.last_name')
+      .addSelect('user.tel')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {
           carName: carName,
         },
       )
-      .andWhere(`vehicles.province ILIKE concat('%',CAST(:province AS varchar(256)),'%')`, { province: province })
+      .andWhere(
+        `vehicles.province ILIKE concat('%',CAST(:province AS varchar(256)),'%')`,
+        { province: province },
+      )
       .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
         maxPassenger: maxPassenger,
       })
@@ -78,10 +98,6 @@ export class VehicleService {
     console.log(paginationData);
     return [paginated_vehicles, paginationData];
   }
-
-
-
-
 
   async createVehicle(
     id: number,
@@ -119,44 +135,44 @@ export class VehicleService {
     return { oldImageName, vehicle };
   }
 
-  async getVehicleByUserId(userId: number){
-    
+  async getVehicleByUserId(userId: number) {
     const vehicles = await this.vehicleRepository.find({
-      relations:{user:true},
+      relations: { user: true },
       where: { user: { id: userId } },
     });
-    let vehicleandstatus = [];
-    for(let i = 0; i < vehicles.length; i++){
+    const vehicleandstatus = [];
+    for (let i = 0; i < vehicles.length; i++) {
       const rentingrequests = await this.rentingRequestRepository.find({
-        where:{
-          status:Request_status.ACCEPTED,
-          vehicle:{'id':vehicles[i].id}
-        }
+        where: {
+          status: Request_status.ACCEPTED,
+          vehicle: { id: vehicles[i].id },
+        },
       });
-      let carstatus = "Available";
-      if(rentingrequests.length!=0) carstatus = "Not available";
-      
+      let carstatus = 'Available';
+      if (rentingrequests.length != 0) carstatus = 'Not available';
+
       vehicleandstatus.push(vehicles[i]);
       vehicleandstatus[i].status = carstatus;
     }
     return vehicleandstatus;
   }
 
-  async getVehicleByVehicleId(vehicleId: number){
+  async getVehicleByVehicleId(vehicleId: number) {
     const vehicle = await this.vehicleRepository.findOne({
-      relations:{user:true},
-      where:{'id': vehicleId }
+      relations: { user: true },
+      where: { id: vehicleId },
     });
-    if(!vehicle)throw new HttpException( "vehicle not found", HttpStatus.NOT_FOUND);
+    if (!vehicle)
+      throw new HttpException('vehicle not found', HttpStatus.NOT_FOUND);
     const rentingrequests = await this.rentingRequestRepository.find({
-      where:{
-        status:Request_status.ACCEPTED,
-        vehicle:{'id':vehicle.id}
-      }
+      where: {
+        status: Request_status.ACCEPTED,
+        vehicle: { id: vehicle.id },
+      },
     });
-    let carstatus = "Available";
-    if(rentingrequests.length!=0) carstatus = "Not available";
-    let vehicleandstatus = [];
+    let carstatus = 'Available';
+    if (rentingrequests.length != 0) carstatus = 'Not available';
+    const vehicleandstatus = [];
     vehicleandstatus.push(vehicle);
     vehicleandstatus[0].status = carstatus;
     return vehicleandstatus;

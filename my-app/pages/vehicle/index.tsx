@@ -247,39 +247,32 @@ export default function SearchCar() {
                                       </div>
                                       <div className={styles.details}>
                                         <div>
-                                          <li>
-                                            <b>เลขทะเบียนรถ</b>:{" "}
-                                            {e?.registrationId}
-                                          </li>
-                                        </div>
-                                        <div>
-                                          <li>
-                                            <b>จังหวัด</b>: {e?.province}
-                                          </li>
-                                        </div>
-                                        <div>
-                                          <li>
-                                            <b>จำนวนที่นั่ง</b>:{" "}
-                                            {e?.maximumCapacity}
-                                          </li>
-                                        </div>
-
-                                        <div>
-                                          <li>
-                                            <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.first_name} &nbsp;
-                                            {e?.user.last_name}
-                                          </li>
-                                        </div>
-                                        <div>
-                                          <li>
-                                            <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.tel.slice(0, 3) +
-                                              "-" +
-                                              e?.user.tel.slice(3, 6) +
-                                              "-" +
-                                              e?.user.tel.slice(6)}
-                                          </li>
+                                          <ul>
+                                            <li>
+                                              <b>เลขทะเบียนรถ</b>:{" "}
+                                              {e?.registrationId}
+                                            </li>
+                                            <li>
+                                              <b>จังหวัด</b>: {e?.province}
+                                            </li>
+                                            <li>
+                                              <b>จำนวนที่นั่ง</b>:{" "}
+                                              {e?.maximumCapacity}
+                                            </li>
+                                            <li>
+                                              <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
+                                              {e?.user.first_name} &nbsp;
+                                              {e?.user.last_name}
+                                            </li>
+                                            <li>
+                                              <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
+                                              {e?.user.tel.slice(0, 3) +
+                                                "-" +
+                                                e?.user.tel.slice(3, 6) +
+                                                "-" +
+                                                e?.user.tel.slice(6)}
+                                            </li>
+                                          </ul>
                                         </div>
                                       </div>
                                     </div>
