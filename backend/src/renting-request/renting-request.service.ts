@@ -35,10 +35,11 @@ export class RentingRequestService {
     createRentingRequestDto: CreateRentingRequestDto,
   ): Promise<RentingRequest> {
     //detect must be not request vehicle myself
-    const checkprovider = await this.vehicleRepository.find({
-      where:{user:{'id':id}}
+    const checkprovider = await this.vehicleRepository.findOne({
+      relations:{user:true},
+      where:{'id':createRentingRequestDto.car_id}
     });
-    if(checkprovider)throw new HttpException(
+    if(checkprovider.user.id == id)throw new HttpException(
       'This is your vehicle',
       HttpStatus.BAD_REQUEST,
     );
