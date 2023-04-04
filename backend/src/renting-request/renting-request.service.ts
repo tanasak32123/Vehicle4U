@@ -40,7 +40,7 @@ export class RentingRequestService {
     });
     if(checkprovider)throw new HttpException(
       'This is your vehicle',
-      HttpStatus.NOT_FOUND,
+      HttpStatus.BAD_REQUEST,
     );
 
     //detect request is exist in this time
