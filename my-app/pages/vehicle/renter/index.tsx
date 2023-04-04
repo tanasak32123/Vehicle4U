@@ -15,6 +15,7 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
+      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -23,7 +24,6 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
@@ -63,7 +63,12 @@ const ProviderOwnerVehicle = () => {
               <FaCar />
               &nbsp;ประวัติการเช่าของคุณ
             </h1>
+
             <hr />
+
+            {data.response?.length == 0 && (
+              <p className="my-4 text-center">ไม่มีประวัติการเช่า</p>
+            )}
 
             {data.response?.map((e: any) => {
               return (
