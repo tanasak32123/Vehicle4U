@@ -159,6 +159,16 @@ const ProviderOwnerVehicle = () => {
                           </div>
                           <div>
                             <b>สถานะ</b>:{" "}
+                            <div>
+                            <b><button
+                                id={e?.request_id}
+                                className={styles.confirm_btn}
+                                onClick={() => {
+                                    router.push(`/chat/${e.renter_id}`);
+                                }} 
+                                >แชท
+                              </button></b>
+                              </div>
                             {e?.status === "pending" ? (
                               <>
                                 <span className="badge bg-warning">

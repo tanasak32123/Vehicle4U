@@ -37,7 +37,6 @@ export class ChatController {
     const name = await this.chatService.getName(
       Number(getMessagesDto.receiverId),
     );
-    
     return res.status(200).send({
       senderId: String(senderId),
       ReceiverFirstName: name.first_name,
