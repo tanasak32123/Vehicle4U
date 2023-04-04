@@ -264,6 +264,15 @@ const ProviderOwnerVehicle = () => {
                         )}
                       </div>
                     </div>
+                    <div>
+                      <button
+                            type="button"
+                            className={styles.chat_btn}
+                            onClick={() => router.push("/chat")}
+                          >
+                            แชท
+                          </button>
+                    </div>
                   </div>
                 </div>
               );
