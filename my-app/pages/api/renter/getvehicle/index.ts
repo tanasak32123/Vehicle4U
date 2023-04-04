@@ -6,7 +6,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const token = req.cookies?.token;
-  const role = req.cookies?.role;
+  const role = req.cookies?.currentRole;
 
   if (!token) {
     return res
@@ -54,7 +54,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     })
       .then((response) => {
-        console.log('----------------------');
+        console.log("----------------------");
         if (response.ok) {
           return response.json();
         }

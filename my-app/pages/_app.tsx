@@ -1,6 +1,8 @@
 import { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 
+import useSWR, { SWRConfig } from "swr";
+
 //global css
 import "@/styles/globals.css";
 
@@ -31,16 +33,18 @@ const ErrorBoundary = dynamic(() => import("@/components/ErrorBoundary"), {
 const App = ({ Component, pageProps: { ...pageProps } }: AppProps) => {
   return (
     <>
-      <SSRProvider>
-        <ErrorBoundary>
-          <AuthProvider>
-            <Layout>
-              <Component {...pageProps} />
-              <ToastContainer />
-            </Layout>
-          </AuthProvider>
-        </ErrorBoundary>
-      </SSRProvider>
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <SSRProvider>
+          <ErrorBoundary>
+            <AuthProvider>
+              <Layout>
+                <Component {...pageProps} />
+                <ToastContainer />
+              </Layout>
+            </AuthProvider>
+          </ErrorBoundary>
+        </SSRProvider>
+      </SWRConfig>
     </>
   );
 };

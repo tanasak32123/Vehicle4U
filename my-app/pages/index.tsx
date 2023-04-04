@@ -1,68 +1,86 @@
+import type { NextPage } from "next";
+import { Field, Form, Formik } from "formik";
+import * as Yup from "yup";
+
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 
 import styles from "@/styles/home.module.css";
 import { Row, Col, Spinner, Alert } from "react-bootstrap";
-import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
+import { FaSignInAlt } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
+import { toast } from "react-toastify";
 
-export default function Home() {
-  const { authAction } = useAuth();
+interface FormValues {
+  username: string;
+  password: string;
+  role: string;
+}
 
+// Yup schema to validate the form
+const signinSchema = Yup.object().shape({
+  username: Yup.string()
+    .required("โปรดใส่ชื่อผู้ใช้ของคุณ")
+    .matches(
+      /^[a-zA-Z0-9]+$/,
+      "ชื่อผู้ใช้ไม่สามารถเว้นวรรคหรือใส่อักขระพิเศษได้"
+    ),
+  password: Yup.string().required("โปรดใส่รหัสผ่านของคุณ"),
+  role: Yup.string()
+    .oneOf(["renter", "provider"], "บทบาทของคุณไม่ถูกต้อง")
+    .required("โปรดเลือกบทบาทของคุณ"),
+});
+
+const initialValues: FormValues = {
+  username: "",
+  password: "",
+  role: "",
+};
+
+const Home: NextPage = () => {
   const router = useRouter();
+  const { authAction } = useAuth();
+  const [error, setError] = useState<string>("");
 
-  const usernameRef = useRef<HTMLInputElement>(null);
-  const pwdRef = useRef<HTMLInputElement>(null);
-  const roleRef = useRef<HTMLSelectElement>(null);
-
-  const [invalid, setInvalid] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(event: Event) {
-    event.preventDefault();
-    setLoading(true);
-    await fetch("/api/auth/login", {
+  const signin = async (values: FormValues): Promise<any> => {
+    const success = await fetch("/api/auth/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        username: usernameRef.current?.value,
-        password: pwdRef.current?.value,
-        role: roleRef.current?.value,
-      }),
+      body: JSON.stringify({ ...values }),
     })
-      .then((res) => res.json())
       .then((res) => {
-        if (res.success) {
-          setShowAlert(false);
-          authAction.mutate();
-          if (router.query.from) {
-            router.push(router.query.from as string);
-          }
-          if (res.role == "renter") {
-            router.push("/vehicle");
-          }
-          if (res.role == "provider") {
-            router.push("provider/vehicle");
-          }
-        } else {
-          setInvalid(res.message);
-          setShowAlert(true);
+        if (res.status == 500) {
+          throw new Error("Something went wrong...");
         }
-        setLoading(false);
+        return res.json();
+      })
+      .then((res) => {
+        if (!res.success) {
+          setError(res.message);
+          return false;
+        }
+        return true;
       })
       .catch((err) => {
-        console.log(err);
-        setInvalid("** ระบบเกิดข้อผิดพลาดโปรดลองใหม่อีกครั้ง");
-        setShowAlert(true);
-        setLoading(false);
+        toast.error("ระบบมีข้อผิดพลาด โปรดลองอีกครั้ง", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+        return false;
       });
-  }
+    return success;
+  };
 
   return (
     <>
@@ -98,12 +116,151 @@ export default function Home() {
             lg={6}
             className="d-flex justify-content-center align-items-center"
           >
-            <div
-              className={`${styles.form_container} justify-content-center d-flex align-items-center`}
-            >
-              <form
+            <div className={`p-4 ${styles.form_container} w-75`}>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={signinSchema}
+                validateOnChange={false}
+                validateOnBlur={false}
+                onSubmit={async (values, actions) => {
+                  const success: boolean | any = await signin(values);
+                  authAction.mutate();
+                  if (!success) {
+                    actions.resetForm();
+                  } else {
+                    if (router.query.from) {
+                      router.replace(router.query.from as string);
+                    }
+                    if (values.role == "renter") {
+                      router.replace("/vehicle");
+                    }
+                    if (values.role == "provider") {
+                      router.replace("provider/vehicle");
+                    }
+                  }
+                }}
+              >
+                {({
+                  values,
+                  setFieldValue,
+                  errors,
+                  touched,
+                  isSubmitting,
+                  /* and other goodies */
+                }) => (
+                  <Form>
+                    <div className="form-group mb-3">
+                      <label htmlFor="username" className="mb-2">
+                        <b>ชื่อผู้ใช้</b>
+                      </label>
+                      <Field
+                        id="username"
+                        as="input"
+                        type="text"
+                        name="username"
+                        className={`form-control ${
+                          errors.username ? "is-invalid" : ""
+                        }`}
+                        value={values.username}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          setFieldValue("username", e.currentTarget.value)
+                        }
+                      />
+                      {errors.username && touched.username && (
+                        <div className="invalid-feedback">
+                          {errors.username}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label htmlFor="password" className="mb-2">
+                        <b>รหัสผ่าน</b>
+                      </label>
+                      <Field
+                        id="password"
+                        as="input"
+                        type="password"
+                        name="password"
+                        className={`form-control ${
+                          errors.password ? "is-invalid" : ""
+                        }`}
+                        value={values.password}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          setFieldValue("password", e.currentTarget.value)
+                        }
+                      />
+                      {errors.password && touched.password && (
+                        <div className="invalid-feedback">
+                          {errors.password}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="form-group mb-3">
+                      <label htmlFor="role" className="mb-2">
+                        <b>บทบาท</b>
+                      </label>
+                      <Field
+                        as="select"
+                        title="role"
+                        id="role"
+                        name="role"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          setFieldValue("role", e.currentTarget.value)
+                        }
+                        className={`form-select ${
+                          errors.role ? "is-invalid" : ""
+                        }`}
+                        value={values.role}
+                      >
+                        <option value="" defaultChecked>
+                          เลือกบทบาทของคุณ...
+                        </option>
+                        <option value="renter">ผู้เช่า</option>
+                        <option value="provider">ผู้ปล่อยเช่า</option>
+                      </Field>
+                      {errors.role && touched.role && (
+                        <div className="invalid-feedback">{errors.role}</div>
+                      )}
+                    </div>
+
+                    <div className="mb-3">
+                      <button
+                        type="submit"
+                        className="btn btn-primary me-2"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "กำลังโหลด..." : `เข้าสู่ระบบ`}
+                        &nbsp;
+                        <FaSignInAlt />
+                      </button>
+                      {error && (
+                        <small className="text-danger">** {error}</small>
+                      )}
+                    </div>
+
+                    <div>
+                      <small className={`${styles.form_text}`}>
+                        ยังไม่มีบัญชีผู้ใช้งาน ?{" "}
+                        <b>
+                          <Link
+                            href="/signup"
+                            className={`${styles.signup}`}
+                            prefetch={false}
+                          >
+                            สมัครบัญชีผู้ใช้งานที่นี่
+                          </Link>
+                        </b>
+                      </small>
+                    </div>
+                  </Form>
+                )}
+              </Formik>
+
+              {/* <form
                 className={`${styles.form}`}
-                onSubmit={(event: any) => handleSubmit(event)}
+                onSubmit={(event: any) => handleSubmit1(event)}
               >
                 <label htmlFor="username" className={`${styles.form_text}`}>
                   <b>ชื่อผู้ใช้</b>
@@ -195,11 +352,13 @@ export default function Home() {
                     </Link>
                   </b>
                 </small>
-              </form>
+              </form> */}
             </div>
           </Col>
         </Row>
       </div>
     </>
   );
-}
+};
+
+export default Home;

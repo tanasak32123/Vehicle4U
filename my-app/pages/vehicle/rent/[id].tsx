@@ -31,7 +31,7 @@ export default function Register() {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    const response = await fetch("/api/renter_request", {
+    await fetch("/api/renter_request", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,38 +47,65 @@ export default function Register() {
         carid,
         accept,
       }),
-    });
-    if (!response.ok) {
-      if (response.status == 404) {
-        toast.error("รถคันนี้ถูกจองแล้วในช่วงเวลานี้แล้ว", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-        router.push("/vehicle");
-        return;
-      } else {
-        const data = await response.json();
-        setErrors(data.errors);
-        return;
-      }
-    }
-    toast.success("คุณทำการเช่ารถสำเร็จ", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "light",
-    });
-    router.push("/vehicle/renter");
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res?.errors) {
+          return setErrors(res.errors);
+        }
+
+        if (!res.success) {
+          if (res?.message == "Vehicle is already rented") {
+            toast.error("รถคันนี้ถูกแล้วจองในช่วงเวลานี้", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          } else if (res?.message == "This is your vehicle") {
+            toast.error("ไม่สามารถจองได้เนื่องจากคุณเป็นเจ้าของรถคันนี้", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+            router.replace("/vehicle");
+          } else if (res?.message == "Internal server") {
+            return toast.error("ระบบเกิดข้อผิดพลาด", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+        }
+
+        if (res?.success) {
+          toast.success("คุณทำการเช่ารถสำเร็จ", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          router.replace("/vehicle/renter");
+        }
+      });
   }
 
   return (
