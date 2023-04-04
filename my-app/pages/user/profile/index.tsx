@@ -5,7 +5,6 @@ import { getCookie, setCookie } from "cookies-next";
 //css
 import styles from "styles/editProfile.module.css";
 import { FaUserAlt } from "react-icons/fa";
-import Skeleton from "react-loading-skeleton";
 
 import { useAuth } from "@/components/AuthContext";
 import { toast } from "react-toastify";

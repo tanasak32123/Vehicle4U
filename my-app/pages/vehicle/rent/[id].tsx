@@ -77,7 +77,7 @@ export default function Register() {
               progress: undefined,
               theme: "light",
             });
-            router.push("/vehicle");
+            router.replace("/vehicle");
           } else if (res?.message == "Internal server") {
             return toast.error("ระบบเกิดข้อผิดพลาด", {
               position: "top-right",
@@ -103,7 +103,7 @@ export default function Register() {
             progress: undefined,
             theme: "light",
           });
-          router.push("/vehicle/renter");
+          router.replace("/vehicle/renter");
         }
       });
   }

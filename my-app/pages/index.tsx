@@ -1,3 +1,4 @@
+import type { NextPage } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
@@ -9,7 +10,7 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import { FaSignInAlt, FaTimesCircle } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 
-export default function Home() {
+const Home: NextPage = () => {
   const { authAction } = useAuth();
 
   const router = useRouter();
@@ -202,4 +203,6 @@ export default function Home() {
       </div>
     </>
   );
-}
+};
+
+export default Home;

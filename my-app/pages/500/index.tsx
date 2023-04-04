@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 export default function FiveOhOh() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function FiveOhOh() {
           <Link
             href={""}
             onClick={() => {
-              router.back();
+              router.replace("/");
             }}
             className="orange_btn d-flex align-items-center justify-content-center"
           >

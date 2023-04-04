@@ -52,13 +52,6 @@ const ProviderOwnerVehicle = () => {
           className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
         >
           <div className={`p-4 ${styles.reg_container}`}>
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className={`${styles.back_btn} d-flex align-items-center`}
-            >
-              <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-            </button>
             <h1 className="align-items-center d-flex justify-content-end">
               <FaCar />
               &nbsp;ประวัติการเช่าของคุณ

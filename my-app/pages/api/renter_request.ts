@@ -95,17 +95,6 @@ export default async function handler(
     });
   }
 
-  console.log({
-    startdate: body.startdate,
-    starttime: body.starttime,
-    enddate: body.enddate,
-    endtime: body.endtime,
-    contact: body.contact,
-    info: body.info,
-    rent_place: body.location,
-    car_id: body.carid,
-  });
-
   const token = req.cookies?.token;
 
   await fetch("http://localhost:3000/renting-request", {
@@ -127,34 +116,29 @@ export default async function handler(
   })
     .then((response) => {
       // ถ้าเวลาทับกันจะจองไม่ได้ต้องขึ้นแจ้งเตือน
-      return response.json();
-      // if (!response.ok) {
-      //   if (response.status == 404) {
-      //     res.status(404).json({
-      //       success: false,
-      //       message: "Vehicle is already rented",
-      //     });
-      //   } else if (response.status == 400) {
-      //     res.status(400).json({
-      //       success: false,
-      //       message: "This is your vehicle",
-      //     });
-      //   } else {
-      //     res.status(500).json({
-      //       success: false,
-      //       message: "Internal server",
-      //     });
-      //   }
-      // } else {
-      //   const user = await response.json();
-      //   res.status(200).json({ success: true, ...user });
-      // }
+      if (!response.ok) {
+        if (response.status == 404) {
+          return res.status(404).json({
+            success: false,
+            message: "Vehicle is already rented",
+          });
+        } else if (response.status == 400) {
+          return res.status(400).json({
+            success: false,
+            message: "This is your vehicle",
+          });
+        } else {
+          return res.status(500).json({
+            success: false,
+            message: "Internal server",
+          });
+        }
+      } else {
+        return response.json();
+      }
     })
     .then((response) => {
       console.log(response);
-      return res.status(500).json({
-        success: false,
-        message: "Internal server",
-      });
+      return res.status(200).json({ success: true, ...response });
     });
 }
