@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useRouter } from "next/navigation";
 
 //types
@@ -17,7 +17,7 @@ const initValues: AuthContextValue = {
 const AuthContext = createContext(initValues);
 
 export const AuthProvider = (props: any) => {
-  const { data, mutate, isLoading } = useSWR("/api/auth/getUser", fetcher);
+  const { data, isLoading, mutate } = useSWR("/api/auth/fetchuser", fetcher);
   const [isLogout, setIsLogout] = useState(false);
   const router = useRouter();
 

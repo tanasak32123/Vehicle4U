@@ -337,7 +337,7 @@ export default function UpdateCar() {
               </div>
 
               <Row>
-                <Col lg={12}>
+                <Col lg={6}>
                   <div className="mb-3">
                     <label htmlFor="carName" className="form-label">
                       <b>ชื่อของรถ</b>
@@ -350,7 +350,7 @@ export default function UpdateCar() {
                             id="edit_name"
                             type="button"
                             title={`edit_name`}
-                            className={`btn btn-link float-end`}
+                            className={`btn btn-link float-end py-0`}
                             onClick={() => handleSwitchEdit("name")}
                           >
                             <span>แก้ไข</span>
@@ -410,7 +410,7 @@ export default function UpdateCar() {
                             id="edit_regisId"
                             type="button"
                             title={`edit_regisId`}
-                            className={`btn btn-link float-end`}
+                            className={`btn btn-link float-end py-0`}
                             onClick={() => handleSwitchEdit("registrationId")}
                           >
                             <span>แก้ไข</span>
@@ -462,7 +462,7 @@ export default function UpdateCar() {
                   </div>
                 </Col>
 
-                <Col lg={12}>
+                <Col lg={6}>
                   <div className="mb-3">
                     <label htmlFor="province" className="form-label">
                       <b>จังหวัด</b>
@@ -475,7 +475,7 @@ export default function UpdateCar() {
                             id="edit_province"
                             type="button"
                             title={`edit_province`}
-                            className={`btn btn-link float-end`}
+                            className={`btn btn-link float-end py-0`}
                             onClick={() => handleSwitchEdit("province")}
                           >
                             <span>แก้ไข</span>
@@ -550,7 +550,7 @@ export default function UpdateCar() {
                             id="edit_maxCap"
                             type="button"
                             title={`edit_maxCap`}
-                            className={`btn btn-link float-end`}
+                            className={`btn btn-link float-end py-0`}
                             onClick={() => handleSwitchEdit("maximumCapacity")}
                           >
                             <span>แก้ไข</span>

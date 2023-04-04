@@ -116,7 +116,6 @@ export default function EditProfile() {
         return;
       })
       .catch((err) => {
-        console.log(err);
         toast.error("ระบบเกิดข้อผิดพลาด โปรดลองใหม่อีกครั้ง", {
           position: "top-right",
           autoClose: 3000,
