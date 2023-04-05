@@ -26,7 +26,12 @@ const Header = () => {
             className={`px-3 ${styles.brand}`}
             href={`${auth?.role == "renter" ? "/" : "/provider/vehicle"}`}
           >
-            VEHICLE4U
+            <div className={`${styles.borderFont}`}>
+              <h5>
+                <span className={`${styles.title_VEHICLE}`}>VEHICLE</span>
+                <span className={`${styles.title_4U}`}>4U</span>
+              </h5>
+            </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse
