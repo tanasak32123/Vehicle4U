@@ -34,3 +34,18 @@
   background-color: rgb(253, 175, 86);
   color: black;
 }
+
+.title_4U {
+  color: #545a8b;
+  font-weight: 1000;
+}
+
+.title_VEHICLE {
+  color: white;
+  font-weight: 1000;
+  -webkit-text-stroke: 1px black;
+}
+
+.borderFont {
+  text-shadow: 3px 3px black;
+}
