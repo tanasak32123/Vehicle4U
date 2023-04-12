@@ -14,6 +14,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity({ name: 'vehicles' })
 export class Vehicle {
@@ -66,7 +67,11 @@ export class Vehicle {
   user : User
 
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.vehicle)
-  user_vehicle : UserVehicle[]
+  user_vehicle: UserVehicle[]
+  
+
+  @OneToMany(() => Comment, (comment) => comment.vehicle)
+  comments : Comment[]
 
   @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)
   rentingRequests: RentingRequest[];

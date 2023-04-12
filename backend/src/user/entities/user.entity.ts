@@ -13,6 +13,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserVehicle } from './user-vehicle.entity';
+import { Reply } from 'src/replies/entities/reply.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -104,5 +105,8 @@ export class User {
   user_vehicle : UserVehicle[];
 
   @OneToMany(() => RentingRequest, (rentingRequest)=>rentingRequest.user)
-  rentingRequests:RentingRequest[];
+  rentingRequests: RentingRequest[];
+  
+  @OneToMany(() => Reply, (rep) => rep.user)
+  replies: Reply[]
 }
