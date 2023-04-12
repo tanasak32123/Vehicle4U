@@ -19,6 +19,8 @@ export enum Request_status {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  READY = 'ready',
+  INUSE = 'in use'
 }
 
 @Entity()
