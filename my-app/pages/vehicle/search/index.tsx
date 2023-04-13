@@ -245,43 +245,45 @@ export default function SearchCar() {
                                     />
                                   </div>
                                 </Col>
-                                <Col lg={6}>
-                                  <div
-                                    className={`d-flex justify-content-left align-items-center mb-3`}
-                                  >
-                                    <div className={`text-start`}>
-                                      <div className={styles.car_name}>
-                                        {e?.name.toUpperCase()}
-                                      </div>
-                                      <div className={styles.details}>
-                                        <ul>
-                                          <li>
-                                            <b>เลขทะเบียนรถ</b>:{" "}
-                                            {e?.registrationId}
-                                          </li>
-                                          <li>
-                                            <b>จังหวัด</b>: {e?.province}
-                                          </li>
-                                          <li>
-                                            <b>จำนวนที่นั่ง</b>:{" "}
-                                            {e?.maximumCapacity}
-                                          </li>
+                                <Col className="p-3" lg={6}>
+                                  <div className={`text-start`}>
+                                    <div className={styles.car_name}>
+                                      {e?.name.toUpperCase()}
+                                    </div>
+                                    <div className={styles.details}>
+                                      <ul>
+                                        <li>
+                                          <b>เลขทะเบียนรถ</b>:{" "}
+                                          {e?.registrationId}
+                                        </li>
+                                        <li>
+                                          <b>จังหวัด</b>: {e?.province}
+                                        </li>
+                                        <li>
+                                          <b>จำนวนที่นั่ง</b>:{" "}
+                                          {e?.maximumCapacity}
+                                        </li>
 
-                                          <li>
-                                            <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.first_name} &nbsp;
-                                            {e?.user.last_name}
-                                          </li>
-                                          <li>
-                                            <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.tel.slice(0, 3) +
-                                              "-" +
-                                              e?.user.tel.slice(3, 6) +
-                                              "-" +
-                                              e?.user.tel.slice(6)}
-                                          </li>
-                                        </ul>
-                                      </div>
+                                        <li>
+                                          <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.first_name} &nbsp;
+                                          {e?.user.last_name}
+                                        </li>
+                                        <li>
+                                          <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.tel.slice(0, 3) +
+                                            "-" +
+                                            e?.user.tel.slice(3, 6) +
+                                            "-" +
+                                            e?.user.tel.slice(6)}
+                                        </li>
+                                      </ul>
+                                      <Link
+                                        className="float-end btn btn-primary"
+                                        href={`/vehicle/${e.id}/reviews`}
+                                      >
+                                        ดูรีวิวยานพาหนะ
+                                      </Link>
                                     </div>
                                   </div>
                                 </Col>
