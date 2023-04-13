@@ -1,11 +1,11 @@
 import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
-import { Reply } from 'src/replies/entities/reply.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -17,19 +17,23 @@ export class Comment {
   id: number;
 
   @OneToOne(() => RentingRequest, (req) => req.comment)
+  @JoinColumn()
   request: RentingRequest;
-    
-  @OneToOne(() => Reply, (rep) => rep.comment)
-  reply: Reply;
 
   @ManyToOne(() => Vehicle, (vehicle) => vehicle.comments)
   vehicle: Vehicle;
+
+  @ManyToOne(() => User, (user) => user.comments)
+  user: User;
 
   @Column()
   message: string;
 
   @Column()
   score: number;
+
+  @Column()
+  reply: string;
 
   @CreateDateColumn()
   createdAt: Date;

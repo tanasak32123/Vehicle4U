@@ -127,24 +127,27 @@ export class VehicleService {
 
   async getVehicleByUserId(userId: number) {
     const vehicles = await this.vehicleRepository.find({
-      relations: { user: true },
+      relations: {
+        comments: { user: true},
+      },
       where: { user: { id: userId } },
     });
-    const vehicleandstatus = [];
-    for (let i = 0; i < vehicles.length; i++) {
-      const rentingrequests = await this.rentingRequestRepository.find({
-        where: {
-          status: Request_status.ACCEPTED,
-          vehicle: { id: vehicles[i].id },
-        },
-      });
-      let carstatus = 'Available';
-      if (rentingrequests.length != 0) carstatus = 'Not available';
+    return vehicles;
+    // const vehicleandstatus = [];
+    // for (let i = 0; i < vehicles.length; i++) {
+    //   const rentingrequests = await this.rentingRequestRepository.find({
+    //     where: {
+    //       status: Request_status.ACCEPTED,
+    //       vehicle: { id: vehicles[i].id },
+    //     },
+    //   });
+    //   let carstatus = 'Available';
+    //   if (rentingrequests.length != 0) carstatus = 'Not available';
 
-      vehicleandstatus.push(vehicles[i]);
-      vehicleandstatus[i].status = carstatus;
-    }
-    return vehicleandstatus;
+    //   vehicleandstatus.push(vehicles[i]);
+    //   vehicleandstatus[i].status = carstatus;
+    // }
+    // return vehicleandstatus;
   }
 
   async getVehicleByVehicleId(vehicleId: number) {

@@ -12,6 +12,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 export enum Request_status {
@@ -84,6 +85,7 @@ status(enum), rent_place*/
   contact: string;
 
   @OneToOne(() => Comment, (comment) => comment.request)
+  @JoinColumn()
   comment: Comment;
   
   @DeleteDateColumn()
