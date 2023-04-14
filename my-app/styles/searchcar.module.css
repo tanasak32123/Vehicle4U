@@ -90,3 +90,7 @@
 .details {
   padding-left: 10px;
 }
+
+.load_container {
+  height: 400px;
+}

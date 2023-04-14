@@ -1,46 +1,35 @@
 import Head from "next/head";
 import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Button } from "react-bootstrap";
-import React, { useRef, useState } from "react";
-import useSWR from "swr";
+import React, { useMemo, useRef, useState } from "react";
+import useSWR, { mutate } from "swr";
 import { FaSearch } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
 import Link from "next/link";
 
-const fetcher = (url: string) =>
-  fetch(url)
-    .then((res) => res.json())
-    .then((res) => {
-      return res;
-    });
-
-const fetcherProvince = (url: string) =>
-  fetch(url)
-    .then((res) => res.json())
-    .then((res) => {
-      res.sort((a: any, b: any) => {
-        if (a.name_th < b.name_th) {
-          return -1;
-        }
-        if (a.name_th > b.name_th) {
-          return 1;
-        }
-        return 0;
-      });
-      return res;
-    });
-
 export default function SearchCar() {
   const [name, setName] = useState("");
   const [province, setProvince] = useState("");
   const [seat, setSeat] = useState("0");
   const [nextPage, setNextPage] = useState(1);
+  const [pageCount, setPageCount] = useState(0);
+  const page_num = useMemo(() => {
+    return pageCount;
+  }, [pageCount]);
 
   const nameRef = useRef<HTMLInputElement | null>(null);
   const provinceRef = useRef<HTMLSelectElement | null>(null);
   const seatRef = useRef<HTMLInputElement | null>(null);
+
+  const fetcher = (url: string) =>
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => {
+        setPageCount(res.page_count);
+        return res;
+      });
 
   const {
     data: paginationData,
@@ -51,6 +40,25 @@ export default function SearchCar() {
     fetcher
   );
 
+  const fetcherProvince = (url: string) =>
+    fetch(url)
+      .then((res) => {
+        mutate(url, res);
+        return res.json();
+      })
+      .then((res) => {
+        res.sort((a: any, b: any) => {
+          if (a.name_th < b.name_th) {
+            return -1;
+          }
+          if (a.name_th > b.name_th) {
+            return 1;
+          }
+          return 0;
+        });
+        return res;
+      });
+
   const {
     data: provinceData,
     isLoading: provinceLoading,
@@ -60,8 +68,8 @@ export default function SearchCar() {
     fetcherProvince
   );
 
-  const handlePagination = (e: any) => {
-    setNextPage(e.selected + 1);
+  const handlePagination = ({ selected }: any) => {
+    setNextPage(selected + 1);
   };
 
   const handleSearch = (e: any) => {
@@ -186,9 +194,9 @@ export default function SearchCar() {
             <div className={`${styles.vehicle_container} mb-3 p-4`}>
               {paginationLoading && (
                 <div
-                  className={`d-flex justify-content-center align-items-center`}
+                  className={`${styles.load_container} d-flex justify-content-center align-items-center`}
                 >
-                  <div className={`lds-facebook ${styles.loading}`}>
+                  <div className={`lds-facebook`}>
                     <div></div>
                     <div></div>
                     <div></div>
@@ -237,43 +245,45 @@ export default function SearchCar() {
                                     />
                                   </div>
                                 </Col>
-                                <Col lg={6}>
-                                  <div
-                                    className={`d-flex justify-content-left align-items-center mb-3`}
-                                  >
-                                    <div className={`text-start`}>
-                                      <div className={styles.car_name}>
-                                        {e?.name.toUpperCase()}
-                                      </div>
-                                      <div className={styles.details}>
-                                        <ul>
-                                          <li>
-                                            <b>เลขทะเบียนรถ</b>:{" "}
-                                            {e?.registrationId}
-                                          </li>
-                                          <li>
-                                            <b>จังหวัด</b>: {e?.province}
-                                          </li>
-                                          <li>
-                                            <b>จำนวนที่นั่ง</b>:{" "}
-                                            {e?.maximumCapacity}
-                                          </li>
+                                <Col className="p-3" lg={6}>
+                                  <div className={`text-start`}>
+                                    <div className={styles.car_name}>
+                                      {e?.name.toUpperCase()}
+                                    </div>
+                                    <div className={styles.details}>
+                                      <ul>
+                                        <li>
+                                          <b>เลขทะเบียนรถ</b>:{" "}
+                                          {e?.registrationId}
+                                        </li>
+                                        <li>
+                                          <b>จังหวัด</b>: {e?.province}
+                                        </li>
+                                        <li>
+                                          <b>จำนวนที่นั่ง</b>:{" "}
+                                          {e?.maximumCapacity}
+                                        </li>
 
-                                          <li>
-                                            <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.first_name} &nbsp;
-                                            {e?.user.last_name}
-                                          </li>
-                                          <li>
-                                            <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.tel.slice(0, 3) +
-                                              "-" +
-                                              e?.user.tel.slice(3, 6) +
-                                              "-" +
-                                              e?.user.tel.slice(6)}
-                                          </li>
-                                        </ul>
-                                      </div>
+                                        <li>
+                                          <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.first_name} &nbsp;
+                                          {e?.user.last_name}
+                                        </li>
+                                        <li>
+                                          <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.tel.slice(0, 3) +
+                                            "-" +
+                                            e?.user.tel.slice(3, 6) +
+                                            "-" +
+                                            e?.user.tel.slice(6)}
+                                        </li>
+                                      </ul>
+                                      <Link
+                                        className="float-end btn btn-primary"
+                                        href={`/vehicle/${e.id}/reviews`}
+                                      >
+                                        ดูรีวิวยานพาหนะ
+                                      </Link>
                                     </div>
                                   </div>
                                 </Col>
@@ -283,6 +293,7 @@ export default function SearchCar() {
                         );
                       })}
                       <ReactPaginate
+                        forcePage={nextPage - 1}
                         breakLabel="..."
                         nextLabel="ถัดไป >"
                         onPageChange={handlePagination}
@@ -292,7 +303,7 @@ export default function SearchCar() {
                         disabledClassName={`${styles.pagination__link__disabled}`}
                         activeClassName={`${styles.pagination__link__active}`}
                         pageRangeDisplayed={3}
-                        pageCount={paginationData?.page_count}
+                        pageCount={page_num}
                         previousLabel="< ก่อนหน้า"
                         renderOnZeroPageCount={null || undefined}
                       />

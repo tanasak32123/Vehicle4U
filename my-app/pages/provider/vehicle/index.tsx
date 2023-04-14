@@ -6,7 +6,6 @@ import useSWR from "swr";
 import Link from "next/link";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
-// import { Button, Modal } from "react-bootstrap";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -100,55 +99,42 @@ const ProviderOwnerVehicle = () => {
                       </div>
                     </div>
                     <div className={`col-6`}>
-                      <div
-                        className={`d-flex justify-content-left align-items-center mb-3`}
-                      >
-                        <div className={`text-start`}>
-                          <div>
-                            <b>ชื่อรถ</b>: {e?.name}
-                          </div>
-                          <div>
-                            <b>เลขทะเบียนรถ</b>: {e?.registrationId}
-                          </div>
-                          <div>
-                            <b>จังหวัด</b>: {e?.province}
-                          </div>
-                          <div>
-                            <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
-                          </div>
-                          <div>
-                            <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
-                          </div>
-                          <div>
-                            <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
-                          </div>
-                          {/* <div>
-                            <b>สถานะ</b>: &nbsp;
-                            {e?.status === "Available" ? (
-                              <>
-                                <span className="badge bg-success">ว่าง</span>
-                                &nbsp;
-                              </>
-                            ) : e?.status === "Not available" ? (
-                              <>
-                                <span className="badge bg-danger">
-                                  ถูกจองแล้ว
-                                </span>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                          </div> */}
+                      <div className={`text-start mb-3`}>
+                        <div>
+                          <b>ชื่อรถ</b>: {e?.name}
+                        </div>
+                        <div>
+                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                        </div>
+                        <div>
+                          <b>จังหวัด</b>: {e?.province}
+                        </div>
+                        <div>
+                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                        </div>
+                        <div>
+                          <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
+                        </div>
+                        <div>
+                          <b>อัปเดตล่าสุดเมื่อ</b>: {e?.updated_at}
                         </div>
                       </div>
-                      <div>
-                        <Link
-                          className={`float-start`}
-                          href={`/provider/vehicle/editinfo/${e?.id}`}
-                        >
+
+                      <div className="d-flex justify-content-between align-items-center">
+                        <Link href={`/provider/vehicle/editinfo/${e?.id}`}>
                           <FaEdit />
                           แก้ไขข้อมูล
                         </Link>
+                        <button
+                          title={`review of vehicle ${e?.registrationId}`}
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={() =>
+                            router.push(`/vehicle/${e?.id}/reviews`)
+                          }
+                        >
+                          รีวิวยานพานหนะ
+                        </button>
                       </div>
                     </div>
                   </div>

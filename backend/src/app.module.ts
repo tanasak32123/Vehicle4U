@@ -12,6 +12,7 @@ import { VehicleModule } from './vehicle/vehicle.module';
 import { TokenMiddleware } from './middleware/token.decode.middleware';
 import { RentingRequestModule } from './renting-request/renting-request.module';
 import { ChatModule } from './chat/chat.module';
+import { CommentsModule } from './comments/comments.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -36,6 +37,7 @@ import { ChatModule } from './chat/chat.module';
     VehicleModule,
     RentingRequestModule,
     ChatModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,50 +1,60 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import isAuthValid from "libs/auth/isAuthValid";
 
-const authPrefixes = ["/vehicle", "/user", "/provider", "/chat"];
+const authRoutePrefix = ["/vehicle", "/user", "/provider", "/chat"];
+
+const renterRoutePrefix = [
+  "/vehicle/rent",
+  "/vehicle/renter",
+  "/vehicle/search",
+];
 
 export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  const role = req.cookies.get("role")?.value;
   const currentRole = req.cookies.get("currentRole")?.value;
 
-  const url = req.nextUrl;
-
-  const startwithsAuth = (): boolean => {
-    let result = false;
-    authPrefixes.forEach((e: string) => {
-      if (url.pathname.startsWith(e)) {
-        result = true;
+  if (
+    !token ||
+    (!role && !currentRole) ||
+    (role && role !== "provider" && role !== "renter") ||
+    (currentRole && currentRole !== "provider" && currentRole !== "renter")
+  ) {
+    for (let i = 0; i < authRoutePrefix.length; i++) {
+      if (req.nextUrl.pathname.startsWith(authRoutePrefix[i])) {
+        req.nextUrl.pathname = `/`;
+        return NextResponse.redirect(req.nextUrl);
       }
-    });
-    return result;
-  };
-
-  if (startwithsAuth() && !isAuthValid(req)) {
-    url.search = `?from=${url.pathname}`;
-    url.pathname = `/`;
-    return NextResponse.redirect(url);
-  }
-
-  if (url.pathname.startsWith("/provider") && currentRole != "provider") {
-    url.pathname = `/`;
-    return NextResponse.redirect(url);
-  }
-
-  if (url.pathname.startsWith("/vehicle") && currentRole != "renter") {
-    url.pathname = `/`;
-    return NextResponse.redirect(url);
-  }
-
-  if (url.pathname === "/" && isAuthValid(req)) {
-    if (currentRole == "renter") {
-      url.pathname = `/vehicle`;
-    } else {
-      url.pathname = `/provider/vehicle`;
     }
-    return NextResponse.redirect(url);
+  } else if (req.nextUrl.pathname === "/") {
+    const role =
+      req.cookies.get("currentRole")?.value || req.cookies.get("role")?.value;
+
+    if (role === "renter") {
+      req.nextUrl.pathname = `/vehicle/search`;
+    } else if (role === "provider") {
+      req.nextUrl.pathname = `/provider/vehicle`;
+    }
+    return NextResponse.redirect(req.nextUrl);
   }
 
-  return NextResponse.next();
+  const roleUsed =
+    req.cookies.get("currentRole")?.value || req.cookies.get("role")?.value;
+
+  if (
+    renterRoutePrefix.includes(req.nextUrl.pathname) &&
+    roleUsed !== "renter"
+  ) {
+    req.nextUrl.pathname = `/`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  if (req.nextUrl.pathname.startsWith("/provider") && roleUsed !== "provider") {
+    req.nextUrl.pathname = `/`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  NextResponse.next();
 }
 
 export const config = {

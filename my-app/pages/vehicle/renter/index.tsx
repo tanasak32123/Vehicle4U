@@ -1,7 +1,6 @@
 import styles from "@/styles/getvehicle.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
@@ -15,6 +14,7 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
+      // console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -23,7 +23,6 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
-
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
@@ -52,18 +51,15 @@ const ProviderOwnerVehicle = () => {
           className={`${styles.container} px-3 d-flex justify-content-center align-items-center`}
         >
           <div className={`p-4 ${styles.reg_container}`}>
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className={`${styles.back_btn} d-flex align-items-center`}
-            >
-              <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
-            </button>
-            <h1 className="align-items-center d-flex justify-content-end">
-              <FaCar />
-              &nbsp;ประวัติการเช่าของคุณ
-            </h1>
+            <h1 className="text-start ps-3">ประวัติการเช่าของคุณ</h1>
+
             <hr />
+            <br />
+            {data.response?.length == 0 && (
+              <div className={`my-4 text-center`}>
+                <p>ไม่มีประวัติการเช่า</p>
+              </div>
+            )}
 
             {data.response?.map((e: any) => {
               return (

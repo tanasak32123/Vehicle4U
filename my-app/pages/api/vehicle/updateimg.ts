@@ -11,7 +11,9 @@ export const config = {
 
 const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
   const token = req.cookies?.token;
-  const role = req.cookies?.role;
+  const role = req.cookies?.currentRole
+    ? req.cookies?.currentRole
+    : req.cookies?.role;
 
   if (!token) {
     return res.status(401).json({ msg: "Unauthorized" });

@@ -26,7 +26,12 @@ const Header = () => {
             className={`px-3 ${styles.brand}`}
             href={`${auth?.role == "renter" ? "/" : "/provider/vehicle"}`}
           >
-            VEHICLE4U
+            <div className={`${styles.borderFont}`}>
+              <h5>
+                <span className={`${styles.title_VEHICLE}`}>VEHICLE</span>
+                <span className={`${styles.title_4U}`}>4U</span>
+              </h5>
+            </div>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse
@@ -34,13 +39,7 @@ const Header = () => {
             className={`mt-2 mt-lg-0`}
           >
             <Nav className="me-auto">
-              {isLoading ? (
-                <>
-                  <Skeleton width={90} height={25} className={`me-4`} />
-                  <Skeleton width={90} height={25} className={`me-4`} />
-                  <Skeleton width={90} height={25} />
-                </>
-              ) : (
+              {!isLoading && (
                 <>
                   <hr />
                   {auth?.status == "SIGNED_IN" && auth?.role == "renter" && (
@@ -58,7 +57,7 @@ const Header = () => {
                         รถเช่าของคุณ
                       </Nav.Link> */}
                       <Nav.Link href={`/provider/vehicle/status`}>
-                        รายการเช่าทั้งหมด
+                        สถานะการจองรถ
                       </Nav.Link>
                     </>
                   )}
@@ -68,11 +67,7 @@ const Header = () => {
             </Nav>
 
             <Nav>
-              {isLoading ? (
-                <>
-                  <Skeleton width={100} height={`80%`} />
-                </>
-              ) : auth?.status == "SIGNED_IN" ? (
+              {!isLoading && auth?.status == "SIGNED_IN" && (
                 <>
                   <NavDropdown
                     title={`${auth?.user?.username} `}
@@ -88,7 +83,8 @@ const Header = () => {
                     </NavDropdown.Item>
                   </NavDropdown>
                 </>
-              ) : (
+              )}
+              {!isLoading && auth?.status == "SIGNED_OUT" && (
                 <>
                   <Nav.Link href="/">เข้าสู่ระบบ</Nav.Link>
                   <Nav.Link href="/signup" className={`orange_btn px-3`}>
