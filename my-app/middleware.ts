@@ -10,7 +10,7 @@ const renterRoutePrefix = [
   "/vehicle/search",
 ];
 
-const protectRoute = (req: NextRequest) => {
+export async function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const role = req.cookies.get("role")?.value;
   const currentRole = req.cookies.get("currentRole")?.value;
@@ -21,49 +21,41 @@ const protectRoute = (req: NextRequest) => {
     (role && role !== "provider" && role !== "renter") ||
     (currentRole && currentRole !== "provider" && currentRole !== "renter")
   ) {
-    authRoutePrefix.forEach((prefix: string) => {
-      if (req.nextUrl.pathname.startsWith(prefix)) {
+    for (let i = 0; i < authRoutePrefix.length; i++) {
+      if (req.nextUrl.pathname.startsWith(authRoutePrefix[i])) {
         req.nextUrl.pathname = `/`;
         return NextResponse.redirect(req.nextUrl);
       }
-    });
-  }
-};
-
-const authorize = (req: NextRequest) => {
-  const role =
-    req.cookies.get("currentRole")?.value || req.cookies.get("role")?.value;
-
-  if (renterRoutePrefix.includes(req.nextUrl.pathname) && role !== "renter") {
-    req.nextUrl.pathname = `/`;
-    return NextResponse.redirect(req.nextUrl);
-  }
-
-  if (req.nextUrl.pathname.startsWith("/provider") && role !== "provider") {
-    req.nextUrl.pathname = `/`;
-    return NextResponse.redirect(req.nextUrl);
-  }
-
-  return req;
-};
-
-export async function middleware(req: NextRequest) {
-  protectRoute(req);
-
-  authorize(req);
-
-  if (req.nextUrl.pathname === "/") {
+    }
+  } else if (req.nextUrl.pathname === "/") {
     const role =
       req.cookies.get("currentRole")?.value || req.cookies.get("role")?.value;
+
     if (role === "renter") {
       req.nextUrl.pathname = `/vehicle/search`;
-    } else {
+    } else if (role === "provider") {
       req.nextUrl.pathname = `/provider/vehicle`;
     }
     return NextResponse.redirect(req.nextUrl);
   }
 
-  return NextResponse.next();
+  const roleUsed =
+    req.cookies.get("currentRole")?.value || req.cookies.get("role")?.value;
+
+  if (
+    renterRoutePrefix.includes(req.nextUrl.pathname) &&
+    roleUsed !== "renter"
+  ) {
+    req.nextUrl.pathname = `/`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  if (req.nextUrl.pathname.startsWith("/provider") && roleUsed !== "provider") {
+    req.nextUrl.pathname = `/`;
+    return NextResponse.redirect(req.nextUrl);
+  }
+
+  NextResponse.next();
 }
 
 export const config = {
