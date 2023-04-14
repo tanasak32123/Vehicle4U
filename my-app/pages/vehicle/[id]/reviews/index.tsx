@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import styles from "styles/Reviews.module.css";
 import { useAuth } from "components/AuthContext";
-import { FaReply, FaUserCircle } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaReply, FaUserCircle } from "react-icons/fa";
 
 const Reviews: NextPage = () => {
   const router = useRouter();
@@ -40,7 +40,7 @@ const Reviews: NextPage = () => {
   };
 
   return (
-    <div className={`main ${styles.main}`}>
+    <div className={`${styles.main}`}>
       <Container className="p-4">
         {isLoading && (
           <div className={`d-flex justify-content-center align-items-center`}>
@@ -55,14 +55,13 @@ const Reviews: NextPage = () => {
         {!isLoading && (
           <div className={`${styles.reviews} p-3`}>
             <div className={`d-flex justify-content-between mb-4`}>
-              <h3>รีวิวของยานพาหนะ</h3>
+              <h3>รีวิวยานพาหนะ</h3>
               <button
                 type="button"
-                id="back_btn"
-                className="btn btn-link p-0"
-                onClick={(e) => router.back()}
+                onClick={() => router.back()}
+                className={`${styles.back_btn} d-flex align-items-center`}
               >
-                ย้อนกลับ
+                <FaArrowAltCircleLeft /> &nbsp;ย้อนกลับ
               </button>
             </div>
             <div id="comments">
@@ -119,13 +118,13 @@ const Reviews: NextPage = () => {
                               placeholder="พิมพ์ข้อความตอบกลับ..."
                             />
                             <div className={`d-flex justify-content-between`}>
-                              <Button variant="success">ตอบกลับ</Button>
                               <Button
                                 variant="danger"
                                 onClick={(e) => handleCancelToReply(e, 1)}
                               >
                                 ยกเลิก
                               </Button>
+                              <Button variant="success">ตอบกลับ</Button>
                             </div>
                           </Card.Body>
                         </Card>
