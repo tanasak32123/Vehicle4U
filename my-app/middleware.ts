@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-// import isAuthValid from "libs/auth/isAuthValid";
 
 const authRoutePrefix = ["/vehicle", "/user", "/provider", "/chat"];
 
