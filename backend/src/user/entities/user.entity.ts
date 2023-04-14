@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
+import { Chat } from 'src/chat/entities/chat.entity';
 import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import {
@@ -12,6 +13,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserVehicle } from './user-vehicle.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -93,9 +95,19 @@ export class User {
   @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
   vehicles: Vehicle[];
 
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
+
+  @OneToMany(() => Chat, (chat) => chat.sender)
+  senders: Chat[];
+
+  @OneToMany(() => Chat, (chat) => chat.receiver)
+  receivers: Chat[];
+
   @OneToMany(() => UserVehicle, (user_vehicle) => user_vehicle.user)
   user_vehicle : UserVehicle[];
 
   @OneToMany(() => RentingRequest, (rentingRequest)=>rentingRequest.user)
-  rentingRequests:RentingRequest[];
+  rentingRequests: RentingRequest[];
+
 }

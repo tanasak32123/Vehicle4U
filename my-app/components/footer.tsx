@@ -4,19 +4,20 @@ import Image from "next/image";
 //css
 import styles from "styles/components/Footer.module.css";
 import { Container, Col, Row } from "react-bootstrap";
+import { FaFacebook, FaInstagram, FaLine, FaPhoneAlt } from "react-icons/fa";
 
 export default function Footer() {
   return (
     <div className={`${styles.footer}`}>
       <Container className="py-4">
         <Row>
-          <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
+          <Col sm={12} lg={4}>
             <div>
               <h4>
                 <b>ศูนย์ความช่วยเหลือ</b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#a"
@@ -28,7 +29,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#b"
@@ -40,7 +41,7 @@ export default function Footer() {
                   </li>
                 </ul>
 
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/helpcenter#c"
@@ -56,16 +57,16 @@ export default function Footer() {
             </div>
           </Col>
 
-          <Col sm={12} lg={4} style={{ borderRight: "1px solid black" }}>
-            <div style={{ paddingLeft: "15px" }}>
+          <Col sm={12} lg={4}>
+            <div className={`${styles.col}`}>
               <h4>
                 <b>เกี่ยวกับ </b>
                 <b>
-                  <span style={{ color: "#545a8b" }}>VEHICLE4U</span>
+                  <span className={`${styles.brand_title}`}>VEHICLE4U</span>
                 </b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ paddingLeft: "20px" }}>
+                <ul className={`${styles.ul}`}>
                   <li>
                     <Link
                       href="/about"
@@ -80,58 +81,27 @@ export default function Footer() {
             </div>
           </Col>
           <Col sm={12} lg={4}>
-            <div style={{ paddingLeft: "15px" }}>
+            <div className={`${styles.col}`}>
               <h4>
                 <b>ติดต่อเรา</b>
               </h4>
               <div className={styles.footer_info}>
-                <ul style={{ listStyleType: "none" }} className="p-0">
+                <ul className={`${styles.ul_list} p-0`}>
                   <li>
                     <div className="d-flex align-items-center">
-                      <Image
-                        src={`/images/phone.webp`}
-                        alt="Picture of the author"
-                        width={30}
-                        height={30}
-                      />
+                      <FaPhoneAlt size={18} />
                       <small>&nbsp;&nbsp;: 081-831-8928</small>
                     </div>
 
                     <div className="mt-3">
-                      <Link
-                        rel="preload"
-                        href="/"
-                        className="me-3"
-                        prefetch={false}
-                      >
-                        <Image
-                          src={`/images/facebook.webp`}
-                          alt="Picture of the author"
-                          width={42}
-                          height={42}
-                        />
+                      <Link href="/" className={`me-3`}>
+                        <FaFacebook size={40} />
                       </Link>
-                      <Link
-                        rel="preload"
-                        href="/"
-                        className="me-3"
-                        prefetch={false}
-                      >
-                        <Image
-                          src={`/images/instragram.webp`}
-                          alt="Picture of the author"
-                          width={40}
-                          height={40}
-                        />
+                      <Link href="/" className={`me-3 ${styles.ig}`}>
+                        <FaInstagram size={40} />
                       </Link>
-
-                      <Link rel="preload" href="/" prefetch={false}>
-                        <Image
-                          src={`/images/line.webp`}
-                          alt="Picture of the author"
-                          width={43}
-                          height={43}
-                        />
+                      <Link href="/" className={`${styles.line}`}>
+                        <FaLine size={40} />
                       </Link>
                     </div>
                   </li>

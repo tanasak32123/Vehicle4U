@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity'
 import {
@@ -10,6 +11,8 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   ManyToOne,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 
 export enum Request_status {
@@ -17,6 +20,8 @@ export enum Request_status {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
+  READY = 'ready',
+  INUSE = 'in use'
 }
 
 @Entity()
@@ -79,11 +84,9 @@ status(enum), rent_place*/
   @Column({length : 10})
   contact: string;
 
-  // @ApiProperty({
-  //   type: Boolean,
-  // })
-  // @Column({default : true})
-  // accepted: boolean;
+  @OneToOne(() => Comment, (comment) => comment.request)
+  @JoinColumn()
+  comment: Comment;
   
   @DeleteDateColumn()
   deleted_at: string;

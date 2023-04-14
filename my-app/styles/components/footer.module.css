@@ -3,7 +3,7 @@
   margin-top: 0 3em;
 }
 
-.footer_info{
+.footer_info {
   margin-top: 15px;
 }
 
@@ -16,4 +16,51 @@
   padding-left: 40px;
   padding-top: 30px;
   text-align: left;
+}
+
+.ul {
+  padding-left: 20px;
+}
+
+.ul_list {
+  list-style-type: none;
+}
+
+.brand_title {
+  color: #545a8b;
+}
+
+.col {
+  padding-left: 15px;
+}
+
+.ig {
+  display: inline-block;
+  text-align: center;
+  color: #fff;
+  border-radius: 10px;
+  vertical-align: middle;
+  background: #d6249f;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0%,
+    #fdf497 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
+}
+
+.ig:hover {
+  color: #fff;
+  background: #d6249f;
+}
+
+.line {
+  color: #00b900;
+}
+
+.line:hover {
+  color: #00b900;
 }

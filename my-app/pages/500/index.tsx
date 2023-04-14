@@ -11,16 +11,13 @@ export default function FiveOhOh() {
         <title>เกิดข้อผิดพลาด-VEHICLE4U</title>
       </Head>
 
-      <div
-        style={{ height: "100vh" }}
-        className="d-flex align-items-center justify-content-center"
-      >
+      <div className={`main d-flex align-items-center justify-content-center`}>
         <div className="text-center">
           <h3>ขออภัย เกิดข้อผิดพลาดขึ้น โปรดลองอีกครั้ง</h3>
           <Link
             href={""}
             onClick={() => {
-              router.back();
+              router.replace("/");
             }}
             className="orange_btn d-flex align-items-center justify-content-center"
           >

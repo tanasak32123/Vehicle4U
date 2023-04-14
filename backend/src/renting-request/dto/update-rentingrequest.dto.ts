@@ -1,6 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
-import { Request_status } from "../entities/renting-request.entity";
 
 export class UpdateRentingRequestDto {
     @ApiProperty({
@@ -20,7 +19,7 @@ export class UpdateRentingRequestDto {
     // end_rent_date : string ;
     
     @ApiProperty({
-        enum:['pending','accepted','rejected'],
+        type: Boolean,
     })
-    status : Request_status;
+    confirm : boolean;
 }

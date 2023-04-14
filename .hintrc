@@ -3,12 +3,11 @@
     "development"
   ],
   "hints": {
-    "no-inline-styles": "off",
-    "axe/forms": [
+    "axe/parsing": [
       "default",
       {
-        "label": "off",
-        "select-name": "off"
+        "duplicate-id-aria": "off",
+        "duplicate-id-active": "off"
       }
     ]
   }
