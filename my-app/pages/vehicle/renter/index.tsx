@@ -4,6 +4,9 @@ import Image from "next/image";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
+import { useState } from "react";
+import ReviewModal from "@/components/Modal/Review";
+import LogoutModal from "@/components/Modal/Logout";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -26,6 +29,9 @@ const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
+
+  const [showModal, setShowModal] = useState(false);
+  const [value,setValue] = useState();
 
   if (error) return router.push("/500");
 
@@ -130,19 +136,37 @@ const ProviderOwnerVehicle = () => {
                                 ถูกจองแล้ว
                               </span>
                             </>
+                          ) : e?.status === "inuse" ? (
+                            <>
+                              <span className="badge bg-success">
+                                ใช้รถแล้ว
+                              </span>
+                              &nbsp;
+                            </>
                           ) : (
                             <>
                               <span>-</span>
                             </>
                           )}
                         </div>
-                        <button
-                          type="button"
-                          className={styles.chat_btn}
-                          onClick={() => router.push(`/chat/${e?.provider_id}`)}
-                        >
-                          แชท
-                        </button>
+                        <div className={styles.chat_div}>
+                          <button
+                            type="button"
+                            className={styles.chat_btn}
+                            onClick={() => router.push(`/chat/${e?.provider_id}`)}
+                          >
+                            แชท
+                          </button>
+                        </div>
+                        <div className={styles.review_div}>
+                          <button
+                            type="button"
+                            className={styles.review_btn}
+                            onClick={() => {setShowModal(true); setValue(e);}}
+                          >
+                            รีวิวยานพานหนะ
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -151,6 +175,17 @@ const ProviderOwnerVehicle = () => {
             })}
           </div>
         </div>
+
+        {showModal && (
+        <ReviewModal
+          show={showModal}
+          onHide={() => setShowModal(false)}
+          value = {value}
+          // authAction={authAction}
+          // setShowSignout={setShowSignout}
+        />
+      )}
+
       </>
     );
 };
