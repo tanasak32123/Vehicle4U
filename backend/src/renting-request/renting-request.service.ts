@@ -188,7 +188,7 @@ export class RentingRequestService {
       throw new HttpException('rentingrequest not found', HttpStatus.NOT_FOUND);
 
     let newstatus;
-    if (updateRentingRequestDto.confirm) {
+    if (updateRentingRequestDto.status == Request_status.ACCEPTED) {
       newstatus = Request_status.ACCEPTED;
 
       //automate rejected other_request that intercept_time
@@ -221,7 +221,8 @@ export class RentingRequestService {
       }
 
       //------------------------------
-    } else newstatus = Request_status.REJECTED;
+    } else if(updateRentingRequestDto.status == Request_status.INUSE) newstatus = Request_status.INUSE;
+    else newstatus = Request_status.REJECTED;
     await this.rentingRequestRepository.update(
       { id: updateRentingRequestDto.id },
       { status: newstatus },

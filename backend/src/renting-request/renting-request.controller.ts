@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { SearchVehicleDto } from 'src/vehicle/dto/search-vehicle.dto';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequestService } from './renting-request.service';
