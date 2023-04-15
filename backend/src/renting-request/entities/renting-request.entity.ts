@@ -20,8 +20,8 @@ export enum Request_status {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   REJECTED = 'rejected',
-  READY = 'ready',
-  INUSE = 'in use'
+  INUSE = 'in use',
+  EXPIRE = 'expire'
 }
 
 @Entity()
@@ -61,7 +61,7 @@ status(enum), rent_place*/
   endtime : string ;
 
   @ApiProperty({
-    enum :["pending","accepted","rejected"]
+    enum :["pending","accepted","rejected","in use","expire"]
   })
   @Column()
   status : Request_status;
