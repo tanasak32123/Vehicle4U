@@ -12,7 +12,7 @@ export class CommentsController {
     const comment = await this.commentsService.create(createCommentDto);
     if (comment != null) {
       return res.status(200).send({
-        comment: comment
+        comment: comment.id
       })
     }
     else {
