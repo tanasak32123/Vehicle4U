@@ -72,3 +72,7 @@
   border: none;
   padding: 10px;
 }
+
+.review_btn:hover{
+  background-color: #de7c2c; /* Green */
+}

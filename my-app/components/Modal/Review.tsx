@@ -4,11 +4,13 @@ import { Button, Modal, Row, Col, Form } from "react-bootstrap";
 import styles from "@/styles/components/reviewmodel.module.css";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import ReactStars from 'react-stars'
 
 export default function ReviewModal({ show, onHide, value }: any) {
 
-    const [error,setError] = useState("adsfaeasdf");
+    const [error,setError] = useState("");
     const [review,setReview] = useState("");
+    const [score,setScore] = useState(0);
     const req_id = value.request_id;
 
 
@@ -22,26 +24,14 @@ export default function ReviewModal({ show, onHide, value }: any) {
           body: JSON.stringify({
             req_id,
             review,
+            score,
           }),
         })
         .then((res) => res.json())          
         .then((res) => {
-            if (res?.errors) {
-                return setError(res.errors);
-            }
-            if (!res.success) {
-                if (res?.message == "Vehicle is already rented") {
-                  toast.error("รถคันนี้ถูกแล้วจองในช่วงเวลานี้", {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                  });
-                }
+            // console.log(res);
+            if (res?.error) {
+                return setError(res.error);
             }
             if (res?.success) {
                 toast.success("ทำการรีวิวสำเร็จ", {
@@ -72,22 +62,34 @@ export default function ReviewModal({ show, onHide, value }: any) {
         <Modal.Body>
           <div className={styles.review_div}>
             <label className={styles.review_text}>รีวิวยานพานหนะ</label>
-            <small className={"red_color"}>(*จำเป็น)</small>
           </div>
           <br></br>
-          <div className={`${styles.feedback}`}>
-            {error}
-          </div>
+          <label>ความคิดเห็น หรือ ข้อเสนอแนะ</label>
           <div>
             <textarea
-                        className={styles.textarea}
-                        id="exampleFormControlTextarea2"
-                        placeholder="โปรดใส่รีวิวของคุณ"
-                        onChange={(event) => {setReview(event.target.value.trim()); 
-                            // console.log(event.target.value.trim());
-                        }}
-                        rows={4}
+                    className={styles.textarea}
+                    id="exampleFormControlTextarea2"
+                    placeholder="โปรดใส่รีวิวของคุณ"
+                    onChange={(event) => {setReview(event.target.value.trim()); 
+                        // console.log(event.target.value.trim());
+                    }}
+                    rows={4}
                 ></textarea>
+          </div>
+          <div className={`${styles.feedback}`}>{error}</div>
+          <div>
+            <Row>
+                <Col><label>คะแนนความพึงพอใจ:</label><small className={"red_color"}>(*จำเป็น)</small></Col>
+                <Col>
+                    <ReactStars
+                    count={5}
+                    size={24}
+                    color2={'#ffd700'} 
+                    half = {false}
+                    onChange={setScore}
+                    />
+                </Col>
+            </Row>
           </div>
         </Modal.Body>
         <Modal.Footer className={`modal_wo_border d-flex`}>

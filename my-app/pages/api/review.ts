@@ -13,28 +13,17 @@ export default async function handler(
   }
 
   const body = req.body;
-  const req_id = body.req_id;
-  const review = body.review;
-  var isblank = true;
+  const score = body.score;
   
-  for (var i = 0; i < review.length; i++) {
-    if (review.charAt(i) !== " " ){
-        isblank = false;
-    }
-  }
-
-  if (isblank) {
-    error = "กรุณาใส่ข้อความสำหรับการรีวิว";
+  if ( score === 0 ) {
+    error = "โปรดเลือกคะแนนความพึงพอใจ";
     return res.status(400).json({
         success: false,
-        message: "** โปรดใส่ข้อมูลสำหรับการรีวิวให้เรียบร้อย",
+        message: "** โปรดกรอกคะแนนในการเช่ารถ",
         error,
     });
   }
-
   const token = req.cookies?.token;
-
-  // ขอ path backend 
   await fetch("http://localhost:3000/renting-request", {
     method: "POST",
     headers: {
@@ -42,10 +31,9 @@ export default async function handler(
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
-    //เช็คตัวแปรจาก backend
       request_id: body.req_id,
       message: body.review,
-      score: 10,
+      score: body.score,
     }),
   })
     .then((response) => {
