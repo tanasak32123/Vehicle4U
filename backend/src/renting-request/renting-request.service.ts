@@ -222,7 +222,8 @@ export class RentingRequestService {
 
       //------------------------------
     } else if(updateRentingRequestDto.status == Request_status.INUSE) newstatus = Request_status.INUSE;
-    else newstatus = Request_status.REJECTED;
+    else if(updateRentingRequestDto.status == Request_status.REJECTED)newstatus = Request_status.REJECTED;
+    else throw new HttpException('status invalid', HttpStatus.BAD_REQUEST);
     await this.rentingRequestRepository.update(
       { id: updateRentingRequestDto.id },
       { status: newstatus },
