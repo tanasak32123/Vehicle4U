@@ -7,6 +7,8 @@ import { Row, Col } from "react-bootstrap";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import ConfirmModal from "@/components/Modal/ConfirmSending";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -26,6 +28,24 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [request, setRequest] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+  const handleShow = () => {
+    setShowModal(true);
+  };
+
+  const handleConfirm = () => {
+    setShowModal(false);
+    // Do something when rejected
+  };
+
+  const handleReject = () => {
+    setShowModal(false);
+    // Do something when rejected
+  };
+
   const { data, isLoading, error, mutate } = useSWR(
     "/api/provider/getvehicle",
     fetcher
@@ -212,6 +232,7 @@ const ProviderOwnerVehicle = () => {
                                     className={styles.confirm_btn}
                                     onClick={(event) => {
                                       handleSubmit(event, true);
+                                      // console.log(event);
                                     }}
                                   >
                                     ยีนยัน
@@ -248,7 +269,27 @@ const ProviderOwnerVehicle = () => {
                               <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
                               {e?.endtime}
                             </div>
-                            <b></b>
+                            <div>
+                              <Row>
+                                <Col>
+                                  <b>กดเพื่อส่งรถยนต์ให้ผู้เช่า:</b>
+                                </Col>
+                                <Col>
+                                  <button
+                                    id={e?.request_id}
+                                    className={styles.send_car}
+                                    onClick={() => {
+                                      setShowModal(true);
+                                      setRequest(e?.request_id);
+                                      // console.log(e);
+                                      // console.log(showModal);
+                                    }}
+                                  >
+                                    ส่งรถให้ผู้เช่า
+                                  </button>
+                                </Col>
+                              </Row>
+                            </div>
                           </>
                         ) : (
                           <></>
@@ -272,6 +313,15 @@ const ProviderOwnerVehicle = () => {
             })}
           </div>
         </div>
+        {showModal && (
+          <ConfirmModal
+            req_id={request}
+            isShow={showModal}
+            onHide={handleClose}
+            onConfirm={handleConfirm}
+            onReject={handleReject}
+          />
+        )}
       </>
     );
 };
