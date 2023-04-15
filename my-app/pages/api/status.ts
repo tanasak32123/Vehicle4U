@@ -31,6 +31,7 @@ export default async function handler(
           });
         } else {
           const user = await response.json();
+          console.log(response);
           res.status(200).json({ success: true, ...user });
         }
       });
