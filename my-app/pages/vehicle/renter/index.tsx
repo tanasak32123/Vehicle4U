@@ -16,7 +16,6 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -31,7 +30,7 @@ const ProviderOwnerVehicle = () => {
 
   const [showModal, setShowModal] = useState(false);
 
-  const [value,setValue] = useState();
+  const [value, setValue] = useState();
 
   const handleClose = () => {
     setShowModal(false);
@@ -166,22 +165,10 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              {/* <button
-                                type="button"
-                                className={styles.review_btn}
-                                onClick={() => {
-                                  setShowModal(true);
-                                  setValue(e);
-                                }}
-                              >
-                                รีวิวยานพานหนะ
-                              </button> */}
-                              {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {e?.cid !== null ? (
-                                <></>
-                              ) : (
+                              {e?.cid === null && (
                                 <>
                                   <button
+                                    id={`comment_btn_${e?.request_id}`}
                                     type="button"
                                     className={styles.review_btn}
                                     onClick={() => {

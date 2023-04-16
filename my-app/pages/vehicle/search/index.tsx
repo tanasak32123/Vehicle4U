@@ -30,6 +30,9 @@ export default function SearchCar() {
       .then((res) => {
         setPageCount(res.page_count);
         return res;
+      })
+      .catch((err) => {
+        console.log(err);
       });
 
   const {
