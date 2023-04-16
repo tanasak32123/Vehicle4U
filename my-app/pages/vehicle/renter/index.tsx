@@ -6,7 +6,6 @@ import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
 import ReviewModal from "@/components/Modal/Review";
-import LogoutModal from "@/components/Modal/Logout";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -31,9 +30,9 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
-  const [value,setValue] = useState();
+  const [value, setValue] = useState();
   //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
-  const [cid,setCid] = useState(1);
+  const [cid, setCid] = useState(1);
 
   const handleClose = () => {
     setShowModal(false);
@@ -158,7 +157,9 @@ const ProviderOwnerVehicle = () => {
                           <button
                             type="button"
                             className={styles.chat_btn}
-                            onClick={() => router.push(`/chat/${e?.provider_id}`)}
+                            onClick={() =>
+                              router.push(`/chat/${e?.provider_id}`)
+                            }
                           >
                             แชท
                           </button>
@@ -168,21 +169,26 @@ const ProviderOwnerVehicle = () => {
                             <div className={styles.review_div}>
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
                               {e?.cid !== null ? (
+                                <></>
+                              ) : (
                                 <>
-                                </>
-                              ) : (<>
-                                <button
-                                  type="button"
-                                  className={styles.review_btn}
-                                  onClick={() => {setShowModal(true); setValue(e);}}
+                                  <button
+                                    type="button"
+                                    className={styles.review_btn}
+                                    onClick={() => {
+                                      setShowModal(true);
+                                      setValue(e);
+                                    }}
                                   >
                                     รีวิวยานพานหนะ
-                                </button>
-                              </>)}
+                                  </button>
+                                </>
+                              )}
                             </div>
-                          </>) : (
-                            <div></div>
-                          )}
+                          </>
+                        ) : (
+                          <div></div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -193,16 +199,15 @@ const ProviderOwnerVehicle = () => {
         </div>
 
         {showModal && (
-        <ReviewModal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          value = {value}
-          onClose = {handleClose}
-          // authAction={authAction}
-          // setShowSignout={setShowSignout}
-        />
-      )}
-
+          <ReviewModal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            value={value}
+            onClose={handleClose}
+            // authAction={authAction}
+            // setShowSignout={setShowSignout}
+          />
+        )}
       </>
     );
 };

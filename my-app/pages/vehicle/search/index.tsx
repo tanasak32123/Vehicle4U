@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
 import Link from "next/link";
+import ReactStars from "react-stars";
 
 export default function SearchCar() {
   const [name, setName] = useState("");
@@ -234,7 +235,9 @@ export default function SearchCar() {
                             <div className={`${styles.card} mb-4 p-4`}>
                               <Row>
                                 <Col lg={6}>
-                                  <div className={`${styles.vehicle_image}`}>
+                                  <div
+                                    className={`${styles.vehicle_image} h-100`}
+                                  >
                                     <Image
                                       src={`/images/vehicles/${e?.imagename}`}
                                       alt="Picture of car renter"
@@ -280,13 +283,13 @@ export default function SearchCar() {
                                       </ul>
                                       <div className="d-flex align-items-center">
                                         <div className="me-2">คะแนนรีวิว:</div>
-                                        <div className="ratings">
-                                          <FaStar />
-                                          <FaStar />
-                                          <FaStar />
-                                          <FaStar />
-                                          <FaStar />
-                                        </div>
+                                        <ReactStars
+                                          count={5}
+                                          value={3}
+                                          size={24}
+                                          color2={"#ffd700"}
+                                          edit={false}
+                                        />
                                       </div>
                                       <Link
                                         className="float-end btn btn-primary"

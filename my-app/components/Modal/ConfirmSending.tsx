@@ -1,16 +1,10 @@
-import { Button, Container, Modal, Row, Col } from "react-bootstrap";
-import React, { useState } from "react";
+import { Container, Modal, Row, Col } from "react-bootstrap";
+import React from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 import styles from "@/styles/components/confirmModal.module.css";
-import { mutate } from "swr";
 
 const ConfirmModal = ({ req_id, isShow, onHide, onConfirm, onReject }: any) => {
-  //   const handleConfirm = () => {
-  //     onConfirm();
-  //   };
-
   async function handleConfirm() {
-    //   console.log(req_id);
     const status = "in use";
     const response = await fetch("/api/status", {
       method: "POST",
@@ -30,7 +24,6 @@ const ConfirmModal = ({ req_id, isShow, onHide, onConfirm, onReject }: any) => {
     onReject();
   };
 
-  //   console.log(req_id);
   return (
     <Modal
       show={isShow}
