@@ -54,7 +54,7 @@ const ProviderOwnerVehicle = () => {
 
   async function handleSubmit(
     event: React.MouseEvent<HTMLButtonElement>,
-    confirm: boolean
+    status: string
   ) {
     const req_id = event.currentTarget.id;
     event.preventDefault();
@@ -65,13 +65,13 @@ const ProviderOwnerVehicle = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        confirm,
+        status,
         req_id,
       }),
     });
     if (!response.ok) return;
     mutate();
-    if (confirm) {
+    if (status == "accepted") {
       toast.success("ยืนยันการจองรถสำเร็จ", {
         position: "top-right",
         autoClose: 4000,
@@ -82,7 +82,7 @@ const ProviderOwnerVehicle = () => {
         progress: undefined,
         theme: "light",
       });
-    } else {
+    } else if (status == "rejected") {
       toast.success("ยกเลิกการจองรถสำเร็จ", {
         position: "top-right",
         autoClose: 4000,
@@ -197,6 +197,12 @@ const ProviderOwnerVehicle = () => {
                                     ถูกจองแล้ว
                                   </span>
                                 </>
+                              ) : e?.status === "in use" ? (
+                                <>
+                                  <span className="badge bg-secondary">
+                                    รถยนต์กำลังถูกใช้งาน
+                                  </span>
+                                </>
                               ) : (
                                 <>
                                   <span>-</span>
@@ -231,7 +237,7 @@ const ProviderOwnerVehicle = () => {
                                     id={e?.request_id}
                                     className={styles.confirm_btn}
                                     onClick={(event) => {
-                                      handleSubmit(event, true);
+                                      handleSubmit(event, "accepted");
                                       // console.log(event);
                                     }}
                                   >
@@ -243,7 +249,7 @@ const ProviderOwnerVehicle = () => {
                                     id={e?.request_id}
                                     className={styles.cancel_btn}
                                     onClick={(event) => {
-                                      handleSubmit(event, false);
+                                      handleSubmit(event, "rejected");
                                     }}
                                   >
                                     ปฏิเสธ
@@ -289,6 +295,24 @@ const ProviderOwnerVehicle = () => {
                                   </button>
                                 </Col>
                               </Row>
+                            </div>
+                          </>
+                        ) : e?.status === "in use" ? (
+                          <>
+                            <div>
+                              <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname}{" "}
+                              {e?.renter_lastname}
+                            </div>
+                            <div>
+                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                            </div>
+                            <div>
+                              <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                              {e?.starttime}
+                            </div>
+                            <div>
+                              <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
+                              {e?.endtime}
                             </div>
                           </>
                         ) : (

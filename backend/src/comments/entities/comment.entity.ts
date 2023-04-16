@@ -13,7 +13,7 @@ import {
 
 @Entity()
 export class Comment {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @OneToOne(() => RentingRequest, (req) => req.comment)
@@ -32,7 +32,7 @@ export class Comment {
   @Column()
   score: number;
 
-  @Column()
+  @Column({ nullable: true })
   reply: string;
 
   @CreateDateColumn()

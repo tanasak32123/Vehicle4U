@@ -20,7 +20,7 @@ export default async function handler(
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          confirm: body.confirm,
+          status: body.status,
           id: body.req_id,
         }),
       }).then(async (response) => {

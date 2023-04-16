@@ -5,30 +5,32 @@ import styles from "@/styles/components/confirmModal.module.css";
 import { mutate } from "swr";
 
 const ConfirmModal = ({ req_id, isShow, onHide, onConfirm, onReject }: any) => {
-  const handleConfirm = () => {
-    onConfirm();
-  };
+  //   const handleConfirm = () => {
+  //     onConfirm();
+  //   };
 
-  //   async function handleConfirm() {
-  //     // สร้างอีก path สำหรับการกด ยืนยัด หรือ ปฏิเสธ
-  //     console.log(req_id);
-  //     const response = await fetch("/api/status", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         req_id,
-  //       }),
-  //     });
-  //     if (!response.ok) return;
-  //   }
+  async function handleConfirm() {
+    //   console.log(req_id);
+    const status = "in use";
+    const response = await fetch("/api/status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status,
+        req_id,
+      }),
+    });
+    onConfirm();
+    if (!response.ok) return;
+  }
 
   const handleReject = () => {
     onReject();
   };
 
-  console.log(req_id);
+  //   console.log(req_id);
   return (
     <Modal
       show={isShow}
