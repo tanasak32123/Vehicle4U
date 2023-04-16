@@ -38,17 +38,25 @@ export class CommentsService {
   }
 
 
-  async findComments(id: number) {
-    const queryVehicle = await this.vehicleRepository.findOneBy({ id: id })
+  async findComments(vehicleId: number) {
+    console.log(vehicleId);
+    const queryVehicle = await this.vehicleRepository.findOneBy({
+      id: vehicleId,
+    });
+    console.log(queryVehicle);
     const comments = await this.requestRepository.find({
       relations: {
         vehicle: true,
-        comment: true
-      }
-      , where: {
-        vehicle:{id : queryVehicle.id}
+        comment: true,
+        user: true,
       },
-    })
+      where: {
+        vehicle: { id: queryVehicle.id },
+      },
+      select: {
+        user: { username: true },
+      },
+    });
     return comments;
   }
 
