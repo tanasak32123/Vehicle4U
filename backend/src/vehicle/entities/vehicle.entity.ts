@@ -70,7 +70,7 @@ export class Vehicle {
   user_vehicle: UserVehicle[]
   
 
-  @OneToMany(() => Comment, (comment) => comment.vehicle)
+  @OneToMany(() => Comment, (comment) => comment.vehicle,{cascade: true})
   comments : Comment[]
 
   @OneToOne(()=>RentingRequest, (rentingRequest)=> rentingRequest.vehicle)

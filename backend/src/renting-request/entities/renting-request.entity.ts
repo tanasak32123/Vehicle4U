@@ -84,7 +84,7 @@ status(enum), rent_place*/
   @Column({length : 10})
   contact: string;
 
-  @OneToOne(() => Comment, (comment) => comment.request)
+  @OneToOne(() => Comment, (comment) => comment.request,{cascade: true})
   @JoinColumn()
   comment: Comment;
   
@@ -97,9 +97,9 @@ status(enum), rent_place*/
   @CreateDateColumn()
   created_at: string;
 
-  @ManyToOne(() => User, (user) => user.rentingRequests)
+  @ManyToOne(() => User, (user) => user.rentingRequests,{cascade: true})
   user : User;
 
-  @ManyToOne(() => Vehicle, (vehicle) => vehicle.rentingRequests)
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.rentingRequests,{cascade: true})
   vehicle : Vehicle;
 }
