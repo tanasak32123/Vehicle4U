@@ -5,7 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-//   let error: { [index: string]: any } = { };
 
   let error;
   if (req.method != "POST") {
