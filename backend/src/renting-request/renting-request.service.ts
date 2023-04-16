@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
-import { Repository } from 'typeorm';
+import { LessThan, LessThanOrEqual, Repository } from 'typeorm';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { OutputRenterPageDto } from './dto/outputrenterpage.dto';
 import { OutputProviderPageDto } from './dto/outputproviderpage.dto';
@@ -228,7 +228,8 @@ export class RentingRequestService {
 
       //------------------------------
     } else if(updateRentingRequestDto.status == Request_status.INUSE) newstatus = Request_status.INUSE;
-    else newstatus = Request_status.REJECTED;
+    else if(updateRentingRequestDto.status == Request_status.REJECTED)newstatus = Request_status.REJECTED;
+    else throw new HttpException('status invalid', HttpStatus.BAD_REQUEST);
     await this.rentingRequestRepository.update(
       { id: updateRentingRequestDto.id },
       { status: newstatus },
@@ -238,10 +239,42 @@ export class RentingRequestService {
     });
   }
 
-  // async delete(rentingRequest_id:number): Promise<RentingRequest> {
-  //     const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
-  //     if(!rentingRequest) return null;
-  //     await this.rentingRequestRepository.delete({'id':rentingRequest_id});
-  //     return rentingRequest;
-  // }
+  async autoexpire(){
+    let currentdate;
+    let currenttime;
+    let date = new Date().toLocaleDateString().split('/');
+    let time = new Date().toLocaleTimeString().split(':');
+    date[2] = (parseInt(date[2])-543).toString();
+    if(date[1]<='9') currentdate = date[2]+'/0'+date[1]+'/'+date[0];
+    else currentdate = date[2]+'/'+date[1]+'/'+date[0];
+    currenttime = time[0]+':'+time[1];
+
+    await this.rentingRequestRepository
+    .createQueryBuilder()
+    .update(RentingRequest)
+    .set({
+      status : Request_status.EXPIRE
+    })
+    .where({enddate : LessThan(currentdate)})
+    .andWhere({status : Request_status.INUSE})
+    .execute()
+
+    await this.rentingRequestRepository
+    .createQueryBuilder()
+    .update(RentingRequest)
+    .set({
+      status : Request_status.EXPIRE
+    })
+    .where({enddate : currentdate})
+    .andWhere({endtime : LessThanOrEqual(currenttime)})
+    .andWhere({status : Request_status.INUSE})
+    .execute()
+  }
+
+  async delete(rentingRequest_id:number): Promise<RentingRequest> {
+      const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
+      if(!rentingRequest) throw new HttpException('rentingrequest not found', HttpStatus.NOT_ACCEPTABLE);
+      await this.rentingRequestRepository.delete({'id':rentingRequest_id});
+      return rentingRequest;
+  }
 }

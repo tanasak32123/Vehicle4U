@@ -13,6 +13,7 @@
   box-shadow: 0px 10px 40px 16px rgba(90, 82, 128, 0.22);
   border-radius: 26px;
   width: 80%;
+  min-width: 450px;
 }
 
 .back_btn {
@@ -41,7 +42,6 @@
 
 
 .chat_btn{
-  float: right;
   background-color: #4CAF50; /* Green */
   border-radius: 18px;
   box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
@@ -56,5 +56,33 @@
 }
 
 .chat_div{
+  padding: 10px;
+  float: right;
+}
+
+.review_div{
+  float: right;
+  padding: 10px;
+}
+
+.review_btn{
+  background-color: #f6882e; /* Green */
+  border-radius: 18px;
+  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+  color: white;
+  border: none;
+  padding: 10px;
+}
+
+.review_btn:hover{
+  background-color: #de7c2c; /* Green */
+}
+
+.disable_btn{
+  background-color: #6c6c6c; /* Green */
+  border-radius: 18px;
+  box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+  color: white;
+  border: none;
   padding: 10px;
 }

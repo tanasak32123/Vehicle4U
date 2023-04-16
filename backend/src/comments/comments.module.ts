@@ -8,7 +8,7 @@ import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { Comment } from './entities/comment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RentingRequest, User, Vehicle,Comment])],
+  imports: [TypeOrmModule.forFeature([RentingRequest, User, Vehicle, Comment])],
   controllers: [CommentsController],
   providers: [CommentsService],
 })
