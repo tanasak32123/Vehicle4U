@@ -5,7 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-//   let error: { [index: string]: any } = { };
 
   let error;
   if (req.method != "POST") {
@@ -24,7 +23,7 @@ export default async function handler(
     });
   }
   const token = req.cookies?.token;
-  await fetch("http://localhost:3000/createComments", {
+  await fetch("http://localhost:3000/comments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
