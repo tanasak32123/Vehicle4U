@@ -165,22 +165,10 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              {/* <button
-                                type="button"
-                                className={styles.review_btn}
-                                onClick={() => {
-                                  setShowModal(true);
-                                  setValue(e);
-                                }}
-                              >
-                                รีวิวยานพานหนะ
-                              </button> */}
-                              {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {e?.cid !== null ? (
-                                <></>
-                              ) : (
+                              {e?.cid === null && (
                                 <>
                                   <button
+                                    id={`comment_btn_${e?.request_id}`}
                                     type="button"
                                     className={styles.review_btn}
                                     onClick={() => {

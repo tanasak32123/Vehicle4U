@@ -31,6 +31,9 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
           return setError(res.error);
         }
         if (res?.success) {
+          document
+            .getElementById(`comment_btn_${value.request_id}`)
+            ?.classList.add(`d-none`);
           toast.success("ทำการรีวิวสำเร็จ", {
             position: "top-right",
             autoClose: 5000,
@@ -41,7 +44,6 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
             progress: undefined,
             theme: "light",
           });
-          router.replace("/vehicle/renter");
           onClose();
         }
       });
