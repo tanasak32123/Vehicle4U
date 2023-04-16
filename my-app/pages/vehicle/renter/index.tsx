@@ -32,8 +32,6 @@ const ProviderOwnerVehicle = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [value,setValue] = useState();
-  //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
-  const [cid,setCid] = useState(1);
 
   const handleClose = () => {
     setShowModal(false);
