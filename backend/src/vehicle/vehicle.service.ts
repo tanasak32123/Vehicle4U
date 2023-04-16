@@ -47,9 +47,8 @@ export class VehicleService {
     const datalength = all_vehicles.length;
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
-      .innerJoinAndSelect('vehicles.user', 'user')
-      .innerJoinAndSelect('vehicles.rentingRequests', 'rentingRequests')
-      .innerJoinAndSelect('rentingRequests.comment', 'comment')
+      .leftJoinAndSelect('vehicles.user', 'user')
+      .leftJoinAndSelect('vehicles.comments', 'comments')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {
@@ -63,10 +62,11 @@ export class VehicleService {
       .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
         maxPassenger: maxPassenger,
       })
-      .limit(pagination_count)
-      .offset((pageNumber - 1) * pagination_count)
-      .printSql()
+      //.orderBy('vehicles.name','ASC')
+      .skip((pageNumber - 1) * pagination_count)
+      .take(2)
       .getMany();
+    console.log(x);
     const paginated_vehicles = x;
     //console.log(pageNumber - 0 * pagination_count < datalength);
     const paginationData = { next: {}, prev: {}, page_count: {} };
@@ -85,12 +85,11 @@ export class VehicleService {
     paginationData.page_count = Math.ceil(
       all_vehicles.length / pagination_count,
     );
-
+    //console.log(all_vehicles);
     console.log(paginated_vehicles);
     console.log(paginationData);
     return [paginated_vehicles, paginationData];
   }
-
   async createVehicle(
     id: number,
     createVehicleDto: CreateVehicleDto,
