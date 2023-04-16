@@ -32,7 +32,7 @@ export class User {
   @ApiProperty({
     type: String,
 })
-  @Column({select:false})
+  @Column()
   password: string;
 
   @ApiProperty({
@@ -50,13 +50,13 @@ export class User {
   @ApiProperty({
     type: String,
 })
-  @Column({length : 10,select:false})
+  @Column({length : 10})
   tel: string;
   
   @ApiProperty({
     type: String,
 })
-  @Column({length : 13 , unique : true,select:false})
+  @Column({length : 13 , unique : true})
   citizen_id: string; 
 
   @ApiProperty({
@@ -68,7 +68,7 @@ export class User {
   @ApiProperty({
     type: String,
 })
-  @Column({nullable : true,select:false})
+  @Column({nullable : true})
   driving_license_id: string;
   
   @ApiProperty({
