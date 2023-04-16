@@ -6,7 +6,6 @@ import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
 import ReviewModal from "@/components/Modal/Review";
-import LogoutModal from "@/components/Modal/Logout";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -17,7 +16,7 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      // console.log(res);
+      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -31,6 +30,7 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
+
   const [value,setValue] = useState();
 
   const handleClose = () => {
@@ -156,31 +156,46 @@ const ProviderOwnerVehicle = () => {
                           <button
                             type="button"
                             className={styles.chat_btn}
-                            onClick={() => router.push(`/chat/${e?.provider_id}`)}
+                            onClick={() =>
+                              router.push(`/chat/${e?.provider_id}`)
+                            }
                           >
                             แชท
                           </button>
                         </div>
-                        {e?.status === "in use" ? (
+                        {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
+                              <button
+                                type="button"
+                                className={styles.review_btn}
+                                onClick={() => {
+                                  setShowModal(true);
+                                  setValue(e);
+                                }}
+                              >
+                                รีวิวยานพานหนะ
+                              </button>
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {e?.cid !== null ? (
+                              {/* {e?.cid !== null ? (
+                                <></>
+                              ) : (
                                 <>
-                                </>
-                              ) : (<>
-                                <button
-                                  type="button"
-                                  className={styles.review_btn}
-                                  onClick={() => {setShowModal(true); setValue(e);}}
+                                  <button
+                                    type="button"
+                                    className={styles.review_btn}
+                                    onClick={() => {
+                                      setShowModal(true);
+                                      setValue(e);
+                                    }}
                                   >
                                     รีวิวยานพานหนะ
-                                </button>
-                              </>)}
+                                  </button>
+                                </>
+                              )} */}
                             </div>
-                          </>) : (
-                            <div></div>
-                          )}
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -191,16 +206,13 @@ const ProviderOwnerVehicle = () => {
         </div>
 
         {showModal && (
-        <ReviewModal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          value = {value}
-          onClose = {handleClose}
-          // authAction={authAction}
-          // setShowSignout={setShowSignout}
-        />
-      )}
-
+          <ReviewModal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            value={value}
+            onClose={handleClose}
+          />
+        )}
       </>
     );
 };

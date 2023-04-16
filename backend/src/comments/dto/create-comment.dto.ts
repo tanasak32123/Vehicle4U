@@ -20,6 +20,12 @@ export class CreateCommentDto {
         type: Number,
     })
     @IsNotEmpty()
+    user_id: number;
+
+    @ApiProperty({
+        type: Number,
+    })
+    @IsNotEmpty()
     score : number ;
 
 }
