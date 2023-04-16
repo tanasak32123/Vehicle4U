@@ -5,7 +5,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-
   let error;
   if (req.method != "POST") {
     return res.status(404).redirect("/404");
@@ -13,17 +12,17 @@ export default async function handler(
 
   const body = req.body;
   const score = body.score;
-  
-  if ( score === 0 ) {
+
+  if (score === 0) {
     error = "โปรดเลือกคะแนนความพึงพอใจ";
     return res.status(400).json({
-        success: false,
-        message: "** โปรดกรอกคะแนนในการเช่ารถ",
-        error,
+      success: false,
+      message: "** โปรดกรอกคะแนนในการเช่ารถ",
+      error,
     });
   }
   const token = req.cookies?.token;
-  await fetch("http://localhost:3000/comments", {
+  await fetch("http://localhost:3000/createComments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -38,8 +37,8 @@ export default async function handler(
     .then((response) => {
       if (!response.ok) {
         return res.status(404).json({
-            success: false,
-            message: "Not receive ok status from backend"
+          success: false,
+          message: "Not receive ok status from backend",
         });
       } else {
         return response.json();
