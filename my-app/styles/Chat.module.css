@@ -4,9 +4,9 @@
 }
 
 .card_body {
-  position: "relative";
-  height: "400px";
-  overflow: "scroll";
+  position: relative;
+  height: 450px;
+  overflow: scroll;
 }
 
 .chat_box {
