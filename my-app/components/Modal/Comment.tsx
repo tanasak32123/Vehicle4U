@@ -14,7 +14,7 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    await fetch("/api/review", {
+    await fetch("/api/comment", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
