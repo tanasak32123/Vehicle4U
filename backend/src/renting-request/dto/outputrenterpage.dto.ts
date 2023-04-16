@@ -92,4 +92,10 @@ export class OutputRenterPageDto {
     })
     @IsNotEmpty()
     endtime : string ;
+
+    @ApiProperty({
+        type: Number,
+    })
+    @IsNotEmpty()
+    cid : number ;
 }
