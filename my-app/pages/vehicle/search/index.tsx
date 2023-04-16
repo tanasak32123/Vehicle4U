@@ -3,7 +3,7 @@ import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Button } from "react-bootstrap";
 import React, { useMemo, useRef, useState } from "react";
 import useSWR, { mutate } from "swr";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaStar } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
@@ -278,6 +278,16 @@ export default function SearchCar() {
                                             e?.user.tel.slice(6)}
                                         </li>
                                       </ul>
+                                      <div className="d-flex align-items-center">
+                                        <div className="me-2">คะแนนรีวิว:</div>
+                                        <div className="ratings">
+                                          <FaStar />
+                                          <FaStar />
+                                          <FaStar />
+                                          <FaStar />
+                                          <FaStar />
+                                        </div>
+                                      </div>
                                       <Link
                                         className="float-end btn btn-primary"
                                         href={`/vehicle/${e.id}/reviews`}
