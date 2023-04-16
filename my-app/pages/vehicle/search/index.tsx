@@ -7,10 +7,12 @@ import { FaSearch } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
-import Link from "next/link";
 import ReactStars from "react-stars";
+import { useRouter } from "next/navigation";
 
 export default function SearchCar() {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [province, setProvince] = useState("");
   const [seat, setSeat] = useState("0");
@@ -230,82 +232,92 @@ export default function SearchCar() {
                     <>
                       {paginationData?.vehicles.map((e: any) => {
                         return (
-                          <Link
-                            key={e.id}
-                            href={`/vehicle/rent/${e?.id}`}
-                            className={`${styles.card_link}`}
+                          <div
+                            key={`vehicle_card_${e?.id}`}
+                            className={`${styles.card} mb-4 p-4`}
                           >
-                            <div className={`${styles.card} mb-4 p-4`}>
-                              <Row>
-                                <Col lg={6}>
-                                  <div
-                                    className={`${styles.vehicle_image} h-100`}
-                                  >
-                                    <Image
-                                      src={`/images/vehicles/${e?.imagename}`}
-                                      alt="Picture of car renter"
-                                      fill
-                                      loading="lazy"
-                                      sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
-                                      style={{ objectFit: "contain" }}
-                                    />
+                            <Row>
+                              <Col lg={6}>
+                                <div
+                                  className={`${styles.vehicle_image} h-100`}
+                                >
+                                  <Image
+                                    src={`/images/vehicles/${e?.imagename}`}
+                                    alt="Picture of car renter"
+                                    fill
+                                    loading="lazy"
+                                    sizes="(max-width: 768px) 100vw,(max-width: 1200px) 50vw,33vw"
+                                    style={{ objectFit: "contain" }}
+                                  />
+                                </div>
+                              </Col>
+                              <Col className="p-3" lg={6}>
+                                <div className={`text-start`}>
+                                  <div className={styles.car_name}>
+                                    {e?.name.toUpperCase()}
                                   </div>
-                                </Col>
-                                <Col className="p-3" lg={6}>
-                                  <div className={`text-start`}>
-                                    <div className={styles.car_name}>
-                                      {e?.name.toUpperCase()}
-                                    </div>
-                                    <div className={styles.details}>
-                                      <ul>
-                                        <li>
-                                          <b>เลขทะเบียนรถ</b>:{" "}
-                                          {e?.registrationId}
-                                        </li>
-                                        <li>
-                                          <b>จังหวัด</b>: {e?.province}
-                                        </li>
-                                        <li>
-                                          <b>จำนวนที่นั่ง</b>:{" "}
-                                          {e?.maximumCapacity}
-                                        </li>
+                                  <div className={styles.details}>
+                                    <ul>
+                                      <li>
+                                        <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                                      </li>
+                                      <li>
+                                        <b>จังหวัด</b>: {e?.province}
+                                      </li>
+                                      <li>
+                                        <b>จำนวนที่นั่ง</b>:{" "}
+                                        {e?.maximumCapacity}
+                                      </li>
 
-                                        <li>
-                                          <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
-                                          {e?.user.first_name} &nbsp;
-                                          {e?.user.last_name}
-                                        </li>
-                                        <li>
-                                          <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
-                                          {e?.user.tel.slice(0, 3) +
-                                            "-" +
-                                            e?.user.tel.slice(3, 6) +
-                                            "-" +
-                                            e?.user.tel.slice(6)}
-                                        </li>
-                                      </ul>
-                                      <div className="d-flex align-items-center">
-                                        <div className="me-2">คะแนนรีวิว:</div>
-                                        <ReactStars
-                                          count={5}
-                                          value={3}
-                                          size={24}
-                                          color2={"#ffd700"}
-                                          edit={false}
-                                        />
-                                      </div>
-                                      <Link
-                                        className="float-end btn btn-primary"
-                                        href={`/vehicle/${e.id}/reviews`}
+                                      <li>
+                                        <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
+                                        {e?.user.first_name} &nbsp;
+                                        {e?.user.last_name}
+                                      </li>
+                                      <li>
+                                        <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
+                                        {e?.user.tel.slice(0, 3) +
+                                          "-" +
+                                          e?.user.tel.slice(3, 6) +
+                                          "-" +
+                                          e?.user.tel.slice(6)}
+                                      </li>
+                                    </ul>
+                                    <div className="d-flex align-items-center mb-2">
+                                      <div className="me-2">คะแนนรีวิว:</div>
+                                      <ReactStars
+                                        count={5}
+                                        value={3}
+                                        size={24}
+                                        color2={"#ffd700"}
+                                        edit={false}
+                                      />
+                                    </div>
+                                    <div className="d-flex justify-content-between">
+                                      <button
+                                        className={`float-end btn btn-primary`}
+                                        onClick={() => {
+                                          router.push(`/vehicle/rent/${e?.id}`);
+                                        }}
+                                      >
+                                        เช่ารถ
+                                      </button>
+                                      <button
+                                        className={`float-end btn btn-primary`}
+                                        onClick={() => {
+                                          router.push(
+                                            `/vehicle/${e?.id}/comments`
+                                          );
+                                        }}
                                       >
                                         ดูรีวิวยานพาหนะ
-                                      </Link>
+                                      </button>
                                     </div>
                                   </div>
-                                </Col>
-                              </Row>
-                            </div>
-                          </Link>
+                                </div>
+                              </Col>
+                            </Row>
+                          </div>
                         );
                       })}
                       <ReactPaginate

@@ -1,4 +1,3 @@
-import router from "next/router";
 import React, { useRef } from "react";
 import { Modal } from "react-bootstrap";
 import styles from "@/styles/components/reviewmodel.module.css";
@@ -14,7 +13,7 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
-    await fetch("/api/comment", {
+    await fetch("/api/comments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,6 +70,11 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
           id="comment"
           placeholder="โปรดใส่รีวิวของคุณ"
           rows={4}
+          onKeyDown={(e) => {
+            if (e.key == "Enter") {
+              e.preventDefault();
+            }
+          }}
         />
         <div className="d-flex align-items-center">
           <div>

@@ -4,10 +4,31 @@ import { Button, Card, Container, Form } from "react-bootstrap";
 import styles from "styles/Reviews.module.css";
 import { useAuth } from "components/AuthContext";
 import { FaArrowAltCircleLeft, FaReply, FaUserCircle } from "react-icons/fa";
+import useSWR from "swr";
 
-const Reviews: NextPage = () => {
+const Comments: NextPage = () => {
   const router = useRouter();
-  const { auth, isLoading, authAction }: any = useAuth();
+  const { auth, isLoading }: any = useAuth();
+
+  const fetcher = (url: string) =>
+    fetch(url)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success) {
+          console.log(res.comment);
+          return res.comment;
+        }
+        throw new Error(`Something went wrong...`);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+  const {
+    data: commentsData,
+    isLoading: commentsLoading,
+    error: commentsError,
+  } = useSWR("/api/comments", fetcher);
 
   const handleClicktoOpenReplyBox = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -180,6 +201,85 @@ const Reviews: NextPage = () => {
                   </div>
                 </Card.Body>
               </Card>
+
+              {commentsData &&
+                commentsData.map((obj: any) => (
+                  <Card
+                    id={`review_${obj?.comment.id}`}
+                    key={`review_${obj?.comment.id}`}
+                    className="mb-3"
+                  >
+                    <Card.Body className="d-flex">
+                      <div className="me-2">
+                        <FaUserCircle size={40} />
+                      </div>
+
+                      <div>
+                        <div
+                          id={`title_reviews_${obj?.comment.id}`}
+                          className="mb-3"
+                        >
+                          <div id={`author_name_${obj?.comment.id}`}>
+                            <small>Tanasak Pusawatwong</small>
+                          </div>
+                          <div id={`timestamp_reviews_${obj?.comment.id}`}>
+                            <small>22/03/65 11:00:59น.</small>
+                          </div>
+                        </div>
+                        <div id={`content_reviews_${obj?.comment.id}`}>
+                          <p>{obj?.comment.message}</p>
+                        </div>
+                        {auth?.role == "provider" && (
+                          <>
+                            <div id={`reply_btn_${obj?.comment.id}`}>
+                              <button
+                                type="button"
+                                className="btn btn-link p-0"
+                                onClick={(e) =>
+                                  handleClicktoOpenReplyBox(e, obj?.comment.id)
+                                }
+                              >
+                                <FaReply />
+                                &nbsp;ตอบกลับ
+                              </button>
+                            </div>
+                            <Card
+                              id={`reply_box_${obj?.comment.id}`}
+                              className={`${styles.reply_box} d-none`}
+                            >
+                              <Card.Body>
+                                <Form.Label
+                                  htmlFor={`text_reply_${obj?.comment.id}`}
+                                >
+                                  ข้อความตอบกลับ
+                                </Form.Label>
+                                <Form.Control
+                                  as="textarea"
+                                  title={`text_reply_${obj?.comment.id}`}
+                                  className="mb-3"
+                                  placeholder="พิมพ์ข้อความตอบกลับ..."
+                                />
+                                <div
+                                  className={`d-flex justify-content-between`}
+                                >
+                                  <Button
+                                    variant="danger"
+                                    onClick={(e) =>
+                                      handleCancelToReply(e, obj?.comment.id)
+                                    }
+                                  >
+                                    ยกเลิก
+                                  </Button>
+                                  <Button variant="success">ตอบกลับ</Button>
+                                </div>
+                              </Card.Body>
+                            </Card>
+                          </>
+                        )}
+                      </div>
+                    </Card.Body>
+                  </Card>
+                ))}
             </div>
           </div>
         )}
@@ -188,4 +288,4 @@ const Reviews: NextPage = () => {
   );
 };
 
-export default Reviews;
+export default Comments;
