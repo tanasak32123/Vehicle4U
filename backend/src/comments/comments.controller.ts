@@ -27,8 +27,8 @@ export class CommentsController {
 
 
   @Get('searchComments')
-  async getCommentsWithVehicleId(@Query('id') id: number,@Response() res) {
-    const comments = await this.commentsService.findComments(id);
+  async getCommentsWithVehicleId(@Query('vehicleId') vehicleId: number,@Response() res) {
+    const comments = await this.commentsService.findComments(vehicleId);
     //console.log(comments);
     return res.status(200).send({
       comment: comments
