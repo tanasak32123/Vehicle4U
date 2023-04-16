@@ -2,12 +2,11 @@ import Head from "next/head";
 import useSWR from "swr";
 import io from "socket.io-client";
 import styles from "styles/Chat.module.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import { Col, Row } from "react-bootstrap";
-import Image from "next/image";
 import Link from "next/link";
-import { FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 
 export default function chat() {
@@ -46,6 +45,8 @@ export default function chat() {
     const chatText = (
       document.getElementById("typing_text") as HTMLInputElement
     ).value;
+    (document.getElementById("typing_text") as HTMLInputElement).value = "";
+    document.getElementById("send_btn")?.classList.add("d-none");
     socket.emit("sendMessage", {
       senderId: auth.user?.id,
       receiverId: id,
@@ -90,7 +91,9 @@ export default function chat() {
             <Col md={10} lg={8} xl={6}>
               <div className="card" id="chat">
                 <div className="card-header d-flex justify-content-between align-items-center p-3">
-                  <h5 className="mb-0">Chat กับ {data.ReceiverFirstName} {data.ReceiverLastName}</h5>
+                  <h5 className="mb-0">
+                    Chat กับ {data.ReceiverFirstName} {data.ReceiverLastName}
+                  </h5>
                   <button
                     type="button"
                     className="btn btn-primary btn-sm"
@@ -109,45 +112,42 @@ export default function chat() {
                     overflow: "scroll",
                   }}
                 >
-
                   {data?.messages?.map((e: any) => {
-                      // my message 
-                      //e?.sender.id == id
-                      if (e?.sender.id == id){
-                        return (
-                          <div className="d-flex flex-row justify-content-start">
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                            alt="avatar 1"
-                            style={{ width: "45px", height: "100%" }}
-                          />
-                            <div>
-                              <p
-                                className="small p-2 ms-3 mb-1 rounded-3"
-                                style={{ backgroundColor: "#f5f6f7" }}
-                              >
-                                {e?.message} 
-                              </p>
+                    if (e?.sender.id == id) {
+                      return (
+                        <div className="d-flex flex-row justify-content-start">
+                          <div className="d-flex align-items-end">
+                            <FaUserCircle size={40} />
+                          </div>
+                          <div className="ms-2">
+                            <div className="mb-1">
+                              <small>
+                                {data.ReceiverFirstName} {data.ReceiverLastName}
+                              </small>
+                            </div>
+                            <div className="p-2 bg-light text-dark rounded-3">
+                              {e?.message}
                             </div>
                           </div>
-                        );
-                      }else if (e?.sender.id == auth.user?.id){
-                        return (
-                          <div className="d-flex flex-row justify-content-end mb-4 pt-1">
-                        <div>
-                          <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                          {e?.message}
-                          </p>
                         </div>
-                        <img
-                              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                              alt="avatar 1"
-                              style={{ width: "45px", height: "100%" }}
-                            />
-                        
-                      </div>
-                        );
-                      }
+                      );
+                    } else if (e?.sender.id == auth.user?.id) {
+                      return (
+                        <div className="d-flex flex-row justify-content-end pt-1">
+                          <div className="text-end me-2">
+                            <div className="mb-1">
+                              <small>ฉัน</small>
+                            </div>
+                            <div className="small p-2 text-white rounded-3 bg-primary">
+                              {e?.message}
+                            </div>
+                          </div>
+                          <div className="d-flex align-items-end">
+                            <FaUserCircle size={40} />
+                          </div>
+                        </div>
+                      );
+                    }
                   })}
                 </div>
 
@@ -159,20 +159,11 @@ export default function chat() {
                     placeholder="พิมพ์ข้อความ..."
                     onChange={(e) => handleTyping(e)}
                     onKeyDown={(e) => {
-                      console.log(e.key == 'Enter')
-                      if (e.key == 'Enter') {
-                        handleSendMessage(e)
+                      if (e.key == "Enter") {
+                        handleSendMessage(e);
                       }
                     }}
                   />
-                  {/* <a className="ms-1 text-muted" href="#!">
-                  <FaPaperclip />
-                  <i className="fas fa-paperclip"></i>
-                </a>
-                <a className="ms-3 text-muted" href="#!">
-                  <FaSmile />
-                  <i className="fas fa-smile"></i>
-                </a> */}
                   <Link
                     id="send_btn"
                     className="ms-3 d-none"
@@ -182,53 +173,7 @@ export default function chat() {
                     <FaPaperPlane />
                     <i className="fas fa-paper-plane"></i>
                   </Link>
-                  <Image
-                    width={45}
-                    height={45}
-                    src={`https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp`}
-                    alt="avatar 3"
-                    style={{ width: "45px", height: "100%" }}
-                  />
                 </div>
-                {/* <div className={`p-4 ${styles.chat_box}`}>
-                <h1 className="mb-3">
-                  ติดต่อผู้ปล่อยเช่า{" "}
-                  <span className={`${styles.comment}`}>
-                    <FaCommentAlt />
-                  </span>{" "}
-                </h1>
-
-                <div className={`mb-3 ${styles.chat_container} p-2`}>
-                  {messages.map((e: any) => {
-                    return (
-                      <Row className="d-flex">
-                        <div className={`${styles.msg_text} p-4 my-2`}>
-                          <h6>You</h6>
-                          <p className="mb-0">{e?.message}</p>
-                        </div>
-                      </Row>
-                    );
-                  })}
-                </div>
-
-                <div className="input-group">
-                  <input
-                    className={`form-control ${styles.chat_text}`}
-                    id="chat-text"
-                    placeholder="พิมพ์ข้อความ ..."
-                    onChange={(e) => handleTyping(e)}
-                  />
-                  <button
-                    type="button"
-                    id="send_btn"
-                    className="btn btn-primary d-none"
-                    onClick={handleSendMessage}
-                  >
-                    {""}
-                    <FaChevronCircleRight />
-                  </button>
-                </div>
-              </div> */}
               </div>
             </Col>
           </Row>
