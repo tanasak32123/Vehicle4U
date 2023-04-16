@@ -16,7 +16,7 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      // console.log(res);
+      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -30,9 +30,8 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
-  const [value, setValue] = useState();
-  //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
-  const [cid, setCid] = useState(1);
+
+  const [value,setValue] = useState();
 
   const handleClose = () => {
     setShowModal(false);
@@ -164,9 +163,19 @@ const ProviderOwnerVehicle = () => {
                             แชท
                           </button>
                         </div>
-                        {e?.status === "in use" ? (
+                        {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
+                              {/* <button
+                                type="button"
+                                className={styles.review_btn}
+                                onClick={() => {
+                                  setShowModal(true);
+                                  setValue(e);
+                                }}
+                              >
+                                รีวิวยานพานหนะ
+                              </button> */}
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
                               {e?.cid !== null ? (
                                 <></>
@@ -186,8 +195,6 @@ const ProviderOwnerVehicle = () => {
                               )}
                             </div>
                           </>
-                        ) : (
-                          <div></div>
                         )}
                       </div>
                     </div>
@@ -204,8 +211,6 @@ const ProviderOwnerVehicle = () => {
             onHide={() => setShowModal(false)}
             value={value}
             onClose={handleClose}
-            // authAction={authAction}
-            // setShowSignout={setShowSignout}
           />
         )}
       </>
