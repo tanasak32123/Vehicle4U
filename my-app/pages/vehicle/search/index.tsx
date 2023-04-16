@@ -3,7 +3,7 @@ import styles from "@/styles/searchcar.module.css";
 import { Row, Col, Button } from "react-bootstrap";
 import React, { useMemo, useRef, useState } from "react";
 import useSWR, { mutate } from "swr";
-import { FaSearch, FaStar } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";

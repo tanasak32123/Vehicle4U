@@ -104,7 +104,7 @@ export default function chat() {
                   </button>
                 </div>
                 <div
-                  className={`card-body ${styles.card_body}`}
+                  className={`${styles.card_body} card-body`}
                   data-mdb-perfect-scrollbar="true"
                 >
                   {data?.messages?.map((e: any) => {
