@@ -26,25 +26,38 @@ export class CommentsService {
     console.log(1);
     const comment = await this.commentRepository.create(createCommentDto);
     console.log(2);
+    console.log(comment);
     const rentReq = await this.requestRepository.findOneBy({id:createCommentDto.request_id});
     rentReq.comment = comment;
     console.log(rentReq);
-    await this.requestRepository.update({ id: rentReq.id }, {});
+    //await this.requestRepository.update({ id: rentReq.id }, {});
+    await this.requestRepository.save(rentReq);
     comment.request = rentReq;
     console.log(3)
-    return await this.commentRepository.save(comment);
+    return await this.commentRepository.save(comment);;
   }
 
-  findAll() {
-    return `This action returns all comments`;
+
+  async findComments(id: number) {
+    const queryVehicle = await this.vehicleRepository.findOneBy({ id: id })
+    const comments = await this.requestRepository.find({
+      relations: {
+        vehicle: true,
+        comment: true
+      }
+      , where: {
+        vehicle:{id : queryVehicle.id}
+      },
+    })
+    return comments;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
-
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async addReply(updateCommentDto:UpdateCommentDto) {
+    const comment = await this.commentRepository.findOneBy({
+      id:updateCommentDto.id
+    })
+    comment.reply = updateCommentDto.reply
+    return await this.commentRepository.update({ id:updateCommentDto.id},comment);
   }
 
   remove(id: number) {
