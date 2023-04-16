@@ -146,7 +146,8 @@ export class RentingRequestService {
         if(!user.is_renter)throw new HttpException("no access rights", HttpStatus.NOT_ACCEPTABLE);
         let rentingRequests = await this.rentingRequestRepository.find({
             relations : { 
-                vehicle : {user: true}
+                vehicle : {user: true}, 
+                comment : true
             },
             where : {
                 'user': {'id' : user.id}
@@ -157,6 +158,11 @@ export class RentingRequestService {
         renterrequests = [];
         for (let i = 0; i < rentingRequests.length; i++) {
             let renterrequest = new OutputRenterPageDto;
+            if ( !rentingRequests[i].comment ){
+              renterrequest.cid = null;
+            }else{
+              renterrequest.cid              = rentingRequests[i].comment.id;
+            }
             renterrequest.request_id         = rentingRequests[i].id;
             renterrequest.car_id             = rentingRequests[i].vehicle.id;
             renterrequest.imagename          = rentingRequests[i].vehicle.imagename;
