@@ -6,13 +6,16 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import ReactStars from 'react-stars'
 
-export default function ReviewModal({ show, onHide, value }: any) {
+export default function ReviewModal({ show, onHide, value, onClose }: any) {
 
     const [error,setError] = useState("");
     const [review,setReview] = useState("");
     const [score,setScore] = useState(0);
     const req_id = value.request_id;
 
+    const handleClose = () => {
+        onClose();
+    };
 
     async function handleSubmit(event: Event) {
         event.preventDefault();
@@ -29,7 +32,7 @@ export default function ReviewModal({ show, onHide, value }: any) {
         })
         .then((res) => res.json())          
         .then((res) => {
-            // console.log(res);
+            console.log(res);
             if (res?.error) {
                 return setError(res.error);
             }
@@ -45,6 +48,7 @@ export default function ReviewModal({ show, onHide, value }: any) {
                 theme: "light",
                 });
                 router.replace("/vehicle/renter");
+                onClose();
             }
             });
       }
@@ -99,8 +103,9 @@ export default function ReviewModal({ show, onHide, value }: any) {
                   handleSubmit(event);
                 }}
               >
-                ยืนยันการเช่า
+                ยืนยัน
               </button>
+        {/* <button onClick={handleClose}>exit</button> */}
         </Modal.Footer>
       </Modal>
     );

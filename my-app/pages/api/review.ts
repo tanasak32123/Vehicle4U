@@ -24,7 +24,7 @@ export default async function handler(
     });
   }
   const token = req.cookies?.token;
-  await fetch("http://localhost:3000/renting-request", {
+  await fetch("http://localhost:3000/comments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

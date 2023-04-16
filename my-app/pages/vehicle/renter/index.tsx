@@ -32,6 +32,12 @@ const ProviderOwnerVehicle = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [value,setValue] = useState();
+  //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
+  const [cid,setCid] = useState(1);
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
   if (error) return router.push("/500");
 
@@ -157,15 +163,26 @@ const ProviderOwnerVehicle = () => {
                             แชท
                           </button>
                         </div>
-                        <div className={styles.review_div}>
-                          <button
-                            type="button"
-                            className={styles.review_btn}
-                            onClick={() => {setShowModal(true); setValue(e);}}
-                          >
-                            รีวิวยานพานหนะ
-                          </button>
-                        </div>
+                        {e?.status === "in use" ? (
+                          <>
+                            <div className={styles.review_div}>
+                              {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
+                              {e?.cid !== null ? (
+                                <>
+                                </>
+                              ) : (<>
+                                <button
+                                  type="button"
+                                  className={styles.review_btn}
+                                  onClick={() => {setShowModal(true); setValue(e);}}
+                                  >
+                                    รีวิวยานพานหนะ
+                                </button>
+                              </>)}
+                            </div>
+                          </>) : (
+                            <div></div>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -180,6 +197,7 @@ const ProviderOwnerVehicle = () => {
           show={showModal}
           onHide={() => setShowModal(false)}
           value = {value}
+          onClose = {handleClose}
           // authAction={authAction}
           // setShowSignout={setShowSignout}
         />
