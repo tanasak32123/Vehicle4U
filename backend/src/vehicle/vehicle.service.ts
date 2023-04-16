@@ -48,6 +48,8 @@ export class VehicleService {
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
       .innerJoinAndSelect('vehicles.user', 'user')
+      .innerJoinAndSelect('vehicles.rentingRequests', 'rentingRequests')
+      .innerJoinAndSelect('rentingRequests.comment', 'comment')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {

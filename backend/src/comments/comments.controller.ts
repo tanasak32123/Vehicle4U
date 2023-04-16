@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body,Query, Patch, Param, Delete,Response } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -8,23 +8,39 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.create(createCommentDto);
+  async createComment(@Body() createCommentDto: CreateCommentDto,@Response() res) {
+    const comment = await this.commentsService.create(createCommentDto);
+    console.log(comment)
+    if (comment != null) {
+      return res.status(200).send({
+        comment: comment.id,
+        msg: comment.message
+      })
+    }
+    else {
+      return res.status(500).send({
+        message:"error"
+      })
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.commentsService.findAll();
+
+  @Get('searchComments')
+  async getCommentsWithVehicleId(@Query('id') id: number,@Response() res) {
+    const comments = await this.commentsService.findComments(id);
+    //console.log(comments);
+    return res.status(200).send({
+      comment: comments
+    });
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
-  }
+  @Patch('reply')
+  async addReply(@Body() updateCommentDto: UpdateCommentDto,@Response() res) {
+    const comment = await this.commentsService.addReply(updateCommentDto);
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
+    return res.status(200).send({
+      msg:"success"
+    })
   }
 
   @Delete(':id')

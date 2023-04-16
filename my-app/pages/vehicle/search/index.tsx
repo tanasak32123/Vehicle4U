@@ -8,6 +8,7 @@ import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import validation from "@/libs/validation";
 import Link from "next/link";
+import ReactStars from "react-stars";
 
 export default function SearchCar() {
   const [name, setName] = useState("");
@@ -234,7 +235,9 @@ export default function SearchCar() {
                             <div className={`${styles.card} mb-4 p-4`}>
                               <Row>
                                 <Col lg={6}>
-                                  <div className={`${styles.vehicle_image}`}>
+                                  <div
+                                    className={`${styles.vehicle_image} h-100`}
+                                  >
                                     <Image
                                       src={`/images/vehicles/${e?.imagename}`}
                                       alt="Picture of car renter"
@@ -245,43 +248,55 @@ export default function SearchCar() {
                                     />
                                   </div>
                                 </Col>
-                                <Col lg={6}>
-                                  <div
-                                    className={`d-flex justify-content-left align-items-center mb-3`}
-                                  >
-                                    <div className={`text-start`}>
-                                      <div className={styles.car_name}>
-                                        {e?.name.toUpperCase()}
-                                      </div>
-                                      <div className={styles.details}>
-                                        <ul>
-                                          <li>
-                                            <b>เลขทะเบียนรถ</b>:{" "}
-                                            {e?.registrationId}
-                                          </li>
-                                          <li>
-                                            <b>จังหวัด</b>: {e?.province}
-                                          </li>
-                                          <li>
-                                            <b>จำนวนที่นั่ง</b>:{" "}
-                                            {e?.maximumCapacity}
-                                          </li>
+                                <Col className="p-3" lg={6}>
+                                  <div className={`text-start`}>
+                                    <div className={styles.car_name}>
+                                      {e?.name.toUpperCase()}
+                                    </div>
+                                    <div className={styles.details}>
+                                      <ul>
+                                        <li>
+                                          <b>เลขทะเบียนรถ</b>:{" "}
+                                          {e?.registrationId}
+                                        </li>
+                                        <li>
+                                          <b>จังหวัด</b>: {e?.province}
+                                        </li>
+                                        <li>
+                                          <b>จำนวนที่นั่ง</b>:{" "}
+                                          {e?.maximumCapacity}
+                                        </li>
 
-                                          <li>
-                                            <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.first_name} &nbsp;
-                                            {e?.user.last_name}
-                                          </li>
-                                          <li>
-                                            <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
-                                            {e?.user.tel.slice(0, 3) +
-                                              "-" +
-                                              e?.user.tel.slice(3, 6) +
-                                              "-" +
-                                              e?.user.tel.slice(6)}
-                                          </li>
-                                        </ul>
+                                        <li>
+                                          <b>ชื่อ-นามสกุล (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.first_name} &nbsp;
+                                          {e?.user.last_name}
+                                        </li>
+                                        <li>
+                                          <b>เบอร์โทรติดต่อ (เจ้าของรถ)</b>:{" "}
+                                          {e?.user.tel.slice(0, 3) +
+                                            "-" +
+                                            e?.user.tel.slice(3, 6) +
+                                            "-" +
+                                            e?.user.tel.slice(6)}
+                                        </li>
+                                      </ul>
+                                      <div className="d-flex align-items-center">
+                                        <div className="me-2">คะแนนรีวิว:</div>
+                                        <ReactStars
+                                          count={5}
+                                          value={3}
+                                          size={24}
+                                          color2={"#ffd700"}
+                                          edit={false}
+                                        />
                                       </div>
+                                      <Link
+                                        className="float-end btn btn-primary"
+                                        href={`/vehicle/${e.id}/reviews`}
+                                      >
+                                        ดูรีวิวยานพาหนะ
+                                      </Link>
                                     </div>
                                   </div>
                                 </Col>

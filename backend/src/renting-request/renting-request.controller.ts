@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { SearchVehicleDto } from 'src/vehicle/dto/search-vehicle.dto';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import { RentingRequestService } from './renting-request.service';
@@ -45,6 +44,7 @@ export class RentingRequestController {
   @ApiResponse({ status: 406, description: 'No Access Rights' })
   @Get('/provider')
   async providerGetRequest(@Request() req, @Response() res) {
+    await this.rentingRequestService.autoexpire();
     const request = await this.rentingRequestService.providergetrequest(
       req.user['id'],
     );
@@ -58,6 +58,7 @@ export class RentingRequestController {
   @ApiResponse({ status: 406, description: 'No Access Rights' })
   @Get('/renter')
   async renterGetRequest(@Request() req, @Response() res) {
+    await this.rentingRequestService.autoexpire();
     const request = await this.rentingRequestService.rentergetrequest(
       req.user['id'],
     );
@@ -81,15 +82,14 @@ export class RentingRequestController {
     return res.status(200).send(rentingrequest);
   }
 
-  // @UseGuards(JwtAuthGuard)
-  // @ApiResponse({ status: 200, description: 'Successful.' })
-  // @ApiResponse({ status: 401, description: 'Unauthorized' })
-  // @ApiResponse({ status: 404, description: 'User not found.' })
-  // @ApiResponse({ status: 406, description: 'No Access Rights'})
-  // @Delete('/renter')
-  // async delete(@Body() id: number, @Request() req, @Response() res){
-  //     const rentingRequest = await this.rentingRequestService.delete(id);
-  //     if(!rentingRequest) return res.status(404).send('rentingrequest not found');
-  //     return res.status(200).send(rentingRequest);
-  // }
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'Successful.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'User not found.' })
+  @ApiResponse({ status: 406, description: 'No Access Rights'})
+  @Delete('/renter')
+  async delete(@Body() id: number, @Request() req, @Response() res){
+      const rentingRequest = await this.rentingRequestService.delete(id);
+      return res.status(200).send(rentingRequest);
+  }
 }

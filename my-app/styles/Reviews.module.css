@@ -1,0 +1,24 @@
+.main {
+  background-color: #f0f0f0;
+  min-height: 100vh;
+}
+
+.reviews {
+  background-color: white;
+  min-height: 100%;
+  border-radius: 10px;
+}
+
+.reply_box {
+  background-color: #f0f0f0;
+}
+
+.back_btn {
+  color: black;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  outline: none;
+}

@@ -1,12 +1,13 @@
 import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import { Row, Col } from "react-bootstrap";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import ConfirmModal from "@/components/Modal/ConfirmSending";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -17,7 +18,6 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      console.log(res);
       res.response?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -26,6 +26,26 @@ const fetcher = (url: string) =>
     });
 
 const ProviderOwnerVehicle = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [request, setRequest] = useState(false);
+
+  const handleClose = () => setShowModal(false);
+
+  // const handleShow = () => {
+  //   setShowModal(true);
+  // };
+
+  const handleConfirm = () => {
+    mutate();
+    setShowModal(false);
+    // Do something when rejected
+  };
+
+  const handleReject = () => {
+    setShowModal(false);
+    // Do something when rejected
+  };
+
   const { data, isLoading, error, mutate } = useSWR(
     "/api/provider/getvehicle",
     fetcher
@@ -34,7 +54,7 @@ const ProviderOwnerVehicle = () => {
 
   async function handleSubmit(
     event: React.MouseEvent<HTMLButtonElement>,
-    confirm: boolean
+    status: string
   ) {
     const req_id = event.currentTarget.id;
     event.preventDefault();
@@ -45,13 +65,13 @@ const ProviderOwnerVehicle = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        confirm,
+        status,
         req_id,
       }),
     });
     if (!response.ok) return;
     mutate();
-    if (confirm) {
+    if (status == "accepted") {
       toast.success("ยืนยันการจองรถสำเร็จ", {
         position: "top-right",
         autoClose: 4000,
@@ -62,7 +82,7 @@ const ProviderOwnerVehicle = () => {
         progress: undefined,
         theme: "light",
       });
-    } else {
+    } else if (status == "rejected") {
       toast.success("ยกเลิกการจองรถสำเร็จ", {
         position: "top-right",
         autoClose: 4000,
@@ -177,6 +197,12 @@ const ProviderOwnerVehicle = () => {
                                     ถูกจองแล้ว
                                   </span>
                                 </>
+                              ) : e?.status === "in use" ? (
+                                <>
+                                  <span className="badge bg-secondary">
+                                    รถยนต์กำลังถูกใช้งาน
+                                  </span>
+                                </>
                               ) : (
                                 <>
                                   <span>-</span>
@@ -211,7 +237,7 @@ const ProviderOwnerVehicle = () => {
                                     id={e?.request_id}
                                     className={styles.confirm_btn}
                                     onClick={(event) => {
-                                      handleSubmit(event, true);
+                                      handleSubmit(event, "accepted");
                                     }}
                                   >
                                     ยีนยัน
@@ -222,7 +248,7 @@ const ProviderOwnerVehicle = () => {
                                     id={e?.request_id}
                                     className={styles.cancel_btn}
                                     onClick={(event) => {
-                                      handleSubmit(event, false);
+                                      handleSubmit(event, "rejected");
                                     }}
                                   >
                                     ปฏิเสธ
@@ -248,7 +274,43 @@ const ProviderOwnerVehicle = () => {
                               <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
                               {e?.endtime}
                             </div>
-                            <b></b>
+                            <div>
+                              <Row>
+                                <Col>
+                                  <b>กดเพื่อส่งรถยนต์ให้ผู้เช่า:</b>
+                                </Col>
+                                <Col>
+                                  <button
+                                    id={e?.request_id}
+                                    className={styles.send_car}
+                                    onClick={() => {
+                                      setShowModal(true);
+                                      setRequest(e?.request_id);
+                                    }}
+                                  >
+                                    ส่งรถให้ผู้เช่า
+                                  </button>
+                                </Col>
+                              </Row>
+                            </div>
+                          </>
+                        ) : e?.status === "in use" ? (
+                          <>
+                            <div>
+                              <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname}{" "}
+                              {e?.renter_lastname}
+                            </div>
+                            <div>
+                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                            </div>
+                            <div>
+                              <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
+                              {e?.starttime}
+                            </div>
+                            <div>
+                              <b>วันเวลาในการรับคืนรถ</b>: {e?.enddate}{" "}
+                              {e?.endtime}
+                            </div>
                           </>
                         ) : (
                           <></>
@@ -272,6 +334,15 @@ const ProviderOwnerVehicle = () => {
             })}
           </div>
         </div>
+        {showModal && (
+          <ConfirmModal
+            req_id={request}
+            isShow={showModal}
+            onHide={handleClose}
+            onConfirm={handleConfirm}
+            onReject={handleReject}
+          />
+        )}
       </>
     );
 };

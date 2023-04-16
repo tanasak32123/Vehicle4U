@@ -5,11 +5,11 @@ import * as Yup from "yup";
 import Link from "next/link";
 import Head from "next/head";
 import Image from "next/image";
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 
 import styles from "@/styles/home.module.css";
-import { Row, Col, Spinner, Alert } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import { FaSignInAlt } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 import { toast } from "react-toastify";
@@ -132,7 +132,7 @@ const Home: NextPage = () => {
                       router.replace(router.query.from as string);
                     }
                     if (values.role == "renter") {
-                      router.replace("/vehicle");
+                      router.replace("/vehicle/search");
                     }
                     if (values.role == "provider") {
                       router.replace("provider/vehicle");

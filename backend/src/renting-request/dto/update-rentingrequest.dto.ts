@@ -19,7 +19,7 @@ export class UpdateRentingRequestDto {
     // end_rent_date : string ;
     
     @ApiProperty({
-        type: Boolean,
+        type: String,
     })
-    confirm : boolean;
+    status : string;
 }
