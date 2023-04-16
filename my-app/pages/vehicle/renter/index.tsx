@@ -30,9 +30,8 @@ const ProviderOwnerVehicle = () => {
   const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
-  const [value, setValue] = useState();
-  //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
-  const [cid, setCid] = useState(1);
+
+  const [value,setValue] = useState();
 
   const handleClose = () => {
     setShowModal(false);
@@ -167,7 +166,7 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              <button
+                              {/* <button
                                 type="button"
                                 className={styles.review_btn}
                                 onClick={() => {
@@ -176,9 +175,9 @@ const ProviderOwnerVehicle = () => {
                                 }}
                               >
                                 รีวิวยานพานหนะ
-                              </button>
+                              </button> */}
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {/* {e?.cid !== null ? (
+                              {e?.cid !== null ? (
                                 <></>
                               ) : (
                                 <>
@@ -193,7 +192,7 @@ const ProviderOwnerVehicle = () => {
                                     รีวิวยานพานหนะ
                                   </button>
                                 </>
-                              )} */}
+                              )}
                             </div>
                           </>
                         )}
