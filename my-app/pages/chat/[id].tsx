@@ -54,7 +54,7 @@ export default function chat() {
     });
   };
 
-  socket.on("recMessage", (message) => {
+  socket.on("recMessage", () => {
     mutate();
   });
 
@@ -104,13 +104,8 @@ export default function chat() {
                   </button>
                 </div>
                 <div
-                  className="card-body"
+                  className={`card-body ${styles.card_body}`}
                   data-mdb-perfect-scrollbar="true"
-                  style={{
-                    position: "relative",
-                    height: "400px",
-                    overflow: "scroll",
-                  }}
                 >
                   {data?.messages?.map((e: any) => {
                     if (e?.sender.id == id) {
