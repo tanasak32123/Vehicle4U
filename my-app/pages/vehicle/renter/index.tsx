@@ -5,7 +5,7 @@ import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
-import ReviewModal from "@/components/Modal/Review";
+import CommentModal from "@/components/Modal/Comment";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -206,7 +206,7 @@ const ProviderOwnerVehicle = () => {
         </div>
 
         {showModal && (
-          <ReviewModal
+          <CommentModal
             show={showModal}
             onHide={() => setShowModal(false)}
             value={value}

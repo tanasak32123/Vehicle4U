@@ -24,7 +24,7 @@ export default async function handler(
     });
   }
   const token = req.cookies?.token;
-  await fetch("http://localhost:3000/comments", {
+  await fetch("http://localhost:3000/createComments", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
