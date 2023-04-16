@@ -166,7 +166,7 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              <button
+                              {/* <button
                                 type="button"
                                 className={styles.review_btn}
                                 onClick={() => {
@@ -175,9 +175,9 @@ const ProviderOwnerVehicle = () => {
                                 }}
                               >
                                 รีวิวยานพานหนะ
-                              </button>
+                              </button> */}
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {/* {e?.cid !== null ? (
+                              {e?.cid !== null ? (
                                 <></>
                               ) : (
                                 <>
@@ -192,7 +192,7 @@ const ProviderOwnerVehicle = () => {
                                     รีวิวยานพานหนะ
                                   </button>
                                 </>
-                              )} */}
+                              )}
                             </div>
                           </>
                         )}
