@@ -4,6 +4,8 @@ import Image from "next/image";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
+import { useState } from "react";
+import ReviewModal from "@/components/Modal/Review";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -26,6 +28,15 @@ const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
 
   const router = useRouter();
+
+  const [showModal, setShowModal] = useState(false);
+  const [value, setValue] = useState();
+  //จิงๆ ควรเป็นค่าที่ดึงมาจาก backend e.cid
+  const [cid, setCid] = useState(1);
+
+  const handleClose = () => {
+    setShowModal(false);
+  };
 
   if (error) return router.push("/500");
 
@@ -142,13 +153,42 @@ const ProviderOwnerVehicle = () => {
                             </>
                           )}
                         </div>
-                        <button
-                          type="button"
-                          className={styles.chat_btn}
-                          onClick={() => router.push(`/chat/${e?.provider_id}`)}
-                        >
-                          แชท
-                        </button>
+                        <div className={styles.chat_div}>
+                          <button
+                            type="button"
+                            className={styles.chat_btn}
+                            onClick={() =>
+                              router.push(`/chat/${e?.provider_id}`)
+                            }
+                          >
+                            แชท
+                          </button>
+                        </div>
+                        {e?.status === "in use" ? (
+                          <>
+                            <div className={styles.review_div}>
+                              {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
+                              {e?.cid !== null ? (
+                                <></>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    className={styles.review_btn}
+                                    onClick={() => {
+                                      setShowModal(true);
+                                      setValue(e);
+                                    }}
+                                  >
+                                    รีวิวยานพานหนะ
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <div></div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -157,6 +197,17 @@ const ProviderOwnerVehicle = () => {
             })}
           </div>
         </div>
+
+        {showModal && (
+          <ReviewModal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            value={value}
+            onClose={handleClose}
+            // authAction={authAction}
+            // setShowSignout={setShowSignout}
+          />
+        )}
       </>
     );
 };

@@ -1,0 +1,38 @@
+.textarea{
+    background: rgba(254, 249, 235, 0.7);
+    border-radius: 5.5px;
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    width: 100%;
+  }
+
+  .review_div{
+    text-align: center;
+  }
+
+  .review_text{
+    font-size: 28px;
+    font-weight: 400;
+  }
+
+  .feedback {
+    margin-top: 4px;
+    color: red;
+    font-size: 13px;
+    height: 13px;
+    padding-bottom: 20px;
+  }
+
+  .submit_btn{
+    background-color: #4CAF50; /* Green */
+    float:right;
+    border-radius: 10.5px;
+    box-shadow: 0px 5.5px 5.5px rgba(0, 0, 0, 0.25);
+    color: white;
+    border: none;
+    padding: 10px;
+  }
+
+  .submit_btn:hover{
+    background-color: #458c47;
+  }
+

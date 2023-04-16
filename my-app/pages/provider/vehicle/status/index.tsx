@@ -1,7 +1,6 @@
 import styles from "@/styles/status.module.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { FaArrowAltCircleLeft, FaCar } from "react-icons/fa";
 import useSWR from "swr";
 import { Row, Col } from "react-bootstrap";
 import formatDate from "@/libs/formatDate";
@@ -19,7 +18,6 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      console.log(res);
       res.response?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -32,11 +30,13 @@ const ProviderOwnerVehicle = () => {
   const [request, setRequest] = useState(false);
 
   const handleClose = () => setShowModal(false);
-  const handleShow = () => {
-    setShowModal(true);
-  };
+
+  // const handleShow = () => {
+  //   setShowModal(true);
+  // };
 
   const handleConfirm = () => {
+    mutate();
     setShowModal(false);
     // Do something when rejected
   };
@@ -238,7 +238,6 @@ const ProviderOwnerVehicle = () => {
                                     className={styles.confirm_btn}
                                     onClick={(event) => {
                                       handleSubmit(event, "accepted");
-                                      // console.log(event);
                                     }}
                                   >
                                     ยีนยัน
@@ -287,8 +286,6 @@ const ProviderOwnerVehicle = () => {
                                     onClick={() => {
                                       setShowModal(true);
                                       setRequest(e?.request_id);
-                                      // console.log(e);
-                                      // console.log(showModal);
                                     }}
                                   >
                                     ส่งรถให้ผู้เช่า
