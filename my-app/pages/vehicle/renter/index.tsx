@@ -164,11 +164,21 @@ const ProviderOwnerVehicle = () => {
                             แชท
                           </button>
                         </div>
-                        {e?.status === "in use" ? (
+                        {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
+                              <button
+                                type="button"
+                                className={styles.review_btn}
+                                onClick={() => {
+                                  setShowModal(true);
+                                  setValue(e);
+                                }}
+                              >
+                                รีวิวยานพานหนะ
+                              </button>
                               {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {e?.cid !== null ? (
+                              {/* {e?.cid !== null ? (
                                 <></>
                               ) : (
                                 <>
@@ -183,11 +193,9 @@ const ProviderOwnerVehicle = () => {
                                     รีวิวยานพานหนะ
                                   </button>
                                 </>
-                              )}
+                              )} */}
                             </div>
                           </>
-                        ) : (
-                          <div></div>
                         )}
                       </div>
                     </div>
@@ -204,8 +212,6 @@ const ProviderOwnerVehicle = () => {
             onHide={() => setShowModal(false)}
             value={value}
             onClose={handleClose}
-            // authAction={authAction}
-            // setShowSignout={setShowSignout}
           />
         )}
       </>
