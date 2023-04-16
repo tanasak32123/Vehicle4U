@@ -16,7 +16,7 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      // console.log(res);
+      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
