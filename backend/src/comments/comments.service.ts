@@ -15,7 +15,7 @@ export class CommentsService {
     private commentRepository: Repository<Comment>,
     @InjectRepository(Vehicle)
     private vehicleRepository: Repository<Vehicle>,
-    @InjectRepository(Vehicle)
+    @InjectRepository(RentingRequest)
     private requestRepository: Repository<RentingRequest>,
     @InjectRepository(User)
     private userRepository: Repository<User>
@@ -23,12 +23,16 @@ export class CommentsService {
   
 
   async create(createCommentDto: CreateCommentDto) {
-    const comment = this.commentRepository.create(createCommentDto)
-    const rentReq = await this.requestRepository.findOneBy({ id: createCommentDto.request_id })
-    comment.user = rentReq.user
-    comment.vehicle = rentReq.vehicle
-    comment.request = rentReq
-    return this.vehicleRepository.save(comment);
+    console.log(1);
+    const comment = await this.commentRepository.create(createCommentDto);
+    console.log(2);
+    const rentReq = await this.requestRepository.findOneBy({id:createCommentDto.request_id});
+    rentReq.comment = comment;
+    console.log(rentReq);
+    await this.requestRepository.update({ id: rentReq.id }, {});
+    comment.request = rentReq;
+    console.log(3)
+    return await this.commentRepository.save(comment);
   }
 
   findAll() {

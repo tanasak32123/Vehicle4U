@@ -136,12 +136,11 @@ const ProviderOwnerVehicle = () => {
                                 ถูกจองแล้ว
                               </span>
                             </>
-                          ) : e?.status === "inuse" ? (
+                          ) : e?.status === "in use" ? (
                             <>
-                              <span className="badge bg-success">
-                                ใช้รถแล้ว
+                              <span className="badge bg-secondary">
+                                รถยนต์กำลังถูกใช้งาน
                               </span>
-                              &nbsp;
                             </>
                           ) : (
                             <>
