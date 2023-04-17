@@ -285,13 +285,18 @@ export default function SearchCar() {
                                     </ul>
                                     <div className="d-flex align-items-center mb-2">
                                       <div className="me-2">คะแนนรีวิว:</div>
-                                      <ReactStars
-                                        count={5}
-                                        value={3}
-                                        size={24}
-                                        color2={"#ffd700"}
-                                        edit={false}
-                                      />
+                                      {e?.reviewScore != 0 && (
+                                        <ReactStars
+                                          count={5}
+                                          value={e?.reviewScore}
+                                          size={24}
+                                          color2={"#ffd700"}
+                                          edit={false}
+                                        />
+                                      )}
+                                      {e?.reviewScore <= 0 && (
+                                        <small>ยังไม่มีคะแนนรีวิว</small>
+                                      )}
                                     </div>
                                     <div className="d-flex justify-content-between">
                                       <button
