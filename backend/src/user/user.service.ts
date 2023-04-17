@@ -27,40 +27,6 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-
-  async createVehicle(id:number, createVehicleDto: CreateVehicleDto): Promise<Vehicle> {
-    const ent = await this.vehicleRepository.findOneBy({registrationId : createVehicleDto.registrationId })
-    if (ent){
-      throw new HttpException( "registration number exist", HttpStatus.NOT_ACCEPTABLE)
-    }
-    const vehicle = await this.vehicleRepository.create(createVehicleDto);
-    vehicle.user = await this.findOne(id.toString())
-    return await this.vehicleRepository.save(vehicle);
-  }
-
-  async updateVehicle(updateVehicleDto: UpdateVehicleDto)  {
-    const ent = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
-    if (!ent){
-      throw new HttpException( "id dont exist", HttpStatus.NOT_FOUND)
-    }
-    const oldImageName = ent.imagename
-  
-    await this.vehicleRepository.update({id:updateVehicleDto.id} , updateVehicleDto);
-    const vehicle = await this.vehicleRepository.findOneBy({id : updateVehicleDto.id })
-    return {oldImageName , vehicle}
-  }
-
-  async getVehicles(id : number) : Promise<User[]>{ 
-    const vehicles = await this.userRepository.find({
-      where : {
-        id : id , 
-      }, 
-      relations: {
-        vehicles : true , 
-    },
-    })
-    return vehicles 
-  }
   async update(id: number, updateuserDto: UpdateUserDto): Promise<User> { 
     const user = await this.userRepository.findOneBy({ id: id });
     if (!user) {
@@ -92,14 +58,5 @@ export class UserService {
 
   async findOne(id: string): Promise<User> {
     return await this.userRepository.findOneBy({ id: parseInt(id) });
-  }
-  async checkState(id: string): Promise<UserStatusDto> {
-    const Dto = new UserStatusDto();
-    const user = await this.userRepository.findOneBy({ id: parseInt(id) });
-    if (user == null) return null;
-    Dto.isProvider = user.is_provider;
-    Dto.isRenter = user.is_renter;
-
-    return Dto;
   }
 }
