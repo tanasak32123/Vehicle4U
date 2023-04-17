@@ -23,17 +23,28 @@ export class CommentsService {
   
 
   async create(createCommentDto: CreateCommentDto) {
-    console.log(1);
+    // console.log(1);
     const comment = await this.commentRepository.create(createCommentDto);
-    console.log(2);
-    console.log(comment);
-    const rentReq = await this.requestRepository.findOneBy({id:createCommentDto.request_id});
+    // console.log(2);
+    // console.log(comment);
+    const rentReq = await this.requestRepository.findOne(
+      {
+        relations: {
+          vehicle: true,
+        },
+        where: {
+          id: createCommentDto.request_id
+        }
+      },
+    );
     rentReq.comment = comment;
-    console.log(rentReq);
+    // console.log(rentReq);
     //await this.requestRepository.update({ id: rentReq.id }, {});
     await this.requestRepository.save(rentReq);
     comment.request = rentReq;
-    console.log(3)
+    comment.vehicle = rentReq.vehicle
+    // console.log(rentReq.vehicle)
+    // console.log(3)
     return await this.commentRepository.save(comment);;
   }
 
