@@ -15,12 +15,6 @@ export class CreateCommentDto {
     })
     @IsNotEmpty()
     request_id: number;
-    
-    @ApiProperty({
-        type: Number,
-    })
-    @IsNotEmpty()
-    user_id: number;
 
     @ApiProperty({
         type: Number,

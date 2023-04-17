@@ -31,6 +31,7 @@ export class CommentsService {
       {
         relations: {
           vehicle: true,
+          user: true
         },
         where: {
           id: createCommentDto.request_id
@@ -42,8 +43,8 @@ export class CommentsService {
     //await this.requestRepository.update({ id: rentReq.id }, {});
     await this.requestRepository.save(rentReq);
     comment.request = rentReq;
-    comment.vehicle = rentReq.vehicle
-    // console.log(rentReq.vehicle)
+    comment.vehicle = rentReq.vehicle;
+    comment.user = rentReq.user;
     // console.log(3)
     return await this.commentRepository.save(comment);;
   }
