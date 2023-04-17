@@ -8,7 +8,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post('createComment')
+  @Post()
   async createComment(@Body() createCommentDto: CreateCommentDto,@Response() res) {
     const comment = await this.commentsService.create(createCommentDto);
     console.log(comment)
@@ -26,7 +26,7 @@ export class CommentsController {
   }
 
 
-  @Get('searchComments')
+  @Get()
   async getCommentsWithVehicleId(@Query('vehicleId') vehicleId: number,@Response() res) {
     const comments = await this.commentsService.findComments(vehicleId);
     //console.log(comments);
@@ -35,7 +35,7 @@ export class CommentsController {
     });
   }
 
-  @Patch('reply')
+  @Patch()
   async addReply(@Body() updateCommentDto: UpdateCommentDto,@Response() res) {
     const comment = await this.commentsService.addReply(updateCommentDto);
 
