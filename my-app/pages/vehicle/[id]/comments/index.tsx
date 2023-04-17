@@ -18,9 +18,9 @@ const Comments: NextPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          console.log(res);
+          // console.log(res.comment);
           res.comment.map((e: any) => {
-            e.comment.createdAt = formatDate(new Date(e.comment.createdAt));
+            e.createdAt = formatDate(new Date(e.createdAt));
           });
           return res.comment;
         }
@@ -185,8 +185,8 @@ const Comments: NextPage = () => {
                     commentsData.length > 0 &&
                     commentsData.map((obj: any) => (
                       <Card
-                        id={`review_${obj?.comment.id}`}
-                        key={`review_${obj?.comment.id}`}
+                        id={`review_${obj?.id}`}
+                        key={`review_${obj?.id}`}
                         className="mb-3"
                       >
                         <Card.Body className="d-flex">
@@ -196,33 +196,31 @@ const Comments: NextPage = () => {
 
                           <div className="w-100">
                             <div
-                              id={`title_reviews_${obj?.comment.id}`}
+                              id={`title_reviews_${obj?.id}`}
                               className="mb-3"
                             >
-                              <div id={`author_name_${obj?.comment.id}`}>
+                              <div id={`author_name_${obj?.id}`}>
                                 <small>{obj?.user.username}</small>
                               </div>
-                              <div id={`timestamp_reviews_${obj?.comment.id}`}>
-                                <small>{obj?.comment.createdAt} น.</small>
+                              <div id={`timestamp_reviews_${obj?.id}`}>
+                                <small>{obj?.createdAt} น.</small>
                               </div>
                             </div>
-                            <div id={`content_reviews_${obj?.comment.id}`}>
+                            <div id={`content_reviews_${obj?.id}`}>
                               <p className="mb-2">
-                                {obj?.comment.message
-                                  ? obj?.comment.message
-                                  : "-"}
+                                {obj?.message ? obj?.message : "-"}
                               </p>
                             </div>
                             <ReactStars
                               count={5}
-                              value={obj?.comment.score}
+                              value={obj?.score}
                               size={24}
                               color2={"#ffd700"}
                               edit={false}
                               className="mb-2"
                             />
 
-                            {obj?.comment.reply && (
+                            {obj?.reply && (
                               <Card
                                 id={`reply_box_2`}
                                 className={`${styles.reply_box}`}
@@ -230,98 +228,83 @@ const Comments: NextPage = () => {
                                 <Card.Body>
                                   <h6>การตอบกลับจากผู้ปล่อยเช่า</h6>
                                   <div>
-                                    <small>
-                                      &emsp;&emsp;{obj?.comment.reply}
-                                    </small>
+                                    <small>&emsp;&emsp;{obj?.reply}</small>
                                   </div>
                                 </Card.Body>
                               </Card>
                             )}
 
-                            {auth?.role == "provider" &&
-                              !obj?.comment.reply && (
-                                <>
-                                  <div id={`reply_btn_${obj?.comment.id}`}>
-                                    <button
-                                      type="button"
-                                      className="btn btn-link p-0"
-                                      onClick={(e) =>
-                                        handleClicktoOpenReplyBox(
-                                          e,
-                                          obj?.comment.id
-                                        )
-                                      }
-                                    >
-                                      <FaReply />
-                                      &nbsp;ตอบกลับ
-                                    </button>
-                                  </div>
-
-                                  <Card
-                                    id={`reply_box_${obj?.comment.id}`}
-                                    className={`${styles.reply_box} d-none`}
+                            {auth?.role == "provider" && !obj?.reply && (
+                              <>
+                                <div id={`reply_btn_${obj?.id}`}>
+                                  <button
+                                    type="button"
+                                    className="btn btn-link p-0"
+                                    onClick={(e) =>
+                                      handleClicktoOpenReplyBox(e, obj?.id)
+                                    }
                                   >
-                                    <Card.Body>
-                                      <Form.Label
-                                        htmlFor={`text_reply_${obj?.comment.id}`}
-                                      >
-                                        ข้อความตอบกลับ{" "}
-                                        <span className="text-danger">
-                                          *&nbsp;
-                                        </span>
-                                      </Form.Label>
-                                      <small
-                                        id={`reply_error_${obj?.comment.id}`}
-                                        className="text-danger"
-                                      ></small>
-                                      <Form.Control
-                                        as="textarea"
-                                        id={`text_reply_${obj?.comment.id}`}
-                                        title={`text_reply_${obj?.comment.id}`}
-                                        className="mb-3"
-                                        onChange={(e) =>
-                                          handleReplyMessageChange(
-                                            e,
-                                            obj?.comment.id
-                                          )
+                                    <FaReply />
+                                    &nbsp;ตอบกลับ
+                                  </button>
+                                </div>
+
+                                <Card
+                                  id={`reply_box_${obj?.id}`}
+                                  className={`${styles.reply_box} d-none`}
+                                >
+                                  <Card.Body>
+                                    <Form.Label
+                                      htmlFor={`text_reply_${obj?.id}`}
+                                    >
+                                      ข้อความตอบกลับ{" "}
+                                      <span className="text-danger">
+                                        *&nbsp;
+                                      </span>
+                                    </Form.Label>
+                                    <small
+                                      id={`reply_error_${obj?.id}`}
+                                      className="text-danger"
+                                    ></small>
+                                    <Form.Control
+                                      as="textarea"
+                                      id={`text_reply_${obj?.id}`}
+                                      title={`text_reply_${obj?.id}`}
+                                      className="mb-3"
+                                      onChange={(e) =>
+                                        handleReplyMessageChange(e, obj?.id)
+                                      }
+                                      onKeyDown={(e) => {
+                                        if (e.key == "Enter") {
+                                          e.preventDefault();
                                         }
-                                        onKeyDown={(e) => {
-                                          if (e.key == "Enter") {
-                                            e.preventDefault();
-                                          }
-                                        }}
-                                        placeholder="พิมพ์ข้อความตอบกลับ..."
-                                      />
-                                      <div
-                                        className={`d-flex justify-content-between`}
+                                      }}
+                                      placeholder="พิมพ์ข้อความตอบกลับ..."
+                                    />
+                                    <div
+                                      className={`d-flex justify-content-between`}
+                                    >
+                                      <Button
+                                        variant="danger"
+                                        onClick={(e) =>
+                                          handleCancelToReply(e, obj?.id)
+                                        }
                                       >
-                                        <Button
-                                          variant="danger"
-                                          onClick={(e) =>
-                                            handleCancelToReply(
-                                              e,
-                                              obj?.comment.id
-                                            )
-                                          }
-                                        >
-                                          ยกเลิก
-                                        </Button>
-                                        <Button
-                                          variant="success"
-                                          onClick={(e) =>
-                                            handleSendReplyMessage(
-                                              e,
-                                              obj?.comment.id
-                                            )
-                                          }
-                                        >
-                                          ตอบกลับ
-                                        </Button>
-                                      </div>
-                                    </Card.Body>
-                                  </Card>
-                                </>
-                              )}
+                                        ยกเลิก
+                                      </Button>
+                                      <Button
+                                        variant="success"
+                                        onClick={(e) =>
+                                          handleSendReplyMessage(e, obj?.id)
+                                        }
+                                      >
+                                        ตอบกลับ
+                                      </Button>
+                                    </div>
+                                  </Card.Body>
+                                </Card>
+                              </>
+                            )}
                           </div>
                         </Card.Body>
                       </Card>
