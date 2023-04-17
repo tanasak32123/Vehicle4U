@@ -39,10 +39,6 @@
   border-radius: 20px;
 }
 
-.card:hover {
-  background-color: #e1ddd0;
-}
-
 .vehicle_image {
   position: relative;
   height: 200px;

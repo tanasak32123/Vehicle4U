@@ -130,7 +130,7 @@ const ProviderOwnerVehicle = () => {
                           type="button"
                           className="btn btn-primary"
                           onClick={() =>
-                            router.push(`/vehicle/${e?.id}/reviews`)
+                            router.push(`/vehicle/${e?.id}/comments`)
                           }
                         >
                           รีวิวยานพานหนะ
