@@ -19,26 +19,23 @@ export class CommentsService {
     @InjectRepository(RentingRequest)
     private requestRepository: Repository<RentingRequest>,
     @InjectRepository(User)
-    private userRepository: Repository<User>
-  ) { }
-  
+    private userRepository: Repository<User>,
+  ) {}
 
   async create(createCommentDto: CreateCommentDto) {
     // console.log(1);
     const comment = await this.commentRepository.create(createCommentDto);
     // console.log(2);
     // console.log(comment);
-    const rentReq = await this.requestRepository.findOne(
-      {
-        relations: {
-          vehicle: true,
-          user: true
-        },
-        where: {
-          id: createCommentDto.request_id
-        }
+    const rentReq = await this.requestRepository.findOne({
+      relations: {
+        vehicle: true,
+        user: true,
       },
-    );
+      where: {
+        id: createCommentDto.request_id,
+      },
+    });
     rentReq.comment = comment;
     // console.log(rentReq);
     //await this.requestRepository.update({ id: rentReq.id }, {});
@@ -47,9 +44,8 @@ export class CommentsService {
     comment.vehicle = rentReq.vehicle;
     comment.user = rentReq.user;
     // console.log(3)
-    return await this.commentRepository.save(comment);;
+    return await this.commentRepository.save(comment);
   }
-
 
   async findComments(vehicleId: number) {
     console.log(vehicleId);
@@ -57,10 +53,9 @@ export class CommentsService {
       id: vehicleId,
     });
     console.log(queryVehicle);
-    const requests = await this.requestRepository.find({
+    const comments = await this.commentRepository.find({
       relations: {
         vehicle: true,
-        comment: true,
         user: true,
       },
       where: {
@@ -70,21 +65,24 @@ export class CommentsService {
         user: { username: true },
       },
     });
-    requests.forEach(request => {
-      if (request.comment == null) {
-        const idx = requests.indexOf(request);
-        requests.splice(idx);
+    comments.forEach((comment) => {
+      if (comment == null) {
+        const idx = comments.indexOf(comment);
+        comments.splice(idx);
       }
     });
-    return requests;
+    return comments;
   }
 
-  async addReply(updateCommentDto:UpdateCommentDto) {
+  async addReply(updateCommentDto: UpdateCommentDto) {
     const comment = await this.commentRepository.findOneBy({
-      id:updateCommentDto.id
-    })
-    comment.reply = updateCommentDto.reply
-    return await this.commentRepository.update({ id:updateCommentDto.id},comment);
+      id: updateCommentDto.id,
+    });
+    comment.reply = updateCommentDto.reply;
+    return await this.commentRepository.update(
+      { id: updateCommentDto.id },
+      comment,
+    );
   }
 
   remove(id: number) {
