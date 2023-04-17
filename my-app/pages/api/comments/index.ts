@@ -15,7 +15,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch(`http://localhost:3000/searchComments?vehicleId=${id}`, {
+      await fetch(`http://localhost:3000/comments?vehicleId=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch("http://localhost:3000/createComment", {
+      await fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default async function handler(
       if (!reply || !id)
         return res.status(400).json({ success: false, message: "Bad request" });
 
-      await fetch("http://localhost:3000/reply", {
+      await fetch("http://localhost:3000/comments", {
         method: req.method,
         headers: {
           "Content-Type": "application/json",
