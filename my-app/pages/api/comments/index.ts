@@ -7,6 +7,7 @@ export default async function handler(
 ) {
   switch (req.method) {
     case "GET": {
+      const { id } = req.query;
       const token = req.cookies?.token;
 
       if (!token)
@@ -14,7 +15,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch("http://localhost:3000/searchComments", {
+      await fetch(`http://localhost:3000/searchComments?id=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -35,6 +36,7 @@ export default async function handler(
             message: "Internal server",
           });
         });
+      break;
     }
     case "POST": {
       const body = req.body;
@@ -85,6 +87,46 @@ export default async function handler(
             message: "Internal server",
           });
         });
+      break;
+    }
+    case "PATCH": {
+      const { reply, id } = req.body;
+      const token = req.cookies?.token;
+
+      if (!token)
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
+
+      if (!reply || !id)
+        return res.status(400).json({ success: false, message: "Bad request" });
+
+      await fetch("http://localhost:3000/reply", {
+        method: req.method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reply,
+          id,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Something went wrong...");
+        })
+        .then((response) => {
+          console.log(response);
+          return res.status(200).json({ success: true });
+        })
+        .then((err) => {
+          console.log(err);
+          res.status(500).json({ success: false, message: "Internal Server" });
+        });
+      break;
     }
     default: {
       return res.status(404).redirect("/404");
