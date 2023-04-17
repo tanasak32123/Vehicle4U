@@ -6,6 +6,7 @@ import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
 import CommentModal from "@/components/Modal/Comment";
+import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -25,11 +26,8 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
-
   const router = useRouter();
-
   const [showModal, setShowModal] = useState(false);
-
   const [value, setValue] = useState();
 
   const handleClose = () => {
