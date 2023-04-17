@@ -82,14 +82,14 @@ export class RentingRequestController {
     return res.status(200).send(rentingrequest);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @ApiResponse({ status: 200, description: 'Successful.' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 404, description: 'User not found.' })
-  @ApiResponse({ status: 406, description: 'No Access Rights'})
-  @Delete('/renter')
-  async delete(@Body() id: number, @Request() req, @Response() res){
-      const rentingRequest = await this.rentingRequestService.delete(id);
-      return res.status(200).send(rentingRequest);
-  }
+//   @UseGuards(JwtAuthGuard)
+//   @ApiResponse({ status: 200, description: 'Successful.' })
+//   @ApiResponse({ status: 401, description: 'Unauthorized' })
+//   @ApiResponse({ status: 404, description: 'User not found.' })
+//   @ApiResponse({ status: 406, description: 'No Access Rights'})
+//   @Delete('/renter')
+//   async delete(@Body() id: number, @Request() req, @Response() res){
+//       const rentingRequest = await this.rentingRequestService.delete(id);
+//       return res.status(200).send(rentingRequest);
+//   }
 }
