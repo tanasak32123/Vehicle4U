@@ -9,6 +9,7 @@ import {
   RentingRequest,
   Request_status,
 } from 'src/renting-request/entities/renting-request.entity';
+import { VehicleWithReview } from './entities/vehicle-with-review.entity';
 
 @Injectable()
 export class VehicleService {
@@ -23,7 +24,7 @@ export class VehicleService {
     carName: string,
     maxPassenger: number,
     pageNumber: number,
-  ): Promise<[Vehicle[], any]> {
+  ): Promise<[VehicleWithReview[], any]> {
     pageNumber = pageNumber - 0;
     console.log(pageNumber);
     const pagination_count = 2;
@@ -66,7 +67,7 @@ export class VehicleService {
       .skip((pageNumber - 1) * pagination_count)
       .take(2)
       .getMany();
-    console.log(x);
+    // console.log(x);
     const paginated_vehicles = x;
     //console.log(pageNumber - 0 * pagination_count < datalength);
     const paginationData = { next: {}, prev: {}, page_count: {} };
@@ -86,9 +87,31 @@ export class VehicleService {
       all_vehicles.length / pagination_count,
     );
     //console.log(all_vehicles);
-    console.log(paginated_vehicles);
-    console.log(paginationData);
-    return [paginated_vehicles, paginationData];
+    const vehicleList: VehicleWithReview[] = [];
+    for (var vehicles of paginated_vehicles) {
+      var count = 0;
+      var sumScore = 0;
+      for (var comment of vehicles.comments) {
+        sumScore += comment.score;
+        count += 1;
+      }
+      if (count == 0) {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = 0 //0 means no reviews
+        vehicleList.push(newVehicle);
+      }
+      else {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = sumScore / count;
+        vehicleList.push(newVehicle);
+      }
+
+    }
+    // console.log(paginated_vehicles);
+    // console.log(paginationData);
+    return [vehicleList, paginationData];
   }
   async createVehicle(
     id: number,
