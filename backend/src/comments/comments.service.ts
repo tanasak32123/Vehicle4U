@@ -7,6 +7,7 @@ import { Comment } from './entities/comment.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { User } from 'src/user/entities/user.entity';
 import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
+import { notEqual } from 'assert';
 
 @Injectable()
 export class CommentsService {
@@ -56,7 +57,7 @@ export class CommentsService {
       id: vehicleId,
     });
     console.log(queryVehicle);
-    const comments = await this.requestRepository.find({
+    const requests = await this.requestRepository.find({
       relations: {
         vehicle: true,
         comment: true,
@@ -69,7 +70,13 @@ export class CommentsService {
         user: { username: true },
       },
     });
-    return comments;
+    requests.forEach(request => {
+      if (request.comment == null) {
+        const idx = requests.indexOf(request);
+        requests.splice(idx);
+      }
+    });
+    return requests;
   }
 
   async addReply(updateCommentDto:UpdateCommentDto) {
