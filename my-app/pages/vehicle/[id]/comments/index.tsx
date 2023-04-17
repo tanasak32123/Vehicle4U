@@ -18,6 +18,7 @@ const Comments: NextPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
+          console.log(res);
           res.comment.map((e: any) => {
             e.comment.createdAt = formatDate(new Date(e.comment.createdAt));
           });
@@ -147,7 +148,15 @@ const Comments: NextPage = () => {
               </button>
             </div>
             <div id="comments">
-              {commentsError && <>ระบบเกิดข้อผิดพลาด โปรดลองอีกครั้ง</>}
+              {commentsError && (
+                <>
+                  <div
+                    className={`d-flex justify-content-center align-items-center ${styles.comments}`}
+                  >
+                    ระบบเกิดข้อผิดพลาด โปรดลองอีกครั้ง
+                  </div>
+                </>
+              )}
 
               {commentsLoading && (
                 <div

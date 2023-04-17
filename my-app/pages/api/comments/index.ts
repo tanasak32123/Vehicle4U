@@ -27,7 +27,9 @@ export default async function handler(
           return response.json();
         })
         .then((response) => {
-          return res.status(200).json({ success: true, ...response });
+          return res
+            .status(200)
+            .json({ success: true, comment: response.comment });
         })
         .catch((err) => {
           console.log(err);
@@ -119,7 +121,7 @@ export default async function handler(
           throw new Error("Something went wrong...");
         })
         .then((response) => {
-          console.log(response);
+          // console.log(response);
           return res.status(200).json({ success: true });
         })
         .then((err) => {
