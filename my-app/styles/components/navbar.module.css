@@ -37,12 +37,12 @@
 
 .title_4U {
   color: #545a8b;
-  font-weight: 1000;
+  font-weight: bolder;
 }
 
 .title_VEHICLE {
   color: white;
-  font-weight: 1000;
+  font-weight: bolder;
   -webkit-text-stroke: 1px black;
 }
 

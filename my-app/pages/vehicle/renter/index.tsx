@@ -5,7 +5,8 @@ import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
-import ReviewModal from "@/components/Modal/Review";
+import CommentModal from "@/components/Modal/Comment";
+import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -16,7 +17,6 @@ const fetcher = (url: string) =>
       if (res.statusCode != 200) {
         return res;
       }
-      console.log(res);
       res.vehicles?.map((e: any) => {
         e.created_at = formatDate(new Date(e.created_at));
         e.updated_at = formatDate(new Date(e.updated_at));
@@ -26,12 +26,9 @@ const fetcher = (url: string) =>
 
 const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR("/api/renter/getvehicle", fetcher);
-
   const router = useRouter();
-
   const [showModal, setShowModal] = useState(false);
-
-  const [value,setValue] = useState();
+  const [value, setValue] = useState();
 
   const handleClose = () => {
     setShowModal(false);
@@ -166,22 +163,10 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              {/* <button
-                                type="button"
-                                className={styles.review_btn}
-                                onClick={() => {
-                                  setShowModal(true);
-                                  setValue(e);
-                                }}
-                              >
-                                รีวิวยานพานหนะ
-                              </button> */}
-                              {/* ต้องใส่ comment id มาด้วยสำหรับการ comment e?.cid */}
-                              {e?.cid !== null ? (
-                                <></>
-                              ) : (
+                              {e?.cid === null && (
                                 <>
                                   <button
+                                    id={`comment_btn_${e?.request_id}`}
                                     type="button"
                                     className={styles.review_btn}
                                     onClick={() => {
@@ -206,7 +191,7 @@ const ProviderOwnerVehicle = () => {
         </div>
 
         {showModal && (
-          <ReviewModal
+          <CommentModal
             show={showModal}
             onHide={() => setShowModal(false)}
             value={value}

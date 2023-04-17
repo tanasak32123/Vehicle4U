@@ -271,10 +271,10 @@ export class RentingRequestService {
     .execute()
   }
 
-  async delete(rentingRequest_id:number): Promise<RentingRequest> {
-      const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
-      if(!rentingRequest) throw new HttpException('rentingrequest not found', HttpStatus.NOT_ACCEPTABLE);
-      await this.rentingRequestRepository.delete({'id':rentingRequest_id});
-      return rentingRequest;
-  }
+  // async delete(rentingRequest_id:number): Promise<RentingRequest> {
+  //     const rentingRequest = await this.rentingRequestRepository.findOneBy({'id': rentingRequest_id});
+  //     if(!rentingRequest) throw new HttpException('rentingrequest not found', HttpStatus.NOT_ACCEPTABLE);
+  //     await this.rentingRequestRepository.delete({'id':rentingRequest_id});
+  //     return rentingRequest;
+  // }
 }

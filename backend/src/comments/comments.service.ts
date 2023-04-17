@@ -7,6 +7,7 @@ import { Comment } from './entities/comment.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
 import { User } from 'src/user/entities/user.entity';
 import { RentingRequest } from 'src/renting-request/entities/renting-request.entity';
+import { notEqual } from 'assert';
 
 @Injectable()
 export class CommentsService {
@@ -23,33 +24,59 @@ export class CommentsService {
   
 
   async create(createCommentDto: CreateCommentDto) {
-    console.log(1);
+    // console.log(1);
     const comment = await this.commentRepository.create(createCommentDto);
-    console.log(2);
-    console.log(comment);
-    const rentReq = await this.requestRepository.findOneBy({id:createCommentDto.request_id});
+    // console.log(2);
+    // console.log(comment);
+    const rentReq = await this.requestRepository.findOne(
+      {
+        relations: {
+          vehicle: true,
+          user: true
+        },
+        where: {
+          id: createCommentDto.request_id
+        }
+      },
+    );
     rentReq.comment = comment;
-    console.log(rentReq);
+    // console.log(rentReq);
     //await this.requestRepository.update({ id: rentReq.id }, {});
     await this.requestRepository.save(rentReq);
     comment.request = rentReq;
-    console.log(3)
+    comment.vehicle = rentReq.vehicle;
+    comment.user = rentReq.user;
+    // console.log(3)
     return await this.commentRepository.save(comment);;
   }
 
 
-  async findComments(id: number) {
-    const queryVehicle = await this.vehicleRepository.findOneBy({ id: id })
-    const comments = await this.requestRepository.find({
+  async findComments(vehicleId: number) {
+    console.log(vehicleId);
+    const queryVehicle = await this.vehicleRepository.findOneBy({
+      id: vehicleId,
+    });
+    console.log(queryVehicle);
+    const requests = await this.requestRepository.find({
       relations: {
         vehicle: true,
-        comment: true
-      }
-      , where: {
-        vehicle:{id : queryVehicle.id}
+        comment: true,
+        user: true,
       },
-    })
-    return comments;
+      where: {
+        vehicle: { id: queryVehicle.id },
+      },
+      select: {
+        user: { username: true },
+      },
+    });
+    requests.forEach(request => {
+      if (request.comment == null) {
+        const idx = requests.indexOf(request);
+        requests.splice(idx);
+      }
+    });
+    return requests;
   }
 
   async addReply(updateCommentDto:UpdateCommentDto) {

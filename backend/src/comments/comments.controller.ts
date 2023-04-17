@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body,Query, Patch, Param, Delete,Response } from
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
@@ -25,16 +26,16 @@ export class CommentsController {
   }
 
 
-  @Get('searchComments')
-  async getCommentsWithVehicleId(@Query('id') id: number,@Response() res) {
-    const comments = await this.commentsService.findComments(id);
+  @Get()
+  async getCommentsWithVehicleId(@Query('vehicleId') vehicleId: number,@Response() res) {
+    const comments = await this.commentsService.findComments(vehicleId);
     //console.log(comments);
     return res.status(200).send({
       comment: comments
     });
   }
 
-  @Patch('reply')
+  @Patch()
   async addReply(@Body() updateCommentDto: UpdateCommentDto,@Response() res) {
     const comment = await this.commentsService.addReply(updateCommentDto);
 
@@ -43,8 +44,4 @@ export class CommentsController {
     })
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
-  }
 }

@@ -9,6 +9,7 @@ import {
   RentingRequest,
   Request_status,
 } from 'src/renting-request/entities/renting-request.entity';
+import { VehicleWithReview } from './entities/vehicle-with-review.entity';
 
 @Injectable()
 export class VehicleService {
@@ -23,7 +24,7 @@ export class VehicleService {
     carName: string,
     maxPassenger: number,
     pageNumber: number,
-  ): Promise<[Vehicle[], any]> {
+  ): Promise<[VehicleWithReview[], any]> {
     pageNumber = pageNumber - 0;
     console.log(pageNumber);
     const pagination_count = 2;
@@ -47,9 +48,8 @@ export class VehicleService {
     const datalength = all_vehicles.length;
     const x = await this.vehicleRepository
       .createQueryBuilder('vehicles')
-      .innerJoinAndSelect('vehicles.user', 'user')
-      .innerJoinAndSelect('vehicles.rentingRequests', 'rentingRequests')
-      .innerJoinAndSelect('rentingRequests.comment', 'comment')
+      .leftJoinAndSelect('vehicles.user', 'user')
+      .leftJoinAndSelect('vehicles.comments', 'comments')
       .where(
         `vehicles.name ILIKE concat('%',CAST(:carName AS varchar(256)),'%')`,
         {
@@ -63,10 +63,11 @@ export class VehicleService {
       .andWhere('vehicles.maximumCapacity >= :maxPassenger', {
         maxPassenger: maxPassenger,
       })
-      .limit(pagination_count)
-      .offset((pageNumber - 1) * pagination_count)
-      .printSql()
+      //.orderBy('vehicles.name','ASC')
+      .skip((pageNumber - 1) * pagination_count)
+      .take(2)
       .getMany();
+    // console.log(x);
     const paginated_vehicles = x;
     //console.log(pageNumber - 0 * pagination_count < datalength);
     const paginationData = { next: {}, prev: {}, page_count: {} };
@@ -85,12 +86,33 @@ export class VehicleService {
     paginationData.page_count = Math.ceil(
       all_vehicles.length / pagination_count,
     );
+    //console.log(all_vehicles);
+    const vehicleList: VehicleWithReview[] = [];
+    for (var vehicles of paginated_vehicles) {
+      var count = 0;
+      var sumScore = 0;
+      for (var comment of vehicles.comments) {
+        sumScore += comment.score;
+        count += 1;
+      }
+      if (count == 0) {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = 0 //0 means no reviews
+        vehicleList.push(newVehicle);
+      }
+      else {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = sumScore / count;
+        vehicleList.push(newVehicle);
+      }
 
-    console.log(paginated_vehicles);
-    console.log(paginationData);
-    return [paginated_vehicles, paginationData];
+    }
+    // console.log(paginated_vehicles);
+    // console.log(paginationData);
+    return [vehicleList, paginationData];
   }
-
   async createVehicle(
     id: number,
     createVehicleDto: CreateVehicleDto,

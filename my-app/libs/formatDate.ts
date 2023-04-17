@@ -6,11 +6,17 @@ const formatDate = (date: Date) => {
     "/" +
     date.getFullYear() +
     " " +
-    date.getHours() +
+    (date.getHours().toString().length == 2
+      ? date.getHours()
+      : "0" + date.getHours()) +
     ":" +
-    date.getMinutes() +
+    (date.getMinutes().toString().length == 2
+      ? date.getMinutes()
+      : "0" + date.getMinutes()) +
     ":" +
-    date.getSeconds()
+    (date.getSeconds().toString().length == 2
+      ? date.getSeconds()
+      : "0" + date.getSeconds())
   );
 };
 
