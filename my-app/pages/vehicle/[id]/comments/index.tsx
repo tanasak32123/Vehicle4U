@@ -327,12 +327,12 @@ const Comments: NextPage = () => {
   );
 };
 
-const CommentCard = () => {
-  return (
-    <Card className="mb-3">
-      <Card.Body className="d-flex"></Card.Body>
-    </Card>
-  );
-};
+// const CommentCard = () => {
+//   return (
+//     <Card className="mb-3">
+//       <Card.Body className="d-flex"></Card.Body>
+//     </Card>
+//   );
+// };
 
 export default Comments;
