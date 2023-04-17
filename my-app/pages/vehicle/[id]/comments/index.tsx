@@ -172,15 +172,17 @@ const Comments: NextPage = () => {
 
               {!commentsLoading && (
                 <>
-                  {commentsData.length <= 0 && (
-                    <div
-                      className={`d-flex justify-content-center align-items-center ${styles.comments}`}
-                    >
-                      ยังไม่มีรีวิว ณ ตอนนี้
-                    </div>
-                  )}
+                  {!commentsData ||
+                    (commentsData.length <= 0 && (
+                      <div
+                        className={`d-flex justify-content-center align-items-center ${styles.comments}`}
+                      >
+                        ยังไม่มีรีวิว ณ ตอนนี้
+                      </div>
+                    ))}
 
-                  {commentsData.length > 0 &&
+                  {commentsData &&
+                    commentsData.length > 0 &&
                     commentsData.map((obj: any) => (
                       <Card
                         id={`review_${obj?.comment.id}`}
