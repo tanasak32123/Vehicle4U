@@ -44,7 +44,7 @@ export class VehicleController {
         message: 'car not found',
       });
     }
-    //console.log(vehicles);
+
     return res.status(200).json({
       vehicles: vehicles,
       page_count: pagination_data.page_count,
