@@ -6,6 +6,7 @@
 .reviews {
   background-color: white;
   min-height: 100%;
+  width: inherit;
   border-radius: 10px;
 }
 
@@ -21,4 +22,8 @@
   cursor: pointer;
   overflow: hidden;
   outline: none;
+}
+
+.comments {
+  min-height: 50vh;
 }
