@@ -7,7 +7,6 @@ import { FaArrowAltCircleLeft, FaReply, FaUserCircle } from "react-icons/fa";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";
 import ReactStars from "react-stars";
-import { toast } from "react-toastify";
 
 const Comments: NextPage = () => {
   const router = useRouter();
@@ -19,7 +18,6 @@ const Comments: NextPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          console.log(res.comment);
           res.comment.map((e: any) => {
             e.comment.createdAt = formatDate(new Date(e.comment.createdAt));
           });
@@ -326,13 +324,5 @@ const Comments: NextPage = () => {
     </div>
   );
 };
-
-// const CommentCard = () => {
-//   return (
-//     <Card className="mb-3">
-//       <Card.Body className="d-flex"></Card.Body>
-//     </Card>
-//   );
-// };
 
 export default Comments;
