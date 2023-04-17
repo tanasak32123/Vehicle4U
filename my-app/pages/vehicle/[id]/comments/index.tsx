@@ -172,7 +172,7 @@ const Comments: NextPage = () => {
 
               {!commentsLoading && (
                 <>
-                  {!commentsData && (
+                  {commentsData.length <= 0 && (
                     <div
                       className={`d-flex justify-content-center align-items-center ${styles.comments}`}
                     >
@@ -180,7 +180,7 @@ const Comments: NextPage = () => {
                     </div>
                   )}
 
-                  {commentsData &&
+                  {commentsData.length > 0 &&
                     commentsData.map((obj: any) => (
                       <Card
                         id={`review_${obj?.comment.id}`}
