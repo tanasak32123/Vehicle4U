@@ -15,7 +15,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch(`http://localhost:3000/searchComments?id=${id}`, {
+      await fetch(`http://localhost:3000/searchComments?vehicleId=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
