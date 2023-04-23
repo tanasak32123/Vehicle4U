@@ -9,7 +9,7 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
   const [error, setError] = useState("");
   const scoreRef = useRef<any>(null);
   const reviewRef = useRef<HTMLTextAreaElement | null>(null);
-  const req_id = value.request_id;
+  const req_id = value.id;
 
   async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -26,12 +26,13 @@ export default function ReviewModal({ show, onHide, value, onClose }: any) {
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
         if (res?.error) {
           return setError(res.error);
         }
         if (res?.success) {
           document
-            .getElementById(`comment_btn_${value.request_id}`)
+            .getElementById(`comment_btn_${value.id}`)
             ?.classList.add(`d-none`);
           toast.success("ทำการรีวิวสำเร็จ", {
             position: "top-right",

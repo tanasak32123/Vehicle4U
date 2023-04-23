@@ -45,6 +45,8 @@ export default async function handler(
       const score = body.score;
       let error;
 
+
+
       if (score === 0) {
         error = "โปรดเลือกคะแนนความพึงพอใจ";
         return res.status(400).json({

@@ -18,7 +18,6 @@ const Comments: NextPage = () => {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          // console.log(res.comment);
           res.comment.map((e: any) => {
             e.createdAt = formatDate(new Date(e.createdAt));
           });
@@ -182,7 +181,7 @@ const Comments: NextPage = () => {
                     ))}
 
                   {commentsData &&
-                    commentsData.length > 0 &&
+                    commentsData?.length > 0 &&
                     commentsData.map((obj: any) => (
                       <Card
                         id={`review_${obj?.id}`}
