@@ -8,15 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from 'src/user/entities/user.entity';
 import { Vehicle } from 'src/vehicle/entities/vehicle.entity';
-import { LessThan, LessThanOrEqual, Repository } from 'typeorm';
+import { DataSource, LessThan, LessThanOrEqual, Repository } from 'typeorm';
 import { CreateRentingRequestDto } from './dto/create-rentingrequest.dto';
-import { OutputRenterPageDto } from './dto/outputrenterpage.dto';
-import { OutputProviderPageDto } from './dto/outputproviderpage.dto';
 import { UpdateRentingRequestDto } from './dto/update-rentingrequest.dto';
 import {
   RentingRequest,
   Request_status,
 } from './entities/renting-request.entity';
+import { request } from 'http';
 
 @UseGuards(JwtAuthGuard)
 @Injectable()
@@ -86,101 +85,69 @@ export class RentingRequestService {
     return await this.rentingRequestRepository.save(renreq);
   }
 
-  async providergetrequest(
-    provider_id: number,
-  ): Promise<OutputProviderPageDto[]> {
-    const user = await this.userRepository.findOne({
-      relations: {
-        vehicles: true,
-      },
-      where: { id: provider_id },
-    });
-    if (!user) throw new HttpException('user not found', HttpStatus.NOT_FOUND);
-    if (!user.is_provider)
-      throw new HttpException('no access rights', HttpStatus.NOT_ACCEPTABLE);
-
-    const rentingRequests = [];
-    for (let i = 0; i < user.vehicles.length; i++) {
-      const requests = await this.rentingRequestRepository.find({
-        relations: {
-          vehicle: true,
-          user: true,
-        },
-        where: { vehicle: { id: user.vehicles[i].id } },
-      });
-      for (let j = 0; j < requests.length; j++)
-        rentingRequests.push(requests[j]);
+    async providergetrequest(
+      provider_id: number,
+    ):Promise<any>{
+      const requests = await this.rentingRequestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.user', 'renter')
+      .leftJoinAndSelect('request.vehicle', 'vehicle')
+      .leftJoinAndSelect('vehicle.user','provider')
+      .where('provider.id = :provider_id', { provider_id: provider_id })
+      .select([
+        'request.id',
+        'vehicle.id',
+        'vehicle.imagename',
+        'vehicle.name',
+        'vehicle.registrationId',
+        'renter.id',
+        'renter.first_name',
+        'renter.last_name',
+        'renter.tel',
+        'request.contact',
+        'request.rent_place',
+        'vehicle.maximumCapacity',
+        'request.created_at',
+        'request.updated_at',
+        'request.status',
+        'vehicle.province',
+        'request.startdate',
+        'request.starttime',
+        'request.enddate',
+        'request.endtime',
+      ])
+      .getMany()
+       return requests;
     }
 
-        let providerrequests = [];
-        for (let i = 0; i < rentingRequests.length; i++) {
-            let providerrequest= new OutputProviderPageDto;
-            providerrequest.request_id       = rentingRequests[i].id;
-            providerrequest.car_id           = rentingRequests[i].vehicle.id;
-            providerrequest.imagename        = rentingRequests[i].vehicle.imagename;
-            providerrequest.car_name         = rentingRequests[i].vehicle.name;
-            providerrequest.registrationId   = rentingRequests[i].vehicle.registrationId;
-            providerrequest.renter_id        = rentingRequests[i].user.id;
-            providerrequest.renter_firstname = rentingRequests[i].user.first_name;
-            providerrequest.renter_lastname  = rentingRequests[i].user.last_name;
-            providerrequest.tel              = rentingRequests[i].user.tel;
-            providerrequest.contact          = rentingRequests[i].contact;
-            providerrequest.rent_place       = rentingRequests[i].rent_place;
-            providerrequest.maximumCapacity  = rentingRequests[i].vehicle.maximumCapacity
-            providerrequest.created_at       = rentingRequests[i].created_at;
-            providerrequest.updated_at       = rentingRequests[i].updated_at;
-            providerrequest.status           = rentingRequests[i].status;
-            providerrequest.province         = rentingRequests[i].vehicle.province;
-            providerrequest.startdate        = rentingRequests[i].startdate;
-            providerrequest.starttime        = rentingRequests[i].starttime;
-            providerrequest.enddate          = rentingRequests[i].enddate;
-            providerrequest.endtime          = rentingRequests[i].endtime;
-            providerrequests.push(providerrequest);
-        }
-        return providerrequests;
-    }
-
-    async rentergetrequest(renter_id: number): Promise<OutputRenterPageDto[]>{
-        const user = await this.userRepository.findOneBy({'id': renter_id});
-        if(!user)throw new HttpException( "user not found", HttpStatus.NOT_FOUND);
-        if(!user.is_renter)throw new HttpException("no access rights", HttpStatus.NOT_ACCEPTABLE);
-        let rentingRequests = await this.rentingRequestRepository.find({
-            relations : { 
-                vehicle : {user: true}, 
-                comment : true
-            },
-            where : {
-                'user': {'id' : user.id}
-            }
-            
-        });
-        let renterrequests : OutputRenterPageDto[];
-        renterrequests = [];
-        for (let i = 0; i < rentingRequests.length; i++) {
-            let renterrequest = new OutputRenterPageDto;
-            if ( !rentingRequests[i].comment ){
-              renterrequest.cid = null;
-            }else{
-              renterrequest.cid              = rentingRequests[i].comment.id;
-            }
-            renterrequest.request_id         = rentingRequests[i].id;
-            renterrequest.car_id             = rentingRequests[i].vehicle.id;
-            renterrequest.imagename          = rentingRequests[i].vehicle.imagename;
-            renterrequest.car_name           = rentingRequests[i].vehicle.name;
-            renterrequest.tel                = rentingRequests[i].vehicle.user.tel;
-            renterrequest.provider_id        = rentingRequests[i].vehicle.user.id;
-            renterrequest.provider_firstname = rentingRequests[i].vehicle.user.first_name;
-            renterrequest.provider_lastname  = rentingRequests[i].vehicle.user.last_name;
-            renterrequest.registrationId     = rentingRequests[i].vehicle.registrationId;
-            renterrequest.maximumCapacity    = rentingRequests[i].vehicle.maximumCapacity;
-            renterrequest.status             = rentingRequests[i].status;
-            renterrequest.startdate          = rentingRequests[i].startdate;
-            renterrequest.starttime          = rentingRequests[i].starttime;
-            renterrequest.enddate            = rentingRequests[i].enddate;
-            renterrequest.endtime            = rentingRequests[i].endtime;
-            renterrequests.push(renterrequest);
-        }
-        return renterrequests;
+    async rentergetrequest(renter_id: number): Promise<any>{
+      const requests = await this.rentingRequestRepository
+      .createQueryBuilder('request')
+      .leftJoinAndSelect('request.user', 'renter')
+      .leftJoinAndSelect('request.vehicle', 'vehicle')
+      .leftJoinAndSelect('vehicle.user','provider')
+      .where('renter.id = :renter_id', { renter_id: renter_id })
+      .leftJoinAndSelect('request.comment', 'comment')
+      .select([
+        'comment.id',
+        'request.id',
+        'vehicle.id',
+        'vehicle.imagename',
+        'vehicle.name',
+        'provider.tel',
+        'provider.id',
+        'provider.first_name',
+        'provider.last_name',
+        'vehicle.registrationId',
+        'vehicle.maximumCapacity',
+        'request.status',
+        'request.startdate',
+        'request.starttime',
+        'request.enddate',
+        'request.endtime',
+      ])
+      .getMany()
+      return requests;
     }
 
   async updatestatus(
