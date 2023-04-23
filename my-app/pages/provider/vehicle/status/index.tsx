@@ -132,8 +132,8 @@ const ProviderOwnerVehicle = () => {
             {data.response?.map((e: any) => {
               return (
                 <div
-                  id={`car_${e.request_id}`}
-                  key={`car_${e.request_id}`}
+                  id={`car_${e?.id}`}
+                  key={`car_${e?.id}`}
                   className={`${styles.vehicle_card} p-3 mb-3`}
                 >
                   <div className={`row`}>
@@ -142,7 +142,7 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`${styles.vehicle_image}`}>
                         <Image
-                          src={`/images/vehicles/${e?.imagename}`}
+                          src={`/images/vehicles/${e?.vehicle['imagename']}`}
                           alt="Picture of car renter"
                           fill
                           loading="lazy"
@@ -158,16 +158,16 @@ const ProviderOwnerVehicle = () => {
                         <div className={`text-start`}>
                           <div className="mb-1">
                             <div>
-                              <b>ชื่อรถ</b>: {e?.car_name}
+                              <b>ชื่อรถ</b>: {e?.vehicle['name']}
                             </div>
                             <div>
-                              <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                              <b>เลขทะเบียนรถ</b>: {e?.vehicle['registrationId']}
                             </div>
                             <div>
-                              <b>จังหวัด</b>: {e?.province}
+                              <b>จังหวัด</b>: {e?.vehicle['province']}
                             </div>
                             <div>
-                              <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                              <b>จำนวนที่นั่ง</b>: {e?.vehicle['maximumCapacity']}
                             </div>
                             <div>
                               <b>ถูกสร้างเมื่อ</b>: {e?.created_at}
@@ -216,8 +216,8 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "pending" ? (
                           <>
                             <div>
-                              <b>ชื่อผู้เช่ารถ</b>: {e?.renter_firstname}{" "}
-                              {e?.renter_lastname}
+                              <b>ชื่อผู้เช่ารถ</b>: {e?.user['first_name']}{" "}
+                              {e?.user['last_name']}
                             </div>
                             <div>
                               <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
@@ -234,7 +234,7 @@ const ProviderOwnerVehicle = () => {
                                 </Col>
                                 <Col>
                                   <button
-                                    id={e?.request_id}
+                                    id={e?.id}
                                     className={styles.confirm_btn}
                                     onClick={(event) => {
                                       handleSubmit(event, "accepted");
@@ -245,7 +245,7 @@ const ProviderOwnerVehicle = () => {
                                 </Col>
                                 <Col>
                                   <button
-                                    id={e?.request_id}
+                                    id={e?.id}
                                     className={styles.cancel_btn}
                                     onClick={(event) => {
                                       handleSubmit(event, "rejected");
@@ -260,11 +260,11 @@ const ProviderOwnerVehicle = () => {
                         ) : e?.status === "accepted" ? (
                           <>
                             <div>
-                              <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname}{" "}
-                              {e?.renter_lastname}
+                              <b>ชื่อของผู้เช่า</b>: {e?.user['first_name']}{" "}
+                              {e?.user['last_name']}
                             </div>
                             <div>
-                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.user['tel']}
                             </div>
                             <div>
                               <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
@@ -281,11 +281,11 @@ const ProviderOwnerVehicle = () => {
                                 </Col>
                                 <Col>
                                   <button
-                                    id={e?.request_id}
+                                    id={e?.id}
                                     className={styles.send_car}
                                     onClick={() => {
                                       setShowModal(true);
-                                      setRequest(e?.request_id);
+                                      setRequest(e?.id);
                                     }}
                                   >
                                     ส่งรถให้ผู้เช่า
@@ -297,11 +297,11 @@ const ProviderOwnerVehicle = () => {
                         ) : e?.status === "in use" ? (
                           <>
                             <div>
-                              <b>ชื่อของผู้เช่า</b>: {e?.renter_firstname}{" "}
-                              {e?.renter_lastname}
+                              <b>ชื่อของผู้เช่า</b>: {e?.user['first_name']}{" "}
+                              {e?.user['last_name']}
                             </div>
                             <div>
-                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.tel}
+                              <b>เบอร์โทรติดต่อผู้เช่า</b>: {e?.user['tel']}
                             </div>
                             <div>
                               <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
@@ -318,10 +318,10 @@ const ProviderOwnerVehicle = () => {
                       </div>
                       <div className="float-end">
                         <button
-                          id={e?.request_id}
+                          id={e?.id}
                           className={styles.confirm_btn}
                           onClick={() => {
-                            router.push(`/chat/${e.renter_id}`);
+                            router.push(`/chat/${e.user['id']}`);
                           }}
                         >
                           แชท

@@ -71,8 +71,8 @@ const ProviderOwnerVehicle = () => {
             {data.response?.map((e: any) => {
               return (
                 <div
-                  id={`${e.request_id}`}
-                  key={`${e.request_id}`}
+                  id={`${e?.id}`}
+                  key={`${e?.id}`}
                   className={`${styles.vehicle_card} p-3 mb-3`}
                 >
                   <div className={`row`}>
@@ -81,7 +81,7 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`${styles.vehicle_image}`}>
                         <Image
-                          src={`/images/vehicles/${e?.imagename}`}
+                          src={`/images/vehicles/${e?.vehicle['imagename']}`}
                           alt="Picture of car renter"
                           fill
                           loading="lazy"
@@ -93,20 +93,20 @@ const ProviderOwnerVehicle = () => {
                     <div className={`col-6`}>
                       <div>
                         <div>
-                          <b>ชื่อรถ</b>: {e?.car_name}
+                          <b>ชื่อรถ</b>: {e?.vehicle['name']}
                         </div>
                         <div>
-                          <b>เลขทะเบียนรถ</b>: {e?.registrationId}
+                          <b>เลขทะเบียนรถ</b>: {e?.vehicle['registrationId']}
                         </div>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.provider_firstname}{" "}
-                          {e?.provider_lastname}
+                          <b>ชื่อเจ้าของรถ</b>: {e?.vehicle['user']['first_name']}{" "}
+                          {e?.vehicle['user']['last_name']}
                         </div>
                         <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.tel}
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.vehicle['user']['tel']}
                         </div>
                         <div>
-                          <b>จำนวนที่นั่ง</b>: {e?.maximumCapacity}
+                          <b>จำนวนที่นั่ง</b>: {e?.vehicle['maximumCapacity']}
                         </div>
                         <div>
                           <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
@@ -154,7 +154,7 @@ const ProviderOwnerVehicle = () => {
                             type="button"
                             className={styles.chat_btn}
                             onClick={() =>
-                              router.push(`/chat/${e?.provider_id}`)
+                              router.push(`/chat/${e?.vehicle['user']['id']}`)
                             }
                           >
                             แชท
@@ -163,10 +163,10 @@ const ProviderOwnerVehicle = () => {
                         {e?.status === "in use" && (
                           <>
                             <div className={styles.review_div}>
-                              {e?.cid === null && (
+                              {e?.comment === null && (
                                 <>
                                   <button
-                                    id={`comment_btn_${e?.request_id}`}
+                                    id={`comment_btn_${e?.id}`}
                                     type="button"
                                     className={styles.review_btn}
                                     onClick={() => {

@@ -45,6 +45,8 @@ export default async function handler(
       const score = body.score;
       let error;
 
+
+
       if (score === 0) {
         error = "โปรดเลือกคะแนนความพึงพอใจ";
         return res.status(400).json({
@@ -61,6 +63,12 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
+      console.log({
+        request_id: body.req_id,
+        message: body.review,
+        score: body.score,
+      });
+      
       await fetch("http://localhost:3000/comments", {
         method: "POST",
         headers: {
