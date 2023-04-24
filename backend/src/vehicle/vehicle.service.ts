@@ -9,6 +9,7 @@ import {
   RentingRequest,
   Request_status,
 } from 'src/renting-request/entities/renting-request.entity';
+import { VehicleWithReview } from './entities/vehicle-with-review.entity';
 
 @Injectable()
 export class VehicleService {
@@ -86,11 +87,32 @@ export class VehicleService {
     paginationData.page_count = Math.ceil(
       all_vehicles.length / pagination_count,
     );
+    
+    const vehicleList: VehicleWithReview[] = [];
+    for (var vehicles of paginated_vehicles) {
+      var count = 0;
+      var sumScore = 0;
+      for (var comment of vehicles.comments) {
+        sumScore += comment.score;
+        count += 1;
+      }
+      if (count == 0) {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = 0 //0 means no reviews
+        vehicleList.push(newVehicle);
+      }
+      else {
+        const newVehicle: VehicleWithReview = new VehicleWithReview();
+        Object.assign(newVehicle, vehicles);
+        newVehicle.reviewScore = sumScore / count;
+        vehicleList.push(newVehicle);
+      }
 
-    //console.log(all_vehicles);
-    console.log(paginated_vehicles);
-    console.log(paginationData);
-    return [paginated_vehicles, paginationData];
+    }
+    // console.log(paginated_vehicles);
+    // console.log(paginationData);
+    return [vehicleList, paginationData];
   }
 
 
