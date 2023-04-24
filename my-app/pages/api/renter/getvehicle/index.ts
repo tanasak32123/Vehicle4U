@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (token && role === "renter") {
-    await fetch("http://localhost:3000/renting-request/renter", {
+    await fetch(process.env.BACKEND_URL + "/renting-request/renter", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

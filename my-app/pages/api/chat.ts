@@ -9,7 +9,7 @@ export default async function handler(
     const body = req.body;
     const token = req.cookies?.token;
 
-    await fetch("http://localhost:3000/chat/api", {
+    await fetch(process.env.BACKEND_URL + "/chat/api", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

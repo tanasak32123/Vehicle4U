@@ -2,7 +2,7 @@ import UserSignUp from "types/UserSignUp";
 
 export const createUser = async (data: UserSignUp, role: string) => {
   try {
-    const res = await fetch(`http://localhost:3000/auth/signup/${role}`, {
+    const res = await fetch(process.env.BACKEND_URL + `/auth/signup/${role}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -97,7 +97,7 @@ export default async function handler(
 
   const token = req.cookies?.token;
 
-  await fetch("http://localhost:3000/renting-request", {
+  await fetch(process.env.BACKEND_URL + "/renting-request", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

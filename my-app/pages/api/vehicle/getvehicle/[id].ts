@@ -26,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (token && role === "provider") {
     const { id } = req.query;
-    await fetch(`http://localhost:3000/vehicle?vehicleId=${id}`, {
+    await fetch(process.env.BACKEND_URL + `/vehicle?vehicleId=${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

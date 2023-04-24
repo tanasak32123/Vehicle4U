@@ -104,7 +104,7 @@ const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ success: false, imgFound });
   });
 
-  const ok = await fetch("http://localhost:3000/vehicle", {
+  const ok = await fetch(process.env.BACKEND_URL + "/vehicle", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

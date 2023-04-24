@@ -2,7 +2,7 @@ export const updateUserProfile = async (
   token: string | undefined,
   data: object
 ) => {
-  const user = await fetch(`http://localhost:3000/user/editProfile`, {
+  const user = await fetch(process.env.BACKEND_URL + `/user/editProfile`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

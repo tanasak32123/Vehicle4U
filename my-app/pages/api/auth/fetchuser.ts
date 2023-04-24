@@ -13,7 +13,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .status(401)
       .json({ status: "SIGNED_OUT", user: null, role: null });
 
-  const user = await fetch(`http://localhost:3000/user`, {
+  const user = await fetch(process.env.BACKEND_URL + `/user`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

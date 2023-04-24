@@ -6,7 +6,6 @@ import formatDate from "@/libs/formatDate";
 import Head from "next/head";
 import { useState } from "react";
 import CommentModal from "@/components/Modal/Comment";
-import { useAuth } from "@/components/AuthContext";
 
 const fetcher = (url: string) =>
   fetch(url)
@@ -81,7 +80,7 @@ const ProviderOwnerVehicle = () => {
                     >
                       <div className={`${styles.vehicle_image}`}>
                         <Image
-                          src={`/images/vehicles/${e?.vehicle['imagename']}`}
+                          src={`/images/vehicles/${e?.vehicle["imagename"]}`}
                           alt="Picture of car renter"
                           fill
                           loading="lazy"
@@ -93,20 +92,22 @@ const ProviderOwnerVehicle = () => {
                     <div className={`col-6`}>
                       <div>
                         <div>
-                          <b>ชื่อรถ</b>: {e?.vehicle['name']}
+                          <b>ชื่อรถ</b>: {e?.vehicle["name"]}
                         </div>
                         <div>
-                          <b>เลขทะเบียนรถ</b>: {e?.vehicle['registrationId']}
+                          <b>เลขทะเบียนรถ</b>: {e?.vehicle["registrationId"]}
                         </div>
                         <div>
-                          <b>ชื่อเจ้าของรถ</b>: {e?.vehicle['user']['first_name']}{" "}
-                          {e?.vehicle['user']['last_name']}
+                          <b>ชื่อเจ้าของรถ</b>:{" "}
+                          {e?.vehicle["user"]["first_name"]}{" "}
+                          {e?.vehicle["user"]["last_name"]}
                         </div>
                         <div>
-                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>: {e?.vehicle['user']['tel']}
+                          <b>เบอร์โทรติดต่อเจ้าของรถ</b>:{" "}
+                          {e?.vehicle["user"]["tel"]}
                         </div>
                         <div>
-                          <b>จำนวนที่นั่ง</b>: {e?.vehicle['maximumCapacity']}
+                          <b>จำนวนที่นั่ง</b>: {e?.vehicle["maximumCapacity"]}
                         </div>
                         <div>
                           <b>วันเวลาในการรับรถ</b>: {e?.startdate}{" "}
@@ -154,7 +155,7 @@ const ProviderOwnerVehicle = () => {
                             type="button"
                             className={styles.chat_btn}
                             onClick={() =>
-                              router.push(`/chat/${e?.vehicle['user']['id']}`)
+                              router.push(`/chat/${e?.vehicle["user"]["id"]}`)
                             }
                           >
                             แชท

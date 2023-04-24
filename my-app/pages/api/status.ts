@@ -13,7 +13,7 @@ export default async function handler(
 
     try {
       // ให้ปลื้มสร้าง path เพิ่ม
-      await fetch("http://localhost:3000/renting-request/updatestatus", {
+      await fetch(process.env.BACKEND_URL + "/renting-request/updatestatus", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

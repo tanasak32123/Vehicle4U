@@ -15,7 +15,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch(`http://localhost:3000/comments?vehicleId=${id}`, {
+      await fetch(process.env.BACKEND_URL + `/comments?vehicleId=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,8 +44,6 @@ export default async function handler(
       const body = req.body;
       const score = body.score;
       let error;
-
-
 
       if (score === 0) {
         error = "โปรดเลือกคะแนนความพึงพอใจ";
