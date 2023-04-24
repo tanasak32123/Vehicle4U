@@ -8,7 +8,7 @@ import Image from "next/image";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 
-import styles from "@/styles/home.module.css";
+import styles from "styles/Home.module.css";
 import { Row, Col } from "react-bootstrap";
 import { FaSignInAlt } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";

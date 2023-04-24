@@ -9,7 +9,7 @@ import Link from "next/link";
 import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
 import { useAuth } from "@/components/AuthContext";
 
-export default function chat() {
+export default function Chat() {
   const { auth, isLoading } = useAuth();
 
   const socket = io(`${process.env.NEXT_PUBLIC_BACKEND_URL}`);
@@ -110,7 +110,10 @@ export default function chat() {
                   {data?.messages?.map((e: any) => {
                     if (e?.sender.id == id) {
                       return (
-                        <div className="d-flex flex-row justify-content-start">
+                        <div
+                          key={e?.id}
+                          className="d-flex flex-row justify-content-start"
+                        >
                           <div className="d-flex align-items-end">
                             <FaUserCircle size={40} />
                           </div>
@@ -128,7 +131,10 @@ export default function chat() {
                       );
                     } else if (e?.sender.id == auth.user?.id) {
                       return (
-                        <div className="d-flex flex-row justify-content-end pt-1">
+                        <div
+                          key={e?.id}
+                          className="d-flex flex-row justify-content-end pt-1"
+                        >
                           <div className="text-end me-2">
                             <div className="mb-1">
                               <small>ฉัน</small>
