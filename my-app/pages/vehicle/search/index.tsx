@@ -30,6 +30,7 @@ export default function SearchCar() {
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
+        console.log(res);
         setPageCount(res.page_count);
         return res;
       })
