@@ -5,16 +5,12 @@ import {
   Body,
   Query,
   Patch,
-  Param,
-  Delete,
   Response,
-  UseGuards,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
@@ -54,6 +50,7 @@ export class CommentsController {
   }
 
   //@UseGuards(JwtAuthGuard)
+
   @Patch()
   async addReply(@Body() updateCommentDto: UpdateCommentDto, @Response() res) {
     const comment = await this.commentsService.addReply(updateCommentDto);

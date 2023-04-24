@@ -77,7 +77,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!token)
     return res.status(401).json({ success: false, message: "Unauthorized" });
 
-  await fetch("http://localhost:3000/user/updatevehicle", {
+  await fetch("http://localhost:3000/vehicle", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
