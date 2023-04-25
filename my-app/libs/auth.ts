@@ -25,6 +25,9 @@ export const signin = async (
     })
     .then((res) => {
       return res;
+    })
+    .catch((err) => {
+      console.error(err);
     });
 
   return response;
