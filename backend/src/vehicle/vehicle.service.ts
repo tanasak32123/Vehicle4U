@@ -65,8 +65,8 @@ export class VehicleService {
         maxPassenger: maxPassenger,
       })
       //.orderBy('vehicles.name','ASC')
-      .limit(pagination_count)
-      .offset((pageNumber - 1) * pagination_count)
+      .take(pagination_count)
+      .skip((pageNumber - 1) * pagination_count)
       .printSql()
       .getMany();
     const paginated_vehicles = x;
