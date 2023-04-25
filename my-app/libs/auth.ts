@@ -3,17 +3,20 @@ export const signin = async (
   password: string,
   role: string
 ): Promise<any> => {
-  const response = await fetch(process.env.BACKEND_URL + "/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      username,
-      password,
-      role: role == "provider" ? 1 : 0,
-    }),
-  })
+  const response = await fetch(
+    process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/auth/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+        role: role == "provider" ? 1 : 0,
+      }),
+    }
+  )
     .then((res) => {
       if (!res.ok) {
         return null;

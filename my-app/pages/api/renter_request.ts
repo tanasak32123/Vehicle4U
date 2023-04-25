@@ -97,23 +97,29 @@ export default async function handler(
 
   const token = req.cookies?.token;
 
-  await fetch(process.env.BACKEND_URL + "/renting-request", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      startdate: body.startdate,
-      starttime: body.starttime,
-      enddate: body.enddate,
-      endtime: body.endtime,
-      contact: body.contact,
-      info: body.info,
-      rent_place: body.location,
-      car_id: body.carid,
-    }),
-  })
+  await fetch(
+    process.env.BACKEND_HOST +
+      ":" +
+      process.env.BACKEND_PORT +
+      "/renting-request",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        startdate: body.startdate,
+        starttime: body.starttime,
+        enddate: body.enddate,
+        endtime: body.endtime,
+        contact: body.contact,
+        info: body.info,
+        rent_place: body.location,
+        car_id: body.carid,
+      }),
+    }
+  )
     .then((response) => {
       // ถ้าเวลาทับกันจะจองไม่ได้ต้องขึ้นแจ้งเตือน
       if (!response.ok) {
