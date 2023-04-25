@@ -1,14 +1,10 @@
-# Install dependencies only when needed
-FROM node:alpine AS deps
+FROM node:14-alpine
 
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
 
-# Rebuild the source code only when needed
-FROM node:alpine AS builder
-WORKDIR /app
+COPY package*.json .
+RUN npm install
+
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN yarn build
@@ -30,4 +26,4 @@ RUN chown -R nextjs:nodejs /app/.next
 USER nextjs
 
 EXPOSE 3002
-CMD ["yarn", "start"]
+CMD ["npm", "run", "production"]
