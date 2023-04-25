@@ -29,5 +29,5 @@ RUN adduser -S nextjs -u 1001
 RUN chown -R nextjs:nodejs /app/.next
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 3002
 CMD ["yarn", "start"]
