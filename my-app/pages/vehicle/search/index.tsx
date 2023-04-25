@@ -43,7 +43,7 @@ export default function SearchCar() {
     isLoading: paginationLoading,
     error: paginationError,
   } = useSWR(
-    process.env.NEXT_PUBLIC_BACKEND_URL +
+    process.env.BACKEND_URL +
       `/vehicle/search?name=${name}&maxPassenger=${seat}&province=${province}&page=${nextPage}`,
     fetcher
   );

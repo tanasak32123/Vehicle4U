@@ -61,7 +61,7 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch("http://localhost:3000/comments", {
+      await fetch(process.env.BACKEND_URL + "/comments", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +103,7 @@ export default async function handler(
       if (!reply || !id)
         return res.status(400).json({ success: false, message: "Bad request" });
 
-      await fetch("http://localhost:3000/comments", {
+      await fetch(process.env.BACKEND_URL + "/comments", {
         method: req.method,
         headers: {
           "Content-Type": "application/json",
