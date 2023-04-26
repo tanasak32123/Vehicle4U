@@ -1,7 +1,7 @@
 import { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 
-import useSWR, { SWRConfig } from "swr";
+import { SWRConfig } from "swr";
 
 //global css
 import "@/styles/globals.css";

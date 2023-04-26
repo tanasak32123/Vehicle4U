@@ -19,6 +19,7 @@ const readFile = (
     options.uploadDir = path.join(process.cwd(), "/public/images/vehicles");
     options.filename = (name, ext, path, form) => {
       filename = Date.now().toString() + "_" + path.originalFilename;
+      console.log(filename);
       return filename;
     };
   }

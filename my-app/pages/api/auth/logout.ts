@@ -10,21 +10,21 @@ export default async function handler(
     deleteCookie("token", {
       res,
       req,
-      secure: process.env.NODE_ENV !== "development",
+      secure: false,
       sameSite: "strict",
       path: "/",
     });
     deleteCookie("role", {
       res,
       req,
-      secure: process.env.NODE_ENV !== "development",
+      secure: false,
       sameSite: "strict",
       path: "/",
     });
     deleteCookie("currentRole", {
       res,
       req,
-      secure: process.env.NODE_ENV !== "development",
+      secure: false,
       sameSite: "strict",
       path: "/",
     });

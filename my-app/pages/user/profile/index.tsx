@@ -94,7 +94,7 @@ export default function EditProfile() {
           setAddPaymentShow(false);
           setRole("provider");
           setCookie("currentRole", "provider", {
-            secure: process.env.NODE_ENV !== "development",
+            secure: false,
             sameSite: "strict",
             path: "/",
           });
@@ -103,7 +103,7 @@ export default function EditProfile() {
           setAddDlicenseShow(false);
           setRole("renter");
           setCookie("currentRole", "renter", {
-            secure: process.env.NODE_ENV !== "development",
+            secure: false,
             sameSite: "strict",
             path: "/",
           });
@@ -139,7 +139,7 @@ export default function EditProfile() {
       } else {
         setRole("provider");
         setCookie("currentRole", "provider", {
-          secure: process.env.NODE_ENV !== "development",
+          secure: false,
           sameSite: "strict",
           path: "/",
         });
@@ -152,7 +152,7 @@ export default function EditProfile() {
       } else {
         setRole("renter");
         setCookie("currentRole", "renter", {
-          secure: process.env.NODE_ENV !== "development",
+          secure: false,
           sameSite: "strict",
           path: "/",
         });
