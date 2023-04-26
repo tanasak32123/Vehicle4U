@@ -13,7 +13,7 @@ ENV DATABASE_NAME=vehicle4you
 
 COPY package*.json ./
 
-RUN npm install 
+RUN npm install & npm i -g @nestjs/cli
 
 COPY . .
 
@@ -21,4 +21,5 @@ RUN npm run build
 
 EXPOSE $PORT
 
-CMD ["npm", "run", "start:prod"]
+CMD [ "node", "dist/main" ]
+
