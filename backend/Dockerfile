@@ -13,9 +13,11 @@ ENV DATABASE_NAME=vehicle4you
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install 
 
 COPY . .
+
+RUN npm run build
 
 EXPOSE $PORT
 
