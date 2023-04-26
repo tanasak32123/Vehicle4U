@@ -6,7 +6,7 @@ import { getCookie, setCookie } from "cookies-next";
 import styles from "styles/editProfile.module.css";
 import { FaUserAlt } from "react-icons/fa";
 
-import { useAuth } from "@/components/AuthContext";
+import { useAuth } from "@/components/authContext";
 import { toast } from "react-toastify";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 

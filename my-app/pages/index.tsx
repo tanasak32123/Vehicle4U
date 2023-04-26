@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import styles from "styles/Home.module.css";
 import { Row, Col } from "react-bootstrap";
 import { FaSignInAlt } from "react-icons/fa";
-import { useAuth } from "@/components/AuthContext";
+import { useAuth } from "@/components/authContext";
 import { toast } from "react-toastify";
 
 interface FormValues {
