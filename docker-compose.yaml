@@ -5,7 +5,7 @@ services:
       context: ./my-app
       dockerfile: ./Dockerfile
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - BACKEND_HOST=backend
       - BACKEND_PORT=3000
       - BACKEND_URL='http://'+BACKEND_HOST+':'+BACKEND_PORT
