@@ -25,7 +25,7 @@ const nextConfig = {
     // minimumCacheTTL is in seconds, must be integer 0 or more
     minimumCacheTTL: 60,
     // ordered list of acceptable optimized image formats (mime types)
-    formats: ["image/webp"],
+    formats: ["image/webp", "image/png", "image/jpeg"],
     // enable dangerous use of SVG images
     dangerouslyAllowSVG: false,
     // set the Content-Security-Policy header
