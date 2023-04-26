@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "production": "next build && next start -p 3002"
+    "production": "next start -p 3002"
   },
   "dependencies": {
     "@next/bundle-analyzer": "^13.2.3",
