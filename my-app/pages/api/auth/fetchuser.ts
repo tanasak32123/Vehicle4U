@@ -13,12 +13,15 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .status(401)
       .json({ status: "SIGNED_OUT", user: null, role: null });
 
-  const user = await fetch(process.env.BACKEND_URL + `/user`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: "same-origin",
-  })
+  const user = await fetch(
+    process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + `/user`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "same-origin",
+    }
+  )
     .then((res) => {
       if (!res.ok) {
         return null;

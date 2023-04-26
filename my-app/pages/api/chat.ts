@@ -9,16 +9,19 @@ export default async function handler(
     const body = req.body;
     const token = req.cookies?.token;
 
-    await fetch(process.env.BACKEND_URL + "/chat/api", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        receiverId: body.receiverId,
-      }),
-    }).then(async (response) => {
+    await fetch(
+      process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/chat/api",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          receiverId: body.receiverId,
+        }),
+      }
+    ).then(async (response) => {
       if (!response.ok) {
         return res.status(400).json({
           success: false,

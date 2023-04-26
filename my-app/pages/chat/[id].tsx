@@ -12,7 +12,11 @@ import { useAuth } from "@/components/AuthContext";
 export default function Chat() {
   const { auth, isLoading } = useAuth();
 
-  const socket = io(`${process.env.BACKEND_URL}`);
+  const socket = io(
+    `${process.env.NEXT_PUBLIC_BACKEND_HOST}` +
+      ":" +
+      `${process.env.NEXT_PUBLIC_BACKEND_PORT}`
+  );
 
   const router = useRouter();
   const { id } = router.query;

@@ -26,11 +26,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (token && role === "provider") {
     const { id } = req.query;
-    await fetch(process.env.BACKEND_URL + `/vehicle?vehicleId=${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    await fetch(
+      process.env.BACKEND_HOST +
+        ":" +
+        process.env.BACKEND_PORT +
+        `/vehicle?vehicleId=${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then((response) => {
         if (response.ok) {
           return response.json();

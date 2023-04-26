@@ -15,11 +15,17 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch(process.env.BACKEND_URL + `/comments?vehicleId=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      await fetch(
+        process.env.BACKEND_HOST +
+          ":" +
+          process.env.BACKEND_PORT +
+          `/comments?vehicleId=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error("Something went wrong...");
@@ -61,18 +67,21 @@ export default async function handler(
           .status(401)
           .json({ success: false, message: "Unauthorized" });
 
-      await fetch(process.env.BACKEND_URL + "/comments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          request_id: body.req_id,
-          message: body.review,
-          score: body.score,
-        }),
-      })
+      await fetch(
+        process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/comments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            request_id: body.req_id,
+            message: body.review,
+            score: body.score,
+          }),
+        }
+      )
         .then((response) => {
           if (!response.ok) {
             throw new Error("Something went wrong...");
@@ -103,17 +112,20 @@ export default async function handler(
       if (!reply || !id)
         return res.status(400).json({ success: false, message: "Bad request" });
 
-      await fetch(process.env.BACKEND_URL + "/comments", {
-        method: req.method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          reply,
-          id,
-        }),
-      })
+      await fetch(
+        process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/comments",
+        {
+          method: req.method,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            reply,
+            id,
+          }),
+        }
+      )
         .then((response) => {
           if (response.ok) {
             return response.json();

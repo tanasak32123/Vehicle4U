@@ -77,17 +77,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!token)
     return res.status(401).json({ success: false, message: "Unauthorized" });
 
-  await fetch(process.env.BACKEND_URL + "/vehicle", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({
-      id: body.id,
-      [body.field]: body.value,
-    }),
-  }).then((response) => {
+  await fetch(
+    process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/vehicle",
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id: body.id,
+        [body.field]: body.value,
+      }),
+    }
+  ).then((response) => {
     if (response.ok) {
       return res.status(200).json({ success: true, field: body.field });
     }

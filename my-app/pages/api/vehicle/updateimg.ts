@@ -79,14 +79,20 @@ const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(500).json({ success: false });
     });
 
-  const vehicle = await fetch(process.env.BACKEND_URL + "/user/updatevehicle", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ id: fields.id, imagename: filename }),
-  })
+  const vehicle = await fetch(
+    process.env.BACKEND_HOST +
+      ":" +
+      process.env.BACKEND_PORT +
+      "/user/updatevehicle",
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id: fields.id, imagename: filename }),
+    }
+  )
     .then((response) => {
       if (!response.ok) {
         return res.status(500).json({ success: false });

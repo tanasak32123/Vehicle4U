@@ -104,14 +104,17 @@ const handlePostFormReq = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ success: false, imgFound });
   });
 
-  const ok = await fetch(process.env.BACKEND_URL + "/vehicle", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ ...fields, imagename: filename }),
-  }).then((res) => {
+  const ok = await fetch(
+    process.env.BACKEND_HOST + ":" + process.env.BACKEND_PORT + "/vehicle",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ ...fields, imagename: filename }),
+    }
+  ).then((res) => {
     return res.ok;
   });
 
