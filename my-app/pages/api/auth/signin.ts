@@ -34,7 +34,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     res,
     secure: process.env.NODE_ENV !== "development",
     expires: expires,
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   setCookie("token", data.token.access_token, {
@@ -43,14 +43,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     expires: expires,
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   setCookie("currentRole", role, {
     req,
     res,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    sameSite: "none",
   });
 
   return res

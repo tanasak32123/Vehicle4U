@@ -10,17 +10,17 @@ export default async function handler(
     deleteCookie("token", {
       res,
       req,
-      sameSite: true,
+      sameSite: "none",
     });
     deleteCookie("role", {
       res,
       req,
-      sameSite: true,
+      sameSite: "none",
     });
     deleteCookie("currentRole", {
       res,
       req,
-      sameSite: true,
+      sameSite: "none",
     });
     res.status(200).json({ message: "Logout successfully" });
   } else {
