@@ -6,7 +6,7 @@ import { getCookie, setCookie } from "cookies-next";
 import styles from "styles/editProfile.module.css";
 import { FaUserAlt } from "react-icons/fa";
 
-import { useAuth } from "@/components/authContext";
+import { useAuth } from "@/components/AuthContext";
 import { toast } from "react-toastify";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 
@@ -96,6 +96,7 @@ export default function EditProfile() {
           setCookie("currentRole", "provider", {
             secure: process.env.NODE_ENV !== "development",
             sameSite: "strict",
+            path: "/",
           });
           popUpChangeRole();
         } else if (element.name == "add_driving_license_id") {
@@ -104,6 +105,7 @@ export default function EditProfile() {
           setCookie("currentRole", "renter", {
             secure: process.env.NODE_ENV !== "development",
             sameSite: "strict",
+            path: "/",
           });
           popUpChangeRole();
         } else {
@@ -139,6 +141,7 @@ export default function EditProfile() {
         setCookie("currentRole", "provider", {
           secure: process.env.NODE_ENV !== "development",
           sameSite: "strict",
+          path: "/",
         });
         popUpChangeRole();
       }
@@ -151,6 +154,7 @@ export default function EditProfile() {
         setCookie("currentRole", "renter", {
           secure: process.env.NODE_ENV !== "development",
           sameSite: "strict",
+          path: "/",
         });
         popUpChangeRole();
       }

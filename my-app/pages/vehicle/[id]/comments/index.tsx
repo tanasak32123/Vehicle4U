@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import styles from "styles/Reviews.module.css";
-import { useAuth } from "@/components/authContext";
+import { useAuth } from "@/components/AuthContext";
 import { FaArrowAltCircleLeft, FaReply, FaUserCircle } from "react-icons/fa";
 import useSWR from "swr";
 import formatDate from "@/libs/formatDate";

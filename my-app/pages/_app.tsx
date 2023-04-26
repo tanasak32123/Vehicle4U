@@ -18,11 +18,11 @@ import { SSRProvider } from "react-bootstrap";
 //loading skeleton
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { AuthProvider } from "@/components/authContext";
+import { AuthProvider } from "@/components/AuthContext";
 
 import { ToastContainer } from "react-toastify";
 
-const Layout = dynamic(() => import("@/components/layout"), {
+const Layout = dynamic(() => import("@/components/Layout"), {
   loading: () => <p>Loading...</p>,
 });
 

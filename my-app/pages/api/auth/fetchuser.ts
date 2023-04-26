@@ -55,7 +55,8 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       req,
       res,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: "none",
+      sameSite: "strict",
+      path: "/",
     });
     return res.status(200).json({ status: "SIGNED_IN", user, role });
   }

@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import { useAuth } from "./authContext";
+import { useAuth } from "./AuthContext";
 
 //css
-import Skeleton from "react-loading-skeleton";
 import {
   Button,
   Container,

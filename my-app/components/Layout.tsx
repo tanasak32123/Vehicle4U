@@ -1,12 +1,12 @@
 import dynamic from "next/dynamic";
 import Head from "next/head";
-import { useAuth } from "./authContext";
+import { useAuth } from "./AuthContext";
 
 const Navbar = dynamic(() => import("./Navbar"), {
   loading: () => <p>Loading...</p>,
 });
 
-const Footer = dynamic(() => import("./footer"), {
+const Footer = dynamic(() => import("./Footer"), {
   loading: () => <p>Loading...</p>,
 });
 

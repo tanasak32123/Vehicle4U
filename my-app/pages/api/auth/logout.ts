@@ -10,17 +10,23 @@ export default async function handler(
     deleteCookie("token", {
       res,
       req,
-      sameSite: "none",
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      path: "/",
     });
     deleteCookie("role", {
       res,
       req,
-      sameSite: "none",
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      path: "/",
     });
     deleteCookie("currentRole", {
       res,
       req,
-      sameSite: "none",
+      secure: process.env.NODE_ENV !== "development",
+      sameSite: "strict",
+      path: "/",
     });
     res.status(200).json({ message: "Logout successfully" });
   } else {

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { Col, Row } from "react-bootstrap";
 import Link from "next/link";
 import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
-import { useAuth } from "@/components/authContext";
+import { useAuth } from "@/components/AuthContext";
 
 export default function Chat() {
   const { auth, isLoading } = useAuth();
