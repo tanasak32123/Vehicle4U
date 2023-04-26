@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { useRouter } from "next/navigation";
 
 //types

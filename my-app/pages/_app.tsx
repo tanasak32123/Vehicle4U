@@ -22,7 +22,7 @@ import { AuthProvider } from "@/components/authContext";
 
 import { ToastContainer } from "react-toastify";
 
-const Layout = dynamic(() => import("@/components/Layout"), {
+const Layout = dynamic(() => import("@/components/layout"), {
   loading: () => <p>Loading...</p>,
 });
 

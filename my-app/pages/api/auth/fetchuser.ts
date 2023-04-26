@@ -10,7 +10,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!token)
     return res
-      .status(401)
+      .status(200)
       .json({ status: "SIGNED_OUT", user: null, role: null });
 
   const user = await fetch(
@@ -38,7 +38,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!user)
     return res
-      .status(401)
+      .status(200)
       .json({ status: "SIGNED_OUT", user: null, role: null });
 
   const currentRole = req.cookies?.currentRole;
@@ -55,7 +55,7 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       req,
       res,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
+      sameSite: "none",
     });
     return res.status(200).json({ status: "SIGNED_IN", user, role });
   }
