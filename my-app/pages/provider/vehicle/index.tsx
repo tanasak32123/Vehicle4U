@@ -23,9 +23,7 @@ const fetcher = (url: string) =>
       return res;
     });
 
-const MyImage = () => {};
-
-const ProviderOwnerVehicle = async () => {
+const ProviderOwnerVehicle = () => {
   const { data, isLoading, error } = useSWR(
     "/api/vehicle/getvehicles",
     fetcher
